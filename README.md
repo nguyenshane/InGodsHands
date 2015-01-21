@@ -10,7 +10,7 @@ In God's Hands is a God game where the player physically pulls strings to manipu
 * **On Mac/Linux:**
   * Open Terminal/CommandLine, run **'chmod a+x /path/to/file/localserver'**, this will make the file **'localserver'** executable
   * Double click on file localserver
-  * If you want to stop this server, hit Ctrl+C and type **'killall python'**
+  * If you want to stop this server, hit Ctrl+C and type **'killall Python'**
 
 * Open browser and go to **http://localhost:51000** to verify that the local server is running
 * Go to **PlayCanvas.com**, click on Projects -> InGodsHands
