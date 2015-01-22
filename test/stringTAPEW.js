@@ -11,8 +11,7 @@ pc.script.create('stringTAPEW', function (context) {
         this.lastVelocity = 0.0;
         this.lastDistance = 0.0;
 
-        context.keyboard.on("keydown", onKeyDown, this);
-        context.keyboard.on("keyup", onKeyUp, this);
+
 
         this.pinA = false;
         this.pinB = false;
@@ -24,6 +23,8 @@ pc.script.create('stringTAPEW', function (context) {
     stringTAPEW.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+            context.keyboard.on("keydown", this.onKeyDown, this);
+            context.keyboard.on("keyup", this.onKeyUp, this);
 
         },
 
