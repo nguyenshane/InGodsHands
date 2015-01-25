@@ -15,11 +15,22 @@ void setup() {
   attachInterrupt(0, doEncoderA, CHANGE);
 // encoder pin on interrupt 1 (pin 3)
 
-  attachInterrupt(1, doEncoderB, CHANGE);  
-  Serial.begin (9600);
+  attachInterrupt(1, doEncoderB, CHANGE); 
+  Keyboard.begin();
+  Serial.begin (300);
 }
 
-void loop(){  }
+void loop(){  
+  if(digitalRead(encoder0PinA)==LOW){
+    //Send an ASCII 'D', 
+    //Keyboard.write('d');
+  }
+  if(digitalRead(encoder0PinB)==LOW){
+    //Send an ASCII 'S', 
+    //Keyboard.write('s');
+  }
+
+}
 
 void doEncoderA(){
   Serial.println("A");
@@ -28,9 +39,11 @@ void doEncoderA(){
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {  
       encoder0Pos = encoder0Pos + 1;         // CW
+      Keyboard.write('d');
     } 
     else {
       encoder0Pos = encoder0Pos - 1;         // CCW
+      Keyboard.write('s');
     }
   }
   else   // must be a high-to-low edge on channel A                                       
@@ -38,9 +51,11 @@ void doEncoderA(){
     // check channel B to see which way encoder is turning  
     if (digitalRead(encoder0PinB) == HIGH) {   
       encoder0Pos = encoder0Pos + 1;          // CW
+      Keyboard.write('d');
     } 
     else {
       encoder0Pos = encoder0Pos - 1;          // CCW
+      Keyboard.write('s');
     }
   }
   Serial.println (encoder0Pos, DEC);          
@@ -55,9 +70,11 @@ void doEncoderB(){
    // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {  
       encoder0Pos = encoder0Pos + 1;         // CW
+      Keyboard.write('d');
     } 
     else {
       encoder0Pos = encoder0Pos - 1;         // CCW
+      Keyboard.write('s');
     }
   }
   // Look for a high-to-low on channel B
@@ -65,9 +82,11 @@ void doEncoderB(){
     // check channel B to see which way encoder is turning  
     if (digitalRead(encoder0PinA) == LOW) {   
       encoder0Pos = encoder0Pos + 1;          // CW
+      Keyboard.write('d');
     } 
     else {
       encoder0Pos = encoder0Pos - 1;          // CCW
+      Keyboard.write('s');
     }
   }
   Serial.println (encoder0Pos, DEC);    
