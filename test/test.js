@@ -51,6 +51,10 @@ rule1.getCamera();
 
 
 
+///// Refer to a Playcanvas Entity inside a pure Javascript class ////
+//// Look at the example at https://gist.github.com/nguyenshane/8275d02bc53cacd9b02d
+
+
 
 
 //// Playcanvas way to inherit a class ////
