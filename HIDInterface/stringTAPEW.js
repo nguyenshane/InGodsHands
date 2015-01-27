@@ -1,5 +1,5 @@
 ///
-// Description: This is the control input for each string
+// Description: This is the control input for each string, don't need to look into
 ///
 pc.extend(pc, function(){
     
@@ -16,6 +16,7 @@ pc.extend(pc, function(){
         this.rotating = false;
         this.position = 0;
         this.distance = 0;
+		this.speed = 0;
         this.counter = 0; //ms
         this.count, this.countfn; //count interval reference for time
         this.pressing = false;
@@ -86,18 +87,27 @@ pc.extend(pc, function(){
             this.countClearfn = function(o) {o.pressing = false; o.reset(); };
             if (this.pressing) {
                 clearTimeout(this.countClear);
-                this.countClear = setTimeout(this.countClearfn, 700, this);
+                this.countClear = setTimeout(this.countClearfn, 500, this);
             }
             
             
         },
+
+		fireEvent: function() {
+			this.fire("move", this.position, this.distance, this.speed);
+			//console.log("FIRED in stringTAPEW, time: ", this.speed);
+		},
         
         reset: function() {
+			this.fireEvent();
+			
             this.pressing = false;
 
             this.position = 0;
             this.distance = 0;
             this.counter = 0;
+			this.speed = 0;
+			
             clearInterval(this.count);
             console.log("RESET");
         },
@@ -106,8 +116,10 @@ pc.extend(pc, function(){
         onKeyUp: function (event) {
             this.rotating = false;
             this.distance += this.position;
-            if(this.counter !== 0)
-            console.log("UP position:", this.position, " distance:", this.distance, " time:", this.counter, " speed:", Math.abs(this.distance)/this.counter*100);
+            if(this.counter !== 0) {
+				this.speed = Math.abs(this.distance)/this.counter*100;
+            	//console.log("UP position:", this.position, " distance:", this.distance, " time:", this.counter, " speed:", this.speed);
+			}
             this.doClearInterval();
             
 
