@@ -13,6 +13,8 @@ pc.script.create('sphere-test', function (context) {
         initialize: function () {
             var sphere = this.entity.model.model.meshInstances[0].mesh;
 
+            var numVertices = sphere.vertexBuffer.numVertices;
+
             //var testVertex = sphere.vertexBuffer[0] = 30;
 
             sphere.vertexBuffer.usage = pc.gfx.BUFFER_DYNAMIC;
@@ -35,6 +37,13 @@ pc.script.create('sphere-test', function (context) {
             var newVertexBuffer;
 
             var newVertexBufferView;
+
+            for (var i = 0; i < vertexBufferView.length/3; ++i) {
+                console.log(i + ": (" + vertexBufferView[i * 3] + ", " + vertexBufferView[i * 3 + 1] + ", " + vertexBufferView[i * 3 + 2] + ")");
+            }
+            for (var i = 0; i < indexBufferView.length/3; ++i) {
+                console.log(i + ": (" + indexBufferView[i * 3] + ", " + indexBufferView[i * 3 + 1] + ", " + indexBufferView[i * 3 + 2] + ")");
+            }
 
             for (var i = 0; i < vertexBufferView.length; i += 3) {
                 var j;
@@ -69,6 +78,9 @@ pc.script.create('sphere-test', function (context) {
 
             for (var i = 0; i < vertexBufferView.length/3; ++i) {
                 console.log(i + ": (" + vertexBufferView[i * 3] + ", " + vertexBufferView[i * 3 + 1] + ", " + vertexBufferView[i * 3 + 2] + ")");
+            }
+            for (var i = 0; i < indexBufferView.length/3; ++i) {
+                console.log(i + ": (" + indexBufferView[i * 3] + ", " + indexBufferView[i * 3 + 1] + ", " + indexBufferView[i * 3 + 2] + ")");
             }
 
                 
