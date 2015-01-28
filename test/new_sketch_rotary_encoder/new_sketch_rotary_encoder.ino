@@ -137,40 +137,40 @@ void loop() {
   if (lastReportedPos_T != encoderPos_T) {
     //Serial.print("T_Index:");
     //Serial.println(encoderPos_T, DEC);
-    if(lastReportedPos_T > encoderPos_T) { Serial.print("a"); }//keyCommand(0,4); keyCommand(0,0);}
-    if(lastReportedPos_T < encoderPos_T) { Serial.print("d"); }//keyCommand(0,7); keyCommand(0,0);}
+    if(lastReportedPos_T > encoderPos_T) { /*Serial.print("a"); }//*/keyCommand(0,4); keyCommand(0,0);}
+    if(lastReportedPos_T < encoderPos_T) { /*Serial.print("d"); }//*/keyCommand(0,7); keyCommand(0,0);}
     lastReportedPos_T = encoderPos_T;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_A != encoderPos_A) {
     //Serial.print("A_Index:");
     //Serial.println(encoderPos_A, DEC);
-    if(lastReportedPos_A > encoderPos_A) { Serial.print("w"); }//keyCommand(0,26); keyCommand(0,0);}
-    if(lastReportedPos_A < encoderPos_A) { Serial.print("s"); }//keyCommand(0,22); keyCommand(0,0);}
+    if(lastReportedPos_A > encoderPos_A) { /*Serial.print("w"); }//*/keyCommand(0,26); keyCommand(0,0);}
+    if(lastReportedPos_A < encoderPos_A) { /*Serial.print("s"); }//*/keyCommand(0,22); keyCommand(0,0);}
     lastReportedPos_A = encoderPos_A;
   }//else keyCommand(0,0); 
 
   if (lastReportedPos_P != encoderPos_P) {
     //Serial.print("P_Index:");
     //Serial.println(encoderPos_P, DEC);
-    if(lastReportedPos_P > encoderPos_P) { Serial.print("j"); }//keyCommand(0,13); keyCommand(0,0);}
-    if(lastReportedPos_P < encoderPos_P) { Serial.print("l"); }//keyCommand(0,15); keyCommand(0,0);}
+    if(lastReportedPos_P > encoderPos_P) { /*Serial.print("j"); }//*/keyCommand(0,13); keyCommand(0,0);}
+    if(lastReportedPos_P < encoderPos_P) { /*Serial.print("l"); }//*/keyCommand(0,15); keyCommand(0,0);}
     lastReportedPos_P = encoderPos_P;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_E != encoderPos_E) {
     //Serial.print("E_Index:");
     //Serial.println(encoderPos_E, DEC);
-    if(lastReportedPos_E > encoderPos_E) { Serial.print("i"); }//keyCommand(0,12); keyCommand(0,0);}
-    if(lastReportedPos_E < encoderPos_E) { Serial.print("k"); }//keyCommand(0,14); keyCommand(0,0);}
+    if(lastReportedPos_E > encoderPos_E) { /*Serial.print("i"); }//*/keyCommand(0,12); keyCommand(0,0);}
+    if(lastReportedPos_E < encoderPos_E) { /*Serial.print("k"); }//*/keyCommand(0,14); keyCommand(0,0);}
     lastReportedPos_E = encoderPos_E;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_W != encoderPos_W) {
     //Serial.print("W_Index:");
     //Serial.println(encoderPos_W, DEC);
-    if(lastReportedPos_W > encoderPos_W) { Serial.print("v"); }//keyCommand(0,25); keyCommand(0,0);}
-    if(lastReportedPos_W < encoderPos_W) { Serial.print("n"); }//keyCommand(0,17); keyCommand(0,0);}
+    if(lastReportedPos_W > encoderPos_W) { /*Serial.print("v"); }//*/keyCommand(0,25); keyCommand(0,0);}
+    if(lastReportedPos_W < encoderPos_W) { /*Serial.print("n"); }//*/keyCommand(0,17); keyCommand(0,0);}
     lastReportedPos_W = encoderPos_W;
   }//else keyCommand(0,0); 
   
