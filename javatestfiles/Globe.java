@@ -1,51 +1,21 @@
 package com.example.android.opengl;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.opengles.GL10;
 
 public class Globe {
 
-	float t = (float) ((1.0 + Math.sqrt(5.0)) / 2.0);
-	
-	float[] vertices = {
-			-1, t, 0,
-			1, t, 0,
-			-1, -t, 0,
-			1, -t, 0,
-			
-			0, -1, t,
-			0, 1, t,
-			0, -1, -t,
-			0, 1, -t,
-			
-			t, 0, -1,
-			t, 0, 1,
-			-t, 0, -1,
-			-t, 0, 1
-	};
-	
-	float[] colors = {
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			
-			0, 0, 1,
-			0, 1, 0,
-			0, 1, 0,
-			0, 0, 1,
-			
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 1, 0
-	};
-
-	FloatBuffer vertexBuffer, colorBuffer;
-	
-	Tile[] tiles = new Tile[20];
 	
 	GlobeAttributeHandle handle;
 	
@@ -55,12 +25,25 @@ public class Globe {
 	public Globe(int recursionLevel) {
 		
 
-		handle = new GlobeAttributeHandle(recursionLevel, vertices, tiles);
+		handle = new GlobeAttributeHandle(recursionLevel);
 
 		
 		human = new TestHuman(handle.findLand(handle.tiles[0], 10));
         
-        
+		Writer writer = null;
+
+		try {
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream("System Drive/Users/chasebradbury/Documents/workspace/OpenGLES10Activity/myFirstJSONFile.txt"), "utf-8"));
+		    writer.write(handle.toString());
+		} catch (IOException ex) {
+		  // report
+		} finally {
+		   try {writer.close();} catch (Exception ex) {}
+		}
+		
+		
+        System.out.println(handle);
 	}
 	
 	public void draw(GL10 gl) {

@@ -83,7 +83,7 @@ public class Tile {
 		Vector3f vectorb = handle.getVertex(indexBuffer.get(1));
 		Vector3f vectorc = handle.getVertex(indexBuffer.get(2));
 		
-		System.out.println(vectora + ", " + vectorb + ", " + vectorc);
+		//System.out.println(vectora + ", " + vectorb + ", " + vectorc);
 		
 		vectorb.subtractBy(vectora);
 		vectorc.subtractBy(vectora);
@@ -92,7 +92,7 @@ public class Tile {
 		
 		normal.normalize();
 		
-		System.out.println(normal);
+		//System.out.println(normal);
 		//handle.normalBuffer.put(vertexIndices[0]);
 		
 		//normal = new Vector3f(0, 0, 1);

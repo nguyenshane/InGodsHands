@@ -16,7 +16,28 @@ public class GlobeAttributeHandle {
 	public FloatBuffer vertexBuffer, colorBuffer, normalBuffer;
 	
 	
-	public GlobeAttributeHandle(int recursionLevel, float[] startingVerts, Tile[] startingTiles) {
+	public GlobeAttributeHandle(int recursionLevel) {
+		
+		float t = (float) ((1.0 + Math.sqrt(5.0)) / 2.0);
+		
+		float[] startingVerts = {
+				-1, t, 0,
+				1, t, 0,
+				-1, -t, 0,
+				1, -t, 0,
+				
+				0, -1, t,
+				0, 1, t,
+				0, -1, -t,
+				0, 1, -t,
+				
+				t, 0, -1,
+				t, 0, 1,
+				-t, 0, -1,
+				-t, 0, 1
+		};
+
+		
 		numVerts = calculateNumVerts(12, 20, recursionLevel);
 		numFaces = (numVerts - 2) * 2;
 
@@ -29,7 +50,7 @@ public class GlobeAttributeHandle {
 		tiles = new Tile[numFaces];
 		
 		currentVerts = 0;
-		currentFaces = 0;
+		currentFaces = 20;
 		
 		for (; currentVerts < startingVerts.length/3; ++currentVerts) {
 			vertices[currentVerts * 3] = startingVerts[currentVerts * 3];
@@ -37,9 +58,6 @@ public class GlobeAttributeHandle {
 			vertices[currentVerts * 3 + 2] = startingVerts[currentVerts * 3 + 2];
 		}
 		
-		for (; currentFaces < startingTiles.length; ++currentFaces) {
-			tiles[currentFaces] = startingTiles[currentFaces];
-		}
 		
 		
 		for (int i = 0; i < numVerts * 4; i += 4) {
@@ -102,7 +120,7 @@ public class GlobeAttributeHandle {
         	int jMax = currentFaces;
         	for (int j = 0; j < jMax; ++j) {
         		subdivideFace(j);
-        		System.out.println("Subbed.");
+        		//System.out.println("Subbed.");
         	}
         	for (int j = 0; j < jMax; ++j) {
         		tiles[j].divided = false;
@@ -221,19 +239,19 @@ public class GlobeAttributeHandle {
 			
 			if (tiles[index].neighborc.neighbora.getVertexIndex(getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
 				ac = tiles[index].neighborc.neighbora;
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[0]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[1]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[2]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[0]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[1]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighbora.vertexIndices[2]));
 			} if (tiles[index].neighborc.neighborb.getVertexIndex(getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
 				ac = tiles[index].neighborc.neighborb;
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[0]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[1]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[2]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[0]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[1]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborb.vertexIndices[2]));
 			} if (tiles[index].neighborc.neighborc.getVertexIndex(getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
 				ac = tiles[index].neighborc.neighborc;
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[0]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[1]));
-				System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[2]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[0]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[1]));
+				//System.out.println(getUnbufferedVertex(tiles[index].vertexIndices[0]) + ", " + getUnbufferedVertex(tiles[index].neighborc.neighborc.vertexIndices[2]));
 			}
 			if (ac == null) {
 				System.out.println("Tile " + index + " has poor neighbor structure at ac.");
@@ -385,5 +403,38 @@ public class GlobeAttributeHandle {
 		if (tilec != null)
 			return tilec;
 		return null;
+	}
+	
+	public String toString() {
+		String temp = new String();
+		
+		temp = temp + "{\"vertices\":[";
+		for (int i = 0; i < vertices.length - 1; ++i) {
+			temp = temp + vertices[i] + ", ";
+		}
+		temp = temp + vertices[vertices.length - 1] + "]} ";
+		
+		temp = temp + "{\"normals\":[";
+		for (int i = 0; i < normals.length; ++i) {
+			temp = temp + normals[i] + ", ";
+		}
+		temp = temp + normals[normals.length - 1] + "]} ";
+		
+		temp = temp + "{\"tiles\":[";
+		for (int i = 0; i < tiles.length; ++i) {
+			temp = temp + "{\"vertexIndices\": [";
+			temp = temp + tiles[i].vertexIndices[0] + ", ";
+			temp = temp + tiles[i].vertexIndices[1] + ", ";
+			temp = temp + tiles[i].vertexIndices[2] + "], ";
+			
+			temp = temp + "{\"neighborIndices\": [";
+			temp = temp + tiles[i].neighborIndices[0] + ", ";
+			temp = temp + tiles[i].neighborIndices[1] + ", ";
+			if (i == tiles.length - 1)
+				temp = temp + tiles[i].neighborIndices[2] + "]}, ";
+			else
+				temp = temp + tiles[i].neighborIndices[2] + "]}}";
+		}
+		return temp;
 	}
 }
