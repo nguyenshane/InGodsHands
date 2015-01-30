@@ -1,3 +1,17 @@
+pc.alVec3.constructor = function(){
+	this.data = [];
+
+	if (arguments.length === 3) {
+		this.data.push(arguments[0]);
+		this.data.push(arguments[1]);
+		this.data.push(arguments[2]);
+	} else {
+		this.data[0] = 0;
+		this.data[1] = 0;
+		this.data[2] = 0;
+	}
+};
+
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
     subdivisions = (subdivisions || 1);
@@ -28,7 +42,7 @@ function IcoSphere(device, radius, subdivisions) {
 
     var normals = [];
     var colors = [];
-    this.vertices = new Float32Array(2000);
+    this.vertices = [];
     vertices = this.vertices;
     
     this.radius = radius;
@@ -52,7 +66,7 @@ function IcoSphere(device, radius, subdivisions) {
 			vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
 		}
 		
-	console.log("startingverts:", startingVerts);
+	//console.log("startingverts:", startingVerts);
     
     
     
@@ -121,11 +135,7 @@ function IcoSphere(device, radius, subdivisions) {
     	var jMax = this.currentFaces;
     	
     	for (var j = 0; j < jMax; ++j) {
-    	    //tmp = this;
-    	    //console.log('here', j);
-    	    //console.log("vertices:", vertices);
     		self._subdivideFace(j);
-    		//console.log('done');
     	}
     		
     	for (j = 0; j < jMax; ++j) {
@@ -136,23 +146,19 @@ function IcoSphere(device, radius, subdivisions) {
     
     // Normalize
     for ( i = 0; i < this.currentVerts; i++) {
-        //var vert = pc.Vec3(vertices[i*3], vertices[i*3+1], vertices[i*3+1]);
+        //var vert = pc.alVec3(vertices[i*3], vertices[i*3+1], vertices[i*3+1]);
         this.setVertexMagnitude(i, this.radius);
     }
         
-    
-    
-    //console.log("tiles:", tiles);
-    
+    // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
        tiles[i].testExtrude();
-       	//console.log("ext" + i);
     }
-
+	
+	// Calculate the normals for each vertex
     for (i = 0; i < vertices.length; i++) {
         normals.push(vertices[i] / radius);
     }
-    
     
 
     /*indices = [
@@ -206,26 +212,16 @@ function IcoSphere(device, radius, subdivisions) {
         normals: normals,
         indices:   indices
     };
-
-
-    var mesh = pc.createMesh(device, vertices, options);
     
-    var toReturn = {
-        mesh : mesh,
+    this.toReturn = {
+        mesh : pc.createMesh(device, vertices, options),
         options: options,
         positions: vertices,
     };
     
-    this.toReturn = toReturn;
-    this.fn = this.prototype;
-    
-    
     return this;
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
 }
-
-//IcoSphere.prototype.constructor = IcoSphere;
-
 
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
@@ -238,7 +234,7 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 };
 
 IcoSphere.prototype._getUnbufferedVertex = function(i) {
-    return new pc.Vec3(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
+    return new pc.alVec3(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
 };
 
 
@@ -306,10 +302,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	
 	
 	if (tiles[index].neighborc.divided === true) {
-			var ac = null, bb = null;
-			
-			console.log("Here", tiles[index].vertexIndices[0]);
-			
+			var ac = null, bb = null;			
 			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
 				ac = tiles[index].neighborc.neighbora;
 			} if (tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
@@ -415,7 +408,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	
 	tiles[index].divided = true;
 };
-
+/*
 IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radius) {
     /// Helper functions
     this.addv3 = function(a, b) {
@@ -489,3 +482,4 @@ IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radi
 
     return i;
 }
+*/

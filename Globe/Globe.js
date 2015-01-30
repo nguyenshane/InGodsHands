@@ -2,6 +2,7 @@ pc.script.create('Globe', function (context) {
     // Creates a new TestSphere instance
     var Globe = function (entity) {
         this.entity = entity;
+		this.globe;
     };
 
     Globe.prototype = {
@@ -9,7 +10,6 @@ pc.script.create('Globe', function (context) {
         initialize: function () {
             // create mesh
             ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
-            
             
            
             //ico.setVertexMagnitude(1,1.5);
@@ -29,51 +29,57 @@ pc.script.create('Globe', function (context) {
             
             // create node
             var node = new pc.scene.GraphNode();
-            node.name = "myWorld";
+            node.name = "Globe";
             
             // create material
             //var material = new pc.scene.PhongMaterial();
             
             // A shader definition used to create a new shader.
-            var shaderDefinition = {
-                attributes: {
-                    aPosition: pc.SEMANTIC_POSITION,
-                    aUv0: pc.SEMANTIC_TEXCOORD0
-                },
-                vshader: [
-                    "attribute vec3 aPosition;",
-                    "attribute vec2 aUv0;",
-                    "",
-                    "uniform mat4 matrix_model;",
-                    "uniform mat4 matrix_viewProjection;",
-                    "",
-                    "varying vec3 fPosition;",
-                    "",
-                    "void main(void)",
-                    "{",
-                    "    fPosition = aPosition;",
-                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
-                    "}"
-                ].join("\n"),
-                fshader: [
-                    "precision " + context.graphicsDevice.precision + " float;",
-                    "",
-                    "varying vec3 fPosition;",
-                    "",
-                    "//uniform sampler2D uDiffuseMap;",
-                    "//uniform sampler2D uHeightMap;",
-                    "//uniform float uTime;",
-                    "",
-                    "void main(void)",
-                    "{",
-                    "    float dist = length(fPosition);",
-                    "    float r = dist - 2.0;",
-                    "    float g = dist - 1.5;",
-                    "    vec4 color = vec4(r, g, 1.0, 1.0);",
-                    "    gl_FragColor = color;",
-                    "}"
-                ].join("\n")
-            };
+			var shaderDefinition = {
+				attributes: {
+					aPosition: pc.SEMANTIC_POSITION,
+					aUv0: pc.SEMANTIC_TEXCOORD0
+				},
+				vshader: [
+				"attribute vec3 aPosition;",
+				"attribute vec2 aUv0;",
+				"",
+				"uniform mat4 matrix_model;",
+				"uniform mat4 matrix_viewProjection;",
+				"",
+				"varying vec3 fPosition;",
+				"",
+				"void main(void)",
+				"{",
+				"    fPosition = aPosition;",
+				"    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+				"}"
+				].join("\n"),
+				fshader: [
+				"precision " + context.graphicsDevice.precision + " float;",
+				"",
+				"varying vec3 fPosition;",
+				"",
+				"//uniform sampler2D uDiffuseMap;",
+				"//uniform sampler2D uHeightMap;",
+				"//uniform float uTime;",
+				"",
+				"void main(void)",
+				"{",
+				"    float dist = length(fPosition);",
+				"    float r = (dist - 1.5)*7.0;",
+				"    float g = dist - 1.0;",
+				"    float b = (dist - 1.5)*5.0;",
+				"    vec4 color;",
+				"    if (dist > 1.5) {",
+				"       color = vec4(r, g, b, 1.0);",
+				"    } else {",
+				"       color = vec4(0.0, 0.0, 1.0, 1.0);",
+				"    }",
+				"    gl_FragColor = color;",
+				"}"
+				].join("\n")
+			};
 
             
             // Create the shader from the definition
@@ -83,8 +89,14 @@ pc.script.create('Globe', function (context) {
             this.material = new pc.Material();
             this.material.setShader(this.shader);
             
-            /// COMMENT THIS LINE TO USE THE SHADER, UNCOMMENT TO USE PHONG SHADER
-            //this.material = new pc.scene.PhongMaterial(); 
+            
+            var phong = new pc.scene.PhongMaterial(); 
+			phong.shininess=0;
+			phong.diffuse= new pc.Color(1.0,1.0,0.0,1.0);
+			
+			/// COMMENT THIS LINE TO USE THE SHADER, UNCOMMENT TO USE PHONG SHADER
+			//this.material = phong;
+			
             
             // create mesh instance, need node, mesh and material
             var meshInstance = new pc.scene.MeshInstance(node, plane, this.material);
@@ -94,19 +106,27 @@ pc.script.create('Globe', function (context) {
             model.graph = node;
             model.meshInstances = [ meshInstance ];
             this.entity.addChild(node);
-            var myModel = context.root.findByName("myWorld");
-            console.log(myModel);
-            context.scene.addModel(model);
-            //myModel.addModel(model);
-            this.model = model;
+			context.scene.addModel(model);
+			
+			// get the handles
+            this.globe = context.root.findByName("Globe");
+			this.stringW = this.entity.script.HIDInterface.stringW;
+			this.stringW.on("move", this.move, this.position, this.distance, this.speed, this.globe);
+			
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-           context.root.findByName("myWorld").rotateLocal(0, dt * 10, 0);
+           //this.globe.rotateLocal(0, dt * 10, 0);
             
-        }
-    };
+        },
 
+		move: function(position, distance, speed, self) {
+			console.log("FIRED string W in Globe: ", position, distance, speed, self);
+			this.globe = context.root.findByName("Globe");
+			this.globe.rotate(0, distance, 0);
+		},
+
+    };
     return Globe;
 });
