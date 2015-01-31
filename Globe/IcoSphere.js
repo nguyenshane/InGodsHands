@@ -240,7 +240,7 @@ IcoSphere.prototype._getUnbufferedVertex = function(i) {
 
 IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces, subdivisions) {
     if (subdivisions === 0) return 0;
-    return currentVertices + this._calculateNumVerts(parseInt(this.currentFaces * 1.5), this.currentFaces * 4, subdivisions - 1);
+    return currentVertices + this._calculateNumVerts(parseInt(currentFaces * 1.5), currentFaces * 4, subdivisions - 1);
 };
 
 IcoSphere.prototype._subdivideFace = function(index) {
