@@ -695,10 +695,13 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     
     var normalIndex, hasHuman, divided;
     this.normal;
+    this.center;
     this.neighbora;
     this.neighborb;
     this.neighborc;
     
+    this.temperature;
+
     this.isOcean = (Math.random()>0.01) ? true : false;
     handle = icosphere;
     this.divided = false;
@@ -711,6 +714,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexa);
     handle.indices.push(vertexb);
     handle.indices.push(vertexc);
+
+    this.getTemperature = function(){
+        return (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperature;
+    };
     
    
     this.calculateNormal = function(){
@@ -720,7 +727,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
- console.log("here");
+        console.log("here");
 		this.normal = new pc.alVec3().cross(vectorb,vectorc);
 		
 		this.normal.normalize();
@@ -795,11 +802,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
     
     
-    this.getCenter = function(){
-        center = this.getMidpoint(0,1);
-        vert = new pc.alVec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
+    this.calculateCenter = function(){
+        var center = this.getMidpoint(0,1);
+        vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
         center.add(vert);
         center.scale(0.5);
+        this.center = center;
         return center;
     };
     

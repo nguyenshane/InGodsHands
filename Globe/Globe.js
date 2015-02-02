@@ -41,43 +41,45 @@ pc.script.create('Globe', function (context) {
 					aUv0: pc.SEMANTIC_TEXCOORD0
 				},
 				vshader: [
-				"attribute vec3 aPosition;",
-				"attribute vec2 aUv0;",
-				"",
-				"uniform mat4 matrix_model;",
-				"uniform mat4 matrix_viewProjection;",
-				"",
-				"varying vec3 fPosition;",
-				"",
-				"void main(void)",
-				"{",
-				"    fPosition = aPosition;",
-				"    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
-				"}"
+					"attribute vec3 aPosition;",
+					"attribute vec2 aUv0;",
+					"",
+					"uniform mat4 matrix_model;",
+					"uniform mat4 matrix_viewProjection;",
+					"",
+					"varying vec3 fPosition;",
+					"",
+					"void main(void)",
+					"{",
+					"    fPosition = aPosition;",
+					"    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+					"}"
 				].join("\n"),
 				fshader: [
-				"precision " + context.graphicsDevice.precision + " float;",
-				"",
-				"varying vec3 fPosition;",
-				"",
-				"//uniform sampler2D uDiffuseMap;",
-				"//uniform sampler2D uHeightMap;",
-				"//uniform float uTime;",
-				"",
-				"void main(void)",
-				"{",
-				"    float dist = length(fPosition);",
-				"    float r = (dist - 1.5)*7.0;",
-				"    float g = dist - 1.0;",
-				"    float b = (dist - 1.5)*5.0;",
-				"    vec4 color;",
-				"    if (dist > 1.5) {",
-				"       color = vec4(r, g, b, 1.0);",
-				"    } else {",
-				"       color = vec4(0.0, 0.0, 1.0, 1.0);",
-				"    }",
-				"    gl_FragColor = color;",
-				"}"
+					"precision " + context.graphicsDevice.precision + " float;",
+                    "",
+                    "varying vec3 fPosition;",
+                    "",
+                    "//uniform sampler2D uDiffuseMap;",
+                    "//uniform sampler2D uHeightMap;",
+                    "uniform float temperature;",
+                    "uniform float maxTemp;",
+                    "uniform float radius;",
+                    "",
+                    "void main(void)",
+                    "{",
+                    "    float dist = length(fPosition);",
+                    "    float r =  abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
+                    "    float g = dist - 1.0;",
+                    "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
+                    "    vec4 color;",
+                    "    if (dist > 1.5) {",
+                    "       color = vec4(r, g, b, 1.0);",
+                    "    } else {",
+                    "       color = vec4(0.0, 0.0, 1.0, 1.0);",
+                    "    }",
+                    "    gl_FragColor = color;",
+                    "}"
 				].join("\n")
 			};
 
@@ -88,6 +90,8 @@ pc.script.create('Globe', function (context) {
             // Create a new material and set the shader
             this.material = new pc.Material();
             this.material.setShader(this.shader);
+            
+            this.material.setParameter('radius', ico.radius);
             
             
             var phong = new pc.scene.PhongMaterial(); 
@@ -117,8 +121,11 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-           //this.globe.rotateLocal(0, dt * 10, 0);
+           	//this.globe.rotateLocal(0, dt * 10, 0);
             
+            // Set temperature variables in shader
+        	this.material.setParameter('temperature', globalTemperature);
+            this.material.setParameter('maxTemp', globalTemperatureMax);
         },
 
 		move: function(position, distance, speed, self) {

@@ -173,6 +173,12 @@ function IcoSphere(device, radius, subdivisions) {
     for (i = 0; i < vertices.length; i++) {
         normals.push(vertices[i] / radius);
     }
+
+    // alculate the center and normal for each tile
+    for ( i = 0; i < this.currentFaces; ++i) {
+       tiles[i].calculateCenter();
+       tiles[i].calculateNormal();
+    }
     
 
     /*indices = [
