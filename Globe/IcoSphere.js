@@ -149,11 +149,25 @@ function IcoSphere(device, radius, subdivisions) {
         //var vert = pc.alVec3(vertices[i*3], vertices[i*3+1], vertices[i*3+1]);
         this.setVertexMagnitude(i, this.radius);
     }
-        
+    
+	///*
     // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
        tiles[i].testExtrude();
     }
+	//*/
+	this.vertexHeights = [];
+	var vhSize = tiles.length;
+	while(vhSize--) this.vertexHeights[vhSize] = 0;
+	
+	var repellerCountMultiplier = 0.1,
+		repellerSizeMin = 3, repellerSizeMax = 10,
+		continentCountMin = 1, continentCountMax = 6,
+		continentSizeMin = 10, continentSizeMax = 24,
+		mountainCountMin = 3, mountainCountMax = 15,
+		mountainHeightMin = 0.15, mountainHeightMax = 0.45;
+	
+	generateTerrain(this, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 	// Calculate the normals for each vertex
     for (i = 0; i < vertices.length; i++) {
@@ -223,6 +237,10 @@ function IcoSphere(device, radius, subdivisions) {
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
 }
 
+IcoSphere.prototype.setVertexHeight = function(index, height) {
+	vertexHeights[index] = height;
+	setVertexMagnitude(index, height);
+};
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
     var vert = this._getUnbufferedVertex(index);
@@ -483,3 +501,59 @@ IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radi
     return i;
 }
 */
+
+//Generates a heightmap and applies it to the icosphere's vertices
+//Higher repeller count multipliers will result in more landmass,
+// lower repeller size will result in more hilly terrain (and less landmass)
+//Repeller height is based off of mountain min height
+function generateTerrain(icosphere, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
+	var contCount = pc.math.random(continentCountMin, continentCountMax);
+	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
+	
+	//Create each continent
+	for (; contCount > 0; contCount--) {
+		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+		
+		//Search for an open area of ocean
+		for (var i = 0, done = 0; i < 200 && done == 0; i++) {
+			var center = Math.floor(pc.math.random(0, icosphere.tiles.length));
+			if (checkSurroundingArea(icosphere, center, contSize * 1.3)) {
+				//Create a new continent
+				var mountains = mountainCount / contCount;
+				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
+				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, mountains);
+				mountainCount -= mountains;
+				done = 1;
+			}
+		}
+	}
+};
+
+//Helper function of generateTerrain, returns true if no land tiles are found within the radius
+function checkSurroundingArea(icosphere, centerTile, radius) {
+	var visited = [];
+	var size = icosphere.tiles.length;
+	while(size--) visited[size] = false;
+	return checkSurroundingAreaR(icosphere, centerTile, radius, visited, 0);
+};
+
+//Recursive part of checkSurroundingArea, essentially a modified breadth first search
+function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteration) {
+	if (icosphere.vertexHeights[currentTile] != 0) return false; //Found a land tile
+	if (iteration > radius) return true; //Outside the designated area
+	if (!visited[currentTile]) {
+		visited[currentTile] = true;
+		//Check each neighbor and return true only if all of them find ocean tiles
+		return checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[0], radius, visited, iteration + 1) &&
+			   checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[1], radius, visited, iteration + 1) &&
+			   checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[2], radius, visited, iteration + 1);
+   } else return true; //Already visited this tile, and it isn't a land tile
+};
+
+//Helper function of generateTerrain, creates a continent in the heightmap using repeller
+function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, mountainCount) {
+};
+
+//Helper function of cluster, raises a portion of land around the center tile
+function repeller(icosphere, centerTile, radius, centerHeight) {
+};
