@@ -150,14 +150,14 @@ function IcoSphere(device, radius, subdivisions) {
         this.setVertexMagnitude(i, this.radius);
     }
     
-	///*
+	/*
     // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
        tiles[i].testExtrude();
     }
-	//*/
+	*/
 	this.vertexHeights = [];
-	var vhSize = tiles.length;
+	var vhSize = vertices.length;
 	while(vhSize--) this.vertexHeights[vhSize] = 0;
 	
 	var repellerCountMultiplier = 0.1,
@@ -245,7 +245,7 @@ function IcoSphere(device, radius, subdivisions) {
 
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	vertexHeights[index] = height;
-	setVertexMagnitude(index, height);
+	setVertexMagnitude(index, height + this.radius);
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
@@ -545,7 +545,9 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 
 //Recursive part of checkSurroundingArea, essentially a modified breadth first search
 function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteration) {
-	if (icosphere.vertexHeights[currentTile] != 0) return false; //Found a land tile
+	if (icosphere.vertexHeights[currentTile * 3] != 0 ||
+	    icosphere.vertexHeights[currentTile * 3 + 1] != 0 ||
+		icosphere.vertexHeights[currentTile * 3 + 2] != 0) return false; //Found a land tile
 	if (iteration > radius) return true; //Outside the designated area
 	if (!visited[currentTile]) {
 		visited[currentTile] = true;
