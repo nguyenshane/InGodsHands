@@ -157,24 +157,24 @@ function IcoSphere(device, radius, subdivisions) {
     }
 	*/
 	this.vertexHeights = [];
-	var vhSize = vertices.length;
-	while(vhSize--) this.vertexHeights[vhSize] = 0;
+	for (var size = tiles.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var repellerCountMultiplier = 0.1,
+	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
 		repellerSizeMin = 3, repellerSizeMax = 10,
+		repellerHeightMin = 0.05, repellerHeightMax = 0.1,
 		continentCountMin = 1, continentCountMax = 6,
 		continentSizeMin = 10, continentSizeMax = 24,
 		mountainCountMin = 3, mountainCountMax = 15,
 		mountainHeightMin = 0.15, mountainHeightMax = 0.45;
 	
-	generateTerrain(this, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
+	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 	// Calculate the normals for each vertex
     for (i = 0; i < vertices.length; i++) {
         normals.push(vertices[i] / radius);
     }
 
-    // alculate the center and normal for each tile
+    // Calculate the center and normal for each tile
     for ( i = 0; i < this.currentFaces; ++i) {
        tiles[i].calculateCenter();
        tiles[i].calculateNormal();
@@ -511,25 +511,28 @@ IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radi
 //Generates a heightmap and applies it to the icosphere's vertices
 //Higher repeller count multipliers will result in more landmass,
 // lower repeller size will result in more hilly terrain (and less landmass)
-//Repeller height is based off of mountain min height
-function generateTerrain(icosphere, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
+function generateTerrain(icosphere, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
 	var contCount = pc.math.random(continentCountMin, continentCountMax);
 	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
-	
+
 	//Create each continent
 	for (; contCount > 0; contCount--) {
 		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
 		
-		//Search for an open area of ocean
-		for (var i = 0, done = 0; i < 200 && done == 0; i++) {
-			var center = Math.floor(pc.math.random(0, icosphere.tiles.length));
-			if (checkSurroundingArea(icosphere, center, contSize * 1.3)) {
+		//Search for an open area of ocean randomly
+		var randomTiles = [];
+		for (var size = icosphere.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
+		shuffleArray(randomTiles);
+		for (var i = 0, done = false; i < icosphere.tiles.length && !done; i++) {
+			var center = randomTiles[i]; //Iterates through every tile in random order
+			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance)) {
 				//Create a new continent
 				var mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
-				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, mountains);
+				mountains = Math.floor(mountains);
+				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 				mountainCount -= mountains;
-				done = 1;
+				done = true;
 			}
 		}
 	}
@@ -538,8 +541,7 @@ function generateTerrain(icosphere, repellerCountMultiplier, repellerSizeMin, re
 //Helper function of generateTerrain, returns true if no land tiles are found within the radius
 function checkSurroundingArea(icosphere, centerTile, radius) {
 	var visited = [];
-	var size = icosphere.tiles.length;
-	while(size--) visited[size] = false;
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
 	return checkSurroundingAreaR(icosphere, centerTile, radius, visited, 0);
 };
 
@@ -558,8 +560,13 @@ function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteratio
    } else return true; //Already visited this tile, and it isn't a land tile
 };
 
+//Randomizes array contents, shamelessly stolen from the internet
+function shuffleArray(array) {
+	for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
+};
+
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
-function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, mountainCount) {
+function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
 };
 
 //Helper function of cluster, raises a portion of land around the center tile

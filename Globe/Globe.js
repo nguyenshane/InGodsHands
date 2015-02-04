@@ -7,33 +7,19 @@ pc.script.create('Globe', function (context) {
 
     Globe.prototype = {
         // Called once after all resources are loaded and before the first update
-        initialize: function () {
+        initialize: function () {			
             // create mesh
             ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
+
+            //console.log(ico);
             
-           
-            //ico.setVertexMagnitude(1,1.5);
-            //ico.setVertexMagnitude(3,1.5);
-            //ico.setVertexMagnitude(5,1.5);
-            console.log(ico);
-            
-            var plane = ico.toReturn.mesh;
-            /* console.log(ico.positions[1]=1);
-             console.log(ico.positions[3]=1);
-             console.log(ico.positions[16]=1);
-             console.log(ico.positions[10]=1);*/
-            
-            //console.log(sphere.positions[100] = 1);
-            //var plane = pc.createMesh(context.graphicsDevice, ico.vertices, ico.options);
-            
-            
-            // create node
-            var node = new pc.scene.GraphNode();
-            node.name = "Globe";
+            var mesh = ico.toReturn.mesh;
+
+            // create entity
+            var entity = new pc.Entity();
+            entity.name = "Globe";
             
             // create material
-            //var material = new pc.scene.PhongMaterial();
-            
             // A shader definition used to create a new shader.
 			var shaderDefinition = {
 				attributes: {
@@ -100,38 +86,52 @@ pc.script.create('Globe', function (context) {
 			
 			/// COMMENT THIS LINE TO USE THE SHADER, UNCOMMENT TO USE PHONG SHADER
 			//this.material = phong;
-			
             
             // create mesh instance, need node, mesh and material
-            var meshInstance = new pc.scene.MeshInstance(node, plane, this.material);
+            var meshInstance = new pc.scene.MeshInstance(entity, mesh, this.material);
             
             // create model with node and mesh instance
             var model = new pc.scene.Model();
-            model.graph = node;
+            //model.graph = node;
             model.meshInstances = [ meshInstance ];
-            this.entity.addChild(node);
-			context.scene.addModel(model);
+			
+			//this.globe.model = model;
+            this.entity.addChild(entity);
+			context.scene.addModel(model);			
 			
 			// get the handles
-            this.globe = context.root.findByName("Globe");
+			this.globe = context.root.findByName("Globe");
 			this.stringW = this.entity.script.HIDInterface.stringW;
-			this.stringW.on("move", this.move, this.position, this.distance, this.speed, this.globe);
-			
+			this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
+			this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
+			console.log(this.globe);
+			// add rigid body
+			context.systems.rigidbody.addComponent(this.globe, {
+			    type: 'dynamic'
+			  });
+			this.globe.rigidbody.syncEntityToBody();
+			this.globe.rigidbody.syncEntityToBody();
+			this.globe.rigidbody.linearVelocity = new pc.Vec3((Math.random() - 0.5) * 10, 7, -30);
+			this.globe.rigidbody.angularVelocity = pc.Vec3.ZERO;
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
            	//this.globe.rotateLocal(0, dt * 10, 0);
-            
             // Set temperature variables in shader
         	this.material.setParameter('temperature', globalTemperature);
             this.material.setParameter('maxTemp', globalTemperatureMax);
         },
 
-		move: function(position, distance, speed, self) {
-			console.log("FIRED string W in Globe: ", position, distance, speed, self);
+		move: function(position, distance, speed) {
+			console.log("FIRED string W in Globe: ", position, distance, speed);
 			this.globe = context.root.findByName("Globe");
-			this.globe.rotate(0, distance, 0);
+			//this.globe.rotate(0, distance, 0);
+		},
+		moving: function(position, distance, speed) {
+			console.log("FIRED string W in Globe instantly: ", position, distance, speed);
+			this.globe = context.root.findByName("Globe");
+			this.globe.rotate(0, position, 0);
 		},
 
     };

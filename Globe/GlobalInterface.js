@@ -26,7 +26,7 @@ pc.script.create('globalInterface', function (context) {
             globalTemperature = t*10;
             // End test temperature
             
-            console.log(ico.tiles[0].getTemperature());
+            //console.log(ico.tiles[0].getTemperature());
         }
     };
 

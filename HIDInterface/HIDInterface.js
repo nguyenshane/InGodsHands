@@ -9,7 +9,7 @@ pc.script.create('HIDInterface', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 		
-		this.position, this.distance, this.speed = 0;
+		this.direction, this.distance, this.speed = 0;
         
     };
 
@@ -22,17 +22,16 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
 			
-			this.stringT.on("move", this.move_T, this.position, this.distance, this.speed);
-			this.stringA.on("move", this.move_A, this.position, this.distance, this.speed);
-			this.stringP.on("move", this.move_P, this.position, this.distance, this.speed);
-			this.stringE.on("move", this.move_E, this.position, this.distance, this.speed);
-			this.stringW.on("move", this.move_W, this.position, this.distance, this.speed);
+			this.stringT.on("moved", this.move_T, this.direction, this.distance, this.speed);
+			this.stringA.on("moved", this.move_A, this.direction, this.distance, this.speed);
+			this.stringP.on("moved", this.move_P, this.direction, this.distance, this.speed);
+			this.stringE.on("moved", this.move_E, this.direction, this.distance, this.speed);
+			this.stringW.on("moved", this.move_W, this.direction, this.distance, this.speed);
 
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-			
         },
 		
 		move_T: function(position, distance, speed) {
