@@ -14,7 +14,7 @@ pc.extend(pc, function(){
         this.rightKey = _pairKeys[stringName.toString()][1];
         
         this.rotating = false;
-        this.position = 0;
+        this.direction = 0;
         this.distance = 0;
 		this.speed = 0;
         this.counter = 0; //ms
@@ -39,32 +39,20 @@ pc.extend(pc, function(){
 
         },
         
-        /*update: function (dt) {
-            console.log(this.position);
-            if (this.context.keyboard.isPressed(this.leftKey)) {
-                this.position--;
-                console.log(this.position);
-            }
-            if (this.context.keyboard.isPressed(this.rightKey)) {
-                this.position++;
-                console.log(this.position);
-            }
-        },*/
-        
         onKeyDown: function (event) {
             if (event.key === this.leftKey) {
                 //this.rotating = true;
                 this.pressing = true;
-                this.position--;
+                this.direction--;
                 this.doCount();
                 
             }
             if (event.key === this.rightKey) {
                 //this.rotating = true;
                 this.pressing = true;
-                this.position++;
+                this.direction++;
                 this.doCount();
-                //console.log(this.position);
+                //console.log(this.direction);
             }
             
             // When the space bar is pressed this scrolls the window.
@@ -94,7 +82,7 @@ pc.extend(pc, function(){
         },
 
 		fireEvent: function() {
-			this.fire("move", this.position, this.distance, this.speed);
+			this.fire("moved", this.direction, this.distance, this.speed);
 			//console.log("FIRED in stringTAPEW, time: ", this.speed);
 		},
         
@@ -103,7 +91,7 @@ pc.extend(pc, function(){
 			
             this.pressing = false;
 
-            this.position = 0;
+            this.direction = 0;
             this.distance = 0;
             this.counter = 0;
 			this.speed = 0;
@@ -115,10 +103,13 @@ pc.extend(pc, function(){
         
         onKeyUp: function (event) {
             this.rotating = false;
-            this.distance += this.position;
+            this.distance += this.direction;
+			if(this.direction>=0) this.direction = 1;
+			else if (this.direction<0)this.direction=-1;
             if(this.counter !== 0) {
 				this.speed = Math.abs(this.distance)/this.counter*100;
-            	//console.log("UP position:", this.position, " distance:", this.distance, " time:", this.counter, " speed:", this.speed);
+				this.fire("moving", this.direction, this.distance, this.speed);
+            	//console.log("UP position:", this.direction, " distance:", this.distance, " time:", this.counter, " speed:", this.speed);
 			}
             this.doClearInterval();
             
