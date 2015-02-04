@@ -530,7 +530,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 				var mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 				mountains = Math.floor(mountains);
-				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, mountains); //Actually create the continent
+				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 				mountainCount -= mountains;
 				done = true;
 			}
@@ -564,7 +564,7 @@ function shuffleArray(array) {
 };
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
-function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, mountainCount) {
+function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
 };
 
 //Helper function of cluster, raises a portion of land around the center tile
