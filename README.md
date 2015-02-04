@@ -5,7 +5,7 @@ In God's Hands is a God game where the player physically pulls strings to manipu
 ## Setup development environment
 * **Clone** this repo using GitHub command/GUI or SourceTree
 * **On Windows:**
-  * If not yet installed, download and **install Python** from https://www.python.org/downloads/
+  * If not yet installed, download and **install Python 2.7** from https://www.python.org/downloads/
   * Double click on file localserver.bat
 * **On Mac/Linux:**
   * Open Terminal/CommandLine, run **'chmod a+x /path/to/file/localserver'**, this will make the file **'localserver'** executable
