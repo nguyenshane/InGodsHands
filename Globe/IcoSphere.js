@@ -150,14 +150,14 @@ function IcoSphere(device, radius, subdivisions) {
         this.setVertexMagnitude(i, this.radius);
     }
     
-	///*
+	/*
     // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
        tiles[i].testExtrude();
     }
-	//*/
+	*/
 	this.vertexHeights = [];
-	for (var size = tiles.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
+	for (var size = vertices.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
 	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
 		repellerSizeMin = 3, repellerSizeMax = 10,
@@ -245,7 +245,7 @@ function IcoSphere(device, radius, subdivisions) {
 
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	vertexHeights[index] = height;
-	setVertexMagnitude(index, height);
+	setVertexMagnitude(index, height + this.radius);
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
@@ -525,7 +525,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 		shuffleArray(randomTiles);
 		for (var i = 0, done = false; i < icosphere.tiles.length && !done; i++) {
 			var center = randomTiles[i]; //Iterates through every tile in random order
-			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance)) {
+			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance) === -1) {
 				//Create a new continent
 				var mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
@@ -533,12 +533,12 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 				mountainCount -= mountains;
 				done = true;
-			}
+			} else console.log(checkSurroundingArea(icosphere, center, contSize * continentBufferDistance));
 		}
 	}
 };
 
-//Helper function of generateTerrain, returns true if no land tiles are found within the radius
+//Helper function of generateTerrain, returns distance to nearest land tile or -1 if no land tiles found in radius
 function checkSurroundingArea(icosphere, centerTile, radius) {
 	var visited = [];
 	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
@@ -547,15 +547,26 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 
 //Recursive part of checkSurroundingArea, essentially a modified breadth first search
 function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteration) {
-	if (icosphere.vertexHeights[currentTile] != 0) return false; //Found a land tile
-	if (iteration > radius) return true; //Outside the designated area
+	if (icosphere.vertexHeights[currentTile * 3] != 0 ||
+	    icosphere.vertexHeights[currentTile * 3 + 1] != 0 ||
+		icosphere.vertexHeights[currentTile * 3 + 2] != 0) return iteration; //Found a land tile
+	if (iteration > radius) return -1; //Outside the designated area
 	if (!visited[currentTile]) {
 		visited[currentTile] = true;
-		//Check each neighbor and return true only if all of them find ocean tiles
-		return checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[0], radius, visited, iteration + 1) &&
-			   checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[1], radius, visited, iteration + 1) &&
-			   checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[2], radius, visited, iteration + 1);
-   } else return true; //Already visited this tile, and it isn't a land tile
+		var ret = -1;
+		
+		//Check each neighbor and return -1 only if all of them find ocean tiles, otherwise return distance to land tile
+		var current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[0], radius, visited, iteration + 1);
+		if (current != -2 && current < ret) ret = current;
+		
+		current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[1], radius, visited, iteration + 1);
+		if (current != -2 && current < ret) ret = current;
+		
+		current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[2], radius, visited, iteration + 1);
+		if (current != -2 && current < ret) ret = current;
+		
+		return ret;
+   } else return -2; //Already visited this tile, and it isn't a land tile
 };
 
 //Randomizes array contents, shamelessly stolen from the internet

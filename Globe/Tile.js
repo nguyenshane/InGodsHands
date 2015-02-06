@@ -715,8 +715,87 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexb);
     handle.indices.push(vertexc);
 
+    this.getUpNeighbor = function() {
+        if (this.neighbora.center.y > this.neighborb.center.y && this.neighbora.center.y > this.neighborc.center.y) {
+            return neighbora;
+        }
+        if (this.neighborb.center.y > this.neighbora.center.y && this.neighborb.center.y > this.neighborc.center.y) {
+            return neighborb;
+        }
+        if (this.neighborc.center.y > this.neighborb.center.y && this.neighborc.center.y > this.neighbora.center.y) {
+            return neighborc;
+        }
+    };
+
+    this.getDownNeighbor = function() {
+        if (this.neighbora.center.y < this.neighborb.center.y && this.neighbora.center.y < this.neighborc.center.y) {
+            return neighbora;
+        }
+        if (this.neighborb.center.y < this.neighbora.center.y && this.neighborb.center.y < this.neighborc.center.y) {
+            return neighborb;
+        }
+        if (this.neighborc.center.y < this.neighborb.center.y && this.neighborc.center.y < this.neighbora.center.y) {
+            return neighborc;
+        }
+    };
+
+    this.getLeftNeighbor = function() {
+        if (Math.acos(this.neighbora.center.x/ico.radius) < Math.acos(this.neighborb.center.x/ico.radius) 
+            && Math.acos(this.neighbora.center.x/ico.radius) < Math.acos(this.neighborc.center.x/ico.radius)) {
+            return neighbora;
+        }
+        if (Math.acos(this.neighborb.center.x/ico.radius) < Math.acos(this.neighbora.center.x/ico.radius) 
+            && Math.acos(this.neighborb.center.x/ico.radius) < Math.acos(this.neighborc.center.x/ico.radius)) {
+            return neighborb;
+        }
+        if (Math.acos(this.neighborc.center.x/ico.radius) < Math.acos(this.neighborb.center.x/ico.radius) 
+            && Math.acos(this.neighborc.center.x/ico.radius) < Math.acos(this.neighbora.center.x/ico.radius)) {
+            return neighborc;
+        }
+    };
+
+    this.getRightNeighbor = function() {
+        if (Math.acos(this.neighbora.center.x/ico.radius) > Math.acos(this.neighborb.center.x/ico.radius) 
+            && Math.acos(this.neighbora.center.x/ico.radius) > Math.acos(this.neighborc.center.x/ico.radius)) {
+            return neighbora;
+        }
+        if (Math.acos(this.neighborb.center.x/ico.radius) > Math.acos(this.neighbora.center.x/ico.radius) 
+            && Math.acos(this.neighborb.center.x/ico.radius) > Math.acos(this.neighborc.center.x/ico.radius)) {
+            return neighborb;
+        }
+        if (Math.acos(this.neighborc.center.x/ico.radius) > Math.acos(this.neighborb.center.x/ico.radius) 
+            && Math.acos(this.neighborc.center.x/ico.radius) > Math.acos(this.neighbora.center.x/ico.radius)) {
+            return neighborc;
+        }
+    };
+
+    this.getLatitude = function() {
+        return this.center.y/ico.radius;
+    };
+
+    this.getLongitude = function() {
+        return Math.acos(this.center.x/ico.radius);
+    };
+
+    this.getAltitude = function() {
+        return this.center.length/ico.radius;
+    };
+
+    this.determineCost = function() {
+        if (!this.isOcean) return -1;
+        return this.center.length;
+    }
+
+    this.getRotationAlignedWithNormal = function() {
+        var x = Math.acos(this.center.z/ico.radius);
+        var y = Math.acos(this.center.x/ico.radius);
+        var z = Math.acos(this.center.y/ico.radius);
+        return Vec3(x, y, z);
+    }
+
     this.getTemperature = function(){
-        return (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperature;
+        this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperature
+        return this.temperature;
     };
     
    
