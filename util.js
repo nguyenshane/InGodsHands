@@ -1,3 +1,4 @@
+// pc.alVec3 class
 pc.extend(pc, (function () {
     'use strict';
 
@@ -684,3 +685,102 @@ pc.extend(pc, (function () {
         alVec3: alVec3
     };
 }()));
+
+
+// pc.tween class
+pc.tween = (function () {
+    var tweens = [];
+    
+    var Tween = function (v) {
+        //this._entity = entity;
+        this._startTime = null;
+        this._start = new pc.Vec3();
+        this._end = new pc.Vec3();
+        this._current = new pc.Vec3();
+        this._duration = 1000;
+
+        this._start.copy(v);
+
+        pc.extend(this, pc.events);
+    };
+    
+    Tween.prototype = {
+        reset: function (v) {
+            this._start.copy(v);
+
+            // clear events
+            this.off('update');
+            this.off('finish');
+            
+            return this;
+        },
+        
+        to: function (v, duration) {
+            this._end.copy(v);
+            this._duration = duration ? duration * 1000 : this._duration;
+
+            return this;
+        },
+
+        by: function (v, duration) {
+            this._end.add2(this._start, v);
+            this._duration = duration ? duration * 1000 : this._duration;
+
+            return this;
+        },
+
+        update: function (time) {
+            var alpha = (time - this._startTime) / this._duration;
+            alpha = alpha > 1 ? 1 : alpha;
+
+            this._current.lerp(this._start, this._end, alpha);
+            //this._entity.setPosition(this._current);
+
+            this.fire('update', this._current);
+            
+            if (alpha === 1) {
+                this.fire('finish');
+                return false;
+            }
+
+            return true;
+        },
+
+        start: function () {
+            pc.tween.add(this);
+
+            this._startTime = Date.now();
+
+            return this;
+        },
+
+        stop: function () {
+            pc.tween.remove(this);
+
+            return this;
+        }
+    };
+
+    return {
+        add: function (tween) {
+            tweens.push(tween);
+        },
+
+        remove: function (tween) {
+            var i = tweens.indexOf(tween);
+            if (i >= 0) {
+                tweens.splice(i, 1);
+            }    
+        },
+
+        update: function (time) {
+            tweens.forEach(function (t) {
+                if (!t.update(time)) {
+                    this.remove(t);
+                }
+            }, this);
+        },
+
+        Tween: Tween
+    };
+}());
