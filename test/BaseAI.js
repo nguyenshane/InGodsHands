@@ -13,6 +13,7 @@ pc.script.create('BaseAI', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+            this.rules.sort(function(a, b){return b.weight-a.weight});
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(5)){
                     this.rules[i].consequence();
