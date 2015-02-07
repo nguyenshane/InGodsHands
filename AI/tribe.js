@@ -21,7 +21,7 @@ pc.script.create('tribe', function (context) {
         update: function (dt) {
             //this.moveRandom();
             //console.log("tile normal: " + this.tile.normal);
-            this.entity.setLocalEulerAngles(this.tile.normal); 
+            //this.entity.setLocalEulerAngles(this.tile.normal); 
             this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
                                     ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
                                     ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
