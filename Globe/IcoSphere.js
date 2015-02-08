@@ -547,10 +547,14 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 
 //Recursive part of checkSurroundingArea, essentially a modified breadth first search
 function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteration) {
-	if (icosphere.vertexHeights[currentTile * 3] != 0 ||
-	    icosphere.vertexHeights[currentTile * 3 + 1] != 0 ||
-		icosphere.vertexHeights[currentTile * 3 + 2] != 0) return iteration; //Found a land tile
+	if (icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[0]] != 0 ||
+	    icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[1]] != 0 ||
+		icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[2]] != 0) {
+			return iteration; //Found a land tile
+	}
+	
 	if (iteration > radius) return -1; //Outside the designated area
+	
 	if (!visited[currentTile]) {
 		visited[currentTile] = true;
 		var ret = -1;

@@ -806,7 +806,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
-        console.log("here");
+        //console.log("here");
 		this.normal = new pc.alVec3().cross(vectorb,vectorc);
 		
 		this.normal.normalize();
