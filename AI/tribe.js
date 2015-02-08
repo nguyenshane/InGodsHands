@@ -9,7 +9,7 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
             //console.log(ico.tiles[0]);
             // create mesh
-            this.tile = ico.tiles[4600];
+            this.tile = ico.tiles[0];
             this.entity.setLocalScale(1,20,1);
             //console.log(this.entity.model);
             //this.entity.addChild(node);
