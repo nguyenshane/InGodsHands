@@ -22,9 +22,9 @@ pc.script.create('tribe', function (context) {
             //this.moveRandom();
             //console.log("tile normal: " + this.tile.normal);
             //this.entity.setLocalEulerAngles(this.tile.normal); 
-            this.entity.setPosition(Globe.ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
-                                    Globe.ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
-                                    Globe.ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
+            this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
+                                    ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
+                                    ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
 
             var p = this.entity.getPosition();
             //console.log("Test Position: (" + p.x + ", " + p.y + ", " + p.z + ")");
