@@ -19,7 +19,7 @@ var testRule = function() {
 testRule.prototype = {
     testConditions: function(){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](5)){
+            if(!this.conditions[i]()){
                 return false;
             }
         }
@@ -44,7 +44,7 @@ var anotherRule = function() {
 anotherRule.prototype = {
     testConditions: function(){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](5)){
+            if(!this.conditions[i]()){
                 return false;
             }
         }
@@ -56,19 +56,31 @@ anotherRule.prototype = {
     }        
 };
 
-////////////////////////////////////////
+/* 
+ *    wantToMoveNorth() determines whether the tribe wants to move north
+ *    to a colder temperature tile.
+ */
 
-pc.script.create('Rules', function (context) {
-    var Rules = function (entity) {
-        this.entity = entity;
-        this.tribeRules = [];
-    };
+var wantToMoveNorth = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    Rules.prototype = {
-        initialize: function(){
-            this.tribeRules.push(new testRule());
-            this.tribeRules.push(new anotherRule());
+    this.weight = 0;
+    this.conditions = [allConditions.isTileWarmer];
+};
+
+wantToMoveNorth.prototype = {
+    testConditions: function(tribeEntity){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribeEntity)){
+                return false;
+            }
         }
-    };
-    return Rules;
-});
+        return true;
+    },
+    
+    consequence: function(tribeEntity){
+        --tribeEntity.script.tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    }    
+};

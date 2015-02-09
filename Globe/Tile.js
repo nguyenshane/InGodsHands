@@ -787,10 +787,23 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     }
 
     this.getRotationAlignedWithNormal = function() {
-        var x = Math.acos(this.center.z/ico.radius);
-        var y = Math.acos(this.center.x/ico.radius);
-        var z = Math.acos(this.center.y/ico.radius);
-        return Vec3(x, y, z);
+        //var x = Math.acos(this.center.z/ico.radius) * 180/Math.PI;
+        //var y = Math.acos(this.center.x/ico.radius) * 180/Math.PI;
+        //var z = Math.acos(this.center.y/ico.radius) * 180/Math.PI;
+
+        //var x = Math.atan2(this.normal.y, this.normal.x) * -180/Math.PI;
+        //var y = Math.atan2(this.normal.z, this.normal.x) * -180/Math.PI;
+        //var z = Math.atan2(this.normal.x, this.normal.y) * -180/Math.PI;
+
+        var position = new pc.Vec3(0, 0, 0);
+        var target = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+        var up = new pc.Vec3(0, 1, 0);
+        var m = new pc.Mat4().setLookAt(position, target, up);
+
+        //var x = Math.sin(Math.atan(this.normal.y/this.normal.x)) * Math.cos(Math.acos(this.normal.z)) * 180/Math.PI;
+        //var y = Math.sin(Math.atan(this.normal.y/this.normal.x)) * Math.sin(Math.acos(this.normal.z)) * 180/Math.PI;
+        //var z = Math.cos(Math.atan(this.normal.y/this.normal.x)) * 180/Math.PI;
+        return m.getEulerAngles();//new pc.Vec3(x, y, z);
     }
 
     this.getTemperature = function(){

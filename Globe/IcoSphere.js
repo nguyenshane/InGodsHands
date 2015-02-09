@@ -1,17 +1,3 @@
-pc.alVec3.constructor = function(){
-	this.data = [];
-
-	if (arguments.length === 3) {
-		this.data.push(arguments[0]);
-		this.data.push(arguments[1]);
-		this.data.push(arguments[2]);
-	} else {
-		this.data[0] = 0;
-		this.data[1] = 0;
-		this.data[2] = 0;
-	}
-};
-
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
     subdivisions = (subdivisions || 1);
