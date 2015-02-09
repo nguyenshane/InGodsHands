@@ -14,6 +14,7 @@ var testRule = function() {
   
     this.weight = 0;
     this.conditions = [allConditions.testIf5];
+    this.tribe = context.root.findByName("BaseTribe");
 };
 
 testRule.prototype = {
@@ -56,6 +57,34 @@ anotherRule.prototype = {
     }        
 };
 
+/* 
+ *    wantToMoveNorth() determines whether the tribe wants to move north
+ *    to a colder temperature tile.
+ */
+
+var wantToMoveNorth = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+  
+    this.weight = 0;
+    this.conditions = [allConditions.isTileWarmer];
+    this.tribe = context.root.findByName("BaseTribe");
+};
+
+wantToMoveNorth.prototype = {
+    testConditions: function(){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i]()){
+                return false;
+            }
+        }
+    },
+    
+    consequence: function(){
+        console.log("wantToMoveNorth() has fired");
+    }    
+};
+
 ////////////////////////////////////////
 
 pc.script.create('Rules', function (context) {
@@ -68,6 +97,7 @@ pc.script.create('Rules', function (context) {
         initialize: function(){
             this.tribeRules.push(new testRule());
             this.tribeRules.push(new anotherRule());
+            this.tribeRules.push(new wantToMoveNorth());
         }
     };
     return Rules;
