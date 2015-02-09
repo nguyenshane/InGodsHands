@@ -16,24 +16,21 @@ pc.script.create('tribe', function (context) {
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.5,.5,.5);
             // get list of rules from Rules.js on 'AI' object
-            this.createRuleList();
-
+            //this.rules = context.root.findByName('AI').script.Rules.tribeRules;
             // get current tile's temperature that the tribe is on
             //this.currTileTemperature = this.tile.getTemperature();
+            //this.currTileTemperature = this.tile.temperature;
+            this.createRuleList();
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) { 
-            // Sort the rule set each time by their weight so the highest weight has priority
             this.rules.sort(function(a, b){return b.weight-a.weight});
-            
-            // Run through all rules, if their conditions are fulfilled, fire consequence
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this.entity)){
                     this.rules[i].consequence(this.entity);
                 }
             }
-
             this.moveRandom();
             this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
                                     ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
@@ -49,6 +46,7 @@ pc.script.create('tribe', function (context) {
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+                this.entity.rotateLocal(90, 0, 0);
 
                 //console.log(this.tile.normal);
             } else if (rand < .066) {
@@ -57,6 +55,7 @@ pc.script.create('tribe', function (context) {
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+                this.entity.rotateLocal(90, 0, 0);
 
                 //console.log(this.tile.normal);
             } else if (rand < .099) {
@@ -65,6 +64,7 @@ pc.script.create('tribe', function (context) {
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+                this.entity.rotateLocal(90, 0, 0);
                 
                 //console.log(this.tile.normal);
             }
@@ -92,9 +92,6 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToMoveSouthColder());
             this.rules.push(new wantToMoveSouthWarmer());
         }
-
-
-
     };
 
     return Tribe;
