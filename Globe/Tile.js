@@ -702,7 +702,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     
     this.temperature;
 
-    this.isOcean = (Math.random()>0.01) ? true : false;
+    this.isOcean = true;//(Math.random()>0.01) ? true : false;
     handle = icosphere;
     this.divided = false;
     this.hasHuman = false;
