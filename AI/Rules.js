@@ -14,13 +14,12 @@ var testRule = function() {
   
     this.weight = 0;
     this.conditions = [allConditions.testIf5];
-    this.tribe = context.root.findByName("BaseTribe");
 };
 
 testRule.prototype = {
     testConditions: function(){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](5)){
+            if(!this.conditions[i]()){
                 return false;
             }
         }
@@ -45,7 +44,7 @@ var anotherRule = function() {
 anotherRule.prototype = {
     testConditions: function(){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](5)){
+            if(!this.conditions[i]()){
                 return false;
             }
         }
@@ -65,19 +64,22 @@ anotherRule.prototype = {
 var wantToMoveNorth = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-  
+    this.tribe = pc.fw.Application.getApplication('application-canvas').context.root.findByName("BaseTribe").script.tribe;
+   
     this.weight = 0;
     this.conditions = [allConditions.isTileWarmer];
-    this.tribe = context.root.findByName("BaseTribe");
+    
 };
 
 wantToMoveNorth.prototype = {
     testConditions: function(){
         for(var i = 0; i < this.conditions.length; i++){
+            console.log("Oh, hello");
             if(!this.conditions[i]()){
                 return false;
             }
         }
+        return true;
     },
     
     consequence: function(){
@@ -97,7 +99,7 @@ pc.script.create('Rules', function (context) {
         initialize: function(){
             this.tribeRules.push(new testRule());
             this.tribeRules.push(new anotherRule());
-            this.tribeRules.push(new wantToMoveNorth());
+            //this.tribeRules.push(new wantToMoveNorth());
         }
     };
     return Rules;

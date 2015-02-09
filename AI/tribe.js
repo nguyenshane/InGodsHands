@@ -4,7 +4,7 @@ pc.script.create('tribe', function (context) {
         this.entity = entity;
         this.population = 1;
         this.idealTemperature = 65;
-        this.currTileTemperature;
+        this.currTileTemperature = 90;
         this.rules;
     };
 
@@ -48,26 +48,22 @@ pc.script.create('tribe', function (context) {
                 //console.log("Neighborc Position: (" + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighborc;
             }
-        }
+        },
 
         moveTo: function(destinationTile) {
             this.tile = destinationTile;
             this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
                                     ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
                                     ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
-        }
+        },
 
         getPopulation: function() {
             return this.population;
-        }
+        },
 
         getIdealTemperature: function() {
             return this.idealTemperature;
         }
-
-
-
-
     };
 
     return Tribe;

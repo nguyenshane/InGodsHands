@@ -35,7 +35,7 @@ pc.script.create('Conditions', function (context) {
         },
 
         isTileColder: function(){
-           if (this.tribe.idealTemperature > this.tribe.currTileTemperature){
+            if (this.tribe.idealTemperature > this.tribe.currTileTemperature){
                 return true;
             }
             return false; 
