@@ -22,6 +22,10 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
+        //////////////////////////////////
+        // Temperature based /////////////
+        //////////////////////////////////
+
         isTileWarmer: function(tribeEntity){
             if (tribeEntity.script.tribe.idealTemperature < 
                 tribeEntity.script.tribe.currTileTemperature){
@@ -30,7 +34,7 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
-        isTileColder: function(tribe){
+        isTileColder: function(tribeEntity){
             if (tribeEntity.script.tribe.idealTemperature > 
                 tribeEntity.script.tribe.currTileTemperature){
                 return true;
@@ -38,14 +42,31 @@ pc.script.create('Conditions', function (context) {
             return false; 
         },
 
-        isTileTemperatureIdeal: function(tribe){
+        isTileTemperatureIdeal: function(tribeEntity){
             if (tribeEntity.script.tribe.idealTemperature === 
                 tribeEntity.script.tribe.currTileTemperature){
                 return true;
             }
             return false;
-        }
+        },
 
+        /////////////////////////////////
+        // Position based ///////////////
+        /////////////////////////////////
+
+        isAboveEquator: function(tribeEntity){
+            if (tribeEntity.script.tribe.tile.getLatitude() > 0){
+                return true;
+            }
+            return false;
+        },
+
+        isBelowEquator: function(tribeEntity){
+            if (tribeEntity.script.tribe.tile.getLatitude() < 0){
+                return true;
+            }
+            return false;
+        }
     };
 
     return Conditions;

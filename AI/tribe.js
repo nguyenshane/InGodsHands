@@ -19,7 +19,7 @@ pc.script.create('tribe', function (context) {
             this.createRuleList();
 
             // get current tile's temperature that the tribe is on
-            //this.currTileTemperature = this.tile.temperature;
+            //this.currTileTemperature = this.tile.getTemperature();
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -87,9 +87,10 @@ pc.script.create('tribe', function (context) {
 
         // Constructs the NPC's list of rules
         createRuleList: function() {
-            this.rules.push(new testRule());
-            this.rules.push(new anotherRule());
-            this.rules.push(new wantToMoveNorth());
+            this.rules.push(new wantToMoveNorthColder());
+            this.rules.push(new wantToMoveNorthWarmer());
+            this.rules.push(new wantToMoveSouthColder());
+            this.rules.push(new wantToMoveSouthWarmer());
         }
 
 
