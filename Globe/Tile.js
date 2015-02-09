@@ -787,10 +787,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     }
 
     this.getRotationAlignedWithNormal = function() {
-        var x = Math.acos(this.center.z/ico.radius);
-        var y = Math.acos(this.center.x/ico.radius);
-        var z = Math.acos(this.center.y/ico.radius);
-        return Vec3(x, y, z);
+        //var x = Math.acos(this.center.z/ico.radius) * 180/Math.PI;
+        //if ()
+        //var y = Math.acos(this.center.x/ico.radius) * 180/Math.PI;
+        //var z = Math.acos(this.center.y/ico.radius) * 180/Math.PI;
+
+        var x = Math.atan2(this.normal.y, this.normal.x) * -180/Math.PI;
+        var y = Math.atan2(this.normal.z, this.normal.x) * -180/Math.PI;
+        var z = Math.atan2(this.normal.x, this.normal.y) * -180/Math.PI;
+        return new pc.Vec3(x, y, z);
     }
 
     this.getTemperature = function(){
