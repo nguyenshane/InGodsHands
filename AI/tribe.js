@@ -43,30 +43,30 @@ pc.script.create('tribe', function (context) {
         moveRandom: function() {
             var rand = Math.random();
             //console.log("Testing moveRandom()");
-            if (rand < .0033) {
+            if (rand < .033) {
                 //console.log("Neighbora Position: (" + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighbora;
                 this.rotation = this.tile.getRotationAlignedWithNormal();
-                console.log(this.rotation);
+                //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
 
-                console.log(this.tile.center);
-            } else if (rand < .0066) {
+                //console.log(this.tile.normal);
+            } else if (rand < .066) {
                 //console.log("Neighborb Position: (" + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighborb;
                 this.rotation = this.tile.getRotationAlignedWithNormal();
-                console.log(this.rotation);
+                //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
 
-                console.log(this.tile.center);
-            } else if (rand < .0099) {
+                //console.log(this.tile.normal);
+            } else if (rand < .099) {
                 //console.log("Neighborc Position: (" + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighborc;
                 this.rotation = this.tile.getRotationAlignedWithNormal();
-                console.log(this.rotation);
+                //console.log(this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
                 
-                console.log(this.tile.center);
+                //console.log(this.tile.normal);
             }
         },
 
