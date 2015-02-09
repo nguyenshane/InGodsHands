@@ -45,25 +45,20 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	console.log("numVerts & Faces:",numVerts, numFaces);
 	
-	// put statingVerts to vertices
+	// put startingVerts to vertices
 	for (; this.currentVerts < startingVerts.length/3; ++this.currentVerts) {
-			vertices[this.currentVerts * 3] = startingVerts[this.currentVerts * 3];
-			vertices[this.currentVerts * 3 + 1] = startingVerts[this.currentVerts * 3 + 1];
-			vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
-		}
-		
-	//console.log("startingverts:", startingVerts);
-    
-    
-    
-    for (var i = 0; i < numVerts * 4; i += 4) {
-			colors[i] = Math.random();
-			colors[i + 1] = 1.0;
-			colors[i + 2] = 0.0;
-			colors[i + 3] = 1.0;
-			
+		vertices[this.currentVerts * 3] = startingVerts[this.currentVerts * 3];
+		vertices[this.currentVerts * 3 + 1] = startingVerts[this.currentVerts * 3 + 1];
+		vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
 	}
-	//console.log("colors:", colors);
+
+    for (var i = 0; i < numVerts * 4; i += 4) {
+		colors[i] = Math.random();
+		colors[i + 1] = 1.0;
+		colors[i + 2] = 0.0;
+		colors[i + 3] = 1.0;
+	}
+
 	// 5 faces around point 0
 	tiles[0] = new Tile(this, 0, 11, 5);
 	tiles[1] = new Tile(this, 0, 5, 1);
@@ -143,7 +138,7 @@ function IcoSphere(device, radius, subdivisions) {
     }
 	*/
 	this.vertexHeights = [];
-	for (var size = vertices.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
+	for (var size = indices.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
 	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
 		repellerSizeMin = 3, repellerSizeMax = 10,
@@ -230,8 +225,8 @@ function IcoSphere(device, radius, subdivisions) {
 }
 
 IcoSphere.prototype.setVertexHeight = function(index, height) {
-	vertexHeights[index] = height;
-	setVertexMagnitude(index, height + this.radius);
+	this.vertexHeights[index] = height;
+	this.setVertexMagnitude(index, height + this.radius);
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
@@ -519,44 +514,218 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 				mountainCount -= mountains;
 				done = true;
-			} else console.log(checkSurroundingArea(icosphere, center, contSize * continentBufferDistance));
+			}
+		}
+	}
+};
+
+//Helper function of generateTerrain, creates a continent in the heightmap using repeller
+function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
+	var initialRepellerCount = repellerCount;
+	
+	//Make first repeller at the center
+	var repellerSize = pc.math.random(repellerSizeMin, repellerSizeMax);
+	var repellerHeight;
+	if ((mountainCount / repellerCount) * 1.5 > pc.math.random(0, 1)) {
+		repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
+		mountainCount--;
+	} else repellerHeight = pc.math.random(repellerHeightMin, repellerHeightMax);
+	repeller(icosphere, centerTile, repellerSize, repellerHeight);
+	repellerCount--;
+	
+	//Add remaining repellers
+	while (repellerCount > 0) {
+		repellerSize = pc.math.random(repellerSizeMin, repellerSizeMax);
+		var availTiles = getTilesInArea(icosphere, centerTile, radius - repellerSize); //Get all possible repeller center locations
+		shuffleArray(availTiles);
+		for (var i = 0, done = false; i < availTiles.length && !done; i++) {
+			var center = availTiles[i];
+			var dist = checkSurroundingArea(icosphere, center, repellerSize);
+			if (dist != -1 && dist < repellerSize * 0.8 && dist > repellerSize * 0.4) { //Make sure the location is within range of existing land but not too close
+				//Add a new repeller
+				if ((mountainCount / repellerCount) * (repellerCount / initialRepellerCount + 0.5) > pc.math.random(0, 1)) { //More likely to create mountains early on
+					repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
+					mountainCount--;
+				} else repellerHeight = pc.math.random(repellerHeightMin, repellerHeightMax);
+				repeller(icosphere, center, repellerSize, repellerHeight);
+				repellerCount--;
+				done = true;
+			}
+		}
+		
+		if (!done) {
+			repellerCount = 0;
+			console.log("n");
+		}
+	}
+};
+
+//Helper function of cluster, raises a portion of land around the center tile
+function repeller(icosphere, centerTile, radius, centerHeight) {
+	var queue = new Queue();
+	var visitedIndices = [];
+	for (var size = icosphere.indices.length-1; size >= 0; size--) visitedIndices[size] = false;
+	var visited = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
+	var distances = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) distances[size] = -2;
+	
+	var dropoffRate = centerHeight / radius;
+	var tileIndex = centerTile;
+	var tile = icosphere.tiles[tileIndex];
+	
+	//Raise center tile
+	visited[centerTile] = true;
+	distances[centerTile] = 0;
+	for (var i = 0; i < tile.vertexIndices.length; i++) {
+		icosphere.setVertexHeight(tile.vertexIndices[i], centerHeight + pc.math.random(-0.5, 0.5) * dropoffRate);
+		visitedIndices[tile.vertexIndices[i]] = true;
+	}
+	for (var i = 0; i < tile.neighborIndices.length; i++) {
+		visited[tile.neighborIndices[i]] = true;
+		distances[tile.neighborIndices[i]] = distances[tileIndex] + 1;
+		queue.enqueue(tile.neighborIndices[i]);
+	}
+	
+	//Raise surrounding tiles
+	while (!queue.isEmpty()) {
+		tileIndex = queue.dequeue();
+		tile = icosphere.tiles[tileIndex];
+		
+		//Find height of the two existing land vertices that have already been repelled
+		var prevHeights = [];
+		for (var i = 0; i < tile.vertexIndices.length; i++) {
+			if (visitedIndices[tile.vertexIndices[i]]) {
+				prevHeights.push(icosphere.vertexHeights[tile.vertexIndices[i]]);
+			}
+		}
+		var totalPrevHeight = 0;
+		for (var i = 0; i < prevHeights.length; i++) totalPrevHeight += prevHeights[i];
+		var avgPrevHeight = totalPrevHeight / prevHeights.length;
+		
+		//Calculate new vertex's height
+		var newHeight = avgPrevHeight - (dropoffRate * pc.math.random(-0.3, 1.2));
+		var linearHeight = centerHeight - (dropoffRate * distances[tileIndex]);
+		if (newHeight < linearHeight - dropoffRate) newHeight += dropoffRate; //Prevent heights from varying too much to keep repeller radius in check
+		else if (newHeight > linearHeight + dropoffRate) newHeight -= dropoffRate;
+		if (newHeight < 0) newHeight = 0;
+		
+		//Repel remaining vertex
+		for (var i = 0; i < tile.vertexIndices.length; i++) {
+			if (!visitedIndices[tile.vertexIndices[i]]) {
+				visitedIndices[tile.vertexIndices[i]] = true;
+				
+				if (icosphere.vertexHeights[tile.vertexIndices[i]] != 0) {
+					//Vertex has already been repelled by another repeller, move it again if new height is higher to keep terrain smooth
+					if (newHeight > icosphere.vertexHeights[tile.vertexIndices[i]]) {
+						icosphere.setVertexHeight(tile.vertexIndices[i], newHeight);
+					}
+				} else {
+					icosphere.setVertexHeight(tile.vertexIndices[i], newHeight);
+				}
+			}
+		}
+		
+		//Repel adjacent tiles if new vertex is above sea level
+		if (newHeight > 0) {
+			for (var i = 0; i < tile.neighborIndices.length; i++) {
+				var neighbor = tile.neighborIndices[i];
+				if (!visited[neighbor]) {
+					if (distances[tileIndex] < radius) {
+						visited[neighbor] = true;
+						queue.enqueue(neighbor);
+						distances[neighbor] = distances[tileIndex] + 1;
+					}
+				} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			}
 		}
 	}
 };
 
 //Helper function of generateTerrain, returns distance to nearest land tile or -1 if no land tiles found in radius
 function checkSurroundingArea(icosphere, centerTile, radius) {
+	var queue = new Queue();
 	var visited = [];
 	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
-	return checkSurroundingAreaR(icosphere, centerTile, radius, visited, 0);
-};
-
-//Recursive part of checkSurroundingArea, essentially a modified breadth first search
-function checkSurroundingAreaR(icosphere, currentTile, radius, visited, iteration) {
-	if (icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[0]] != 0 ||
-	    icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[1]] != 0 ||
-		icosphere.vertexHeights[icosphere.tiles[currentTile].vertexIndices[2]] != 0) {
-			return iteration; //Found a land tile
+	var land = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) land[size] = false;
+	var distances = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) distances[size] = -2;
+	var shortestDistance = -1;
+	
+	queue.enqueue(centerTile);
+	visited[centerTile] = true;
+	distances[centerTile] = 0;
+	while (!queue.isEmpty()) {
+		var tileIndex = queue.dequeue();
+		var tile = icosphere.tiles[tileIndex];
+		
+		if (icosphere.vertexHeights[tile.vertexIndices[0]] != 0 ||
+			icosphere.vertexHeights[tile.vertexIndices[1]] != 0 ||
+			icosphere.vertexHeights[tile.vertexIndices[2]] != 0) {
+				//Found a land tile
+				land[tileIndex] = true;
+				if (shortestDistance === -1 || distances[tileIndex] < shortestDistance) {
+					shortestDistance = distances[tileIndex];
+				}
+		}
+		
+		for (var i = 0; i < tile.neighborIndices.length; i++) {
+			var neighbor = tile.neighborIndices[i];
+			if (!visited[neighbor]) {
+				if (distances[tileIndex] < radius) {
+					visited[neighbor] = true;
+					queue.enqueue(neighbor);
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+				distances[neighbor] = distances[tileIndex] + 1;
+				if (land[neighbor]) {
+					if (shortestDistance === -1 || distances[neighbor] < shortestDistance) {
+						shortestDistance = distances[neighbor];
+					}
+				}
+			}
+		}
 	}
 	
-	if (iteration > radius) return -1; //Outside the designated area
+	return shortestDistance;
+};
+
+//Returns an array of tile indices within a radius of a tile
+function getTilesInArea(icosphere, centerTile, radius) {
+	var tiles = [];
+	var queue = new Queue();
+	var visited = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
+	var distances = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) distances[size] = -2;
 	
-	if (!visited[currentTile]) {
-		visited[currentTile] = true;
-		var ret = -1;
+	queue.enqueue(centerTile);
+	visited[centerTile] = true;
+	distances[centerTile] = 0;
+	while (!queue.isEmpty()) {
+		var tileIndex = queue.dequeue();
+		var tile = icosphere.tiles[tileIndex];
 		
-		//Check each neighbor and return -1 only if all of them find ocean tiles, otherwise return distance to land tile
-		var current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[0], radius, visited, iteration + 1);
-		if (current != -2 && current < ret) ret = current;
-		
-		current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[1], radius, visited, iteration + 1);
-		if (current != -2 && current < ret) ret = current;
-		
-		current = checkSurroundingAreaR(icosphere, icosphere.tiles[currentTile].neighborIndices[2], radius, visited, iteration + 1);
-		if (current != -2 && current < ret) ret = current;
-		
-		return ret;
-   } else return -2; //Already visited this tile, and it isn't a land tile
+		for (var i = 0; i < tile.neighborIndices.length; i++) {
+			var neighbor = tile.neighborIndices[i];
+			if (!visited[neighbor]) {
+				if (distances[tileIndex] < radius) {
+					visited[neighbor] = true;
+					queue.enqueue(neighbor);
+					distances[neighbor] = distances[tileIndex] + 1;
+					tiles.push(neighbor);
+				}
+			} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+				distances[neighbor] = distances[tileIndex] + 1;
+			}
+		}
+	}
+
+	return tiles;
 };
 
 //Randomizes array contents, shamelessly stolen from the internet
@@ -564,10 +733,12 @@ function shuffleArray(array) {
 	for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
 };
 
-//Helper function of generateTerrain, creates a continent in the heightmap using repeller
-function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
-};
-
-//Helper function of cluster, raises a portion of land around the center tile
-function repeller(icosphere, centerTile, radius, centerHeight) {
+//Also stolen from the internet
+function Queue(){
+	var a=[],b=0;
+	this.getLength=function(){return a.length-b};
+	this.isEmpty=function(){return 0==a.length};
+	this.enqueue=function(b){a.push(b)};
+	this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};
+	this.peek=function(){return 0<a.length?a[b]:void 0};
 };
