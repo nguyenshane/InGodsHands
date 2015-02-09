@@ -64,43 +64,23 @@ anotherRule.prototype = {
 var wantToMoveNorth = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-    this.tribe = pc.fw.Application.getApplication('application-canvas').context.root.findByName("BaseTribe").script.tribe;
-   
+    
     this.weight = 0;
     this.conditions = [allConditions.isTileWarmer];
-    
 };
 
 wantToMoveNorth.prototype = {
-    testConditions: function(){
+    testConditions: function(tribeEntity){
         for(var i = 0; i < this.conditions.length; i++){
-            console.log("Oh, hello");
-            if(!this.conditions[i]()){
+            if(!this.conditions[i](tribeEntity)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(){
-        console.log("wantToMoveNorth() has fired");
+    consequence: function(tribeEntity){
+        --tribeEntity.script.tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
     }    
 };
-
-////////////////////////////////////////
-
-pc.script.create('Rules', function (context) {
-    var Rules = function (entity) {
-        this.entity = entity;
-        this.tribeRules = [];
-    };
-    
-    Rules.prototype = {
-        initialize: function(){
-            this.tribeRules.push(new testRule());
-            this.tribeRules.push(new anotherRule());
-            //this.tribeRules.push(new wantToMoveNorth());
-        }
-    };
-    return Rules;
-});
