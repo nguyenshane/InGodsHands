@@ -13,7 +13,8 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
             // create mesh
             this.tile = ico.tiles[0]; // list of tiles
-            this.entity.setLocalScale(1,20,1); 
+            this.rotation = this.tile.getRotationAlignedWithNormal();
+            this.entity.setLocalScale(.5,.5,.5);
             // get list of rules from Rules.js on 'AI' object
             this.createRuleList();
 
@@ -32,20 +33,40 @@ pc.script.create('tribe', function (context) {
                     this.rules[i].consequence(this.entity);
                 }
             }
+
+            this.moveRandom();
+            this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
+                                    ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
+                                    ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
         },
         
         moveRandom: function() {
             var rand = Math.random();
             //console.log("Testing moveRandom()");
-            if (rand < .033) {
+            if (rand < .0033) {
                 //console.log("Neighbora Position: (" + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighbora.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighbora;
-            } else if (rand < .066) {
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                console.log(this.rotation);
+                this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+
+                console.log(this.tile.center);
+            } else if (rand < .0066) {
                 //console.log("Neighborb Position: (" + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighborb.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighborb;
-            } else if (rand < .099) {
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                console.log(this.rotation);
+                this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+
+                console.log(this.tile.center);
+            } else if (rand < .0099) {
                 //console.log("Neighborc Position: (" + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 0] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 1] + ", " + ico.vertices[this.tile.neighborc.vertexIndices[0] * 3 + 2] + ")");
                 this.tile = this.tile.neighborc;
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                console.log(this.rotation);
+                this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+                
+                console.log(this.tile.center);
             }
         },
 
