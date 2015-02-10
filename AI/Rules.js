@@ -8,68 +8,115 @@
 //   Rules         //////////////////////
 /////////////////////////////////////////
 
-var testRule = function() {
+/* 
+ *  wantToMoveNorthColder determines whether the tribe wants to move north
+ *  above the equator  
+ *
+ */
+
+var wantToMoveNorthColder = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-  
+    
     this.weight = 0;
-    this.conditions = [allConditions.testIf5];
+    this.conditions = [ allConditions.isTileWarmer,
+                        allConditions.isAboveEquator];
 };
 
-testRule.prototype = {
-    testConditions: function(){
+wantToMoveNorthColder.prototype = {
+    testConditions: function(tribeEntity){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i]()){
+            if(!this.conditions[i](tribeEntity)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(){
-        console.log("testRule consequence has fired");
+    consequence: function(tribeEntity){
+        --tribeEntity.script.tribe.currTileTemperature;
+        console.log("wantToMoveNorth has fired: " + tribeEntity.script.tribe.currTileTemperature);
     }    
 };
 
-//////////////////////////////////////
+/* 
+ *  wantToMoveSouthWarmer determines whether the tribe wants to move south
+ *  above equator
+ *    
+ */
 
-var anotherRule = function() {
+var wantToMoveSouthWarmer = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-  
+    
     this.weight = 0;
-    this.conditions = [allConditions.testIf5];
+    this.conditions = [ allConditions.isTileColder,
+                        allConditions.isAboveEquator];
 };
 
-anotherRule.prototype = {
-    testConditions: function(){
+wantToMoveSouthWarmer.prototype = {
+    testConditions: function(tribeEntity){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i]()){
+            if(!this.conditions[i](tribeEntity)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(){
-        console.log("anotherRule consequence has fired");
-    }        
+    consequence: function(tribeEntity){
+        ++tribeEntity.script.tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    }    
 };
 
 /* 
- *    wantToMoveNorth() determines whether the tribe wants to move north
- *    to a colder temperature tile.
+ *  wantToMoveNorthWarmer determines whether the tribe wants to move south
+ *  above equator
+ *    
  */
 
-var wantToMoveNorth = function() {
+var wantToMoveNorthWarmer = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 0;
-    this.conditions = [allConditions.isTileWarmer];
+    this.conditions = [ allConditions.isTileColder,
+                        allConditions.isBelowEquator];
 };
 
-wantToMoveNorth.prototype = {
+wantToMoveNorthWarmer.prototype = {
+    testConditions: function(tribeEntity){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribeEntity)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribeEntity){
+        ++tribeEntity.script.tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    }    
+};
+
+/* 
+ *  wantToMoveSouthColder determines whether the tribe wants to move south
+ *  above equator
+ *    
+ */
+
+var wantToMoveSouthColder = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 0;
+    this.conditions = [ allConditions.isTileWarmer,
+                        allConditions.isBelowEquator];
+};
+
+wantToMoveSouthColder.prototype = {
     testConditions: function(tribeEntity){
         for(var i = 0; i < this.conditions.length; i++){
             if(!this.conditions[i](tribeEntity)){

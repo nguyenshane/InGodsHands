@@ -715,7 +715,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexb);
     handle.indices.push(vertexc);
 
-    this.getUpNeighbor = function() {
+    this.getNorthNeighbor = function() {
         if (this.neighbora.center.y > this.neighborb.center.y && this.neighbora.center.y > this.neighborc.center.y) {
             return neighbora;
         }
@@ -727,7 +727,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         }
     };
 
-    this.getDownNeighbor = function() {
+    this.getSouthNeighbor = function() {
         if (this.neighbora.center.y < this.neighborb.center.y && this.neighbora.center.y < this.neighborc.center.y) {
             return neighbora;
         }
@@ -739,7 +739,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         }
     };
 
-    this.getLeftNeighbor = function() {
+    this.getWestNeighbor = function() {
         if (Math.acos(this.neighbora.center.x/ico.radius) < Math.acos(this.neighborb.center.x/ico.radius) 
             && Math.acos(this.neighbora.center.x/ico.radius) < Math.acos(this.neighborc.center.x/ico.radius)) {
             return neighbora;
@@ -754,7 +754,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         }
     };
 
-    this.getRightNeighbor = function() {
+    this.getEastNeighbor = function() {
         if (Math.acos(this.neighbora.center.x/ico.radius) > Math.acos(this.neighborb.center.x/ico.radius) 
             && Math.acos(this.neighbora.center.x/ico.radius) > Math.acos(this.neighborc.center.x/ico.radius)) {
             return neighbora;
