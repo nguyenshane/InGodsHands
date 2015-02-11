@@ -18,6 +18,7 @@ pc.script.create('tribe', function (context) {
 
             // create mesh
             this.tile = ico.tiles[21]; // list of tiles
+            this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.5, .5, .5);
 
@@ -29,6 +30,7 @@ pc.script.create('tribe', function (context) {
             console.log(this.currTileTemperature);
             this.destinationTile = ico.tiles[225];
             console.log(!this.tile.equals(this.destinationTile));
+            console.log("Current tile pos: " + this.entity.getPosition().toString() +  " dest tile pos: " + this.destinationTile.center.toString());
 
         },
 
@@ -93,7 +95,7 @@ pc.script.create('tribe', function (context) {
             //console.log(lerpVec.lerp(this.tile.center, this.destinationTile.center, .0001).toString());
             deltaVec.lerp(this.entity.getPosition(), this.destinationTile.center, .0001);
             this.entity.setPosition(deltaVec);   
-            console.log(this.entity.getPosition().toString());
+            //console.log(this.entity.getPosition().toString());
             //console.log("tribe: " + this.entity.getPosition().toString());         
 
             //this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
