@@ -32,6 +32,60 @@ pc.script.create('tribe', function (context) {
             console.log(!this.tile.equals(this.destinationTile));
             console.log("Current tile pos: " + this.entity.getPosition().toString() +  " dest tile pos: " + this.destinationTile.center.toString());
 
+            // A shader definition used to create a new shader.
+            var shaderDefinition = {
+                attributes: {
+                    aPosition: pc.SEMANTIC_POSITION,
+                    aUv0: pc.SEMANTIC_TEXCOORD0
+                },
+                vshader: [
+                    "attribute vec3 aPosition;",
+                    "attribute vec2 aUv0;",
+                    "",
+                    "uniform mat4 matrix_model;",
+                    "uniform mat4 matrix_viewProjection;",
+                    "",
+                    "varying vec3 fPosition;",
+                    "",
+                    "void main(void)",
+                    "{",
+                    "    fPosition = aPosition;",
+                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+                    "}"
+                ].join("\n"),
+                fshader: [
+                    "precision " + context.graphicsDevice.precision + " float;",
+                    "",
+                    "varying vec3 fPosition;",
+                    "",
+                    "//uniform sampler2D uDiffuseMap;",
+                    "//uniform sampler2D uHeightMap;",
+                    "uniform vec3 sunDir;",
+                    "uniform float ambient;",
+                    "",
+                    "void main(void)",
+                    "{",
+                    "    float intensity = max(dot(normalize(fPosition), normalize(sunDir)), ambient);",
+                    "    vec4 color = intensity * vec4(1.0, 0.0, 0.0, 1.0);",
+                    "    gl_FragColor = color;",
+                    "}"
+                ].join("\n")
+            };
+
+            
+            // Create the shader from the definition
+            this.shader = new pc.Shader(context.graphicsDevice, shaderDefinition);
+        
+            // Create a new material and set the shader
+            this.material = new pc.Material();
+            this.material.setShader(this.shader);
+
+            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+
+            console.log(this);
+            this.entity.model.data.model.meshInstances[0].material = this.material;
+
+
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -50,6 +104,13 @@ pc.script.create('tribe', function (context) {
             //this.entity.setPosition(ico.vertices[this.tile.vertexIndices[0] * 3 + 0], 
             //                        ico.vertices[this.tile.vertexIndices[0] * 3 + 1], 
             //                        ico.vertices[this.tile.vertexIndices[0] * 3 + 2]);
+
+
+            // Set lighting in shader
+            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            this.rotation = this.tile.getRotationAlignedWithNormal();
+            //this.entity.setLocalEulerAngles(this.rotation.x, this.rotation.y, this.rotation.z);
+            //this.entity.rotateLocal(90, 0, 0);
         },
         
         moveRandom: function() {

@@ -16,6 +16,7 @@ pc.script.create('globalInterface', function (context) {
         initialize: function () {
             globalTemperature = 90;
             globalTemperatureMax = 100;
+            sun = context.root.findByName("Sun");
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -25,6 +26,14 @@ pc.script.create('globalInterface', function (context) {
             var t = (this.time % 10);
             globalTemperature = t*10;
             // End test temperature
+            sun.setPosition(0, 0, 0);
+
+            /**** Test sun rotation ****/
+            //sun.rotate(0, dt * 100, 0);
+            //sun.rotate(0, dt * 100, 0);
+            sun.rotateLocal(0, dt * 100, 0);
+            //sun.setEulerAngles(0, 90 + this.time, 0);
+            /****                   ****/
             
             //console.log(ico.tiles[0].getTemperature());
         }

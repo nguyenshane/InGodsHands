@@ -22,27 +22,27 @@ pc.script.create('Globe', function (context) {
             // create material
             // A shader definition used to create a new shader.
 			var shaderDefinition = {
-				attributes: {
-					aPosition: pc.SEMANTIC_POSITION,
-					aUv0: pc.SEMANTIC_TEXCOORD0
-				},
-				vshader: [
-					"attribute vec3 aPosition;",
-					"attribute vec2 aUv0;",
-					"",
-					"uniform mat4 matrix_model;",
-					"uniform mat4 matrix_viewProjection;",
-					"",
-					"varying vec3 fPosition;",
-					"",
-					"void main(void)",
-					"{",
-					"    fPosition = aPosition;",
-					"    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
-					"}"
-				].join("\n"),
-				fshader: [
-					"precision " + context.graphicsDevice.precision + " float;",
+                attributes: {
+                    aPosition: pc.SEMANTIC_POSITION,
+                    aUv0: pc.SEMANTIC_TEXCOORD0
+                },
+                vshader: [
+                    "attribute vec3 aPosition;",
+                    "attribute vec2 aUv0;",
+                    "",
+                    "uniform mat4 matrix_model;",
+                    "uniform mat4 matrix_viewProjection;",
+                    "",
+                    "varying vec3 fPosition;",
+                    "",
+                    "void main(void)",
+                    "{",
+                    "    fPosition = aPosition;",
+                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+                    "}"
+                ].join("\n"),
+                fshader: [
+                    "precision " + context.graphicsDevice.precision + " float;",
                     "",
                     "varying vec3 fPosition;",
                     "",
@@ -51,23 +51,26 @@ pc.script.create('Globe', function (context) {
                     "uniform float temperature;",
                     "uniform float maxTemp;",
                     "uniform float radius;",
+                    "uniform vec3 sunDir;",
+                    "uniform float ambient;",
                     "",
                     "void main(void)",
                     "{",
+                    "    float intensity = max(dot(normalize(fPosition), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
                     "    float r =  abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
                     "    float g = dist - 1.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
-                    "    if (dist > 1.5) {",
-                    "       color = vec4(r, g, b, 1.0);",
+                    "    if (dist > radius) {",
+                    "       color = intensity * vec4(r, g, b, 1.0);",
                     "    } else {",
-                    "       color = vec4(0.0, 0.0, 1.0, 1.0);",
+                    "       color = intensity * vec4(0.0, 0.0, 1.0, 1.0);",
                     "    }",
                     "    gl_FragColor = color;",
                     "}"
-				].join("\n")
-			};
+                ].join("\n")
+            };
 
             
             // Create the shader from the definition
@@ -78,6 +81,10 @@ pc.script.create('Globe', function (context) {
             this.material.setShader(this.shader);
             
             this.material.setParameter('radius', ico.radius);
+            
+            this.material.setParameter('ambient', 0.2);
+
+            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
             
             
             var phong = new pc.scene.PhongMaterial(); 
@@ -117,10 +124,20 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-           	//this.globe.rotateLocal(0, dt * 10, 0);
+
             // Set temperature variables in shader
         	this.material.setParameter('temperature', globalTemperature);
             this.material.setParameter('maxTemp', globalTemperatureMax);
+
+            // Set lighting in shader
+            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
+            //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
+            //var angle = sun.rotation.getEulerAngles();
+
+            //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
+            //console.log(angle.x, angle.y, angle.z);
+            //console.log(sun.rotation);
         },
 
 		move: function(position, distance, speed) {
