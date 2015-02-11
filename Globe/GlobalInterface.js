@@ -14,7 +14,7 @@ pc.script.create('globalInterface', function (context) {
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            globalTemperature = 0;
+            globalTemperature = 90;
             globalTemperatureMax = 100;
         },
 

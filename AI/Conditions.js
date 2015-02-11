@@ -26,25 +26,25 @@ pc.script.create('Conditions', function (context) {
         // Temperature based /////////////
         //////////////////////////////////
 
-        isTileWarmer: function(tribeEntity){
-            if (tribeEntity.script.tribe.idealTemperature < 
-                tribeEntity.script.tribe.currTileTemperature){
+        isTileWarmer: function(tribe){
+            if (tribe.idealTemperature < 
+                Math.round(tribe.currTileTemperature)){
                 return true;
             }
             return false;
         },
 
-        isTileColder: function(tribeEntity){
-            if (tribeEntity.script.tribe.idealTemperature > 
-                tribeEntity.script.tribe.currTileTemperature){
+        isTileColder: function(tribe){
+            if (tribe.idealTemperature > 
+                Math.round(tribe.currTileTemperature)){
                 return true;
             }
             return false; 
         },
 
-        isTileTemperatureIdeal: function(tribeEntity){
-            if (tribeEntity.script.tribe.idealTemperature === 
-                tribeEntity.script.tribe.currTileTemperature){
+        isTileTemperatureIdeal: function(tribe){
+            if (tribe.idealTemperature === 
+                Math.round(tribe.currTileTemperature)){
                 return true;
             }
             return false;
@@ -54,15 +54,17 @@ pc.script.create('Conditions', function (context) {
         // Position based ///////////////
         /////////////////////////////////
 
-        isAboveEquator: function(tribeEntity){
-            if (tribeEntity.script.tribe.tile.getLatitude() > 0){
+        isAboveEquator: function(tribe){
+            console.log(tribe.tile);
+            if (tribe.tile.getLatitude() > 0){
                 return true;
             }
             return false;
         },
 
-        isBelowEquator: function(tribeEntity){
-            if (tribeEntity.script.tribe.tile.getLatitude() < 0){
+        isBelowEquator: function(tribe){
+            console.log(tribe.tile);
+            if (tribe.tile.getLatitude() < 0){
                 return true;
             }
             return false;

@@ -24,18 +24,19 @@ var wantToMoveNorthColder = function() {
 };
 
 wantToMoveNorthColder.prototype = {
-    testConditions: function(tribeEntity){
+    testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribeEntity)){
+            if(!this.conditions[i](tribe)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(tribeEntity){
-        --tribeEntity.script.tribe.currTileTemperature;
-        console.log("wantToMoveNorth has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    consequence: function(tribe){
+        --tribe.currTileTemperature;
+        tribe.moveTo()
+        console.log("wantToMoveNorth has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -55,18 +56,18 @@ var wantToMoveSouthWarmer = function() {
 };
 
 wantToMoveSouthWarmer.prototype = {
-    testConditions: function(tribeEntity){
+    testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribeEntity)){
+            if(!this.conditions[i](tribe)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(tribeEntity){
-        ++tribeEntity.script.tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    consequence: function(tribe){
+        ++tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -86,18 +87,18 @@ var wantToMoveNorthWarmer = function() {
 };
 
 wantToMoveNorthWarmer.prototype = {
-    testConditions: function(tribeEntity){
+    testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribeEntity)){
+            if(!this.conditions[i](tribe)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(tribeEntity){
-        ++tribeEntity.script.tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    consequence: function(tribe){
+        ++tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -117,17 +118,17 @@ var wantToMoveSouthColder = function() {
 };
 
 wantToMoveSouthColder.prototype = {
-    testConditions: function(tribeEntity){
+    testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribeEntity)){
+            if(!this.conditions[i](tribe)){
                 return false;
             }
         }
         return true;
     },
     
-    consequence: function(tribeEntity){
-        --tribeEntity.script.tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribeEntity.script.tribe.currTileTemperature);
+    consequence: function(tribe){
+        --tribe.currTileTemperature;
+        console.log("wantToMoveNorth() has fired: " + tribeEntity.currTileTemperature);
     }    
 };
