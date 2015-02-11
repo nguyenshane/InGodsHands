@@ -130,6 +130,13 @@ function IcoSphere(device, radius, subdivisions) {
         //var vert = pc.alVec3(vertices[i*3], vertices[i*3+1], vertices[i*3+1]);
         this.setVertexMagnitude(i, this.radius);
     }
+	
+	/*
+	//Create non-shared-vertex sphere
+	var newSphere = createPerFaceSphere(this);
+	this.indices = [];
+	for (var size = newSphere.vertices.length-1; size >= 0; size--) this.indices[size] = size;
+	*/
     
 	/*
     // Test extrude, this should be where the repellers algorithm be replaced
@@ -139,6 +146,7 @@ function IcoSphere(device, radius, subdivisions) {
 	*/
 	this.vertexHeights = [];
 	for (var size = indices.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
+	//for (var size = newSphere.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
 	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
 		repellerSizeMin = 3, repellerSizeMax = 10,
@@ -211,13 +219,13 @@ function IcoSphere(device, radius, subdivisions) {
     
     var options = {
         normals: normals,
-        indices:   indices
+        indices: indices
     };
     
     this.toReturn = {
-        mesh : pc.createMesh(device, vertices, options),
+        mesh: pc.createMesh(device, vertices, options),
         options: options,
-        positions: vertices,
+        positions: vertices
     };
     
     return this;
@@ -488,6 +496,50 @@ IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radi
     return i;
 }
 */
+
+function createPerFaceSphere(icosphere) {
+	this.vertexGroups = [];
+	this.vertices = [];
+	this.bufferedVertices = [];
+    this.tiles = icosphere.tiles;
+	this.radius = icosphere.radius;
+	
+	for (var i = 0; i < this.tiles.length; i++) {
+		var tile = this.tiles[i];
+		for (var j = 0; j < tile.vertexIndices.length; j++) {
+			//Add each tile's vertex to vertices
+			this.vertices.push(icosphere._getUnbufferedVertex(tile.vertexIndices[j]));
+			//tile.vertexIndices[j] = this.vertices.length-1; //Set the tile 'reference' to the new vertex, it will be changed to the vertex group later
+			
+			//Group vertices in the same position
+			var newV = this.vertices[this.vertices.length-1];
+			newV.group = this.vertexGroups.length;
+			for (var k = 0; k < this.vertices.length-1; k++) {
+				var v = this.vertices[k];
+				//Try to find an existing group for this vertex
+				if (v.x === newV.x && v.y === newV.y && v.z === newV.z) {
+					newV.group = v.group;
+				}
+			}
+			
+			if (newV.group === this.vertexGroups.length) {
+				this.vertexGroups.push([]); //No existing shared vertices found, create a new group
+				this.vertexGroups[this.vertexGroups.length-1].push(this.vertices.length-1); //Add the new vertex to the group
+			}
+			
+			tile.vertexIndices[j] = newV.group; //Set the tile 'reference' to the vertex group
+		}
+	}
+	
+	//Unbuffer vertices
+	for (var i = 0; i < this.vertices.length; i++) {
+		this.bufferedVertices.push(this.vertices[i].x);
+		this.bufferedVertices.push(this.vertices[i].y);
+		this.bufferedVertices.push(this.vertices[i].z);
+	}
+	
+	return this;
+};
 
 //Generates a heightmap and applies it to the icosphere's vertices
 //Higher repeller count multipliers will result in more landmass,
