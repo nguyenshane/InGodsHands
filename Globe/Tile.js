@@ -819,7 +819,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
-        //console.log("here");
+
 		this.normal = new pc.alVec3().cross(vectorb,vectorc);
 		
 		this.normal.normalize();
@@ -906,4 +906,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.toString = function(){
         console.log ("vertexIndices, neighborIndices:",this.vertexIndices, this.neighborIndices);
     };
+
+    this.equals = function(other){
+        return (this.center.x === (other.center.x) &&
+                this.center.y === (other.center.y) &&
+                this.center.z === (other.center.z));
+    }
 }

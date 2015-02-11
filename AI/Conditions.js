@@ -28,7 +28,7 @@ pc.script.create('Conditions', function (context) {
 
         isTileWarmer: function(tribe){
             if (tribe.idealTemperature < 
-                Math.round(tribe.currTileTemperature)){
+                (Math.round(tribe.currTileTemperature) + 5)) {
                 return true;
             }
             return false;
@@ -36,15 +36,14 @@ pc.script.create('Conditions', function (context) {
 
         isTileColder: function(tribe){
             if (tribe.idealTemperature > 
-                Math.round(tribe.currTileTemperature)){
+                (Math.round(tribe.currTileTemperature) - 5)){
                 return true;
             }
             return false; 
         },
 
         isTileTemperatureIdeal: function(tribe){
-            if (tribe.idealTemperature === 
-                Math.round(tribe.currTileTemperature)){
+            if (!isTileWarmer() || !isTileColder()){
                 return true;
             }
             return false;
@@ -55,7 +54,6 @@ pc.script.create('Conditions', function (context) {
         /////////////////////////////////
 
         isAboveEquator: function(tribe){
-            console.log(tribe.tile);
             if (tribe.tile.getLatitude() > 0){
                 return true;
             }
@@ -63,7 +61,6 @@ pc.script.create('Conditions', function (context) {
         },
 
         isBelowEquator: function(tribe){
-            console.log(tribe.tile);
             if (tribe.tile.getLatitude() < 0){
                 return true;
             }

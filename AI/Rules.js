@@ -34,9 +34,10 @@ wantToMoveNorthColder.prototype = {
     },
     
     consequence: function(tribe){
-        --tribe.currTileTemperature;
-        tribe.moveTo()
-        console.log("wantToMoveNorth has fired: " + tribe.currTileTemperature);
+        //--tribe.currTileTemperature;
+        console.log(tribe.tile.getNorthNeighbor().getTemperature());
+        tribe.setDestination(tribe.tile.getNorthNeighbor());
+        //console.log("wantToMoveNorthColder has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -66,8 +67,8 @@ wantToMoveSouthWarmer.prototype = {
     },
     
     consequence: function(tribe){
-        ++tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribe.currTileTemperature);
+        tribe.setDestination(tribe.tile.getSouthNeighbor());
+        console.log("wantToMoveSouthWarmer() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -97,8 +98,8 @@ wantToMoveNorthWarmer.prototype = {
     },
     
     consequence: function(tribe){
-        ++tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribe.currTileTemperature);
+        tribe.setDestination(tribe.tile.getSouthNeighbor());
+        console.log("wantToMoveNorthWarmer() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -128,7 +129,7 @@ wantToMoveSouthColder.prototype = {
     },
     
     consequence: function(tribe){
-        --tribe.currTileTemperature;
-        console.log("wantToMoveNorth() has fired: " + tribeEntity.currTileTemperature);
+        tribe.setDestination(tribe.tile.getSouthNeighbor());
+        console.log("wantToMoveSouthColder() has fired: " + tribeEntity.currTileTemperature);
     }    
 };
