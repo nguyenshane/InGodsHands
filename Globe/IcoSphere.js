@@ -551,6 +551,8 @@ function unshareVertices(icosphere) {
 
 	icosphere.indices = [];
 	for (var size = vertices.length-1; size >= 0; size--) icosphere.indices[size] = size;
+	
+	icosphere.tiles = tiles;
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices
@@ -628,7 +630,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 function repeller(icosphere, centerTile, radius, centerHeight) {
 	var queue = new Queue();
 	var visitedIndices = [];
-	for (var size = icosphere.indices.length-1; size >= 0; size--) visitedIndices[size] = false;
+	for (var size = icosphere.vertexGroups.length-1; size >= 0; size--) visitedIndices[size] = false;
 	var visited = [];
 	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
 	var distances = [];
@@ -655,7 +657,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 	while (!queue.isEmpty()) {
 		tileIndex = queue.dequeue();
 		tile = icosphere.tiles[tileIndex];
-		
+
 		//Find height of the two existing land vertices that have already been repelled
 		var prevHeights = [];
 		for (var i = 0; i < tile.vertexIndices.length; i++) {
