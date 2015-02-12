@@ -29,13 +29,10 @@ function IcoSphere(device, radius, subdivisions) {
     var normals = [];
     var colors = [];
 	
+	this.radius = radius;
+	
     this.vertices = [];
-    vertices = this.vertices;
-    
-    this.radius = radius;
-    
     this.indices = [];
-    indices = this.indices;
 	
 	this.vertexGroups;
 	this.vertexParents;
@@ -54,9 +51,9 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	// put startingVerts to vertices
 	for (; this.currentVerts < startingVerts.length/3; ++this.currentVerts) {
-		vertices[this.currentVerts * 3] = startingVerts[this.currentVerts * 3];
-		vertices[this.currentVerts * 3 + 1] = startingVerts[this.currentVerts * 3 + 1];
-		vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
+		this.vertices[this.currentVerts * 3] = startingVerts[this.currentVerts * 3];
+		this.vertices[this.currentVerts * 3 + 1] = startingVerts[this.currentVerts * 3 + 1];
+		this.vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
 	}
 
     for (var i = 0; i < numVerts * 4; i += 4) {
@@ -119,7 +116,7 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	var self = this; 
 	// Run subdivide
-	for (i = 1; i < subdivisions; ++i) {
+	for (var i = 1; i < subdivisions; ++i) {
     	var jMax = this.currentFaces;
     	
     	for (var j = 0; j < jMax; ++j) {
@@ -131,16 +128,19 @@ function IcoSphere(device, radius, subdivisions) {
     	}
     }
     
-    
-    // Normalize
-    for ( i = 0; i < this.currentVerts; i++) {
-        //var vert = pc.alVec3(vertices[i*3], vertices[i*3+1], vertices[i*3+1]);
-        this.setVertexMagnitude(i, this.radius);
+	// Normalize to radius
+    for (var i = 0; i < this.currentVerts; i++) {
+		var vert = this._getUnbufferedVertex(i);
+		vert.normalize();
+		vert.scale(Math.max(1, Math.min(2, this.radius)));
+		this.vertices[i*3] = vert.x;
+		this.vertices[i*3 + 1] = vert.y;
+		this.vertices[i*3 + 2] = vert.z;
     }
 	
 	//Create non-shared-vertex sphere
 	unshareVertices(this);
-    
+	
 	/*
     // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
@@ -148,7 +148,6 @@ function IcoSphere(device, radius, subdivisions) {
     }
 	*/
 	this.vertexHeights = [];
-	//for (var size = indices.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
 	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
@@ -162,8 +161,8 @@ function IcoSphere(device, radius, subdivisions) {
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 	// Calculate the normals for each vertex
-    for (i = 0; i < vertices.length; i++) {
-        normals.push(vertices[i] / radius);
+    for (i = 0; i < this.vertices.length; i++) {
+        normals.push(this.vertices[i] / radius);
     }
 
     // Calculate the center and normal for each tile
@@ -222,13 +221,13 @@ function IcoSphere(device, radius, subdivisions) {
     
     var options = {
         normals: normals,
-        indices: indices
+        indices: this.indices
     };
     
     this.toReturn = {
-        mesh: pc.createMesh(device, vertices, options),
+        mesh: pc.createMesh(device, this.vertices, options),
         options: options,
-        positions: vertices
+        positions: this.vertices
     };
     
     return this;
@@ -241,18 +240,20 @@ IcoSphere.prototype.setVertexHeight = function(index, height) {
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
-    var vert = this._getUnbufferedVertex(index);
-	vert.normalize();
-	vert.scale(Math.max(1, Math.min(2, magnitude)));
-	this.vertices[index*3] = vert.x;
-	this.vertices[index*3 + 1] = vert.y;
-	this.vertices[index*3 + 2] = vert.z;
+	for (var i = 0; i < this.vertexGroups[index].length; i++) {
+		var vertexIndex = this.vertexGroups[index][i];
+		var vert = this._getUnbufferedVertex(vertexIndex);
+		vert.normalize();
+		vert.scale(Math.max(1, Math.min(2, magnitude)));
+		this.vertices[vertexIndex*3] = vert.x;
+		this.vertices[vertexIndex*3 + 1] = vert.y;
+		this.vertices[vertexIndex*3 + 2] = vert.z;
+	}
 };
 
 IcoSphere.prototype._getUnbufferedVertex = function(i) {
-    return new pc.alVec3(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
+    return new pc.alVec3(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]);
 };
-
 
 IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces, subdivisions) {
     if (subdivisions === 0) return 0;
@@ -270,9 +271,9 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			}
 	} else {
 			vertexc = this.currentVerts;
-			vertices[this.currentVerts * 3] = midpointc.x;
-			vertices[this.currentVerts * 3 + 1] = midpointc.y;
-			vertices[this.currentVerts * 3 + 2] = midpointc.z;
+			this.vertices[this.currentVerts * 3] = midpointc.x;
+			this.vertices[this.currentVerts * 3 + 1] = midpointc.y;
+			this.vertices[this.currentVerts * 3 + 2] = midpointc.z;
 			++this.currentVerts;
 	}
 	
@@ -285,9 +286,9 @@ IcoSphere.prototype._subdivideFace = function(index) {
 		}
 	} else {
 		vertexb = this.currentVerts;
-		vertices[this.currentVerts * 3] = midpointb.x;
-		vertices[this.currentVerts * 3 + 1] = midpointb.y;
-		vertices[this.currentVerts * 3 + 2] = midpointb.z;
+		this.vertices[this.currentVerts * 3] = midpointb.x;
+		this.vertices[this.currentVerts * 3 + 1] = midpointb.y;
+		this.vertices[this.currentVerts * 3 + 2] = midpointb.z;
 		++this.currentVerts;
 	}
 	
@@ -301,9 +302,9 @@ IcoSphere.prototype._subdivideFace = function(index) {
 		}
 	} else {
 		vertexa = this.currentVerts;
-		vertices[this.currentVerts * 3] = midpointa.x;
-		vertices[this.currentVerts * 3 + 1] = midpointa.y;
-		vertices[this.currentVerts * 3 + 2] = midpointa.z;
+		this.vertices[this.currentVerts * 3] = midpointa.x;
+		this.vertices[this.currentVerts * 3 + 1] = midpointa.y;
+		this.vertices[this.currentVerts * 3 + 2] = midpointa.z;
 		++this.currentVerts;
 	}
 	
@@ -513,23 +514,23 @@ function unshareVertices(icosphere) {
 		for (var j = 0; j < tile.vertexIndices.length; j++) {
 			//Add each tile's vertex to vertices
 			vertices.push(icosphere._getUnbufferedVertex(tile.vertexIndices[j]));
-			//tile.vertexIndices[j] = this.vertices.length-1; //Set the tile 'reference' to the new vertex, it will be changed to the vertex group later
-			
+
 			//Group vertices in the same position
 			var newV = vertices[vertices.length-1];
 			vertexParents[vertices.length-1] = vertexGroups.length;
-			for (var k = 0; k < vertices.length-1; k++) {
+			for (var k = 0, done = false; k < vertices.length-1 && !done; k++) {
 				var v = vertices[k];
 				
 				//Try to find an existing group for this vertex
 				if (v.x === newV.x && v.y === newV.y && v.z === newV.z) {
 					vertexParents[vertices.length-1] = vertexParents[k];
+					vertexGroups[vertexParents[k]].push(vertices.length-1);
+					done = true;
 				}
 			}
 			
 			if (vertexParents[vertices.length-1] === vertexGroups.length) {
-				vertexGroups.push(new Array([])); //No existing shared vertices found, create a new group
-				vertexGroups[vertexGroups.length-1].push(vertices.length-1); //Add the new vertex to the group
+				vertexGroups.push([vertices.length-1]); //No existing shared vertices found, create a new group with the new vertex
 			}
 			
 			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group
