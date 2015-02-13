@@ -17,7 +17,8 @@ pc.script.create('tribe', function (context) {
             deltaVec = new pc.Vec3();
 
             // create mesh
-            this.tile = ico.tiles[21]; // list of tiles
+            this.tile = ico.tiles[0]; // list of tiles
+
             this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.5, .5, .5);
@@ -27,7 +28,7 @@ pc.script.create('tribe', function (context) {
 
             //this.currTileTemperature = this.tile.temperature;
             this.createRuleList();
-            this.destinationTile = ico.tiles[21];
+            this.destinationTile = ico.tiles[0];
 
             // A shader definition used to create a new shader.
             var shaderDefinition = {
@@ -135,9 +136,9 @@ pc.script.create('tribe', function (context) {
             var tempCurrPosY = Math.round(100*this.entity.getPosition().y)/100;
             var tempCurrPosZ = Math.round(100*this.entity.getPosition().z)/100;
 
-            if ((tempCurrPosX === tempDestPosX || tempCurrPosX === tempDestPosX) &&
-                (tempCurrPosY === tempDestPosY || tempCurrPosY === tempDestPosY) &&
-                (tempCurrPosZ === tempDestPosZ || tempCurrPosZ === tempDestPosZ)){
+            if (tempCurrPosX === tempDestPosX &&
+                tempCurrPosY === tempDestPosY &&
+                tempCurrPosZ === tempDestPosZ ){
 
                     this.entity.setPosition(this.destinationTile.center);
                     return true;

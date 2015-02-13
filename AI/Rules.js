@@ -157,6 +157,7 @@ wantToMigrate.prototype = {
     },
     
     consequence: function(tribe){
+        //console.log("Tribe's tile: " + tribe.destinationTile);
         var bestTile;
         var idealTemperature = tribe.getIdealTemperature();
         var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
