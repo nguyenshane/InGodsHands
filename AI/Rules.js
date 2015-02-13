@@ -18,7 +18,7 @@ var wantToMoveNorthColder = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 0;
+    this.weight = 1;
     this.conditions = [ allConditions.isTileWarmer,
                         allConditions.isAboveEquator];
 };
@@ -34,8 +34,6 @@ wantToMoveNorthColder.prototype = {
     },
     
     consequence: function(tribe){
-        //--tribe.currTileTemperature;
-        console.log(tribe.tile.getNorthNeighbor().getTemperature());
         tribe.setDestination(tribe.tile.getNorthNeighbor());
         //console.log("wantToMoveNorthColder has fired: " + tribe.currTileTemperature);
     }    
@@ -51,7 +49,7 @@ var wantToMoveSouthWarmer = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 0;
+    this.weight = 1;
     this.conditions = [ allConditions.isTileColder,
                         allConditions.isAboveEquator];
 };
@@ -68,7 +66,7 @@ wantToMoveSouthWarmer.prototype = {
     
     consequence: function(tribe){
         tribe.setDestination(tribe.tile.getSouthNeighbor());
-        console.log("wantToMoveSouthWarmer() has fired: " + tribe.currTileTemperature);
+        //console.log("wantToMoveSouthWarmer() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -82,7 +80,7 @@ var wantToMoveNorthWarmer = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 0;
+    this.weight = 1;
     this.conditions = [ allConditions.isTileColder,
                         allConditions.isBelowEquator];
 };
@@ -99,7 +97,7 @@ wantToMoveNorthWarmer.prototype = {
     
     consequence: function(tribe){
         tribe.setDestination(tribe.tile.getSouthNeighbor());
-        console.log("wantToMoveNorthWarmer() has fired: " + tribe.currTileTemperature);
+        //console.log("wantToMoveNorthWarmer() has fired: " + tribe.currTileTemperature);
     }    
 };
 
@@ -113,7 +111,7 @@ var wantToMoveSouthColder = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 0;
+    this.weight = 1;
     this.conditions = [ allConditions.isTileWarmer,
                         allConditions.isBelowEquator];
 };
@@ -130,6 +128,53 @@ wantToMoveSouthColder.prototype = {
     
     consequence: function(tribe){
         tribe.setDestination(tribe.tile.getSouthNeighbor());
-        console.log("wantToMoveSouthColder() has fired: " + tribeEntity.currTileTemperature);
+        //console.log("wantToMoveSouthColder() has fired: " + tribe.currTileTemperature);
+    }    
+};
+
+/* 
+ *  wantToMigrate determines whether the tribe wants to move south
+ *  above equator
+ *    
+ */
+
+var wantToMigrate = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 2;
+    this.conditions = [allConditions.isTileTemperatureNotIdeal];
+};
+
+wantToMigrate.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        var bestTile;
+        var idealTemperature = tribe.getIdealTemperature();
+        var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
+        var tempTemperatureB = Math.abs(idealTemperature - tribe.tile.neighborb.getTemperature());
+        var tempTemperatureC = Math.abs(idealTemperature - tribe.tile.neighborc.getTemperature());
+
+        switch(Math.min(tempTemperatureA, tempTemperatureB, tempTemperatureC)) {
+            case tempTemperatureA:
+                bestTile = tribe.tile.neighbora;
+                break;
+            case tempTemperatureB:
+                bestTile = tribe.tile.neighborb;
+                break;
+            case tempTemperatureC:
+                bestTile = tribe.tile.neighborc;
+                break;
+        }
+        tribe.setDestination(bestTile);
+        console.log("Migrate has fired: " + bestTile);
     }    
 };
