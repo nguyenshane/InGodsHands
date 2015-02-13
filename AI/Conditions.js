@@ -2,7 +2,6 @@ pc.script.create('Conditions', function (context) {
     // Creates a new Conditions instance
     var Conditions = function (entity) {
         this.entity = entity;
-        //this.tribe;
     };
 
 
