@@ -108,10 +108,11 @@ pc.script.create('Globe', function (context) {
 			
 			// get the handles
 			this.globe = context.root.findByName("Globe");
-			this.stringW = this.entity.script.HIDInterface.stringW;
-			this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
-			this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
-			console.log(this.globe);
+			//this.stringW = this.entity.script.HIDInterface.stringW;
+			//this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
+			//this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
+			//console.log(this.globe);
+			// 
 			// add rigid body
 			context.systems.rigidbody.addComponent(this.globe, {
 			    type: 'dynamic'
@@ -139,7 +140,7 @@ pc.script.create('Globe', function (context) {
             //console.log(angle.x, angle.y, angle.z);
             //console.log(sun.rotation);
         },
-
+		/*
 		move: function(position, distance, speed) {
 			console.log("FIRED string W in Globe: ", position, distance, speed);
 			this.globe = context.root.findByName("Globe");
@@ -150,7 +151,7 @@ pc.script.create('Globe', function (context) {
 			this.globe = context.root.findByName("Globe");
 			this.globe.rotate(0, position, 0);
 		},
-
+		*/
     };
     return Globe;
 });
