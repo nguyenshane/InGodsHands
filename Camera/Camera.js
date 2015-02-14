@@ -12,7 +12,7 @@ pc.script.create('camera', function (context) {
     Camera.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.stringW = context.root._childern[0].script.HIDInterface.stringW;
+            this.stringW = context.root._children[0].script.HIDInterface.stringW;
 
             console.log(this.stringW);
             this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
