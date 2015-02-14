@@ -42,7 +42,15 @@ pc.script.create('Conditions', function (context) {
         },
 
         isTileTemperatureIdeal: function(tribe){
-            if (!isTileWarmer() || !isTileColder()){
+            if (!this.isTileWarmer(tribe) || !this.isTileColder(tribe)){
+                return true;
+            }
+            return false;
+        },
+
+        isTileTemperatureNotIdeal: function(tribe){
+            if ((tribe.idealTemperature < (Math.round(tribe.currTileTemperature) + 5)) ||
+                (tribe.idealTemperature > (Math.round(tribe.currTileTemperature) - 5))) {
                 return true;
             }
             return false;

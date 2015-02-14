@@ -17,7 +17,8 @@ pc.script.create('tribe', function (context) {
             deltaVec = new pc.Vec3();
 
             // create mesh
-            this.tile = ico.tiles[21]; // list of tiles
+            this.tile = ico.tiles[0]; // list of tiles
+
             this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.5, .5, .5);
@@ -27,9 +28,7 @@ pc.script.create('tribe', function (context) {
 
             //this.currTileTemperature = this.tile.temperature;
             this.createRuleList();
-            console.log(this.currTileTemperature);
             this.destinationTile = ico.tiles[0];
-            console.log("Current tile pos: " + this.entity.getPosition().toString() +  " dest tile pos: " + this.destinationTile.center.toString());
 
             // A shader definition used to create a new shader.
             var shaderDefinition = {
@@ -81,10 +80,7 @@ pc.script.create('tribe', function (context) {
 
             this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
 
-            console.log(this);
             this.entity.model.data.model.meshInstances[0].material = this.material;
-
-
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -93,7 +89,9 @@ pc.script.create('tribe', function (context) {
             // Rules system is run through each from, sorted by weight
             // if the NPC is moving to another tile, moveTo is called instead
 
-            this.rules.sort(function(a, b){return b.weight-a.weight});
+            //console.log(this.tile);
+
+            this.rules.sort(function(a, b){return b.weight - a.weight});
             if(this.tile.equals(this.destinationTile)){
                 for(var i = 0; i < this.rules.length; i++){
                     if(this.rules[i].testConditions(this)){
@@ -113,7 +111,7 @@ pc.script.create('tribe', function (context) {
 
         // Called every movement frame, lerps from one tile center to the next
         moveTo: function() {
-            deltaVec.lerp(this.entity.getPosition(), this.destinationTile.center, .1);
+            deltaVec.lerp(this.entity.getPosition(), this.destinationTile.center, .01);
             this.entity.setPosition(deltaVec);   
             //console.log("Curr pos: " + this.entity.getPosition().x);
             //console.log("dest pos: " + this.destinationTile.center.x);
@@ -130,12 +128,20 @@ pc.script.create('tribe', function (context) {
         },
 
         atDestination: function() {
-            if( this.entity.getPosition().x <= (this.destinationTile.center.x - .1) &&
-                this.entity.getPosition().y <= (this.destinationTile.center.y - .1) &&
-                this.entity.getPosition().z <= (this.destinationTile.center.z - .1) ){
+            var tempDestPosX = Math.round(100*this.destinationTile.center.x)/100;
+            var tempDestPosY = Math.round(100*this.destinationTile.center.y)/100;
+            var tempDestPosZ = Math.round(100*this.destinationTile.center.z)/100;
 
-                this.entity.setPosition(this.destinationTile.center);
-                return true;
+            var tempCurrPosX = Math.round(100*this.entity.getPosition().x)/100;
+            var tempCurrPosY = Math.round(100*this.entity.getPosition().y)/100;
+            var tempCurrPosZ = Math.round(100*this.entity.getPosition().z)/100;
+
+            if (tempCurrPosX === tempDestPosX &&
+                tempCurrPosY === tempDestPosY &&
+                tempCurrPosZ === tempDestPosZ ){
+
+                    this.entity.setPosition(this.destinationTile.center);
+                    return true;
             } else {
                 return false;
             }
@@ -151,10 +157,11 @@ pc.script.create('tribe', function (context) {
 
         // Constructs the NPC's list of rules
         createRuleList: function() {
-            this.rules.push(new wantToMoveNorthColder());
-            this.rules.push(new wantToMoveNorthWarmer());
-            this.rules.push(new wantToMoveSouthColder());
-            this.rules.push(new wantToMoveSouthWarmer());
+            //this.rules.push(new wantToMoveNorthColder());
+            //this.rules.push(new wantToMoveNorthWarmer());
+            //this.rules.push(new wantToMoveSouthColder());
+            //this.rules.push(new wantToMoveSouthWarmer());
+            this.rules.push(new wantToMigrate());
         }
     };
 
