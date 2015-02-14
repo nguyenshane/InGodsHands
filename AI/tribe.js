@@ -115,8 +115,8 @@ pc.script.create('tribe', function (context) {
         moveTo: function() {
             deltaVec.lerp(this.entity.getPosition(), this.destinationTile.center, .1);
             this.entity.setPosition(deltaVec);   
-            console.log("Curr pos: " + this.entity.getPosition().x);
-            console.log("dest pos: " + this.destinationTile.center.x);
+            //console.log("Curr pos: " + this.entity.getPosition().x);
+            //console.log("dest pos: " + this.destinationTile.center.x);
 
 
             // Once tribe is at next tile's center, movement is done.

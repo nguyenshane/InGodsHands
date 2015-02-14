@@ -37,51 +37,26 @@ pc.script.create('HIDInterface', function (context) {
 		move_T: function(position, distance, speed) {
 			console.log("FIRED string T: ", position, distance, speed);
 			
-			this.audio = context.root.findByName("TestStringSphere");
-            this.playing = false;
-            this.paused = false;
-            
-			 this.audio.audiosource.play("string_pull");
 		},
 		
 		move_A: function(position, distance, speed) {
 			console.log("FIRED string A: ", position, distance, speed);
 
-			this.audio = context.root.findByName("TestStringSphere");
-            this.playing = false;
-            this.paused = false;
-            
-			 this.audio.audiosource.play("string_pull");
 		},
 		
 		move_P: function(position, distance, speed) {
 			console.log("FIRED string P: ", position, distance, speed);
 
-			this.audio = context.root.findByName("TestStringSphere");
-            this.playing = false;
-            this.paused = false;
-            
-			 this.audio.audiosource.play("string_pull");
 		},
 		
 		move_E: function(position, distance, speed) {
 			console.log("FIRED string E: ", position, distance, speed);
 
-			this.audio = context.root.findByName("TestStringSphere");
-            this.playing = false;
-            this.paused = false;
-            
-			 this.audio.audiosource.play("string_pull");
 		},
 		
 		move_W: function(position, distance, speed) {
 			console.log("FIRED string W: ", position, distance, speed);
 
-			this.audio = context.root.findByName("TestStringSphere");
-            this.playing = false;
-            this.paused = false;
-            
-			 this.audio.audiosource.play("string_pull");
 		},
 
     };
