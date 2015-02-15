@@ -5,7 +5,7 @@ pc.script.create('camera', function (context) {
 
         this.distance = 10;
         this.height = 0;
-        this.orbitAngle = 90;
+        this.orbitAngle = 0;
         
     };
 
