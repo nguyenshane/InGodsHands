@@ -38,7 +38,7 @@ pc.script.create('Atmosphere', function (context) {
                 else this.atmstack.unshift(e)
             }
             
-            console.log(this.atmstack.length);
+            //console.log(this.atmstack.length);
         },
         
         makeRain: function(x,y,z) {

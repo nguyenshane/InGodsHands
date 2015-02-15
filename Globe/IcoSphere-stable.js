@@ -309,7 +309,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	if (tiles[index].neighborc.divided === true) {
 			var ac = null, bb = null;
 			
-			console.log("Here", tiles[index].vertexIndices[0]);
+			//console.log("Here", tiles[index].vertexIndices[0]);
 			
 			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
 				ac = tiles[index].neighborc.neighbora;

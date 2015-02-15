@@ -5,7 +5,7 @@ pc.script.create('camera', function (context) {
 
         this.distance = 10;
         this.height = 0;
-        this.orbitAngle = 0
+        this.orbitAngle = 90;
         
     };
 
@@ -13,9 +13,11 @@ pc.script.create('camera', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             this.stringW = context.root._children[0].script.HIDInterface.stringW;
-
-            console.log(this.stringW);
             this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
+
+			this.bgplane = this.entity.findByName("Plane");
+			console.log(this.bgplane);
+			
         },
         
         move_W: function(position, distance, speed, orbitAngle) {
@@ -27,6 +29,10 @@ pc.script.create('camera', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+	
+			// Rotate plane background
+			this.bgplane.rotateLocal(0, dt*2, 0);
+
             if (context.keyboard.isPressed(pc.input.KEY_LEFT)) {
                 this.orbitAngle++;
             }
