@@ -176,8 +176,8 @@ wantToMigrate.prototype = {
                 break;
         }
         tribe.setDestination(bestTile);
-         var moveS = context.root.findByName('Rv1-stable');
-            moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
-        console.log("Migrate has fired: " + bestTile);
+        //  var moveS = context.root.findByName('Rv1-stable');
+        //     moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
+        // console.log("Migrate has fired: " + bestTile);
     }    
 };
