@@ -3,7 +3,7 @@ pc.script.create('camera', function (context) {
     var Camera = function (entity) {
         this.entity = entity;
 
-        this.distance = 10;
+        this.distance = 8;
         this.height = 0;
         this.orbitAngle = 0;
         

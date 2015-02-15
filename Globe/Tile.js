@@ -214,9 +214,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         return center;
     };
     
-    this.toString = function(){
-        console.log ("vertexIndices, neighborIndices:",this.vertexIndices, this.neighborIndices);
-    };
+    //this.toString = function(){
+    //    console.log ("vertexIndices, neighborIndices:",this.vertexIndices, this.neighborIndices);
+    //};
 
     this.equals = function(other){
         return (this.center.x === (other.center.x) &&

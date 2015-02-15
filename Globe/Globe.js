@@ -53,19 +53,20 @@ pc.script.create('Globe', function (context) {
                     "uniform float radius;",
                     "uniform vec3 sunDir;",
                     "uniform float ambient;",
+                    "uniform float sunIntensity;",
                     "",
                     "void main(void)",
                     "{",
                     "    float intensity = max(dot(normalize(fPosition), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
                     "    float r =  abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
-                    "    float g = dist - 1.0;",
+                    "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     "    if (dist > radius) {",
-                    "       color = intensity * vec4(r, g, b, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     "    } else {",
-                    "       color = intensity * vec4(0.0, 0.0, 1.0, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(0.0, 0.0, 1.0, 1.0);",
                     "    }",
                     "    gl_FragColor = color;",
                     "}"
@@ -83,8 +84,9 @@ pc.script.create('Globe', function (context) {
             this.material.setParameter('radius', ico.radius);
             
             this.material.setParameter('ambient', 0.2);
+            this.material.setParameter('sunIntensity', 1.0);
 
-            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
             
             
             var phong = new pc.scene.PhongMaterial(); 
@@ -131,7 +133,7 @@ pc.script.create('Globe', function (context) {
             this.material.setParameter('maxTemp', globalTemperatureMax);
 
             // Set lighting in shader
-            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
             //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
             //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
             //var angle = sun.rotation.getEulerAngles();
