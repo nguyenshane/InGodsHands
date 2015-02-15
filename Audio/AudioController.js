@@ -81,7 +81,13 @@ pc.script.create('AudioController', function (context) {
             
 			this.audio.audiosource.play("string_pull");
 		},
+		sound_TribeMov: function(){
+			this.audio = context.root._children[0];
+            this.playing = false;
+            this.paused = false;
 
+            this.audio.audiosoure.play("tribeMovement");
+		},
     };
 
     return AudioController;
