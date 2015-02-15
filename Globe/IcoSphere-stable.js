@@ -150,6 +150,11 @@ function IcoSphere(device, radius, subdivisions) {
        	//console.log("ext" + i);
     }
 
+    for ( i = 0; i < this.currentFaces; ++i) {
+       tiles[i].calculateCenter();
+       	//console.log("ext" + i);
+    }
+
     for (i = 0; i < vertices.length; i++) {
         normals.push(vertices[i] / radius);
     }

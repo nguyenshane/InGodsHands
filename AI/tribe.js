@@ -16,10 +16,13 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
             deltaVec = new pc.Vec3();
 
-            // create mesh
-            this.tile = ico.tiles[0]; // list of tiles
+            console.log(tiles);
+            console.log(ico.tiles);
 
-            this.entity.setPosition(this.tile.center);
+            // create mesh
+            this.tile = tiles[0]; // list of tiles
+
+            this.entity.setPosition(this.tile.calculateCenter());
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.5, .5, .5);
 

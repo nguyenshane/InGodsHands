@@ -3,6 +3,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.vertexIndices = [];
     this.neighborIndices = [];
     this.colors = [];
+    this.neighbora, this.neighborb, this.neighborc;
 	
     var normalIndex, hasHuman, divided;
     this.normal;
@@ -131,7 +132,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
 
-		this.normal = new pc.alVec3().cross(vectorb,vectorc);
+		this.normal = new pc.Vec3().cross(vectorb,vectorc);
 		
 		this.normal.normalize();
     };
@@ -197,8 +198,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
     
     this.getMidpoint = function(verta, vertb){
-        midpoint = new pc.alVec3(handle.vertices[this.vertexIndices[verta] * 3], handle.vertices[this.vertexIndices[verta] * 3 + 1], handle.vertices[this.vertexIndices[verta] * 3 + 2]);
-		vert2 = new pc.alVec3(handle.vertices[this.vertexIndices[vertb] * 3], handle.vertices[this.vertexIndices[vertb] * 3 + 1], handle.vertices[this.vertexIndices[vertb] * 3 + 2]);
+        midpoint = new pc.Vec3(handle.vertices[this.vertexIndices[verta] * 3], handle.vertices[this.vertexIndices[verta] * 3 + 1], handle.vertices[this.vertexIndices[verta] * 3 + 2]);
+		vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb] * 3], handle.vertices[this.vertexIndices[vertb] * 3 + 1], handle.vertices[this.vertexIndices[vertb] * 3 + 2]);
 		midpoint.add(vert2);
 		midpoint.scale(0.5);
 		return midpoint;
