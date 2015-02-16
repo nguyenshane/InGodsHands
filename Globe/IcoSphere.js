@@ -210,10 +210,14 @@ IcoSphere.prototype._recalculateMesh = function() {
 		
 		var verts = tiles[i].vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
+			unbufferedNormals[i*3+j] = tiles[i].normal;
+			
+			/*
 			var group = this.vertexGroups[verts[j]];
 			for (var k = 0; k < group.length; k++) {
 				unbufferedNormals[group[k]] = tiles[i].normal;
 			}
+			*/
 		}
     }
 	
@@ -223,15 +227,15 @@ IcoSphere.prototype._recalculateMesh = function() {
 	this.normals = [];
 	this.normals[this.vertices.length-1] = 0;
     for (var i = 0; i < unbufferedNormals.length; i++) {
-		this.vertexBuffer.push(this.vertices[i]);
-		this.vertexBuffer.push(this.vertices[i+1]);
-		this.vertexBuffer.push(this.vertices[i+2]);
-		this.vertexBuffer.push(unbufferedNormals[i].x);
-		this.vertexBuffer.push(unbufferedNormals[i].y);
-		this.vertexBuffer.push(unbufferedNormals[i].z);
-		this.normals.push(unbufferedNormals[i].x);
-		this.normals.push(unbufferedNormals[i].y);
-		this.normals.push(unbufferedNormals[i].z);
+		this.vertexBuffer[i*6] = this.vertices[i*3];
+		this.vertexBuffer[i*6+1] = this.vertices[i*3+1];
+		this.vertexBuffer[i*6+2] = this.vertices[i*3+2];
+		this.vertexBuffer[i*6+3] = unbufferedNormals[i].x;
+		this.vertexBuffer[i*6+4] = unbufferedNormals[i].y;
+		this.vertexBuffer[i*6+5] = unbufferedNormals[i].z;
+		this.normals[i*3] = unbufferedNormals[i].x;
+		this.normals[i*3+1] = unbufferedNormals[i].y;
+		this.normals[i*3+2] = unbufferedNormals[i].z;
     }
 };
 
@@ -409,81 +413,6 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	
 	tiles[index].divided = true;
 };
-/*
-IcoSphere.prototype._splitEdge = function(vertices, normals, i1, i2, split, radius) {
-    /// Helper functions
-    this.addv3 = function(a, b) {
-        var out = [0,0,0];
-        
-        out[0] = a[0] + b[0];
-        out[1] = a[1] + b[1];
-        out[2] = a[2] + b[2];
-        
-        return out;
-    };
-    
-    this.lengthv3 = function (a) {
-        var x = a[0],
-            y = a[1],
-            z = a[2];
-        return Math.sqrt(x*x + y*y + z*z);
-    };
-    
-    this.normalizev3 = function(a) {
-         var out = [0,0,0];
-        
-        //console.log(out,a)
-        var x = a[0],
-            y = a[1],
-            z = a[2];
-        var len = x*x + y*y + z*z;
-        if (len > 0) {
-            //TODO: evaluate use of glm_invsqrt here?
-            len = 1 / Math.sqrt(len);
-            out[0] = a[0] * len;
-            out[1] = a[1] * len;
-            out[2] = a[2] * len;
-        }
-        return out;
-    };
-    
-    ///
-    
-    var splitKey;
-
-    if (i1 < i2) {
-        splitKey = i1 + '-' + i2;
-    } else {
-        splitKey = i2 + '-' + i1;
-    }
-
-    var pt = split[splitKey];
-
-    if (pt) {
-        return pt;
-    }
-
-    var i = vertices.length / 3;
-    split[splitKey] = i;
-
-    var i1s = i1 * 3;
-    var i1e = i1s + 3;
-    var i2s = i2 * 3;
-    var i2e = i2s + 3;
-    
-    
-    var m = this.addv3(vertices.slice(i1s, i1e), vertices.slice(i2s, i2e));
-    
-    var l = radius / this.lengthv3(m);
-
-    vertices.push(m[0] * l, m[1] * l, m[2] * l);
-
-    var n = this.normalizev3(this.addv3(normals.slice(i1s, i1e), normals.slice(i2s, i2e)));
-    normals.push(n[0], n[1], n[2]);
-
-    return i;
-}
-*/
 
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
 function unshareVertices(icosphere) {
