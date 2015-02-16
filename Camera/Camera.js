@@ -16,7 +16,13 @@ pc.script.create('camera', function (context) {
             this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
 
 			this.bgplane = this.entity.findByName("Plane");
-			console.log(this.bgplane);
+            this.aura1 = this.entity.findByName("Aura1");
+            this.aura2 = this.entity.findByName("Aura2");
+            this.aura3 = this.entity.findByName("Aura3");
+            //this.aura1Mat = context.assets.find("BeliefAura1", pc.asset.ASSET_MATERIAL).resource;
+            this.aura1Mat = this.aura1.model.model.getMaterials()[0];
+            this.aura2Mat = this.aura2.model.model.getMaterials()[0];
+            this.aura3Mat = this.aura3.model.model.getMaterials()[0];
 			
         },
         
@@ -31,7 +37,36 @@ pc.script.create('camera', function (context) {
         update: function (dt) {
 	
 			// Rotate plane background
-			this.bgplane.rotateLocal(0, dt*2, 0);
+			this.bgplane.rotateLocal(0, dt*-2, 0);
+            // Rotate belief auras
+            this.aura1.rotateLocal(0, dt*4, 0);
+            this.aura2.rotateLocal(0, dt*8, 0);
+            this.aura3.rotateLocal(0, dt*-6, 0);
+
+            // Scale belief aura
+            var maxScale = 6.5;
+            var minScale = 3.5;
+            this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            // Change aura color
+            if(totalBelief < prevTotalBelief) {
+                this.aura1Mat.diffuse = new pc.Color(1.0,0.25,0.25);
+                this.aura2Mat.diffuse = new pc.Color(1.0,0.5,0.5);
+                this.aura3Mat.diffuse = new pc.Color(1.0,0.75,0.75);
+            } else if(totalBelief > prevTotalBelief) {
+                this.aura1Mat.diffuse = new pc.Color(0.25,1.0,0.25);
+                this.aura2Mat.diffuse = new pc.Color(0.5,1.0,0.5);
+                this.aura3Mat.diffuse = new pc.Color(0.75,1.0,0.75);
+            } else {
+                this.aura1Mat.diffuse = new pc.Color(0.25,0.25,0.25);
+                this.aura2Mat.diffuse = new pc.Color(0.5,0.5,0.5);
+                this.aura3Mat.diffuse = new pc.Color(0.75,0.75,0.75);
+            }
+            this.aura1Mat.update();
+            this.aura2Mat.update();
+            this.aura3Mat.update();
+            //console.log(totalBelief);
 
             if (context.keyboard.isPressed(pc.input.KEY_LEFT)) {
                 this.orbitAngle++;
