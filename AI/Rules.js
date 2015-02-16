@@ -158,6 +158,7 @@ wantToMigrate.prototype = {
     
     consequence: function(tribe){
         //console.log("Tribe's tile: " + tribe.destinationTile);
+        console.log("Migrate has fired: " );
         var bestTile;
         var idealTemperature = tribe.getIdealTemperature();
         var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
@@ -176,8 +177,8 @@ wantToMigrate.prototype = {
                 break;
         }
         tribe.setDestination(bestTile);
-        //  var moveS = context.root.findByName('Rv1-stable');
-        //     moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
-        // console.log("Migrate has fired: " + bestTile);
+         var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName('Rv1-stable');
+            moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
+        
     }    
 };

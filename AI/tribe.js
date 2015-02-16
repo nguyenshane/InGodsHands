@@ -42,6 +42,7 @@ pc.script.create('tribe', function (context) {
                 for(var i = 0; i < this.rules.length; i++){
                     if(this.rules[i].testConditions(this)){
                         this.rules[i].consequence(this);
+                        console.log(this.rules[i]);
                     }
                 }
             } else {
