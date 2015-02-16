@@ -70,7 +70,7 @@ pc.script.create('tribe', function (context) {
             if(this.atDestination()){
                 this.tile = this.destinationTile;
                 this.currTileTemperature = this.tile.getTemperature();
-                console.log(this.currTileTemperature);
+                this.calculatePopulation();
             }
         },
 
@@ -119,6 +119,14 @@ pc.script.create('tribe', function (context) {
         calculateFood: function() {
             this.food = this.tile.getFood();
             console.log("Current Food: " + this.food);
+        },
+
+        calculatePopulation: function() {
+            var popGrowth;
+
+            popGrowth = this.food - this.population;
+            this.population += popGrowth;
+            console.log(this.population);
         },
 
         // Constructs the NPC's list of rules
