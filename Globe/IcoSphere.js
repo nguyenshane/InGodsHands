@@ -12,26 +12,27 @@ function IcoSphere(device, radius, subdivisions) {
     y *= l;
 
     var startingVerts = [-x,  y, 0,
-                     x,  y, 0,
-                    -x, -y, 0,
-                     x, -y, 0,
+						  x,  y, 0,
+						 -x, -y, 0,
+						  x, -y, 0,
 
-                     0, -x,  y,
-                     0,  x,  y,
-                     0, -x, -y,
-                     0,  x, -y,
+						 0, -x,  y,
+						 0,  x,  y,
+						 0, -x, -y,
+						 0,  x, -y,
 
-                     y,  0, -x,
-                     y,  0,  x,
-                    -y,  0, -x,
-                    -y,  0,  x];
+						 y,  0, -x,
+						 y,  0,  x,
+						-y,  0, -x,
+						-y,  0,  x];
 
-    var normals = [];
     var colors = [];
 	
 	this.radius = radius;
 	
     this.vertices = [];
+	this.normals = [];
+	this.vertexBuffer = [];
     this.indices = [];
 	
 	this.vertexGroups;
@@ -112,15 +113,12 @@ function IcoSphere(device, radius, subdivisions) {
 	tiles[18].setNeighbors(8, 9, 13);
 	tiles[19].setNeighbors(9, 5, 14);
 	
-	
-	
-	var self = this; 
 	// Run subdivide
 	for (var i = 1; i < subdivisions; ++i) {
     	var jMax = this.currentFaces;
     	
     	for (var j = 0; j < jMax; ++j) {
-    		self._subdivideFace(j);
+    		this._subdivideFace(j);
     	}
     		
     	for (j = 0; j < jMax; ++j) {
@@ -138,9 +136,12 @@ function IcoSphere(device, radius, subdivisions) {
 		this.vertices[i*3 + 2] = vert.z;
     }
 	
+	
 	//Create non-shared-vertex sphere
 	unshareVertices(this);
 	
+	
+	//Generate terrain
 	/*
     // Test extrude, this should be where the repellers algorithm be replaced
     for ( i = 0; i < this.currentFaces; ++i) {
@@ -160,67 +161,14 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
-	// Calculate the normals for each vertex
-    for (i = 0; i < this.vertices.length; i++) {
-        normals.push(this.vertices[i] / radius);
-    }
-
-    // Calculate the center and normal for each tile
-    for ( i = 0; i < this.currentFaces; ++i) {
-       tiles[i].calculateCenter();
-       tiles[i].calculateNormal();
-    }
-    
-
-    /*indices = [
-         0, 11,  5,
-         0,  5,  1,
-         0,  1,  7,
-         0,  7, 10,
-         0, 10, 11,
-
-         1,  5,  9,
-         5, 11,  4,
-        11, 10,  2,
-        10,  7,  6,
-         7,  1,  8,
-
-         3,  9,  4,
-         3,  4,  2,
-         3,  2,  6,
-         3,  6,  8,
-         3,  8,  9,
-
-         4,  9,  5,
-         2,  4, 11,
-         6,  2, 10,
-         8,  6,  7,
-         9,  8,  1
-    ];
-
-    
-    for (var s = 1; s < subdivisions; s++) {
-        var nindices = [];
-
-        var split = {};
-
-        // for each face
-        for (i = 0; i < indices.length; i += 3) {
-            var i0 = this._splitEdge(vertices, normals, indices[i], indices[i + 1], split, radius);
-            var i1 = this._splitEdge(vertices, normals, indices[i + 1], indices[i + 2], split, radius);
-            var i2 = this._splitEdge(vertices, normals, indices[i + 2], indices[i], split, radius);
-
-            nindices.push(indices[i], i0, i2,
-                          i0, indices[i + 1], i1,
-                          i0, i1, i2,
-                          i2, i1, indices[i + 2]);
-        }
-
-        indices = nindices;
-    }*/
-    
+	
+    // Calculate the center and normal for each tile and build the vertex buffer
+	this._recalculateMesh();
+	
+	
+    // Set mesh data
     var options = {
-        normals: normals,
+        normals: this.normals,
         indices: this.indices
     };
     
@@ -249,6 +197,42 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 		this.vertices[vertexIndex*3 + 1] = vert.y;
 		this.vertices[vertexIndex*3 + 2] = vert.z;
 	}
+};
+
+//Should only be called once per frame if the mesh has been altered
+IcoSphere.prototype._recalculateMesh = function() {
+	// Calculate the center and normal for each tile
+	var unbufferedNormals = [];
+	unbufferedNormals[this.indices.length-1] = 0;
+    for (var i = 0; i < this.currentFaces; ++i) {
+		tiles[i].calculateCenter();
+		tiles[i].calculateNormal();
+		
+		var verts = tiles[i].vertexIndices;
+		for (var j = 0; j < verts.length; j++) {
+			var group = this.vertexGroups[verts[j]];
+			for (var k = 0; k < group.length; k++) {
+				unbufferedNormals[group[k]] = tiles[i].normal;
+			}
+		}
+    }
+	
+	// Add vertex position and normal data to vertexBuffer
+	this.vertexBuffer = [];
+	this.vertexBuffer[this.vertices.length*2-1] = 0;
+	this.normals = [];
+	this.normals[this.vertices.length-1] = 0;
+    for (var i = 0; i < unbufferedNormals.length; i++) {
+		this.vertexBuffer.push(this.vertices[i]);
+		this.vertexBuffer.push(this.vertices[i+1]);
+		this.vertexBuffer.push(this.vertices[i+2]);
+		this.vertexBuffer.push(unbufferedNormals[i].x);
+		this.vertexBuffer.push(unbufferedNormals[i].y);
+		this.vertexBuffer.push(unbufferedNormals[i].z);
+		this.normals.push(unbufferedNormals[i].x);
+		this.normals.push(unbufferedNormals[i].y);
+		this.normals.push(unbufferedNormals[i].z);
+    }
 };
 
 IcoSphere.prototype._getUnbufferedVertex = function(i) {

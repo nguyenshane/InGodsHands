@@ -10,9 +10,6 @@ pc.script.create('Globe', function (context) {
         initialize: function () {			
             // create mesh
             ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
-
-            //console.log(ico);
-            
             var mesh = ico.toReturn.mesh;
 
             // create entity
@@ -24,10 +21,12 @@ pc.script.create('Globe', function (context) {
 			var shaderDefinition = {
                 attributes: {
                     aPosition: pc.SEMANTIC_POSITION,
+					aNormal: pc.SEMANTIC_NORMAL,
                     aUv0: pc.SEMANTIC_TEXCOORD0
                 },
                 vshader: [
                     "attribute vec3 aPosition;",
+					"attribute vec3 aNormal;",
                     "attribute vec2 aUv0;",
                     "",
                     "uniform mat4 matrix_model;",
@@ -38,6 +37,7 @@ pc.script.create('Globe', function (context) {
                     "void main(void)",
                     "{",
                     "    fPosition = aPosition;",
+					"    fNormal = aNormal;",
                     "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
                     "}"
                 ].join("\n"),
@@ -45,6 +45,7 @@ pc.script.create('Globe', function (context) {
                     "precision " + context.graphicsDevice.precision + " float;",
                     "",
                     "varying vec3 fPosition;",
+					"varying vec3 fNormal;",
                     "",
                     "//uniform sampler2D uDiffuseMap;",
                     "//uniform sampler2D uHeightMap;",
@@ -56,7 +57,7 @@ pc.script.create('Globe', function (context) {
                     "",
                     "void main(void)",
                     "{",
-                    "    float intensity = max(dot(normalize(fPosition), normalize(sunDir)), ambient);",
+                    "    float intensity = max(dot(normalize(fNormal), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
                     "    float r =  abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
                     "    float g = dist - 1.0;",
