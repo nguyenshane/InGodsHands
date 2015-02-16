@@ -233,6 +233,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		this.vertexBuffer[i*6+3] = unbufferedNormals[i].x;
 		this.vertexBuffer[i*6+4] = unbufferedNormals[i].y;
 		this.vertexBuffer[i*6+5] = unbufferedNormals[i].z;
+		
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;

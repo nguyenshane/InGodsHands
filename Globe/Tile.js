@@ -139,6 +139,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 
 		this.normal = new pc.Vec3().cross(vectorb,vectorc);
 		
+		if (this.normal.dot(this.center) < 0) {
+			this.normal.x *= -1;
+			this.normal.y *= -1;
+			this.normal.z *= -1;
+		}
+		
 		this.normal.normalize();
     };
     
