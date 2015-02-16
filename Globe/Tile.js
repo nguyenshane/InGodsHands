@@ -130,9 +130,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     
    
     this.calculateNormal = function(){
-        var vectora = handle._getUnbufferedVertex(this.vertexIndices[0]);
-        var vectorb = handle._getUnbufferedVertex(this.vertexIndices[1]);
-        var vectorc = handle._getUnbufferedVertex(this.vertexIndices[2]);
+        var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);
+        var vectorb = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[1]][0]);
+        var vectorc = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[2]][0]);
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
