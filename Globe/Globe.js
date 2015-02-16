@@ -54,19 +54,20 @@ pc.script.create('Globe', function (context) {
                     "uniform float radius;",
                     "uniform vec3 sunDir;",
                     "uniform float ambient;",
+                    "uniform float sunIntensity;",
                     "",
                     "void main(void)",
                     "{",
                     "    float intensity = max(dot(normalize(fNormal), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
                     "    float r =  abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
-                    "    float g = dist - 1.0;",
+                    "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     "    if (dist > radius) {",
-                    "       color = intensity * vec4(r, g, b, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     "    } else {",
-                    "       color = intensity * vec4(0.0, 0.0, 1.0, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(0.0, 0.0, 1.0, 1.0);",
                     "    }",
                     "    gl_FragColor = color;",
                     "}"
@@ -84,8 +85,9 @@ pc.script.create('Globe', function (context) {
             this.material.setParameter('radius', ico.radius);
             
             this.material.setParameter('ambient', 0.2);
+            this.material.setParameter('sunIntensity', 1.0);
 
-            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
             
             
             var phong = new pc.scene.PhongMaterial(); 
@@ -109,10 +111,11 @@ pc.script.create('Globe', function (context) {
 			
 			// get the handles
 			this.globe = context.root.findByName("Globe");
-			this.stringW = this.entity.script.HIDInterface.stringW;
-			this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
-			this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
-			console.log(this.globe);
+			//this.stringW = this.entity.script.HIDInterface.stringW;
+			//this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
+			//this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
+			//console.log(this.globe);
+			// 
 			// add rigid body
 			context.systems.rigidbody.addComponent(this.globe, {
 			    type: 'dynamic'
@@ -131,7 +134,7 @@ pc.script.create('Globe', function (context) {
             this.material.setParameter('maxTemp', globalTemperatureMax);
 
             // Set lighting in shader
-            this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
+            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
             //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
             //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
             //var angle = sun.rotation.getEulerAngles();
@@ -140,7 +143,7 @@ pc.script.create('Globe', function (context) {
             //console.log(angle.x, angle.y, angle.z);
             //console.log(sun.rotation);
         },
-
+		/*
 		move: function(position, distance, speed) {
 			console.log("FIRED string W in Globe: ", position, distance, speed);
 			this.globe = context.root.findByName("Globe");
@@ -151,7 +154,7 @@ pc.script.create('Globe', function (context) {
 			this.globe = context.root.findByName("Globe");
 			this.globe.rotate(0, position, 0);
 		},
-
+		*/
     };
     return Globe;
 });

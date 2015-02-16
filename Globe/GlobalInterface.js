@@ -17,6 +17,8 @@ pc.script.create('globalInterface', function (context) {
             globalTemperature = 90;
             globalTemperatureMax = 100;
             sun = context.root.findByName("Sun");
+            shaderSun = context.root.findByName("ShaderSun");
+            globalSunRotation = 50;
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -30,8 +32,9 @@ pc.script.create('globalInterface', function (context) {
 
             /**** Test sun rotation ****/
             //sun.rotate(0, dt * 100, 0);
-            //sun.rotate(0, dt * 100, 0);
-            sun.rotateLocal(0, dt * 100, 0);
+            sun.rotate(0, dt * globalSunRotation, 0);
+            //sun.rotateLocal(0, dt * 100, 0);
+            shaderSun.rotateLocal(0, dt * globalSunRotation * -2, 0);
             //sun.setEulerAngles(0, 90 + this.time, 0);
             /****                   ****/
             
