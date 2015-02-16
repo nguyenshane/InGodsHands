@@ -203,7 +203,7 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 IcoSphere.prototype._recalculateMesh = function() {
 	// Calculate the center and normal for each tile
 	var unbufferedNormals = [];
-	unbufferedNormals[this.indices.length-1] = 0;
+	unbufferedNormals[this.currentFaces*3-1] = 0;
     for (var i = 0; i < this.currentFaces; ++i) {
 		tiles[i].calculateCenter();
 		tiles[i].calculateNormal();
