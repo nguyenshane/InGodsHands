@@ -13,6 +13,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.neighborc;
     
     this.temperature;
+    this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 
     this.isOcean = true;//(Math.random()>0.01) ? true : false;
     handle = icosphere;
@@ -96,7 +97,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.determineCost = function() {
         if (!this.isOcean) return -1;
         return this.center.length;
-    }
+    };
 
     this.getRotationAlignedWithNormal = function() {
         //var x = Math.acos(this.center.z/ico.radius) * 180/Math.PI;
@@ -116,7 +117,11 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         //var y = Math.sin(Math.atan(this.normal.y/this.normal.x)) * Math.sin(Math.acos(this.normal.z)) * 180/Math.PI;
         //var z = Math.cos(Math.atan(this.normal.y/this.normal.x)) * 180/Math.PI;
         return m.getEulerAngles();//new pc.Vec3(x, y, z);
-    }
+    };
+
+    this.getFood = function(){
+        return this.food;
+    };
 
     this.getTemperature = function(){
         this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperature
