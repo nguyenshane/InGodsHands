@@ -4,9 +4,9 @@ pc.script.create('tribe', function (context) {
         this.entity = entity;
         this.population = 1;
         this.idealTemperature = 65;
+        this.belief;
         this.tile;
         this.destinationTile;
-        //this.currTileTemperature = 90;
         this.rules = [];
         var deltaVec;
     };
@@ -16,11 +16,9 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
             deltaVec = new pc.Vec3();
 
-            console.log(tiles);
-            console.log(ico.tiles);
-
             // create mesh
-            this.tile = tiles[0]; // list of tiles
+            this.tile = ico.tiles[0]; // list of tiles
+            this.calculateFood()
 
             this.entity.setPosition(this.tile.calculateCenter());
             this.rotation = this.tile.getRotationAlignedWithNormal();
@@ -39,9 +37,6 @@ pc.script.create('tribe', function (context) {
 
             // Rules system is run through each from, sorted by weight
             // if the NPC is moving to another tile, moveTo is called instead
-
-            //console.log(this.tile);
-
             this.rules.sort(function(a, b){return b.weight - a.weight});
             if(this.tile.equals(this.destinationTile)){
                 for(var i = 0; i < this.rules.length; i++){
@@ -52,6 +47,9 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.moveTo();
             }
+
+            // Calculate food every frame in case whether changes tile food count
+            this.calculateFood();
 
             // Set lighting in shader
             //this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
@@ -71,6 +69,8 @@ pc.script.create('tribe', function (context) {
             // Once tribe is at next tile's center, movement is done.
             if(this.atDestination()){
                 this.tile = this.destinationTile;
+                this.currTileTemperature = this.tile.getTemperature();
+                console.log(this.currTileTemperature);
             }
         },
 
@@ -78,6 +78,7 @@ pc.script.create('tribe', function (context) {
             this.destinationTile = destination;
         },
 
+        // Tests if tribe is at the dest position, rounds it to the 100th place because the lerp
         atDestination: function() {
             var tempDestPosX = Math.round(100*this.destinationTile.center.x)/100;
             var tempDestPosY = Math.round(100*this.destinationTile.center.y)/100;
@@ -91,8 +92,9 @@ pc.script.create('tribe', function (context) {
                 tempCurrPosY === tempDestPosY &&
                 tempCurrPosZ === tempDestPosZ ){
 
-                    this.entity.setPosition(this.destinationTile.center);
-                    return true;
+                this.entity.setPosition(this.destinationTile.center);
+                return true;
+            
             } else {
                 return false;
             }
@@ -104,6 +106,19 @@ pc.script.create('tribe', function (context) {
 
         getIdealTemperature: function() {
             return this.idealTemperature;
+        },
+
+        increaseBelief: function() {
+            ++this.belief;
+        },
+
+        decreaseBelief: function() {
+            --this.belief;
+        },
+
+        calculateFood: function() {
+            this.food = this.tile.getFood();
+            console.log("Current Food: " + this.food);
         },
 
         // Constructs the NPC's list of rules

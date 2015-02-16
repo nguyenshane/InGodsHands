@@ -11,7 +11,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.neighbora;
     this.neighborb;
     this.neighborc;
-    
+        
+    this.temperature;
+    this.food = Math.floor(Math.random() * (5 - 1)) + 1;
+
     this.isOcean = (Math.random()>0.01) ? true : false;
     handle = icosphere;
     this.divided = false;
@@ -114,6 +117,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         //var y = Math.sin(Math.atan(this.normal.y/this.normal.x)) * Math.sin(Math.acos(this.normal.z)) * 180/Math.PI;
         //var z = Math.cos(Math.atan(this.normal.y/this.normal.x)) * 180/Math.PI;
         return m.getEulerAngles();//new pc.Vec3(x, y, z);
+    };
+
+    this.getFood = function(){
+        return this.food;
     };
 
     this.getTemperature = function(){
