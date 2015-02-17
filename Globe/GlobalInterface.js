@@ -30,9 +30,9 @@ pc.script.create('globalInterface', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             // Test temperature
-            time += dt;
-            var t = (time % 10);
-            globalTemperature = t*10;
+            // time += dt;
+            // var t = (time % 10);
+            // globalTemperature = t*10;
             // End test temperature
 
             // Test belief

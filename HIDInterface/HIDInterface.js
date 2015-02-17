@@ -13,6 +13,10 @@ pc.script.create('HIDInterface', function (context) {
         
     };
 
+			var temperatureChange;
+			var temperatureDest;
+			var velocity;
+
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
@@ -21,6 +25,10 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringP = new pc.StringTAPEW('P');
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
+			
+			temperatureChange = false;
+			temperatureDest = 0.0;
+			velocity = 0.0;
 			
 			this.stringT.on("moved", this.move_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.move_A, this.direction, this.distance, this.speed);
@@ -32,11 +40,24 @@ pc.script.create('HIDInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	if(temperatureChange == true){
+        		var tempTemperature = pc.math.lerp(globalTemperature, temperatureDest, velocity);
+				globalTemperature = tempTemperature;
+
+				if((globalTemperature - temperatureDest) == 0.0) {
+					temperatureChange = false;
+				}
+        	}
+
+        	console.log(globalTemperature);
+        	console.log(temperatureDest);
         },
 		
 		move_T: function(position, distance, speed) {
 			console.log("FIRED string T: ", position, distance, speed);
-			
+			 temperatureChange = true;
+			 temperatureDest = globalTemperature + distance;
+			 velocity = Math.abs((speed/distance) /10);
 		},
 		
 		move_A: function(position, distance, speed) {
