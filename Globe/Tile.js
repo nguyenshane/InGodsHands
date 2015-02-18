@@ -6,6 +6,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.neighbora, this.neighborb, this.neighborc;
 	
     var normalIndex, hasHuman, divided;
+	this.index;
     this.normal;
     this.center;
     this.neighbora;
