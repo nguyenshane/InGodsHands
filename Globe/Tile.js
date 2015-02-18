@@ -209,7 +209,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			return parseInt(this.vertexIndices[2]);
 		}
 		return -1;
-        
     };
     
     this.getMidpoint = function(verta, vertb){
@@ -219,11 +218,27 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		midpoint.scale(0.5);
 		return midpoint;
     };
-    
+	
+	this.getMidpoint2 = function(verta, vertb){
+        midpoint = new pc.Vec3(handle.vertices[this.vertexIndices[verta][0] * 3], handle.vertices[this.vertexIndices[verta][0] * 3 + 1], handle.vertices[this.vertexIndices[verta][0] * 3 + 2]);
+		vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb][0] * 3], handle.vertices[this.vertexIndices[vertb][0] * 3 + 1], handle.vertices[this.vertexIndices[vertb][0] * 3 + 2]);
+		midpoint.add(vert2);
+		midpoint.scale(0.5);
+		return midpoint;
+    };
     
     this.calculateCenter = function(){
         var center = this.getMidpoint(0,1);
         vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
+        center.add(vert);
+        center.scale(0.5);
+        this.center = center;
+        return center;
+    };
+	
+	this.calculateCenter2 = function(){
+        var center = this.getMidpoint2(0,1);
+        vert = new pc.Vec3(handle.vertices[this.vertexIndices[2][0] * 3], handle.vertices[this.vertexIndices[2][0] * 3 + 1], handle.vertices[this.vertexIndices[2][0] * 3 + 2]);
         center.add(vert);
         center.scale(0.5);
         this.center = center;

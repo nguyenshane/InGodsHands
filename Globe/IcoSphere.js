@@ -32,7 +32,6 @@ function IcoSphere(device, radius, subdivisions) {
 	
     this.vertices = [];
 	this.normals = [];
-	this.vertexBuffer = [];
     this.indices = [];
 	
 	this.vertexGroups;
@@ -205,35 +204,19 @@ IcoSphere.prototype._recalculateMesh = function() {
 	var unbufferedNormals = [];
 	unbufferedNormals[this.currentFaces*3-1] = 0;
     for (var i = 0; i < this.currentFaces; ++i) {
-		tiles[i].calculateCenter();
+		tiles[i].calculateCenter2();
 		tiles[i].calculateNormal();
 		
 		var verts = tiles[i].vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tiles[i].normal;
-			
-			/*
-			var group = this.vertexGroups[verts[j]];
-			for (var k = 0; k < group.length; k++) {
-				unbufferedNormals[group[k]] = tiles[i].normal;
-			}
-			*/
 		}
     }
 	
-	// Add vertex position and normal data to vertexBuffer
-	this.vertexBuffer = [];
-	this.vertexBuffer[this.vertices.length*2-1] = 0;
+	// Buffer normals
 	this.normals = [];
 	this.normals[this.vertices.length-1] = 0;
     for (var i = 0; i < unbufferedNormals.length; i++) {
-		this.vertexBuffer[i*6] = this.vertices[i*3];
-		this.vertexBuffer[i*6+1] = this.vertices[i*3+1];
-		this.vertexBuffer[i*6+2] = this.vertices[i*3+2];
-		this.vertexBuffer[i*6+3] = unbufferedNormals[i].x;
-		this.vertexBuffer[i*6+4] = unbufferedNormals[i].y;
-		this.vertexBuffer[i*6+5] = unbufferedNormals[i].z;
-		
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;
