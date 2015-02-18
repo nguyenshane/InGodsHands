@@ -7,6 +7,7 @@ pc.script.create('tribe', function (context) {
         this.belief;
         this.tile;
         this.destinationTile;
+        this.influencedTiles = [];
         this.rules = [];
         var deltaVec;
     };
@@ -30,6 +31,10 @@ pc.script.create('tribe', function (context) {
             //this.currTileTemperature = this.tile.temperature;
             this.createRuleList();
             this.destinationTile = ico.tiles[0];
+
+            this.calculateInfluence();
+
+            //console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -72,6 +77,7 @@ pc.script.create('tribe', function (context) {
                 this.tile = this.destinationTile;
                 this.currTileTemperature = this.tile.getTemperature();
                 this.calculatePopulation();
+                this.calculateInfluence();
             }
         },
 
@@ -128,6 +134,31 @@ pc.script.create('tribe', function (context) {
             popGrowth = this.food - this.population;
             this.population += popGrowth;
             console.log(this.population);
+        },
+
+        calculateInfluence: function() {
+            var influenceRate;
+            if (this.population < 15){
+                influenceRate = 9;
+            } else {
+                influenceRate = 18;
+            }
+
+            // Sick tile influence calculation algorithm
+            // basically a BFS            
+            this.influencedTiles.push(this.tile);
+            var currTile;
+            var counter = influenceRate;
+            var queue = [this.tile.neighbora, this.tile.neighborb, this.tile.neighborc];
+
+            while (counter > 0) {
+                currTile = queue.shift()
+                queue.push(currTile.neighbora, currTile.neighborb, currTile.neighborc);
+                if(this.influencedTiles.indexOf(currTile) === -1){
+                    this.influencedTiles.push(currTile);
+                    counter--;
+                }
+            }
         },
 
         // Constructs the NPC's list of rules
