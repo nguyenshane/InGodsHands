@@ -13,9 +13,9 @@ pc.script.create('HIDInterface', function (context) {
         
     };
 
-			var temperatureChange;
-			var temperatureDest;
-			var velocity;
+	var temperatureChange;
+	var temperatureDest;
+	var velocity;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -49,8 +49,8 @@ pc.script.create('HIDInterface', function (context) {
 				}
         	}
 
-        	console.log(globalTemperature);
-        	console.log(temperatureDest);
+        	//console.log(globalTemperature);
+        	//console.log(temperatureDest);
         },
 		
 		move_T: function(position, distance, speed) {

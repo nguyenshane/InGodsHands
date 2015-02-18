@@ -125,7 +125,7 @@ function IcoSphere(device, radius, subdivisions) {
     		tiles[j].divided = false;
     	}
     }
-    
+	
 	// Normalize to radius
     for (var i = 0; i < this.currentVerts; i++) {
 		var vert = this._getUnbufferedVertex(i);
@@ -144,7 +144,7 @@ function IcoSphere(device, radius, subdivisions) {
 	//Generate terrain
 	/*
     // Test extrude, this should be where the repellers algorithm be replaced
-    for ( i = 0; i < this.currentFaces; ++i) {
+    for (i = 0; i < this.currentFaces; ++i) {
        tiles[i].testExtrude();
     }
 	*/
@@ -252,18 +252,18 @@ IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces,
 IcoSphere.prototype._subdivideFace = function(index) {
     var midpointc = tiles[index].getMidpoint(0,1);
     var vertexc;
-    
+	
     if (tiles[index].neighborc.divided === true) {
-			vertexc = tiles[index].neighborc.getVertexIndex(midpointc);
-			if (vertexc == -1) {
-				console.log("Vertex c at tile " + index + ": " + midpointc + "not found.");
-			}
+		vertexc = tiles[index].neighborc.getVertexIndex(midpointc);
+		if (vertexc == -1) {
+			console.log("Vertex c at tile " + index + ": " + midpointc + "not found.");
+		}
 	} else {
-			vertexc = this.currentVerts;
-			this.vertices[this.currentVerts * 3] = midpointc.x;
-			this.vertices[this.currentVerts * 3 + 1] = midpointc.y;
-			this.vertices[this.currentVerts * 3 + 2] = midpointc.z;
-			++this.currentVerts;
+		vertexc = this.currentVerts;
+		this.vertices[this.currentVerts * 3] = midpointc.x;
+		this.vertices[this.currentVerts * 3 + 1] = midpointc.y;
+		this.vertices[this.currentVerts * 3 + 2] = midpointc.z;
+		++this.currentVerts;
 	}
 	
 	var midpointb = tiles[index].getMidpoint(0, 2);
@@ -297,6 +297,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 		++this.currentVerts;
 	}
 	
+	
 	var tilea = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[0], vertexc, vertexb);
 	var tileb = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[1], vertexa, vertexc);
 	var tilec = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[2], vertexb, vertexa);
@@ -305,7 +306,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	tilea.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
 	tileb.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
 	tilec.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
-	
+
 	
 	if (tiles[index].neighborc.divided === true) {
 			var ac = null, bb = null;			
@@ -404,13 +405,33 @@ IcoSphere.prototype._subdivideFace = function(index) {
     this.indices[index*3 + 1] = vertexb;
     this.indices[index*3 + 2] = vertexc;
     
+	/* //New (without old)
+	tilea.setNeighbor(0, index);
+	tileb.setNeighbor(0, index);
+	tilec.setNeighbor(0, index);
+	*/
+	
+	//Old
     tilea.neighbora = tiles[index];
     tileb.neighbora = tiles[index];
     tilec.neighbora = tiles[index];
-		
+	
+	//New(with old)
+	tilea.neighborIndices[0] = index;
+	tileb.neighborIndices[0] = index;
+	tilec.neighborIndices[0] = index;
+	
+	
+	
+	
+	//New
+	tiles[index].setNeighbors(this.currentFaces-3, this.currentFaces-2, this.currentFaces-1);
+	
+	/* //Old
 	tiles[index].neighbora = tilea;
 	tiles[index].neighborb = tileb;
 	tiles[index].neighborc = tilec;
+	*/
 	
 	tiles[index].divided = true;
 };
@@ -475,7 +496,7 @@ function unshareVertices(icosphere) {
 function generateTerrain(icosphere, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
 	var contCount = pc.math.random(continentCountMin, continentCountMax);
 	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
-
+	
 	//Create each continent
 	for (; contCount > 0; contCount--) {
 		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
