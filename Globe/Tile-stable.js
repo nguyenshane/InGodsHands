@@ -11,7 +11,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.neighbora;
     this.neighborb;
     this.neighborc;
-        
+    
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 
@@ -128,47 +128,49 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         return this.temperature;
     };
     
-    
+   
     this.calculateNormal = function(){
+        var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);
+        var vectorb = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[1]][0]);
+        var vectorc = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[2]][0]);
         
-        var vectora = handle._getUnbufferedVertex(this.vertexIndices[0]);
-        var vectorb = handle._getUnbufferedVertex(this.vertexIndices[1]);
-        var vectorc = handle._getUnbufferedVertex(this.vertexIndices[2]);
-        
-    
         vectorb.sub(vectora);
-		vectorc.sub(vectora);
+        vectorc.sub(vectora);
 
-		this.normal = new pc.Vec3().cross(vectorb,vectorc);
-		
-		this.normal.normalize();
-		
+        this.normal = new pc.Vec3().cross(vectorb,vectorc);
         
+        /*
+        if (this.normal.dot(this.center) < 0) {
+            this.normal.x *= -1;
+            this.normal.y *= -1;
+            this.normal.z *= -1;
+        }
+        */
+        
+        this.normal.normalize();
     };
     
+    // TODO: this should be replaced by a repeller distribution
     this.testExtrude = function() {
-        
-				//console.log("Not Ocean!");
         // Test Oceans
-		if (!this.neighbora.isOcean || !this.neighborb.isOcean || !this.neighborc.isOcean) {
-		    
-			this.isOcean = false;
-			
-			console.log(handle.radius);
-			
-			if (!this.neighborb.isOcean && !this.neighborc.isOcean) {
-				handle.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + handle.radius));
-			}
-			if (!this.neighbora.isOcean && !this.neighborc.isOcean)
-				handle.setVertexMagnitude(this.vertexIndices[1], parseFloat(Math.random()/10 + handle.radius));
-			if (!this.neighbora.isOcean && !this.neighborb.isOcean)
-				handle.setVertexMagnitude(this.vertexIndices[2], parseFloat(Math.random()/10 + handle.radius));
+        if (!this.neighbora.isOcean || !this.neighborb.isOcean || !this.neighborc.isOcean) {
+            
+            this.isOcean = false;
+            
+            console.log("Extruding");
+            
+            if (!this.neighborb.isOcean && !this.neighborc.isOcean) {
+                handle.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + handle.radius));
+            }
+            if (!this.neighbora.isOcean && !this.neighborc.isOcean)
+                handle.setVertexMagnitude(this.vertexIndices[1], parseFloat(Math.random()/10 + handle.radius));
+            if (!this.neighbora.isOcean && !this.neighborb.isOcean)
+                handle.setVertexMagnitude(this.vertexIndices[2], parseFloat(Math.random()/10 + handle.radius));
 
-		this.neighbora.isOcean = false;
-		this.neighborb.isOcean = false;
-		this.neighborc.isOcean = false;
-		}
-		this.calculateNormal();
+        this.neighbora.isOcean = false;
+        this.neighborb.isOcean = false;
+        this.neighborc.isOcean = false;
+        }
     };
     
     this.setNeighbors = function(a,b,c){
@@ -176,64 +178,63 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         this.neighborb = handle.tiles[b];
         this.neighborc = handle.tiles[c];
         this.neighborIndices[0] = a;
-		this.neighborIndices[1] = b;
-		this.neighborIndices[2] = c;
+        this.neighborIndices[1] = b;
+        this.neighborIndices[2] = c;
     };
     
     this.setNeighbor = function(neighbor, index){
         if (neighbor === 0) {
-			this.neighbora = handle.tiles[index];
-		} else if (neighbor == 1) {
-			this.neighborb = handle.tiles[index];
-		} else if (neighbor == 2) {
-			this.neighborc = handle.tiles[index];
-		}
+            this.neighbora = handle.tiles[index];
+        } else if (neighbor == 1) {
+            this.neighborb = handle.tiles[index];
+        } else if (neighbor == 2) {
+            this.neighborc = handle.tiles[index];
+        }
     };
     
-    this.getVertexIndex = function(vertex){
-        //console.log(vertex, handle.vertices[this.vertexIndices[0] * 3]);
-        //console.log(vertex.y, handle.vertices[this.vertexIndices[0] *3 +1 ]);
-        //console.log(vertex.z, handle.vertices[this.vertexIndices[0] *3 +2 ]);
-        
+    this.getVertexIndex = function(vertex){        
         if (vertex.x == handle.vertices[this.vertexIndices[0] * 3] 
-            && vertex.y == handle.vertices[this.vertexIndices[0] * 3 + 1]	
+            && vertex.y == handle.vertices[this.vertexIndices[0] * 3 + 1]   
             && vertex.z == handle.vertices[this.vertexIndices[0] * 3 + 2]) {
-			return parseInt(this.vertexIndices[0]);
-		} else if (vertex.x == handle.vertices[this.vertexIndices[1] * 3]
-				&& vertex.y == handle.vertices[this.vertexIndices[1] * 3 + 1]
-				&& vertex.z == handle.vertices[this.vertexIndices[1] * 3 + 2]) {
-			return parseInt(this.vertexIndices[1]);
-		} else if (vertex.x == handle.vertices[this.vertexIndices[2] * 3]
-				&& vertex.y == handle.vertices[this.vertexIndices[2] * 3 + 1]
-				&& vertex.z == handle.vertices[this.vertexIndices[2] * 3 + 2]) {
-			return parseInt(this.vertexIndices[2]);
-		}
-		return -1;
+            return parseInt(this.vertexIndices[0]);
+        } else if (vertex.x == handle.vertices[this.vertexIndices[1] * 3]
+                && vertex.y == handle.vertices[this.vertexIndices[1] * 3 + 1]
+                && vertex.z == handle.vertices[this.vertexIndices[1] * 3 + 2]) {
+            return parseInt(this.vertexIndices[1]);
+        } else if (vertex.x == handle.vertices[this.vertexIndices[2] * 3]
+                && vertex.y == handle.vertices[this.vertexIndices[2] * 3 + 1]
+                && vertex.z == handle.vertices[this.vertexIndices[2] * 3 + 2]) {
+            return parseInt(this.vertexIndices[2]);
+        }
+        return -1;
         
     };
     
     this.getMidpoint = function(verta, vertb){
         midpoint = new pc.Vec3(handle.vertices[this.vertexIndices[verta] * 3], handle.vertices[this.vertexIndices[verta] * 3 + 1], handle.vertices[this.vertexIndices[verta] * 3 + 2]);
-		vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb] * 3], handle.vertices[this.vertexIndices[vertb] * 3 + 1], handle.vertices[this.vertexIndices[vertb] * 3 + 2]);
-		midpoint.add(vert2);
-		midpoint.scale(0.5);
-		return midpoint;
+        vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb] * 3], handle.vertices[this.vertexIndices[vertb] * 3 + 1], handle.vertices[this.vertexIndices[vertb] * 3 + 2]);
+        midpoint.add(vert2);
+        midpoint.scale(0.5);
+        return midpoint;
     };
     
     
     this.calculateCenter = function(){
-        center = this.getMidpoint(0,1);
+        var center = this.getMidpoint(0,1);
         vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
         center.add(vert);
         center.scale(0.5);
         this.center = center;
         return center;
     };
+    
+    //this.toString = function(){
+    //    console.log ("vertexIndices, neighborIndices:",this.vertexIndices, this.neighborIndices);
+    //};
 
     this.equals = function(other){
         return (this.center.x === (other.center.x) &&
                 this.center.y === (other.center.y) &&
                 this.center.z === (other.center.z));
     }
-    
 }
