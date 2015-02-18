@@ -280,17 +280,19 @@ IcoSphere.prototype._subdivideFace = function(index) {
 		++this.currentVerts;
 	}
 	
-	
+
 	var tilea = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[0], vertexc, vertexb);
+	tilea.index = this.currentFaces-1;
 	var tileb = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[1], vertexa, vertexc);
+	tileb.index = this.currentFaces-1;
 	var tilec = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[2], vertexb, vertexa);
-	
+	tilec.index = this.currentFaces-1;
 	
 	tilea.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
 	tileb.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
 	tilec.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
 
-	
+
 	if (tiles[index].neighborc.divided === true) {
 			var ac = null, bb = null;			
 			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
@@ -387,35 +389,35 @@ IcoSphere.prototype._subdivideFace = function(index) {
     this.indices[index*3] = vertexa;
     this.indices[index*3 + 1] = vertexb;
     this.indices[index*3 + 2] = vertexc;
-    
-	/* //New (without old)
-	tilea.setNeighbor(0, index);
-	tileb.setNeighbor(0, index);
-	tilec.setNeighbor(0, index);
-	*/
-	
-	//Old
+
+
     tilea.neighbora = tiles[index];
     tileb.neighbora = tiles[index];
     tilec.neighbora = tiles[index];
 	
-	//New(with old)
-	tilea.neighborIndices[0] = index;
-	tileb.neighborIndices[0] = index;
-	tilec.neighborIndices[0] = index;
-	
-	
-	
-	
-	//New
-	tiles[index].setNeighbors(this.currentFaces-3, this.currentFaces-2, this.currentFaces-1);
-	
-	/* //Old
 	tiles[index].neighbora = tilea;
 	tiles[index].neighborb = tileb;
 	tiles[index].neighborc = tilec;
-	*/
 	
+	
+	console.log("1")
+	tiles[index].neighborIndices[0] = tiles[index].neighbora.index;
+	tiles[index].neighborIndices[1] = tiles[index].neighborb.index;
+	tiles[index].neighborIndices[2] = tiles[index].neighborc.index;
+	console.log("2")
+	tilea.neighborIndices[0] = tilea.neighbora.index;
+	tilea.neighborIndices[1] = tilea.neighborb.index;
+	tilea.neighborIndices[2] = tilea.neighborc.index;
+	console.log("2.3")
+	tileb.neighborIndices[0] = tileb.neighbora.index;
+	tileb.neighborIndices[1] = tileb.neighborb.index;
+	tileb.neighborIndices[2] = tileb.neighborc.index;
+	console.log("2.7")
+	tilec.neighborIndices[0] = tilec.neighbora.index;
+	tilec.neighborIndices[1] = tilec.neighborb.index;
+	tilec.neighborIndices[2] = tilec.neighborc.index;
+	
+	console.log("3")
 	tiles[index].divided = true;
 };
 
@@ -426,7 +428,7 @@ function unshareVertices(icosphere) {
 	var vertices = [];
 	var bufferedVertices = [];
     var tiles = icosphere.tiles;
-	
+
 	for (var i = 0; i < tiles.length; i++) {
 		var tile = tiles[i];
 		for (var j = 0; j < tile.vertexIndices.length; j++) {
@@ -480,6 +482,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var contCount = pc.math.random(continentCountMin, continentCountMax);
 	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
 	
+
 	//Create each continent
 	for (; contCount > 0; contCount--) {
 		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
@@ -570,7 +573,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 		distances[tile.neighborIndices[i]] = distances[tileIndex] + 1;
 		queue.enqueue(tile.neighborIndices[i]);
 	}
-	
+
 	//Raise surrounding tiles
 	while (!queue.isEmpty()) {
 		tileIndex = queue.dequeue();
@@ -609,7 +612,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 				}
 			}
 		}
-		
+
 		//Repel adjacent tiles if new vertex is above sea level
 		if (newHeight > 0) {
 			for (var i = 0; i < tile.neighborIndices.length; i++) {
