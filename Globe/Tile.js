@@ -15,7 +15,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 
-    this.isOcean = true;//(Math.random()>0.01) ? true : false;
+    this.isOcean = (Math.random()>0.01) ? true : false;
     handle = icosphere;
     this.divided = false;
     this.hasHuman = false;
@@ -185,11 +185,13 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.setNeighbor = function(neighbor, index){
         if (neighbor === 0) {
 			this.neighbora = handle.tiles[index];
-		} else if (neighbor == 1) {
+		} else if (neighbor === 1) {
 			this.neighborb = handle.tiles[index];
-		} else if (neighbor == 2) {
+		} else if (neighbor === 2) {
 			this.neighborc = handle.tiles[index];
 		}
+		
+		this.neighborIndices[neighbor] = index;
     };
     
     this.getVertexIndex = function(vertex){        
