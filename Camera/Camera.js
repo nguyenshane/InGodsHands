@@ -74,6 +74,12 @@ pc.script.create('camera', function (context) {
             if (context.keyboard.isPressed(pc.input.KEY_RIGHT)) {
                 this.orbitAngle--;
             }
+            if (context.keyboard.isPressed(pc.input.KEY_UP)) {
+                this.distance-= 0.1;
+            }
+            if (context.keyboard.isPressed(pc.input.KEY_DOWN)) {
+                this.distance+= 0.1;
+            }
 
             var cameraEntity = this.entity;
             var sphereEntity = context.root.findByName('Sphere');
