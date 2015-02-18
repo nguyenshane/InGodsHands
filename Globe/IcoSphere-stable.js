@@ -140,7 +140,21 @@ function IcoSphere(device, radius, subdivisions) {
 	//Create non-shared-vertex sphere
 	unshareVertices(this);
 	
-	
+	// Set Starting Continent
+	tiles[0].isOcean = false;
+    tiles[0].neighbora.isOcean = false;
+    tiles[0].neighbora.neighbora.isOcean = false;
+    tiles[0].neighbora.neighborb.isOcean = false;
+    tiles[0].neighbora.neighborc.isOcean = false;
+    tiles[0].neighbora.neighbora.neighbora.isOcean = false;
+    tiles[0].neighbora.neighbora.neighborb.isOcean = false;
+    tiles[0].neighbora.neighbora.neighborc.isOcean = false;
+    tiles[0].neighbora.neighborb.neighbora.isOcean = false;
+    tiles[0].neighbora.neighborb.neighborb.isOcean = false;
+    tiles[0].neighbora.neighborb.neighborc.isOcean = false;
+    tiles[0].neighbora.neighborc.neighbora.isOcean = false;
+    tiles[0].neighbora.neighborc.neighborb.isOcean = false;
+    tiles[0].neighbora.neighborc.neighborc.isOcean = false;
 	//Generate terrain
 	
     // Test extrude, this should be where the repellers algorithm be replaced
