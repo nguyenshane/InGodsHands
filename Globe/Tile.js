@@ -1,7 +1,7 @@
 function Tile(icosphere, vertexa, vertexb, vertexc){
     'use strict;'
     this.vertexIndices = [];
-    this.neighborIndices = [];
+    //this.neighborIndices = [];
     this.colors = [];
     this.neighbora, this.neighborb, this.neighborc;
 	
@@ -178,9 +178,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         this.neighbora = handle.tiles[a];
         this.neighborb = handle.tiles[b];
         this.neighborc = handle.tiles[c];
-        this.neighborIndices[0] = a;
-		this.neighborIndices[1] = b;
-		this.neighborIndices[2] = c;
+        //this.neighborIndices[0] = a;
+		//this.neighborIndices[1] = b;
+		//this.neighborIndices[2] = c;
     };
     
     this.setNeighbor = function(neighbor, index){
@@ -192,8 +192,16 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			this.neighborc = handle.tiles[index];
 		}
 		
-		this.neighborIndices[neighbor] = index;
+		//this.neighborIndices[neighbor] = index;
     };
+	
+	this.getNeighbors = function() {
+		return [this.neighbora, this.neighborb, this.neighborc];
+	};
+	
+	this.getNeighborIndices = function() {
+		return [this.neighbora.index, this.neighborb.index, this.neighborc.index];
+	};
     
     this.getVertexIndex = function(vertex){        
         if (vertex.x == handle.vertices[this.vertexIndices[0] * 3] 

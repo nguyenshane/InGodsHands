@@ -288,11 +288,11 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	var tilec = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[2], vertexb, vertexa);
 	tilec.index = this.currentFaces-1;
 	
-	tilea.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
-	tileb.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
-	tilec.setNeighbors(tiles[index].neighborIndices[0], tiles[index].neighborIndices[1], tiles[index].neighborIndices[2]);
-
-
+	var neighbors = tiles[index].getNeighborIndices();
+	tilea.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
+	tileb.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
+	tilec.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
+	
 	if (tiles[index].neighborc.divided === true) {
 			var ac = null, bb = null;			
 			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
@@ -399,25 +399,6 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	tiles[index].neighborb = tileb;
 	tiles[index].neighborc = tilec;
 	
-	
-	console.log("1")
-	tiles[index].neighborIndices[0] = tiles[index].neighbora.index;
-	tiles[index].neighborIndices[1] = tiles[index].neighborb.index;
-	tiles[index].neighborIndices[2] = tiles[index].neighborc.index;
-	console.log("2")
-	tilea.neighborIndices[0] = tilea.neighbora.index;
-	tilea.neighborIndices[1] = tilea.neighborb.index;
-	tilea.neighborIndices[2] = tilea.neighborc.index;
-	console.log("2.3")
-	tileb.neighborIndices[0] = tileb.neighbora.index;
-	tileb.neighborIndices[1] = tileb.neighborb.index;
-	tileb.neighborIndices[2] = tileb.neighborc.index;
-	console.log("2.7")
-	tilec.neighborIndices[0] = tilec.neighbora.index;
-	tilec.neighborIndices[1] = tilec.neighborb.index;
-	tilec.neighborIndices[2] = tilec.neighborc.index;
-	
-	console.log("3")
 	tiles[index].divided = true;
 };
 
@@ -560,6 +541,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 	var dropoffRate = centerHeight / radius;
 	var tileIndex = centerTile;
 	var tile = icosphere.tiles[tileIndex];
+	var neighbors = tile.getNeighborIndices();
 	
 	//Raise center tile
 	visited[centerTile] = true;
@@ -568,17 +550,18 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 		icosphere.setVertexHeight(tile.vertexIndices[i], centerHeight + pc.math.random(-0.5, 0.5) * dropoffRate);
 		visitedIndices[tile.vertexIndices[i]] = true;
 	}
-	for (var i = 0; i < tile.neighborIndices.length; i++) {
-		visited[tile.neighborIndices[i]] = true;
-		distances[tile.neighborIndices[i]] = distances[tileIndex] + 1;
-		queue.enqueue(tile.neighborIndices[i]);
+	for (var i = 0; i < neighbors.length; i++) {
+		visited[neighbors[i]] = true;
+		distances[neighbors[i]] = distances[tileIndex] + 1;
+		queue.enqueue(neighbors[i]);
 	}
 
 	//Raise surrounding tiles
 	while (!queue.isEmpty()) {
 		tileIndex = queue.dequeue();
 		tile = icosphere.tiles[tileIndex];
-
+		neighbors = tile.getNeighborIndices();
+		
 		//Find height of the two existing land vertices that have already been repelled
 		var prevHeights = [];
 		for (var i = 0; i < tile.vertexIndices.length; i++) {
@@ -615,8 +598,8 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 
 		//Repel adjacent tiles if new vertex is above sea level
 		if (newHeight > 0) {
-			for (var i = 0; i < tile.neighborIndices.length; i++) {
-				var neighbor = tile.neighborIndices[i];
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = neighbors[i];
 				if (!visited[neighbor]) {
 					if (distances[tileIndex] < radius) {
 						visited[neighbor] = true;
@@ -646,8 +629,14 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 	visited[centerTile] = true;
 	distances[centerTile] = 0;
 	while (!queue.isEmpty()) {
+		//-
 		var tileIndex = queue.dequeue();
+		
+		console.log(tileIndex);
+		console.log(icosphere.tiles);
+		
 		var tile = icosphere.tiles[tileIndex];
+		var neighbors = tile.getNeighborIndices();
 		
 		if (icosphere.vertexHeights[tile.vertexIndices[0]] != 0 ||
 			icosphere.vertexHeights[tile.vertexIndices[1]] != 0 ||
@@ -659,8 +648,8 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 				}
 		}
 		
-		for (var i = 0; i < tile.neighborIndices.length; i++) {
-			var neighbor = tile.neighborIndices[i];
+		for (var i = 0; i < neighbors.length; i++) {
+			var neighbor = neighbors[i];
 			if (!visited[neighbor]) {
 				if (distances[tileIndex] < radius) {
 					visited[neighbor] = true;
@@ -696,9 +685,10 @@ function getTilesInArea(icosphere, centerTile, radius) {
 	while (!queue.isEmpty()) {
 		var tileIndex = queue.dequeue();
 		var tile = icosphere.tiles[tileIndex];
+		var neighbors = tile.getNeighborIndices();
 		
-		for (var i = 0; i < tile.neighborIndices.length; i++) {
-			var neighbor = tile.neighborIndices[i];
+		for (var i = 0; i < neighbors.length; i++) {
+			var neighbor = neighbors[i];
 			if (!visited[neighbor]) {
 				if (distances[tileIndex] < radius) {
 					visited[neighbor] = true;
