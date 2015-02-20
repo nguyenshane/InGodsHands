@@ -39,7 +39,6 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexHeights;
     
     this.tiles = [];
-    tiles = this.tiles;
 	
     this.currentVerts = 0;
     this.currentFaces = 20;
@@ -64,57 +63,57 @@ function IcoSphere(device, radius, subdivisions) {
 	}
 
 	// 5 faces around point 0
-	tiles[0] = new Tile(this, 0, 11, 5);
-	tiles[1] = new Tile(this, 0, 5, 1);
-	tiles[2] = new Tile(this, 0, 1, 7);
-	tiles[3] = new Tile(this, 0, 7, 10);
-	tiles[4] = new Tile(this, 0, 10, 11);
+	this.tiles[0] = new Tile(this, 0, 11, 5);
+	this.tiles[1] = new Tile(this, 0, 5, 1);
+	this.tiles[2] = new Tile(this, 0, 1, 7);
+	this.tiles[3] = new Tile(this, 0, 7, 10);
+	this.tiles[4] = new Tile(this, 0, 10, 11);
 	// 5 adjacent faces
-	tiles[5] = new Tile(this, 1, 5, 9);
-	tiles[6] = new Tile(this, 5, 11, 4);
-	tiles[7] = new Tile(this, 11, 10, 2);
-	tiles[8] = new Tile(this, 10, 7, 6);
-	tiles[9] = new Tile(this, 7, 1, 8);
+	this.tiles[5] = new Tile(this, 1, 5, 9);
+	this.tiles[6] = new Tile(this, 5, 11, 4);
+	this.tiles[7] = new Tile(this, 11, 10, 2);
+	this.tiles[8] = new Tile(this, 10, 7, 6);
+	this.tiles[9] = new Tile(this, 7, 1, 8);
     // 5 faces around point 3
-	tiles[10] = new Tile(this, 3, 9, 4);
-	tiles[11] = new Tile(this, 3, 4, 2);
-	tiles[12] = new Tile(this, 3, 2, 6);
-	tiles[13] = new Tile(this, 3, 6, 8);
-	tiles[14] = new Tile(this, 3, 8, 9);
+	this.tiles[10] = new Tile(this, 3, 9, 4);
+	this.tiles[11] = new Tile(this, 3, 4, 2);
+	this.tiles[12] = new Tile(this, 3, 2, 6);
+	this.tiles[13] = new Tile(this, 3, 6, 8);
+	this.tiles[14] = new Tile(this, 3, 8, 9);
     // 5 adjacent faces
-	tiles[15] = new Tile(this, 4, 9, 5);
-	tiles[16] = new Tile(this, 2, 4, 11);
-	tiles[17] = new Tile(this, 6, 2, 10);
-	tiles[18] = new Tile(this, 8, 6, 7);
-	tiles[19] = new Tile(this, 9, 8, 1);
+	this.tiles[15] = new Tile(this, 4, 9, 5);
+	this.tiles[16] = new Tile(this, 2, 4, 11);
+	this.tiles[17] = new Tile(this, 6, 2, 10);
+	this.tiles[18] = new Tile(this, 8, 6, 7);
+	this.tiles[19] = new Tile(this, 9, 8, 1);
 	// Manually set neighbors for 20 faces
-	tiles[0].setNeighbors(6, 1, 4);
-	tiles[1].setNeighbors(5, 2, 0);
-	tiles[2].setNeighbors(9, 3, 1);
-	tiles[3].setNeighbors(8, 4, 2);
-	tiles[4].setNeighbors(7, 0, 3);
+	this.tiles[0].setNeighbors(6, 1, 4);
+	this.tiles[1].setNeighbors(5, 2, 0);
+	this.tiles[2].setNeighbors(9, 3, 1);
+	this.tiles[3].setNeighbors(8, 4, 2);
+	this.tiles[4].setNeighbors(7, 0, 3);
 	
-	tiles[5].setNeighbors(15, 19, 1);
-	tiles[6].setNeighbors(16, 15, 0);
-	tiles[7].setNeighbors(17, 16, 4);
-	tiles[8].setNeighbors(18, 17, 3);
-	tiles[9].setNeighbors(19, 18, 2);
+	this.tiles[5].setNeighbors(15, 19, 1);
+	this.tiles[6].setNeighbors(16, 15, 0);
+	this.tiles[7].setNeighbors(17, 16, 4);
+	this.tiles[8].setNeighbors(18, 17, 3);
+	this.tiles[9].setNeighbors(19, 18, 2);
 	
-	tiles[10].setNeighbors(15, 11, 14);
-	tiles[11].setNeighbors(16, 12, 10);
-	tiles[12].setNeighbors(17, 13, 11);
-	tiles[13].setNeighbors(18, 14, 12);
-	tiles[14].setNeighbors(19, 10, 13);
+	this.tiles[10].setNeighbors(15, 11, 14);
+	this.tiles[11].setNeighbors(16, 12, 10);
+	this.tiles[12].setNeighbors(17, 13, 11);
+	this.tiles[13].setNeighbors(18, 14, 12);
+	this.tiles[14].setNeighbors(19, 10, 13);
 	
-	tiles[15].setNeighbors(5, 6, 10);
-	tiles[16].setNeighbors(6, 7, 11);
-	tiles[17].setNeighbors(7, 8, 12);
-	tiles[18].setNeighbors(8, 9, 13);
-	tiles[19].setNeighbors(9, 5, 14);
+	this.tiles[15].setNeighbors(5, 6, 10);
+	this.tiles[16].setNeighbors(6, 7, 11);
+	this.tiles[17].setNeighbors(7, 8, 12);
+	this.tiles[18].setNeighbors(8, 9, 13);
+	this.tiles[19].setNeighbors(9, 5, 14);
 	
 	//Set indices for initial tiles
-	for (var i = 0; i < tiles.length; i++) {
-		tiles[i].index = i;
+	for (var i = 0; i < this.tiles.length; i++) {
+		this.tiles[i].index = i;
 	}
 	
 	// Run subdivide
@@ -126,7 +125,7 @@ function IcoSphere(device, radius, subdivisions) {
     	}
     		
     	for (j = 0; j < jMax; ++j) {
-    		tiles[j].divided = false;
+    		this.tiles[j].divided = false;
     	}
     }
 	
@@ -209,14 +208,15 @@ IcoSphere.prototype._recalculateMesh = function() {
 	var unbufferedNormals = [];
 	unbufferedNormals[this.currentFaces*3-1] = 0;
     for (var i = 0; i < this.currentFaces; ++i) {
-		tiles[i].calculateCenter2();
-		tiles[i].calculateNormal();
-		tiles[i].isOcean = true;
+		var tile = this.tiles[i];
+		tile.calculateCenter2();
+		tile.calculateNormal();
+		tile.isOcean = true;
 		
-		var verts = tiles[i].vertexIndices;
+		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
-			unbufferedNormals[i*3+j] = tiles[i].normal;
-			if (vertexHeights[verts[i]] > 0) tiles[i].isOcean = false;
+			unbufferedNormals[i*3+j] = tile.normal;
+			if (this.vertexHeights[verts[i]] > 0) tile.isOcean = false;
 		}
     }
 	
@@ -240,11 +240,11 @@ IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces,
 };
 
 IcoSphere.prototype._subdivideFace = function(index) {
-    var midpointc = tiles[index].getMidpoint(0,1);
+    var midpointc = this.tiles[index].getMidpoint(0,1);
     var vertexc;
 	
-    if (tiles[index].neighborc.divided === true) {
-		vertexc = tiles[index].neighborc.getVertexIndex(midpointc);
+    if (this.tiles[index].neighborc.divided === true) {
+		vertexc = this.tiles[index].neighborc.getVertexIndex(midpointc);
 		if (vertexc == -1) {
 			console.log("Vertex c at tile " + index + ": " + midpointc + "not found.");
 		}
@@ -256,10 +256,10 @@ IcoSphere.prototype._subdivideFace = function(index) {
 		++this.currentVerts;
 	}
 	
-	var midpointb = tiles[index].getMidpoint(0, 2);
+	var midpointb = this.tiles[index].getMidpoint(0, 2);
 	var vertexb;
-	if (tiles[index].neighborb.divided === true) {
-		vertexb = tiles[index].neighborb.getVertexIndex(midpointb);
+	if (this.tiles[index].neighborb.divided === true) {
+		vertexb = this.tiles[index].neighborb.getVertexIndex(midpointb);
 		if (vertexb == -1) {
 			console.log("Vertex b at tile " + index + ": " + midpointb + "not found.");
 		}
@@ -272,10 +272,10 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	}
 	
 	
-	var midpointa = tiles[index].getMidpoint(1, 2);
+	var midpointa = this.tiles[index].getMidpoint(1, 2);
     var vertexa;
-	if (tiles[index].neighbora.divided === true) {
-		vertexa = tiles[index].neighbora.getVertexIndex(midpointa);
+	if (this.tiles[index].neighbora.divided === true) {
+		vertexa = this.tiles[index].neighbora.getVertexIndex(midpointa);
 		if (vertexa == -1) {
 			console.log("Vertex a at tile " + index + ": " + midpointa + "not found.");
 		}
@@ -288,26 +288,26 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	}
 	
 
-	var tilea = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[0], vertexc, vertexb);
+	var tilea = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[0], vertexc, vertexb);
 	tilea.index = this.currentFaces-1;
-	var tileb = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[1], vertexa, vertexc);
+	var tileb = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[1], vertexa, vertexc);
 	tileb.index = this.currentFaces-1;
-	var tilec = tiles[this.currentFaces++] = new Tile(this, tiles[index].vertexIndices[2], vertexb, vertexa);
+	var tilec = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[2], vertexb, vertexa);
 	tilec.index = this.currentFaces-1;
 	
-	var neighbors = tiles[index].getNeighborIndices();
+	var neighbors = this.tiles[index].getNeighborIndices();
 	tilea.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
 	tileb.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
 	tilec.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
 	
-	if (tiles[index].neighborc.divided === true) {
+	if (this.tiles[index].neighborc.divided === true) {
 			var ac = null, bb = null;			
-			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
-				ac = tiles[index].neighborc.neighbora;
-			} if (tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
-				ac = tiles[index].neighborc.neighborb;
-			} if (tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) != -1) {
-				ac = tiles[index].neighborc.neighborc;
+			if (this.tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
+				ac = this.tiles[index].neighborc.neighbora;
+			} if (this.tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
+				ac = this.tiles[index].neighborc.neighborb;
+			} if (this.tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
+				ac = this.tiles[index].neighborc.neighborc;
 			}
 			if (ac === null) {
 				console.log("Tile " + index + " has poor neighbor structure at ac.");
@@ -316,12 +316,12 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			
 			ac.neighborb = tilea;
 			
-			if (tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bb = tiles[index].neighborc.neighbora;
-			} else if (tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bb = tiles[index].neighborc.neighborb;
-			} else if (tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bb = tiles[index].neighborc.neighborc;
+			if (this.tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bb = this.tiles[index].neighborc.neighbora;
+			} else if (this.tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bb = this.tiles[index].neighborc.neighborb;
+			} else if (this.tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bb = this.tiles[index].neighborc.neighborc;
 			}
 			if (bb === null) {
     			console.log("Tile " + index + " has poor neighbor structure at bb.");
@@ -330,15 +330,15 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			bb.neighborc = tileb;
 	}
 	
-	if (tiles[index].neighborb.divided === true) {
+	if (this.tiles[index].neighborb.divided === true) {
 			var ab = null, cc = null;
 			
-			if (tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) == tiles[index].vertexIndices[0]) {
-				ab = tiles[index].neighborb.neighbora;
-			} else if (tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) == tiles[index].vertexIndices[0]) {
-				ab = tiles[index].neighborb.neighborb;
-			} else if (tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[0])) == tiles[index].vertexIndices[0]) {
-				ab = tiles[index].neighborb.neighborc;
+			if (this.tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
+				ab = this.tiles[index].neighborb.neighbora;
+			} else if (this.tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
+				ab = this.tiles[index].neighborb.neighborb;
+			} else if (this.tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
+				ab = this.tiles[index].neighborb.neighborc;
 			}
 			if (ab === null) {
 				console.log("Tile " + index + " has poor neighbor structure at ab.");
@@ -346,12 +346,12 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			tilea.neighborb = ab;
 			ab.neighborc = tilea;
 			
-			if (tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cc = tiles[index].neighborb.neighbora;
-			} else if (tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cc = tiles[index].neighborb.neighborb;
-			} else if (tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cc = tiles[index].neighborb.neighborc;
+			if (this.tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cc = this.tiles[index].neighborb.neighbora;
+			} else if (this.tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cc = this.tiles[index].neighborb.neighborb;
+			} else if (this.tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cc = this.tiles[index].neighborb.neighborc;
 			}
 			if (cc === null) {
 				console.log("Tile " + index + " has poor neighbor structure at cc.");
@@ -360,15 +360,15 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			cc.neighborb = tilec;
 	}
 	
-	if (tiles[index].neighbora.divided === true) {
+	if (this.tiles[index].neighbora.divided === true) {
 			var bc = null, cb = null;
 			
-			if (tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bc = tiles[index].neighbora.neighbora;
-			} else if (tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bc = tiles[index].neighbora.neighborb;
-			} else if (tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[1])) == tiles[index].vertexIndices[1]) {
-				bc = tiles[index].neighbora.neighborc;
+			if (this.tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bc = this.tiles[index].neighbora.neighbora;
+			} else if (this.tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bc = this.tiles[index].neighbora.neighborb;
+			} else if (this.tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
+				bc = this.tiles[index].neighbora.neighborc;
 			}
 			if (bc === null) {
 				console.log("Tile " + index + " has poor neighbor structure at bc.");
@@ -376,12 +376,12 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			tileb.neighborc = bc;
 			bc.neighborb = tileb;
 			
-			if (tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cb = tiles[index].neighbora.neighbora;
-			} else if (tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cb = tiles[index].neighbora.neighborb;
-			} else if (tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(tiles[index].vertexIndices[2])) == tiles[index].vertexIndices[2]) {
-				cb = tiles[index].neighbora.neighborc;
+			if (this.tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cb = this.tiles[index].neighbora.neighbora;
+			} else if (this.tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cb = this.tiles[index].neighbora.neighborb;
+			} else if (this.tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
+				cb = this.tiles[index].neighbora.neighborc;
 			}
 			if (cb === null) {
 				console.log("Tile " + index + " has poor neighbor structure at cb.");
@@ -390,23 +390,23 @@ IcoSphere.prototype._subdivideFace = function(index) {
 			cb.neighborc = tilec;
 	}
 	
-	tiles[index].vertexIndices[0] = vertexa;
-    tiles[index].vertexIndices[1] = vertexb;
-    tiles[index].vertexIndices[2] = vertexc;
+	this.tiles[index].vertexIndices[0] = vertexa;
+    this.tiles[index].vertexIndices[1] = vertexb;
+    this.tiles[index].vertexIndices[2] = vertexc;
     this.indices[index*3] = vertexa;
     this.indices[index*3 + 1] = vertexb;
     this.indices[index*3 + 2] = vertexc;
 
 
-    tilea.neighbora = tiles[index];
-    tileb.neighbora = tiles[index];
-    tilec.neighbora = tiles[index];
+    tilea.neighbora = this.tiles[index];
+    tileb.neighbora = this.tiles[index];
+    tilec.neighbora = this.tiles[index];
 	
-	tiles[index].neighbora = tilea;
-	tiles[index].neighborb = tileb;
-	tiles[index].neighborc = tilec;
+	this.tiles[index].neighbora = tilea;
+	this.tiles[index].neighborb = tileb;
+	this.tiles[index].neighborc = tilec;
 	
-	tiles[index].divided = true;
+	this.tiles[index].divided = true;
 };
 
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
