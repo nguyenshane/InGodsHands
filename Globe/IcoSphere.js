@@ -209,7 +209,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 	unbufferedNormals[this.currentFaces*3-1] = 0;
     for (var i = 0; i < this.currentFaces; ++i) {
 		var tile = this.tiles[i];
-		tile.calculateCenter2();
+		tile.calculateCenter();
 		tile.calculateNormal();
 		tile.isOcean = true;
 		

@@ -8,6 +8,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     var normalIndex, hasHuman, divided;
     this.normal;
     this.center;
+    this.primitiveCenter;
     this.neighbora;
     this.neighborb;
     this.neighborc;
@@ -119,6 +120,20 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         return m.getEulerAngles();//new pc.Vec3(x, y, z);
     };
 
+    this.getRotationAlignedWithCenter = function() {
+
+        var x = Math.atan2(this.center.y/ico.radius, this.center.z/ico.radius) * 180/Math.PI;
+        var z = Math.atan2(this.center.y/ico.radius, this.center.x/ico.radius) * 180/Math.PI;
+        return new pc.Vec3(x, 0, z);
+    };
+
+    this.getRotationAlignedWithPrimitiveCenter = function() {
+
+        var x = Math.atan2(this.primitiveCenter.y/ico.radius, this.primitiveCenter.z/ico.radius) * 180/Math.PI;
+        var z = Math.atan2(this.primitiveCenter.y/ico.radius, this.primitiveCenter.x/ico.radius) * 180/Math.PI;
+        return new pc.Vec3(x, 0, z);
+    };
+
     this.getFood = function(){
         return this.food;
     };
@@ -225,6 +240,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         center.add(vert);
         center.scale(0.5);
         this.center = center;
+        return center;
+    };
+
+    this.calculatePrimitiveCenter = function(){
+        var center = this.getMidpoint(0,1);
+        vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
+        center.add(vert);
+        center.scale(0.5);
+        this.primitiveCenter = center;
         return center;
     };
     

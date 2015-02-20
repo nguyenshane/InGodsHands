@@ -140,6 +140,10 @@ function IcoSphere(device, radius, subdivisions) {
 	//Create non-shared-vertex sphere
 	unshareVertices(this);
 	
+	for ( i = 0; i < this.currentFaces; ++i) {
+       tiles[i].calculatePrimitiveCenter();
+    }
+
 	// Set Starting Continent
 	tiles[0].isOcean = false;
     tiles[0].neighbora.isOcean = false;

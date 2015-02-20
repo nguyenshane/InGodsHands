@@ -25,6 +25,15 @@ pc.script.create('trees', function (context) {
             var z = Math.floor((Math.random() * 360) + 0);
             
             if (this.trees_stack.length < this.stackBuffer ){
+                //this.makeTree(x,0,z);
+                var tile = ico.tiles[Math.floor(Math.random() * ico.tiles.length)];
+                while (tile.isOcean) {
+                    tile = ico.tiles[Math.floor(Math.random() * ico.tiles.length)];
+                }
+                console.log(tile);
+                //x = tile.getRotationAlignedWithPrimitiveCenter().x;
+                //z = tile.getRotationAlignedWithPrimitiveCenter().z;
+                console.log(tile.getRotationAlignedWithNormal());
                 this.makeTree(x,0,z);
             }
             
