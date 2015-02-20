@@ -155,12 +155,12 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexHeights = [];
 	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.04,
-		repellerSizeMin = 2, repellerSizeMax = 4,
+	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.04,
+		repellerSizeMin = 1, repellerSizeMax = 3,
 		repellerHeightMin = 0.03, repellerHeightMax = 0.07,
 		continentCountMin = 3, continentCountMax = 6,
 		continentSizeMin = 7, continentSizeMax = 12,
-		mountainCountMin = 2, mountainCountMax = 9,
+		mountainCountMin = 4, mountainCountMax = 6,
 		mountainHeightMin = 0.13, mountainHeightMax = 0.2;
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
@@ -495,7 +495,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
 function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
-	console.log("c - " + repellerCount);
+	console.log("--c - " + repellerCount);
 	
 	var initialRepellerCount = repellerCount;
 	
@@ -517,10 +517,12 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 		for (var i = 0, done = false; i < availTiles.length && !done; i++) {
 			var center = availTiles[i];
 			var dist = checkSurroundingArea(icosphere, center, repellerSize);
-			if (dist != -1 && dist < repellerSize * 0.8 && dist > repellerSize * 0.4) { //Make sure the location is within range of existing land but not too close
+			
+			if (dist != -1 && dist <= Math.floor(repellerSize * 0.8) + 1 && dist >= Math.floor(repellerSize * 0.4)) { //Make sure the location is within range of existing land but not too close
 				//Add a new repeller
 				if ((mountainCount / repellerCount) * (repellerCount / initialRepellerCount + 0.5) > pc.math.random(0, 1)) { //More likely to create mountains early on
 					repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
+					repellerSize = Math.floor(pc.math.random(repellerSizeMin + 1, repellerSizeMax + 0.999));
 					mountainCount--;
 				} else repellerHeight = pc.math.random(repellerHeightMin, repellerHeightMax);
 				repeller(icosphere, center, repellerSize, repellerHeight);
