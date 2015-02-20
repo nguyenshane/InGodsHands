@@ -211,10 +211,12 @@ IcoSphere.prototype._recalculateMesh = function() {
     for (var i = 0; i < this.currentFaces; ++i) {
 		tiles[i].calculateCenter2();
 		tiles[i].calculateNormal();
+		tiles[i].isOcean = true;
 		
 		var verts = tiles[i].vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tiles[i].normal;
+			if (vertexHeights[verts[i]] > 0) tiles[i].isOcean = false;
 		}
     }
 	
