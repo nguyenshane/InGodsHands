@@ -155,8 +155,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexHeights = [];
 	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.01,
-		repellerSizeMin = 2, repellerSizeMax = 5,
+	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.04,
+		repellerSizeMin = 2, repellerSizeMax = 4,
 		repellerHeightMin = 0.03, repellerHeightMax = 0.07,
 		continentCountMin = 3, continentCountMax = 6,
 		continentSizeMin = 7, continentSizeMax = 12,
@@ -465,8 +465,8 @@ function unshareVertices(icosphere) {
 //Higher repeller count multipliers will result in more landmass,
 // lower repeller size will result in more hilly terrain (and less landmass)
 function generateTerrain(icosphere, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
-	var contCount = pc.math.random(continentCountMin, continentCountMax);
-	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
+	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
+	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
 	console.log("cc: " + contCount);
 
@@ -485,7 +485,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 				var mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 				mountains = Math.floor(mountains);
-				cluster(icosphere, center, contSize, contSize * contSize * repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+				cluster(icosphere, center, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 				mountainCount -= mountains;
 				done = true;
 			}
@@ -495,12 +495,12 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
 function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
-	console.log("c");
+	console.log("c - " + repellerCount);
 	
 	var initialRepellerCount = repellerCount;
 	
 	//Make first repeller at the center
-	var repellerSize = pc.math.random(repellerSizeMin, repellerSizeMax);
+	var repellerSize = Math.floor(pc.math.random(repellerSizeMin, repellerSizeMax + 0.999));
 	var repellerHeight;
 	if ((mountainCount / repellerCount) * 1.5 > pc.math.random(0, 1)) {
 		repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
@@ -511,7 +511,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 	
 	//Add remaining repellers
 	while (repellerCount > 0) {
-		repellerSize = pc.math.random(repellerSizeMin, repellerSizeMax);
+		repellerSize = Math.floor(pc.math.random(repellerSizeMin, repellerSizeMax + 0.999));
 		var availTiles = getTilesInArea(icosphere, centerTile, radius - repellerSize); //Get all possible repeller center locations
 		shuffleArray(availTiles);
 		for (var i = 0, done = false; i < availTiles.length && !done; i++) {
@@ -539,7 +539,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 
 //Helper function of cluster, raises a portion of land around the center tile
 function repeller(icosphere, centerTile, radius, centerHeight) {
-	console.log("r");
+	console.log("r - " + radius);
 	
 	var queue = new Queue();
 	var visitedIndices = [];
