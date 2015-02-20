@@ -112,6 +112,11 @@ function IcoSphere(device, radius, subdivisions) {
 	tiles[18].setNeighbors(8, 9, 13);
 	tiles[19].setNeighbors(9, 5, 14);
 	
+	//Set indices for initial tiles
+	for (var i = 0; i < tiles.length; i++) {
+		tiles[i].index = i;
+	}
+	
 	// Run subdivide
 	for (var i = 1; i < subdivisions; ++i) {
     	var jMax = this.currentFaces;
@@ -629,12 +634,7 @@ function checkSurroundingArea(icosphere, centerTile, radius) {
 	visited[centerTile] = true;
 	distances[centerTile] = 0;
 	while (!queue.isEmpty()) {
-		//-
 		var tileIndex = queue.dequeue();
-		
-		console.log(tileIndex);
-		console.log(icosphere.tiles);
-		
 		var tile = icosphere.tiles[tileIndex];
 		var neighbors = tile.getNeighborIndices();
 		
