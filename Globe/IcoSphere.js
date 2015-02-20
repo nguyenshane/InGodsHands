@@ -155,13 +155,13 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexHeights = [];
 	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.1,
-		repellerSizeMin = 3, repellerSizeMax = 10,
-		repellerHeightMin = 0.05, repellerHeightMax = 0.1,
-		continentCountMin = 1, continentCountMax = 6,
-		continentSizeMin = 10, continentSizeMax = 24,
-		mountainCountMin = 3, mountainCountMax = 15,
-		mountainHeightMin = 0.15, mountainHeightMax = 0.45;
+	var continentBufferDistance = 1.3, repellerCountMultiplier = 0.01,
+		repellerSizeMin = 2, repellerSizeMax = 5,
+		repellerHeightMin = 0.03, repellerHeightMax = 0.07,
+		continentCountMin = 3, continentCountMax = 6,
+		continentSizeMin = 7, continentSizeMax = 12,
+		mountainCountMin = 2, mountainCountMax = 9,
+		mountainHeightMin = 0.13, mountainHeightMax = 0.2;
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
@@ -468,6 +468,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var contCount = pc.math.random(continentCountMin, continentCountMax);
 	var mountainCount = pc.math.random(mountainCountMin, mountainCountMax);
 	
+	console.log("cc: " + contCount);
 
 	//Create each continent
 	for (; contCount > 0; contCount--) {
@@ -494,6 +495,8 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
 function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
+	console.log("c");
+	
 	var initialRepellerCount = repellerCount;
 	
 	//Make first repeller at the center
@@ -527,6 +530,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 		}
 		
 		if (!done) {
+			console.log(repellerCount);
 			repellerCount = 0;
 			console.log("n");
 		}
@@ -535,6 +539,8 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 
 //Helper function of cluster, raises a portion of land around the center tile
 function repeller(icosphere, centerTile, radius, centerHeight) {
+	console.log("r");
+	
 	var queue = new Queue();
 	var visitedIndices = [];
 	for (var size = icosphere.vertexGroups.length-1; size >= 0; size--) visitedIndices[size] = false;
