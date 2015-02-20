@@ -30,10 +30,10 @@ pc.script.create('trees', function (context) {
                 while (tile.isOcean) {
                     tile = ico.tiles[Math.floor(Math.random() * ico.tiles.length)];
                 }
-                console.log(tile);
+                //console.log(tile);
                 //x = tile.getRotationAlignedWithPrimitiveCenter().x;
                 //z = tile.getRotationAlignedWithPrimitiveCenter().z;
-                console.log(tile.getRotationAlignedWithNormal());
+                //console.log(tile.getRotationAlignedWithNormal());
                 this.makeTree(x,0,z);
             }
             
@@ -59,7 +59,7 @@ pc.script.create('trees', function (context) {
             var z = Math.floor((Math.random() * 360) + 0);
             
             var treetype = Math.floor((Math.random() * 2) + 0);
-            console.log("treetype", treetype)
+            //console.log("treetype", treetype)
 
             if(treetype == 0)
                 e.findByName("tree1").enabled = true;

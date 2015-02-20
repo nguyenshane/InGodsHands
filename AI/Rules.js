@@ -182,3 +182,33 @@ wantToMigrate.prototype = {
         
     }    
 };
+
+/* 
+ *  wantToMigrate determines whether the tribe wants to move south
+ *  above equator
+ *    
+ */
+
+var needCold = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 3;
+    this.conditions = [allConditions.isTileWarmer];
+};
+
+needCold.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        console.log("NEed cold fired");
+        tribe.prayForCold(10);
+    }    
+};
