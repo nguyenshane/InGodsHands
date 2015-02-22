@@ -13,8 +13,12 @@ pc.script.create('HIDInterface', function (context) {
         
     };
 
+
+    var timer = new Date();
 	var temperatureChange;
 	var temperatureDest;
+	var temperatureStart;
+	var lerpStartTime;
 	var velocity;
 
     HIDInterface.prototype = {
@@ -41,11 +45,18 @@ pc.script.create('HIDInterface', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
         	if(temperatureChange == true){
-        		var tempTemperature = pc.math.lerp(globalTemperature, temperatureDest, velocity);
-				globalTemperature = tempTemperature;
+        		timer = new Date();
+        		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
+        		var percentLerped = timeSinceStartedLerp / velocity;
+        		globalTemperature = pc.math.lerp( temperatureStart, temperatureDest, percentLerped );
+				//globalTemperature = tempTemperature;
+
+				//console.log("time since started lerp: " + timeSinceStartedLerp + " velocity: " + velocity);
+				//console.log("Temp subtract: " + (globalTemperature - temperatureDest));
 
 				if((globalTemperature - temperatureDest) == 0.0) {
 					temperatureChange = false;
+					console.log("Done temp change");
 				}
         	}
 
@@ -56,8 +67,11 @@ pc.script.create('HIDInterface', function (context) {
 		move_T: function(position, distance, speed) {
 			console.log("FIRED string T: ", position, distance, speed);
 			 temperatureChange = true;
+			 temperatureStart = globalTemperature;
 			 temperatureDest = globalTemperature + distance;
-			 velocity = Math.abs((speed/distance) /10);
+			 velocity = Math.abs((speed) * 1000);
+			 timer = new Date();
+			 lerpStartTime = timer.getTime();
 		},
 		
 		move_A: function(position, distance, speed) {

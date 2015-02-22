@@ -7,35 +7,20 @@ pc.script.create('Conditions', function (context) {
 
     Conditions.prototype = {
         // List of condition functions to add to a rule's condition list
-        testIf5: function(checkInt) {
-            if(checkInt === 5){
-                return true;
-            }
-            return false;
-        },
-        
-        testIf2: function(checkInt) {
-            if(checkInt === 2){
-                return true;
-            }
-            return false;
-        },
 
         //////////////////////////////////
         // Temperature based /////////////
         //////////////////////////////////
 
         isTileWarmer: function(tribe){
-            if (tribe.idealTemperature < 
-                (Math.round(tribe.currTileTemperature) + 5)) {
+            if (tribe.currTileTemperature > tribe.idealTemperature + 5) {
                 return true;
             }
             return false;
         },
 
         isTileColder: function(tribe){
-            if (tribe.idealTemperature > 
-                (Math.round(tribe.currTileTemperature) - 5)){
+            if (tribe.currTileTemperature < tribe.idealTemperature - 5){
                 return true;
             }
             return false; 
@@ -49,8 +34,8 @@ pc.script.create('Conditions', function (context) {
         },
 
         isTileTemperatureNotIdeal: function(tribe){
-            if ((tribe.idealTemperature < (Math.round(tribe.currTileTemperature) - 5)) ||
-                (tribe.idealTemperature > (Math.round(tribe.currTileTemperature) + 5))) {
+            if ((tribe.idealTemperature - 5 < (Math.round(tribe.currTileTemperature))) ||
+                (tribe.idealTemperature + 5 > (Math.round(tribe.currTileTemperature)))) {
                 return true;
             }
             return false;

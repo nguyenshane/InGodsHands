@@ -209,6 +209,6 @@ needCold.prototype = {
     
     consequence: function(tribe){
         console.log("NEed cold fired");
-        tribe.prayForCold(10);
+        tribe.prayForCold(30);
     }    
 };

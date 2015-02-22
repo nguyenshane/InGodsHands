@@ -15,7 +15,7 @@ pc.script.create('tribe', function (context) {
         this.influencedTiles = [];
         
         this.rules = [];
-        this.isBusy;
+        this.isBusy = false;
         this.currentAction;
         this.prayerTimer;
         
@@ -36,23 +36,19 @@ pc.script.create('tribe', function (context) {
             this.entity.setLocalScale(.5, .5, .5);
 
             // get current tile's temperature that the tribe is on
-            //this.currTileTemperature = this.tile.getTemperature();
-            this.currTileTemperature = 90;
-            console.log(this.currTileTemperature);
-
+            this.currTileTemperature = this.tile.getTemperature();
+            
             this.createRuleList();
-            //this.destinationTile = ico.tiles[0];
 
-            //this.calculateInfluence();
+            this.calculateInfluence();
 
-            //console.log("The influenced tiles length: " + this.influencedTiles.length);
+            console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
 
             ///////////////////////////////////////////////////////////////////////////////////////
-
             // Rules system is run through each from, sorted by weight
             // if the NPC is moving to another tile, moveTo is called instead
             this.rules.sort(function(a, b){return b.weight - a.weight});
@@ -60,7 +56,6 @@ pc.script.create('tribe', function (context) {
                 for(var i = 0; i < this.rules.length; i++){
                     if(this.rules[i].testConditions(this)){
                         this.rules[i].consequence(this);
-                        console.log(this.rules[i]);
                     }
                 }
             } else {
@@ -72,6 +67,9 @@ pc.script.create('tribe', function (context) {
 
             // Calculate food every frame in case weather changes tile food count
             this.calculateFood();
+
+            // Set temperature of tile
+            this.currTileTemperature = this.tile.getTemperature();
 
             // Set lighting in shader
             //this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
@@ -143,8 +141,8 @@ pc.script.create('tribe', function (context) {
                 this.isBusy = false;
             }
 
-            if((this.currentTemperature > (this.idealTemperature - 5) ||
-                this.currentTemperature < (this.idealTemperature + 5)) &&
+            if((this.currTileTemperature > (this.idealTemperature - 5) &&
+                this.currTileTemperature < (this.idealTemperature + 5)) &&
                 this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
@@ -152,6 +150,8 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer = 0;
                 this.isBusy = false;
             }
+
+            console.log(this.currTileTemperature);
 
             this.prayerTimer -= deltaTime;
         },
@@ -214,7 +214,6 @@ pc.script.create('tribe', function (context) {
             while (counter > 0) {
                 currTile = queue.shift()
                 queue.push(currTile.neighbora, currTile.neighborb, currTile.neighborc);
-                console.log(this.influencedTiles.indexOf(currTile));
                 if(this.influencedTiles.indexOf(currTile) === -1){
                     this.influencedTiles.push(currTile);
                     counter--;
@@ -227,7 +226,7 @@ pc.script.create('tribe', function (context) {
         // Constructs the NPC's list of rules
         createRuleList: function() {
             //this.rules.push(new wantToMigrate());
-            //this.rules.push(new needCold());
+            this.rules.push(new needCold());
         }
     };
 
