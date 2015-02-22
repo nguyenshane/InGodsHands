@@ -134,7 +134,7 @@ wantToMoveSouthColder.prototype = {
 
 /* 
  *  wantToMigrate determines whether the tribe wants to move south
- *  above equator
+ *  above equator. This is a spiteful rule
  *    
  */
 
@@ -143,7 +143,8 @@ var wantToMigrate = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 2;
-    this.conditions = [allConditions.isTileTemperatureNotIdeal];
+    this.conditions = [ allConditions.isTileTemperatureNotIdeal,
+                        allConditions.isSpiteful];
 };
 
 wantToMigrate.prototype = {
@@ -158,7 +159,6 @@ wantToMigrate.prototype = {
     
     consequence: function(tribe){
         //console.log("Tribe's tile: " + tribe.destinationTile);
-        console.log("Migrate has fired: " );
         var bestTile;
         var idealTemperature = tribe.getIdealTemperature();
         var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
@@ -176,28 +176,33 @@ wantToMigrate.prototype = {
                 bestTile = tribe.tile.neighborc;
                 break;
         }
+
+        //console.log("Migrate has fired: " + bestTile.center);
+        tribe.isSpiteful = false;
         tribe.setDestination(bestTile);
-         var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName('Rv1-stable');
-            moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
+       
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName('Rv1-stable');
+        moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
         
     }    
 };
 
 /* 
- *  wantToMigrate determines whether the tribe wants to move south
- *  above equator
+ *  needTemperatureChange means the tribe will pray to the player for rain or sun
+ *  If not fulfilled, they will migrate instead
  *    
  */
 
-var needCold = function() {
+var needTemperatureChange = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 3;
-    this.conditions = [allConditions.isTileWarmer];
+    this.conditions = [ allConditions.isTileTemperatureNotIdeal,
+                        allConditions.isNotSpiteful];
 };
 
-needCold.prototype = {
+needTemperatureChange.prototype = {
     testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
             if(!this.conditions[i](tribe)){
@@ -208,7 +213,7 @@ needCold.prototype = {
     },
     
     consequence: function(tribe){
-        console.log("NEed cold fired");
-        tribe.prayForCold(30);
+        console.log("Need temperature change fired");
+        tribe.prayForTemperature(10);
     }    
 };

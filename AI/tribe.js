@@ -12,15 +12,22 @@ pc.script.create('tribe', function (context) {
 
         this.tile;
         this.destinationTile;
+        this.startTile;
         this.influencedTiles = [];
         
         this.rules = [];
         this.isBusy = false;
+        this.isSpiteful = false;
         this.currentAction;
         this.prayerTimer;
         
+        // Variables for lerp, 3000 in milliseconds
         var deltaVec;
+
     };
+
+    var _travelTime = 3000;
+    var _travelStartTime;
 
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -48,9 +55,11 @@ pc.script.create('tribe', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
 
-            ///////////////////////////////////////////////////////////////////////////////////////
-            // Rules system is run through each from, sorted by weight
-            // if the NPC is moving to another tile, moveTo is called instead
+            //////////////////////////////////////////////////////////////////////////////////////
+            // Rules system is run through each from, sorted by weight                          //
+            // if the NPC is busy (moving, praying, etc.), currentAction is called instead      //
+            // Current Action is a different function depending on which rule has been fired    //
+            //////////////////////////////////////////////////////////////////////////////////////
             this.rules.sort(function(a, b){return b.weight - a.weight});
             if(!this.isBusy){
                 for(var i = 0; i < this.rules.length; i++){
@@ -61,7 +70,6 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.currentAction(dt);
             }
-
             ///////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -72,10 +80,8 @@ pc.script.create('tribe', function (context) {
             this.currTileTemperature = this.tile.getTemperature();
 
             // Set lighting in shader
-            //this.material.setParameter('sunDir', [sun.localRotation.x, sun.localRotation.y, sun.localRotation.z]);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalEulerAngles(this.rotation.x + 90, this.rotation.y, this.rotation.z);
-            //this.entity.rotateLocal(90, 0, 0);
         },
 
         //////////////////////////////////
@@ -84,11 +90,21 @@ pc.script.create('tribe', function (context) {
 
         // Called every movement frame, lerps from one tile center to the next
         moveTo: function() {
-            deltaVec.lerp(this.entity.getPosition(), this.destinationTile.center, .01);
-            this.entity.setPosition(deltaVec);   
-            //console.log("Curr pos: " + this.entity.getPosition().x);
-            //console.log("dest pos: " + this.destinationTile.center.x);
 
+            // Find change in time since the start, and divide by the desired total travel time
+            // This will give you the percentage of the travel time covered. Send this for the lerp
+            // rather than changing lerp's start position each frame.
+            // Delta vec used as middle man for setting tribe's position.
+
+            var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - _travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / _travelTime;
+
+            deltaVec.lerp(this.startTile.center, this.destinationTile.center, percentTravelled);
+            this.entity.setPosition(deltaVec);   
+
+            console.log(this.startTile.center);
+            console.log(this.destinationTile.center);
 
             // Once tribe is at next tile's center, movement is done.
             if(this.atDestination()){
@@ -101,10 +117,13 @@ pc.script.create('tribe', function (context) {
         },
 
         setDestination: function(destination) {
-            if(this.tile.equals(this.destinationTile))
-                this.isBusy = true;
+            this.isBusy = true;
             this.destinationTile = destination;
-            this.currentAction = this.moveTo;
+            this.startTile = this.tile;
+            this.currentAction = this.moveTo;   
+
+            var timer = new Date();
+            _travelStartTime = timer.getTime();
         },
 
         // Tests if tribe is at the dest position, rounds it to the 100th place because the lerp
@@ -138,6 +157,7 @@ pc.script.create('tribe', function (context) {
                 console.log("Prayer timer up");
                 this.prayerTimer = 0;
                 this.decreaseBelief();
+                this.isSpiteful = true;
                 this.isBusy = false;
             }
 
@@ -151,12 +171,12 @@ pc.script.create('tribe', function (context) {
                 this.isBusy = false;
             }
 
-            console.log(this.currTileTemperature);
+            //console.log(this.currTileTemperature);
 
             this.prayerTimer -= deltaTime;
         },
 
-        prayForCold: function (time) {
+        prayForTemperature: function (time) {
             console.log("TIME TO PRAY");
             this.prayerTimer = time;
             this.currentAction = this.waitForTemperaturePrayerAnswer;
@@ -185,7 +205,6 @@ pc.script.create('tribe', function (context) {
 
         calculateFood: function() {
             this.food = this.tile.getFood();
-            //console.log("Current Food: " + this.food);
         },
 
         calculatePopulation: function() {
@@ -193,7 +212,6 @@ pc.script.create('tribe', function (context) {
 
             popGrowth = this.food - this.population;
             this.population += popGrowth;
-            //console.log(this.population);
         },
 
         calculateInfluence: function() {
@@ -225,8 +243,8 @@ pc.script.create('tribe', function (context) {
 
         // Constructs the NPC's list of rules
         createRuleList: function() {
-            //this.rules.push(new wantToMigrate());
-            this.rules.push(new needCold());
+            this.rules.push(new wantToMigrate());
+            this.rules.push(new needTemperatureChange());
         }
     };
 
