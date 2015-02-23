@@ -8,7 +8,7 @@ pc.script.create('tribe', function (context) {
         this.idealTemperature = 65;
         this.currTileTemperature;
 
-        this.belief;
+        this.belief = 1;
 
         this.tile;
         this.destinationTile;
@@ -40,7 +40,7 @@ pc.script.create('tribe', function (context) {
 
             this.entity.setPosition(this.tile.calculateCenter());
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalScale(.5, .5, .5);
+            this.entity.setLocalScale(.15, .5, .15);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -103,8 +103,8 @@ pc.script.create('tribe', function (context) {
             deltaVec.lerp(this.startTile.center, this.destinationTile.center, percentTravelled);
             this.entity.setPosition(deltaVec);   
 
-            console.log(this.startTile.center);
-            console.log(this.destinationTile.center);
+            //console.log("This is start tile: " + this.startTile.center.x + " " + this.startTile.center.y + " " + this.startTile.center.z);
+            //console.log("This is destination tile: " + this.destinationTile.center.x + " " + this.destinationTile.center.y + " " + this.destinationTile.center.z);
 
             // Once tribe is at next tile's center, movement is done.
             if(this.atDestination()){
@@ -156,7 +156,7 @@ pc.script.create('tribe', function (context) {
             if(this.prayerTimer <= 0){
                 console.log("Prayer timer up");
                 this.prayerTimer = 0;
-                this.decreaseBelief();
+                this.denounceGod();
                 this.isSpiteful = true;
                 this.isBusy = false;
             }
@@ -166,7 +166,7 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
-                this.increaseBelief();
+                this.praiseGod();
                 this.prayerTimer = 0;
                 this.isBusy = false;
             }
@@ -181,6 +181,20 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer = time;
             this.currentAction = this.waitForTemperaturePrayerAnswer;
             this.isBusy = true;
+        },
+
+        //////////////////////////////
+        // Tribe feedback functions //
+        //////////////////////////////
+
+        praiseGod: function() {
+            this.increaseBelief();
+            // Play animation here
+        },
+
+        denounceGod: function() {
+            this.decreaseBelief();
+            // play animation
         },
 
         /////////////////////////////////
