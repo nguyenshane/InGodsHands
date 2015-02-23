@@ -471,10 +471,19 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
 	console.log("cc: " + contCount);
-
-	//Create each continent
+	
+	//Create first continent at the equator facing the camera: 607, 698, 908, 923, 1151, 1166
+	var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+	var mountains = mountainCount / contCount;
+	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
+	mountains = Math.floor(mountains);
+	cluster(icosphere, 698, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+	mountainCount -= mountains;
+	contCount--;
+	
+	//Create remaining continents
 	for (; contCount > 0; contCount--) {
-		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+		contSize = pc.math.random(continentSizeMin, continentSizeMax);
 		
 		//Search for an open area of ocean randomly
 		var randomTiles = [];
@@ -484,7 +493,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 			var center = randomTiles[i]; //Iterates through every tile in random order
 			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance) === -1) {
 				//Create a new continent
-				var mountains = mountainCount / contCount;
+				mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 				mountains = Math.floor(mountains);
 				cluster(icosphere, center, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent

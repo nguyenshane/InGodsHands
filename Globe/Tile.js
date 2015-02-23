@@ -259,8 +259,11 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     //};
 
     this.equals = function(other){
+		/*
         return (this.center.x === (other.center.x) &&
                 this.center.y === (other.center.y) &&
                 this.center.z === (other.center.z));
+		*/
+		return this.index === other.index;
     }
 }
