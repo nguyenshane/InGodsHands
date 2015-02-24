@@ -17,6 +17,23 @@ pc.script.create('trees', function (context) {
         initialize: function () {
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
+
+            var randomTiles = [];
+            for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
+            var noOcean = false;
+            while (this.trees_stack.length < this.stackBuffer && !noOcean) {
+                shuffleArray(randomTiles);
+                
+                var tile = ico.tiles[randomTiles[0]];
+                for (var i = 1; i < ico.tiles.length && tile.isOcean; i++) {
+                    tile = ico.tiles[randomTiles[i]];
+                }
+                
+                if (!tile.isOcean) this.makeTree(tile.getLatitude() - 90, -tile.getLongitude() - 90, 0);
+                else noOcean = true;
+                //this.makeTree(x, 0, z);
+            }
+            
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -24,22 +41,7 @@ pc.script.create('trees', function (context) {
             //var x = Math.floor((Math.random() * 360) + 0);
             //var z = Math.floor((Math.random() * 360) + 0);
 			
-			var randomTiles = [];
-			for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
-			var noOcean = false;
-            while (this.trees_stack.length < this.stackBuffer && !noOcean) {
-				shuffleArray(randomTiles);
-				
-                var tile = ico.tiles[randomTiles[0]];
-				for (var i = 1; i < ico.tiles.length && tile.isOcean; i++) {
-					tile = ico.tiles[randomTiles[i]];
-				}
-				
-                if (!tile.isOcean) this.makeTree(tile.getLatitude() - 90, -tile.getLongitude() - 90, 0);
-				else noOcean = true;
-				//this.makeTree(x, 0, z);
-            }
-			
+
 			var destroyFailed = false;
             while (this.trees_stack.length >= this.stackBuffer && !destroyFailed) {
                 var e = this.trees_stack.shift();
