@@ -5,18 +5,18 @@
 pc.script.attribute('stackBuffer', 'number', 50); // change this number to optimal the buffer
 
 
-pc.script.create('trees', function (context) {
-    // Creates a new Tree instance
-    var Trees = function (entity) {
+pc.script.create('animals', function (context) {
+    // Creates a new Animal instance
+    var Animals = function (entity) {
         this.entity = entity;
         
     };
 
-    Trees.prototype = {
+    Animals.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.trees = context.root.findByName("Trees");
-            this.trees_stack = [];
+            this.animals = context.root.findByName("Animals");
+            this.animal_stack = [];
 
             var randomTiles = [];
             for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
@@ -84,5 +84,5 @@ pc.script.create('trees', function (context) {
         },
     };
 
-    return Trees;
+    return Animals;
 });
