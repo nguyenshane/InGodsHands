@@ -126,7 +126,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 
     this.getTemperature = function(){
-        this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperature
+        this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperatureMax/2 + globalTemperature/2;
         return this.temperature;
     };
     
