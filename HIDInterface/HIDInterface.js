@@ -49,7 +49,6 @@ pc.script.create('HIDInterface', function (context) {
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
         		globalTemperature = pc.math.lerp( temperatureStart, temperatureDest, percentLerped );
-				//globalTemperature = tempTemperature;
 
 				//console.log("time since started lerp: " + timeSinceStartedLerp + " velocity: " + velocity);
 				//console.log("Temp subtract: " + (globalTemperature - temperatureDest));

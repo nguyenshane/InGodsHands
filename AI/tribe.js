@@ -12,7 +12,7 @@ pc.script.create('tribe', function (context) {
 
         this.tile;
         this.destinationTile;
-        this.startTile;
+        this.startPosition;
         this.influencedTiles = [];
         
         this.rules = [];
@@ -21,10 +21,10 @@ pc.script.create('tribe', function (context) {
         this.currentAction;
         this.prayerTimer;
         
-        // Variables for lerp, 3000 in milliseconds
-        var deltaVec;
 
     };
+
+    // Variables for lerp, in milliseconds
 
     var _travelTime = 3000;
     var _travelStartTime;
@@ -32,7 +32,6 @@ pc.script.create('tribe', function (context) {
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            deltaVec = new pc.Vec3();
 
             // create mesh
             this.tile = ico.tiles[0]; // list of tiles
@@ -89,7 +88,7 @@ pc.script.create('tribe', function (context) {
         //////////////////////////////////
 
         // Called every movement frame, lerps from one tile center to the next
-        moveTo: function() {
+        moveTo: function(deltaTime) {
 
             // Find change in time since the start, and divide by the desired total travel time
             // This will give you the percentage of the travel time covered. Send this for the lerp
@@ -99,17 +98,19 @@ pc.script.create('tribe', function (context) {
             var timer = new Date();
             var timeSinceTravelStarted = timer.getTime() - _travelStartTime;
             var percentTravelled = timeSinceTravelStarted / _travelTime;
+            
+            var deltaVec = new pc.Vec3;
 
-            deltaVec.lerp(this.startTile.center, this.destinationTile.center, percentTravelled);
+            deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
             this.entity.setPosition(deltaVec);   
-
-            //console.log("This is start tile: " + this.startTile.center.x + " " + this.startTile.center.y + " " + this.startTile.center.z);
-            //console.log("This is destination tile: " + this.destinationTile.center.x + " " + this.destinationTile.center.y + " " + this.destinationTile.center.z);
+            //console.log("Start tile: " + this.startPosition);
+            //console.log("Destination tile: " + this.destinationTile.center);
+            //console.log("Current percent: " + percentTravelled);
 
             // Once tribe is at next tile's center, movement is done.
-            if(this.atDestination()){
+            if(percentTravelled >= 1){
                 this.tile = this.destinationTile;
-                this.currTileTemperature = this.tile.getTemperature();
+                this.entity.setPosition(this.destinationTile.center);
                 this.calculatePopulation();
                 this.calculateInfluence();
                 this.isBusy = false;
@@ -119,34 +120,34 @@ pc.script.create('tribe', function (context) {
         setDestination: function(destination) {
             this.isBusy = true;
             this.destinationTile = destination;
-            this.startTile = this.tile;
+            this.startPosition = this.entity.getPosition();
             this.currentAction = this.moveTo;   
 
             var timer = new Date();
             _travelStartTime = timer.getTime();
         },
 
-        // Tests if tribe is at the dest position, rounds it to the 100th place because the lerp
-        atDestination: function() {
-            var tempDestPosX = Math.round(100*this.destinationTile.center.x)/100;
-            var tempDestPosY = Math.round(100*this.destinationTile.center.y)/100;
-            var tempDestPosZ = Math.round(100*this.destinationTile.center.z)/100;
+        // // Tests if tribe is at the dest position, rounds it to the 100th place because the lerp
+        // atDestination: function() {
+        //     // var tempDestPosX = Math.round(100*this.destinationTile.center.x)/100;
+        //     // var tempDestPosY = Math.round(100*this.destinationTile.center.y)/100;
+        //     // var tempDestPosZ = Math.round(100*this.destinationTile.center.z)/100;
 
-            var tempCurrPosX = Math.round(100*this.entity.getPosition().x)/100;
-            var tempCurrPosY = Math.round(100*this.entity.getPosition().y)/100;
-            var tempCurrPosZ = Math.round(100*this.entity.getPosition().z)/100;
+        //     // var tempCurrPosX = Math.round(100*this.entity.getPosition().x)/100;
+        //     // var tempCurrPosY = Math.round(100*this.entity.getPosition().y)/100;
+        //     // var tempCurrPosZ = Math.round(100*this.entity.getPosition().z)/100;
 
-            if (tempCurrPosX === tempDestPosX &&
-                tempCurrPosY === tempDestPosY &&
-                tempCurrPosZ === tempDestPosZ ){
+        //     if (this.destinationTile.center.x === this.entity.getPosition().x &&
+        //         this.destinationTile.center.y === this.entity.getPosition().y &&
+        //         this.destinationTile.center.z === this.entity.getPosition().z ){
 
-                this.entity.setPosition(this.destinationTile.center);
-                return true;
+        //         this.entity.setPosition(this.destinationTile.center);
+        //         return true;
             
-            } else {
-                return false;
-            }
-        },
+        //     } else {
+        //         return false;
+        //     }
+        // },
 
         ////////////////////////////////////
         //  Tribe prayer action functions //

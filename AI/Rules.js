@@ -143,8 +143,8 @@ var wantToMigrate = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 2;
-    this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isSpiteful];
+    this.conditions = [allConditions.isTileTemperatureNotIdeal/*,
+                       allConditions.isSpiteful*/];
 };
 
 wantToMigrate.prototype = {
