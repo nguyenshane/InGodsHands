@@ -72,6 +72,11 @@ pc.script.create('HIDInterface', function (context) {
 			 velocity = Math.abs((speed) * 1000);
 			 timer = new Date();
 			 lerpStartTime = timer.getTime();
+			 console.log("Global Temp: " + globalTemperature);
+			 for (var i = 0; i < 20; ++i) {
+			 	console.log(ico.tiles[i].getTemperature());
+			 }
+
 		},
 		
 		move_A: function(position, distance, speed) {

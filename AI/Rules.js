@@ -180,10 +180,9 @@ wantToMigrate.prototype = {
         //console.log("Migrate has fired: " + bestTile.center);
         tribe.isSpiteful = false;
         tribe.setDestination(bestTile);
-
-         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+        
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
             moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
-
     }    
 };
 
