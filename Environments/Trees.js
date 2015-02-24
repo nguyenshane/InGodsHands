@@ -61,13 +61,17 @@ pc.script.create('trees', function (context) {
             e.rotateLocal(x, y, z);
             
             var treetype = Math.floor((Math.random() * 2) + 0);
+            var tree;
             //console.log("treetype", treetype)
 
             if(treetype == 0)
-                e.findByName("tree1").enabled = true;
-            else e.findByName("tree2").enabled = true;
-            
-            
+                tree = e.findByName("tree1");
+            else tree = e.findByName("tree2");
+
+            tree.enabled = true;
+            var scale = Math.floor((Math.random() * 2) + 1.3)/5;
+            tree.setLocalScale(scale, scale, scale);
+
             this.trees_stack.push(e);
         },
         
