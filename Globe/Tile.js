@@ -84,11 +84,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 
     this.getLatitude = function() {
-        return this.center.y/ico.radius;
+		return pc.math.RAD_TO_DEG * (Math.atan2(this.center.y, this.center.z));
+        //return this.center.y/ico.radius;
     };
 
     this.getLongitude = function() {
-        return Math.acos(this.center.x/ico.radius);
+        return pc.math.RAD_TO_DEG * (Math.acos(this.center.x/ico.radius));
     };
 
     this.getAltitude = function() {
@@ -202,6 +203,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.getNeighborIndices = function() {
 		return [this.neighbora.index, this.neighborb.index, this.neighborc.index];
 	};
+	
+	this.getVertex = function(vertexIndex) {
+		return handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[vertexIndex]][0]);
+	}
     
     this.getVertexIndex = function(vertex){        
         if (vertex.x == handle.vertices[this.vertexIndices[0] * 3] 
@@ -229,15 +234,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 	
 	this.getMidpoint2 = function(verta, vertb){
-        midpoint = new pc.Vec3(handle.vertices[this.vertexIndices[verta][0] * 3], handle.vertices[this.vertexIndices[verta][0] * 3 + 1], handle.vertices[this.vertexIndices[verta][0] * 3 + 2]);
-		vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb][0] * 3], handle.vertices[this.vertexIndices[vertb][0] * 3 + 1], handle.vertices[this.vertexIndices[vertb][0] * 3 + 2]);
+        midpoint = this.getVertex(verta);
+		vert2 = this.getVertex(vertb);
 		midpoint.add(vert2);
 		midpoint.scale(0.5);
 		return midpoint;
     };
     
     this.calculateCenter = function(){
-        var center = this.getMidpoint(0,1);
+        var center = this.getMidpoint(0, 1);
         vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
         center.add(vert);
         center.scale(0.5);
@@ -246,8 +251,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 	
 	this.calculateCenter2 = function(){
-        var center = this.getMidpoint2(0,1);
-        vert = new pc.Vec3(handle.vertices[this.vertexIndices[2][0] * 3], handle.vertices[this.vertexIndices[2][0] * 3 + 1], handle.vertices[this.vertexIndices[2][0] * 3 + 2]);
+        var center = this.getMidpoint2(0, 1);
+        vert = this.getVertex(2);
         center.add(vert);
         center.scale(0.5);
         this.center = center;
@@ -259,8 +264,11 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     //};
 
     this.equals = function(other){
+		/*
         return (this.center.x === (other.center.x) &&
                 this.center.y === (other.center.y) &&
                 this.center.z === (other.center.z));
+		*/
+		return this.index === other.index;
     }
 }

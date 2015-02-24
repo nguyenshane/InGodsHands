@@ -21,31 +21,36 @@ pc.script.create('trees', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            var x = Math.floor((Math.random() * 360) + 0);
-            var z = Math.floor((Math.random() * 360) + 0);
-            
-            if (this.trees_stack.length < this.stackBuffer ){
-                //this.makeTree(x,0,z);
-                var tile = ico.tiles[Math.floor(Math.random() * ico.tiles.length)];
-                while (tile.isOcean) {
-                    tile = ico.tiles[Math.floor(Math.random() * ico.tiles.length)];
-                }
-                //console.log(tile);
-                //x = tile.getRotationAlignedWithPrimitiveCenter().x;
-                //z = tile.getRotationAlignedWithPrimitiveCenter().z;
-                //console.log(tile.getRotationAlignedWithNormal());
-                this.makeTree(x,0,z);
+            //var x = Math.floor((Math.random() * 360) + 0);
+            //var z = Math.floor((Math.random() * 360) + 0);
+			
+			var randomTiles = [];
+			for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
+			var noOcean = false;
+            while (this.trees_stack.length < this.stackBuffer && !noOcean) {
+				shuffleArray(randomTiles);
+				
+                var tile = ico.tiles[randomTiles[0]];
+				for (var i = 1; i < ico.tiles.length && tile.isOcean; i++) {
+					tile = ico.tiles[randomTiles[i]];
+				}
+				
+                if (!tile.isOcean) this.makeTree(tile.getLatitude() - 90, -tile.getLongitude() - 90, 0);
+				else noOcean = true;
+				//this.makeTree(x, 0, z);
             }
-            
-            
-            if (this.trees_stack.length >= this.stackBuffer){
+			
+			var destroyFailed = false;
+            while (this.trees_stack.length >= this.stackBuffer && !destroyFailed) {
                 var e = this.trees_stack.shift();
                 var destroyable = this.checkDestroyable(e);
                 
                 if (destroyable) e.destroy();
-                else this.trees_stack.unshift(e)
+                else {
+					this.trees_stack.unshift(e);
+					destroyFailed = true;
+				}
             }
-            
         },
         
         makeTree: function(x,y,z) {
@@ -54,9 +59,6 @@ pc.script.create('trees', function (context) {
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
             
             e.rotateLocal(x, y, z);
-
-            var x = Math.floor((Math.random() * 360) + 0);
-            var z = Math.floor((Math.random() * 360) + 0);
             
             var treetype = Math.floor((Math.random() * 2) + 0);
             //console.log("treetype", treetype)

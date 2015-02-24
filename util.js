@@ -828,3 +828,19 @@ pc.script.create('FrameRate', function (context) {
 
     return Display_framerate;
 });
+
+
+//Randomizes array contents, shamelessly stolen from the internet
+function shuffleArray(array) {
+	for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
+};
+
+//Also stolen from the internet
+function Queue() {
+	var a=[],b=0;
+	this.getLength=function(){return a.length-b};
+	this.isEmpty=function(){return 0==a.length};
+	this.enqueue=function(b){a.push(b)};
+	this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};
+	this.peek=function(){return 0<a.length?a[b]:void 0};
+};

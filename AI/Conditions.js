@@ -4,7 +4,6 @@ pc.script.create('Conditions', function (context) {
         this.entity = entity;
     };
 
-
     Conditions.prototype = {
         // List of condition functions to add to a rule's condition list
 
@@ -34,8 +33,8 @@ pc.script.create('Conditions', function (context) {
         },
 
         isTileTemperatureNotIdeal: function(tribe){
-            if ((tribe.idealTemperature - 5 < (Math.round(tribe.currTileTemperature))) ||
-                (tribe.idealTemperature + 5 > (Math.round(tribe.currTileTemperature)))) {
+            if ((tribe.idealTemperature + 5 < tribe.currTileTemperature) ||
+                (tribe.idealTemperature - 5 > tribe.currTileTemperature)) {
                 return true;
             }
             return false;
@@ -57,6 +56,15 @@ pc.script.create('Conditions', function (context) {
                 return true;
             }
             return false;
+        },
+
+
+        isSpiteful: function(tribe){
+            return tribe.isSpiteful;
+        },
+
+        isNotSpiteful: function(tribe){
+            return !tribe.isSpiteful;
         }
     };
 

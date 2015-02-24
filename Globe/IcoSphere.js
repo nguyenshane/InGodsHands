@@ -209,14 +209,14 @@ IcoSphere.prototype._recalculateMesh = function() {
 	unbufferedNormals[this.currentFaces*3-1] = 0;
     for (var i = 0; i < this.currentFaces; ++i) {
 		var tile = this.tiles[i];
-		tile.calculateCenter();
+		tile.calculateCenter2();
 		tile.calculateNormal();
 		tile.isOcean = true;
 		
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
-			if (this.vertexHeights[verts[i]] > 0) tile.isOcean = false;
+			if (this.vertexHeights[verts[j]] != 0) tile.isOcean = false;
 		}
     }
 	
@@ -471,10 +471,19 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
 	console.log("cc: " + contCount);
-
-	//Create each continent
+	
+	//Create first continent at the equator facing the camera: 607, 698, 908, 923, 1151, 1166
+	var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+	var mountains = mountainCount / contCount;
+	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
+	mountains = Math.floor(mountains);
+	cluster(icosphere, 698, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+	mountainCount -= mountains;
+	contCount--;
+	
+	//Create remaining continents
 	for (; contCount > 0; contCount--) {
-		var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+		contSize = pc.math.random(continentSizeMin, continentSizeMax);
 		
 		//Search for an open area of ocean randomly
 		var randomTiles = [];
@@ -484,7 +493,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 			var center = randomTiles[i]; //Iterates through every tile in random order
 			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance) === -1) {
 				//Create a new continent
-				var mountains = mountainCount / contCount;
+				mountains = mountainCount / contCount;
 				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 				mountains = Math.floor(mountains);
 				cluster(icosphere, center, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
@@ -713,19 +722,4 @@ function getTilesInArea(icosphere, centerTile, radius) {
 	}
 
 	return tiles;
-};
-
-//Randomizes array contents, shamelessly stolen from the internet
-function shuffleArray(array) {
-	for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
-};
-
-//Also stolen from the internet
-function Queue(){
-	var a=[],b=0;
-	this.getLength=function(){return a.length-b};
-	this.isEmpty=function(){return 0==a.length};
-	this.enqueue=function(b){a.push(b)};
-	this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};
-	this.peek=function(){return 0<a.length?a[b]:void 0};
 };
