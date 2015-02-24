@@ -92,7 +92,11 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 
     this.getAltitude = function() {
-        return this.center.length/ico.radius;
+        return this.center.length;
+    };
+
+    this.getAltitudeOffset = function() {
+        return this.center.length - ico.radius;
     };
 
     this.determineCost = function() {
