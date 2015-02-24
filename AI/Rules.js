@@ -19,8 +19,8 @@ var wantToMoveNorthColder = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 1;
-    this.conditions = [ allConditions.isTileWarmer,
-                        allConditions.isAboveEquator];
+    this.conditions = [allConditions.isTileWarmer,
+                       allConditions.isAboveEquator];
 };
 
 wantToMoveNorthColder.prototype = {
@@ -50,8 +50,8 @@ var wantToMoveSouthWarmer = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 1;
-    this.conditions = [ allConditions.isTileColder,
-                        allConditions.isAboveEquator];
+    this.conditions = [allConditions.isTileColder,
+                       allConditions.isAboveEquator];
 };
 
 wantToMoveSouthWarmer.prototype = {
@@ -81,8 +81,8 @@ var wantToMoveNorthWarmer = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 1;
-    this.conditions = [ allConditions.isTileColder,
-                        allConditions.isBelowEquator];
+    this.conditions = [allConditions.isTileColder,
+                       allConditions.isBelowEquator];
 };
 
 wantToMoveNorthWarmer.prototype = {
@@ -112,8 +112,8 @@ var wantToMoveSouthColder = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 1;
-    this.conditions = [ allConditions.isTileWarmer,
-                        allConditions.isBelowEquator];
+    this.conditions = [allConditions.isTileWarmer,
+                       allConditions.isBelowEquator];
 };
 
 wantToMoveSouthColder.prototype = {
@@ -143,8 +143,8 @@ var wantToMigrate = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 2;
-    this.conditions = [ allConditions.isTileTemperatureNotIdeal,
-                        allConditions.isSpiteful];
+    this.conditions = [allConditions.isTileTemperatureNotIdeal,
+                       allConditions.isSpiteful];
 };
 
 wantToMigrate.prototype = {
@@ -181,9 +181,8 @@ wantToMigrate.prototype = {
         tribe.isSpiteful = false;
         tribe.setDestination(bestTile);
        
-        var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName('Rv1-stable');
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root.children[0];
         moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
-        
     }    
 };
 
@@ -198,8 +197,8 @@ var needTemperatureChange = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 3;
-    this.conditions = [ allConditions.isTileTemperatureNotIdeal,
-                        allConditions.isNotSpiteful];
+    this.conditions = [allConditions.isTileTemperatureNotIdeal,
+                       allConditions.isNotSpiteful];
 };
 
 needTemperatureChange.prototype = {

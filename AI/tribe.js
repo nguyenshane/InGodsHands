@@ -244,17 +244,16 @@ pc.script.create('tribe', function (context) {
             var queue = [this.tile.neighbora, this.tile.neighborb, this.tile.neighborc];
 
             while (counter > 0) {
-                currTile = queue.shift()
+                currTile = queue.shift();
                 queue.push(currTile.neighbora, currTile.neighborb, currTile.neighborc);
-                if(this.influencedTiles.indexOf(currTile) === -1){
+                if (this.influencedTiles.indexOf(currTile) === -1) {
                     this.influencedTiles.push(currTile);
                     counter--;
                 }
             }
         },
-
-
-
+		
+		
         // Constructs the NPC's list of rules
         createRuleList: function() {
             this.rules.push(new wantToMigrate());
