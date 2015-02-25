@@ -17,7 +17,6 @@ pc.script.create('globalInterface', function (context) {
             globalTemperature = 90;
             globalTemperatureMax = 100;
 
-
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
             globalSunRotation = 50;
@@ -54,8 +53,6 @@ pc.script.create('globalInterface', function (context) {
             shaderSun.rotateLocal(0, dt * globalSunRotation * -2, 0);
             //sun.setEulerAngles(0, 90 + this.time, 0);
             /****                   ****/
-            
-            //console.log(ico.tiles[0].getTemperature());
         }
     };
 

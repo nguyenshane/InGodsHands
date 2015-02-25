@@ -1,7 +1,6 @@
 function Tile(icosphere, vertexa, vertexb, vertexc){
     'use strict;'
     this.vertexIndices = [];
-    //this.neighborIndices = [];
     this.colors = [];
     this.neighbora, this.neighborb, this.neighborc;
 	
@@ -15,9 +14,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
+	
+	this.rain, this.fog;
 
-    this.isOcean = (Math.random()>0.01) ? true : false;
+    this.isOcean = true;//(Math.random()>0.01) ? true : false;
+	this.isRaining = false;
+	this.isFoggy = false;
+	
     handle = icosphere;
+	ico = handle;
     this.divided = false;
     this.hasHuman = false;
     
@@ -124,6 +129,14 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         //var z = Math.cos(Math.atan(this.normal.y/this.normal.x)) * 180/Math.PI;
         return m.getEulerAngles();//new pc.Vec3(x, y, z);
     };
+	
+	this.getRotationAlignedWithSphere = function() {
+		var position = new pc.Vec3(0, 0, 0);
+        var target = new pc.Vec3(this.center.x, this.center.y, this.center.z);
+        var up = new pc.Vec3(0, 1, 0);
+        var m = new pc.Mat4().setLookAt(position, target, up);
+		return m.getEulerAngles();
+	};
 
     this.getFood = function(){
         return this.food;
@@ -133,8 +146,41 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperatureMax/2 + globalTemperature/2;
         return this.temperature;
     };
+	
+	this.startRain = function() {
+		if (this.rain !== undefined) {
+			this.rain.enabled = true;
+		} else {
+			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
+			this.rain = atmo.makeRain(this.getLatitude() - 90, -this.getLongitude() - 90, 0);
+		}
+		
+		this.isRaining = true;
+	};
+	
+	this.stopRain = function() {
+		if (this.rain !== undefined) this.rain.enabled = false;
+		
+		this.isRaining = false;
+	};
+	
+	this.startFog = function() {
+		if (this.fog !== undefined) {
+			this.fog.enabled = true;
+		} else {
+			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
+			this.fog = atmo.makeFog(this.getLatitude() - 90, -this.getLongitude() - 90, 0);
+		}
+		
+		this.isFoggy = true;
+	};
+	
+	this.stopFog = function() {
+		if (this.fog !== undefined) this.fog.enabled = false;
+		
+		this.isFoggy = false;
+	};
     
-   
     this.calculateNormal = function(){
         var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);
         var vectorb = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[1]][0]);
@@ -144,15 +190,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		vectorc.sub(vectora);
 
 		this.normal = new pc.Vec3().cross(vectorb,vectorc);
-		
-		/*
-		if (this.normal.dot(this.center) < 0) {
-			this.normal.x *= -1;
-			this.normal.y *= -1;
-			this.normal.z *= -1;
-		}
-		*/
-		
 		this.normal.normalize();
     };
     
@@ -183,9 +220,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         this.neighbora = handle.tiles[a];
         this.neighborb = handle.tiles[b];
         this.neighborc = handle.tiles[c];
-        //this.neighborIndices[0] = a;
-		//this.neighborIndices[1] = b;
-		//this.neighborIndices[2] = c;
     };
     
     this.setNeighbor = function(neighbor, index){
@@ -196,8 +230,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		} else if (neighbor === 2) {
 			this.neighborc = handle.tiles[index];
 		}
-		
-		//this.neighborIndices[neighbor] = index;
     };
 	
 	this.getNeighbors = function() {
@@ -262,10 +294,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         this.center = center;
         return center;
     };
-    
-    //this.toString = function(){
-    //    console.log ("vertexIndices, neighborIndices:",this.vertexIndices, this.neighborIndices);
-    //};
 
     this.equals = function(other){
 		/*
