@@ -21,6 +21,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isRaining = false;
 	this.isFoggy = false;
 	
+	this.rainDuration = 3;
+	this.fogDuration = 5;
+	this.rainTimer = 0, this.fogTimer = 0;
+	
     handle = icosphere;
 	ico = handle;
     this.divided = false;
@@ -156,6 +160,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		}
 		
 		this.isRaining = true;
+		this.rainTimer = this.rainDuration;
 	};
 	
 	this.stopRain = function() {
@@ -173,6 +178,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		}
 		
 		this.isFoggy = true;
+		this.fogTimer = this.fogDuration;
 	};
 	
 	this.stopFog = function() {
