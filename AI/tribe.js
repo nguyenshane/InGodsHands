@@ -34,15 +34,10 @@ pc.script.create('tribe', function (context) {
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-
             // create mesh
-            //this.tile = ico.tiles[0]; // list of tiles
-            for(var i = 0; i < ico.tiles.length; i++){
-                if(!ico.tiles[i].isOcean){
-                    this.tile = ico.tiles[i];
-                    break;
-                }
-            }
+
+            this.tile = ico.tiles[698]; // list of tiles
+            this.calculateFood();
 
             this.entity.setPosition(this.tile.calculateCenter());
             this.rotation = this.tile.getRotationAlignedWithNormal();

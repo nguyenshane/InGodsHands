@@ -1,5 +1,5 @@
 ///
-// Description: This is the Atmosphere Particle Effects
+// Description: TREES
 ///
 
 pc.script.attribute('stackBuffer', 'number', 50); // change this number to optimal the buffer
