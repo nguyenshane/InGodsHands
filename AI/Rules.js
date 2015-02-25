@@ -159,28 +159,30 @@ wantToMigrate.prototype = {
     
     consequence: function(tribe){
         //console.log("Tribe's tile: " + tribe.destinationTile);
-        var bestTile;
-        var idealTemperature = tribe.getIdealTemperature();
-        var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
-        var tempTemperatureB = Math.abs(idealTemperature - tribe.tile.neighborb.getTemperature());
-        var tempTemperatureC = Math.abs(idealTemperature - tribe.tile.neighborc.getTemperature());
+        // var bestTile;
+        // var idealTemperature = tribe.getIdealTemperature();
+        // var tempTemperatureA = Math.abs(idealTemperature - tribe.tile.neighbora.getTemperature());
+        // var tempTemperatureB = Math.abs(idealTemperature - tribe.tile.neighborb.getTemperature());
+        // var tempTemperatureC = Math.abs(idealTemperature - tribe.tile.neighborc.getTemperature());
 
-        switch(Math.min(tempTemperatureA, tempTemperatureB, tempTemperatureC)) {
-            case tempTemperatureA:
-                bestTile = tribe.tile.neighbora;
-                break;
-            case tempTemperatureB:
-                bestTile = tribe.tile.neighborb;
-                break;
-            case tempTemperatureC:
-                bestTile = tribe.tile.neighborc;
-                break;
-        }
+        // switch(Math.min(tempTemperatureA, tempTemperatureB, tempTemperatureC)) {
+        //     case tempTemperatureA:
+        //         bestTile = tribe.tile.neighbora;
+        //         break;
+        //     case tempTemperatureB:
+        //         bestTile = tribe.tile.neighborb;
+        //         break;
+        //     case tempTemperatureC:
+        //         bestTile = tribe.tile.neighborc;
+        //         break;
+        // }
 
-        //console.log("Migrate has fired: " + bestTile.center);
-        tribe.isSpiteful = false;
-        tribe.setDestination(bestTile);
+        // //console.log("Migrate has fired: " + bestTile.center);
+        // tribe.isSpiteful = false;
+        // tribe.setDestination(bestTile);
         
+        tribe.migrate();
+
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
             moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    

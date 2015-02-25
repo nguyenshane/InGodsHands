@@ -4,6 +4,8 @@ pc.script.create('tribe', function (context) {
         this.entity = entity;
         
         this.population = 1;
+        this.stockpile = 0;
+        this.incomingFood = 0;
         
         this.idealTemperature = 65;
         this.currTileTemperature;
@@ -34,8 +36,13 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
 
             // create mesh
-            this.tile = ico.tiles[0]; // list of tiles
-            this.calculateFood()
+            //this.tile = ico.tiles[0]; // list of tiles
+            for(var i = 0; i < ico.tiles.length; i++){
+                if(!ico.tiles[i].isOcean){
+                    this.tile = ico.tiles[i];
+                    break;
+                }
+            }
 
             this.entity.setPosition(this.tile.calculateCenter());
             this.rotation = this.tile.getRotationAlignedWithNormal();
@@ -73,7 +80,7 @@ pc.script.create('tribe', function (context) {
 
 
             // Calculate food every frame in case weather changes tile food count
-            this.calculateFood();
+            //this.calculateFood();
 
             // Set temperature of tile
             this.currTileTemperature = this.tile.getTemperature();
@@ -113,7 +120,7 @@ pc.script.create('tribe', function (context) {
                 this.entity.setPosition(this.destinationTile.center);
                 this.calculatePopulation();
                 this.calculateInfluence();
-                this.isBusy = false;
+                this.migrate();
             }
         },
 
@@ -127,27 +134,32 @@ pc.script.create('tribe', function (context) {
             _travelStartTime = timer.getTime();
         },
 
-        // // Tests if tribe is at the dest position, rounds it to the 100th place because the lerp
-        // atDestination: function() {
-        //     // var tempDestPosX = Math.round(100*this.destinationTile.center.x)/100;
-        //     // var tempDestPosY = Math.round(100*this.destinationTile.center.y)/100;
-        //     // var tempDestPosZ = Math.round(100*this.destinationTile.center.z)/100;
+        migrate: function() {
+            if(!(this.currTileTemperature > (this.idealTemperature - 5) &&
+                 this.currTileTemperature < (this.idealTemperature + 5))){
 
-        //     // var tempCurrPosX = Math.round(100*this.entity.getPosition().x)/100;
-        //     // var tempCurrPosY = Math.round(100*this.entity.getPosition().y)/100;
-        //     // var tempCurrPosZ = Math.round(100*this.entity.getPosition().z)/100;
+                var bestTile;
+                var tempTemperatureA = Math.abs(this.idealTemperature - this.tile.neighbora.getTemperature());
+                var tempTemperatureB = Math.abs(this.idealTemperature - this.tile.neighborb.getTemperature());
+                var tempTemperatureC = Math.abs(this.idealTemperature - this.tile.neighborc.getTemperature());
 
-        //     if (this.destinationTile.center.x === this.entity.getPosition().x &&
-        //         this.destinationTile.center.y === this.entity.getPosition().y &&
-        //         this.destinationTile.center.z === this.entity.getPosition().z ){
+                switch(Math.min(tempTemperatureA, tempTemperatureB, tempTemperatureC)) {
+                    case tempTemperatureA:
+                        bestTile = this.tile.neighbora;
+                        break;
+                    case tempTemperatureB:
+                        bestTile = this.tile.neighborb;
+                        break;
+                    case tempTemperatureC:
+                        bestTile = this.tile.neighborc;
+                        break;
+                }
+                this.setDestination(bestTile);
+            } else {
+                this.isBusy = false;
+            }
 
-        //         this.entity.setPosition(this.destinationTile.center);
-        //         return true;
-            
-        //     } else {
-        //         return false;
-        //     }
-        // },
+        },
 
         ////////////////////////////////////
         //  Tribe prayer action functions //
@@ -219,14 +231,24 @@ pc.script.create('tribe', function (context) {
         },
 
         calculateFood: function() {
-            this.food = this.tile.getFood();
+            var tilesForFood = [];
+            this.incomingFood = 0;
+
+            this.influencedTiles.sort(function(a, b){return b.getFood() - a.getFood()});
+            for (var i = 0; i < this.population + 1 && i < this.influencedTiles.length; i++){
+                console.log(this.influencedTiles[i]);
+                this.incomingFood += this.influencedTiles[i].getFood();
+            }
+
+            //this.incomingFood = this.tile.getFood();
+            console.log(this.incomingFood);
         },
 
         calculatePopulation: function() {
-            var popGrowth;
+            this.stockpile;
 
-            popGrowth = this.food - this.population;
-            this.population += popGrowth;
+            this.stockpile = this.incomingFood - this.population;
+            this.population += this.stockpile;
         },
 
         calculateInfluence: function() {
@@ -238,7 +260,8 @@ pc.script.create('tribe', function (context) {
             }
 
             // Sick tile influence calculation algorithm
-            // basically a BFS            
+            // basically a BFS
+            this.influencedTiles = [];            
             this.influencedTiles.push(this.tile);
             var currTile;
             var counter = influenceRate;
@@ -252,6 +275,7 @@ pc.script.create('tribe', function (context) {
                     counter--;
                 }
             }
+            this.calculateFood();
         },
 		
 		
