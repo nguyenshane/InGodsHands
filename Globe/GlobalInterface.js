@@ -46,10 +46,10 @@ pc.script.create('globalInterface', function (context) {
 				}
 			}
 			
-			//Reset rain/fog randomly (temporary)
+			//Start rain/fog randomly (temporary)
 			this.envRespawnTimer -= dt;
-			if (this.envRespawnTimer < 0) {
-				this.envRespawnTimer = this.envRespawnTime;
+			if (this.envRespawnTimer <= 0) {
+				this.envRespawnTimer += this.envRespawnTime;
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
 					if (Math.random() < 0.002) ico.tiles[i].startFog();
