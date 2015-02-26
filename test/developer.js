@@ -17,7 +17,7 @@ pc.script.create('ui', function (context) {
             buttonSub.style.left = '10%';
 
             //onCLick sends to function
-            buttonSub.onclick = "subTemperature();";
+            buttonSub.onClick = this.subTemperature();
 
             // // Create a button to add
             var buttonPlus = document.createElement('BUTTON');
@@ -30,7 +30,24 @@ pc.script.create('ui', function (context) {
             buttonPlus.style.left = '12%';
 
             //onCLick sends to function
-            buttonPlus.onclick = "addTemperature();";
+            buttonPlus.onClick = this.addTemperature();
+
+
+            //create a Slider for the Global Temperature
+            var sliderT = document.createElement("INPUT");
+            sliderT.setAttribute("type", "range");
+
+            //fields for the slider
+            sliderT.max = 100.0;
+            sliderT.min = 0.0;
+            sliderT.step = 1.0;
+            sliderT.defaultValue = globalTemperature;
+
+             //positions it
+            sliderT.style.position = 'absolute';
+            sliderT.style.top = '23%';
+            sliderT.style.left = '7%';
+
 
             //text for the global temperature
             var div = document.createElement('div');
@@ -51,9 +68,12 @@ pc.script.create('ui', function (context) {
             document.body.appendChild(div);
             document.body.appendChild(buttonSub);
             document.body.appendChild(buttonPlus);
+            document.body.appendChild(sliderT);
 
-
+            this.sliderT = sliderT;
             this.div = div;
+            this.buttonPlus = buttonPlus;
+            this.buttonSub = buttonSub;
 
             // Set some default state on the UI element
              this.setText('Global temperature: ' + globalTemperature);
@@ -64,6 +84,8 @@ pc.script.create('ui', function (context) {
         update: function (dt) {
              //updates the global temperature
              this.setText('Global temperature: ' + globalTemperature);
+             var cast = this.sliderT.value * 1.0;
+              globalTemperature =  cast;
         },
 
         // // Some utility functions that can be called from other game scripts
@@ -73,10 +95,12 @@ pc.script.create('ui', function (context) {
 
         addTemperature: function(){
             globalTemperature = globalTemperature + 1;
+            console.log("clicked");
         },
 
         subTemperature: function(){
             globalTemperature = globalTemperature - 1;
+             console.log("clicked");
         },
 
         setText: function (message) {
