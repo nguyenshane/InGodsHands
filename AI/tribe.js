@@ -23,6 +23,7 @@ pc.script.create('tribe', function (context) {
         this.currentAction;
         this.prayerTimer;
         
+        // COMMENT TO TEST NEW GIT PROCEDURE
 
     };
 
