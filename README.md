@@ -18,7 +18,15 @@ In God's Hands is a God game where the player physically pulls strings to manipu
 * When you need to play the game with changes at your local machine, choose **Launch (Local Server)**
 
 ## Github procedure
+* Fork the main repo (nguyenshane/InGodsHands)
+* In your favorite git tool (Sourcetree, terminal, etc.) create a new remote with your forked repo
+* Whenever implementing a new feature, create a branch with a name describing said feature
 * When you're satisfied with your local changes, commit to this Github
 * From **PlayCanvas project page**, choose **Code**, check if Github is **green**. If not, click on **sync**
 * For the change to show up when Launch without Local Server, the Github commit has to be in master branch
 * Remember to **commit frequently!**
+* When done working on feature, push to your remote's version of the branch (Matt/feature)
+* Go to your repo's page on github.com and you should be able to create a pull request
+* If you make additional changes on that branch, when you push them they will append your pull request
+* Someone else on the team should checkout your pull request, make sure it works, and merge the pull request
+* Success
