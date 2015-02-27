@@ -61,8 +61,8 @@ pc.script.create('tribe', function (context) {
             // if the NPC is busy (moving, praying, etc.), currentAction is called instead      //
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
-            this.rules.sort(function(a, b){return b.weight - a.weight});
             if(!this.isBusy){
+                this.rules.sort(function(a, b){return b.weight - a.weight});
                 for(var i = 0; i < this.rules.length; i++){
                     if(this.rules[i].testConditions(this)){
                         this.rules[i].consequence(this);
