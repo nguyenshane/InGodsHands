@@ -39,7 +39,7 @@ pc.script.create('tribe', function (context) {
             this.tile = ico.tiles[698]; // list of tiles
             this.calculateFood();
 
-            this.entity.setPosition(this.tile.calculateCenter());
+            this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.15, .5, .15);
 
@@ -113,8 +113,6 @@ pc.script.create('tribe', function (context) {
             if(percentTravelled >= 1){
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
-                this.calculatePopulation();
-                this.calculateInfluence();
                 this.migrate();
             }
         },
@@ -133,24 +131,35 @@ pc.script.create('tribe', function (context) {
             if(!(this.currTileTemperature > (this.idealTemperature - 5) &&
                  this.currTileTemperature < (this.idealTemperature + 5))){
 
-                var bestTile;
-                var tempTemperatureA = Math.abs(this.idealTemperature - this.tile.neighbora.getTemperature());
-                var tempTemperatureB = Math.abs(this.idealTemperature - this.tile.neighborb.getTemperature());
-                var tempTemperatureC = Math.abs(this.idealTemperature - this.tile.neighborc.getTemperature());
+                var possibleTiles = [];
 
-                switch(Math.min(tempTemperatureA, tempTemperatureB, tempTemperatureC)) {
-                    case tempTemperatureA:
-                        bestTile = this.tile.neighbora;
-                        break;
-                    case tempTemperatureB:
-                        bestTile = this.tile.neighborb;
-                        break;
-                    case tempTemperatureC:
-                        bestTile = this.tile.neighborc;
-                        break;
+                if (!this.tile.neighbora.isOcean){
+                    possibleTiles.push(this.tile.neighbora);
                 }
-                this.setDestination(bestTile);
+                if (!this.tile.neighborb.isOcean){
+                    possibleTiles.push(this.tile.neighborb);
+                }
+                if (!this.tile.neighborc.isOcean){
+                    possibleTiles.push(this.tile.neighborc);
+                }
+
+                var bestTile = this.tile;
+                for (var i = 0; i < possibleTiles.length; i++){
+                    if (Math.abs(this.idealTemperature - bestTile.getTemperature()) > 
+                        Math.abs(this.idealTemperature - possibleTiles[i].getTemperature())){
+                        bestTile = possibleTiles[i];
+                    }
+                }
+
+                if (bestTile.equals(this.tile)){
+                    this.isBusy = false;
+                } else {
+                   this.setDestination(bestTile); 
+                }
+
             } else {
+                this.calculatePopulation();
+                this.calculateInfluence();
                 this.isBusy = false;
             }
 
@@ -231,18 +240,18 @@ pc.script.create('tribe', function (context) {
 
             this.influencedTiles.sort(function(a, b){return b.getFood() - a.getFood()});
             for (var i = 0; i < this.population + 1 && i < this.influencedTiles.length; i++){
-                console.log(this.influencedTiles[i]);
                 this.incomingFood += this.influencedTiles[i].getFood();
             }
 
             //this.incomingFood = this.tile.getFood();
+            console.log(this.population);
             console.log(this.incomingFood);
         },
 
         calculatePopulation: function() {
             this.stockpile;
 
-            this.stockpile = this.incomingFood - this.population;
+            this.stockpile = (this.incomingFood - this.population)/100;
             this.population += this.stockpile;
         },
 
