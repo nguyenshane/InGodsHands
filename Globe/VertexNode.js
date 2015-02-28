@@ -1,5 +1,5 @@
 function VertexNode() {
-	
+	/*
 	this.group = [];
 	this.west;
 	this.nwest;
@@ -7,4 +7,5 @@ function VertexNode() {
 	this.east;
 	this.seast;
 	this.swest;
+	*/
 }

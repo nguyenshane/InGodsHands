@@ -1,8 +1,8 @@
 function VertexGraph() {
-
+	/*
 	this.vertexNodes = [];
 
-	this.subdivisions =
+	this.subdivisions = 0;
 
 	this.addMidpoint = function(vertex1, vertex2) {
 
@@ -11,4 +11,5 @@ function VertexGraph() {
 	this.getNorthwest(index) {
 
 	}
+	*/
 }

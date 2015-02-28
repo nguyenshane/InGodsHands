@@ -1,4 +1,5 @@
 function Cluster(centerTile, tiles) {
+	/*
 	this.centerTile = centerTile;
 	this.tiles = tiles;
 	this.vertices = [];
@@ -24,4 +25,5 @@ function Cluster(centerTile, tiles) {
 	this.moveWest = function() {
 
 	}	
+	*/
 }
