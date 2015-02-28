@@ -11,7 +11,8 @@ function IcoSphere(device, radius, subdivisions) {
     x *= l;
     y *= l;
 
-    var startingVerts = [-x,  y, 0,
+    //Uncomment (Old)
+    /*var startingVerts = [-x,  y, 0,
 						  x,  y, 0,
 						 -x, -y, 0,
 						  x, -y, 0,
@@ -24,7 +25,69 @@ function IcoSphere(device, radius, subdivisions) {
 						 y,  0, -x,
 						 y,  0,  x,
 						-y,  0, -x,
-						-y,  0,  x];
+						-y,  0,  x];*/
+
+	var S  = radius * 2 * Math.sqrt(50 - 10 * Math.sqrt(5)) / 5;
+    var t1 = 2 * Math.PI / 5;
+    var t2 = Math.PI / 10;
+    var t4 = Math.PI / 5;
+    var t3 = -3 * Math.PI / 10;
+    var R  = (S/2) / Math.sin(t4);
+    var H  = Math.cos(t4) * R;
+    var Cx = R * Math.cos(t2);
+    var Cy = R * Math.sin(t2);
+    var H1 = Math.sqrt(S * S - R * R);
+    var H2 = Math.sqrt((H + R) * (H + R) - H * H);
+    var Z2 = (H2 - H1) / 2;
+    var Z1 = Z2 + H1;
+
+    /*a = (   0,   0,  Z1) 0
+
+    b = (   0,   R,  Z2) 1
+    c = (  Cx,  Cy,  Z2) 5
+    d = ( S/2,  -H,  Z2) 11
+    e = (-S/2,  -H,  Z2) 10
+    f = ( -Cx,  Cy,  Z2) 7
+
+    g = (   0,  -R, -Z2) 2
+    h = ( -Cx, -Cy, -Z2) 6
+    i = (-S/2,   H, -Z2) 8
+    j = ( S/2,   H, -Z2) 9
+    k = (  Cx, -Cy, -Z2) 4
+
+    l = (   0,   0, -Z1) 3*/
+
+    //Comment (New)
+    var startingVerts = [   0,  Z1,   0,
+
+						    R,  Z2,   0,
+						   Cy,  Z2,  Cx,
+						  -H,  Z2,  S/2,
+						 -H,  Z2,  -S/2,
+						  Cy,  Z2,  -Cx,
+
+						  H, -Z2,   S/2,
+						   -Cy, -Z2, Cx,
+						    -R, -Z2,  0,
+						  -Cy, -Z2, -Cx,
+						 H, -Z2,   -S/2,
+
+						    0, -Z1,   0];
+
+	/*var startingVerts = [   0,  Z1,   0,
+						    R,  Z2,   0,
+						    -R, -Z2,  0,
+						    0, -Z1,   0,
+
+						   -Cy, -Z2, Cx,
+						   Cy,  Z2,  Cx,
+						  -Cy, -Z2, -Cx,
+						  Cy,  Z2,  -Cx,
+
+						 H, -Z2,   -S/2,
+						  H, -Z2,   S/2,
+						 -H,  Z2,  -S/2,
+						  -H,  Z2,  S/2];*/
 
     var colors = [];
 	
@@ -39,6 +102,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexHeights;
     
     this.tiles = [];
+
+    this.clusters = [];
 	
     this.currentVerts = 0;
     this.currentFaces = 20;
@@ -62,6 +127,7 @@ function IcoSphere(device, radius, subdivisions) {
 		colors[i + 3] = 1.0;
 	}
 
+	/*Uncomment (Old)
 	// 5 faces around point 0
 	this.tiles[0] = new Tile(this, 0, 11, 5);
 	this.tiles[1] = new Tile(this, 0, 5, 1);
@@ -110,6 +176,57 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[17].setNeighbors(7, 8, 12);
 	this.tiles[18].setNeighbors(8, 9, 13);
 	this.tiles[19].setNeighbors(9, 5, 14);
+	*/
+
+	//Comment (New)
+	// 5 faces around point 0
+	this.tiles[0] = new Tile(this, 1, 0, 2);
+	this.tiles[1] = new Tile(this, 2, 0, 3);
+	this.tiles[2] = new Tile(this, 3, 0, 4);
+	this.tiles[3] = new Tile(this, 4, 0, 5);
+	this.tiles[4] = new Tile(this, 5, 0, 1);
+	// 5 adjacent faces
+	this.tiles[5] = new Tile(this, 2, 6, 1);
+	this.tiles[6] = new Tile(this, 3, 7, 2);
+	this.tiles[7] = new Tile(this, 4, 8, 3);
+	this.tiles[8] = new Tile(this, 5, 9, 4);
+	this.tiles[9] = new Tile(this, 1, 10, 5);
+    // 5 faces around point 3
+	this.tiles[10] = new Tile(this, 6, 2, 7);
+	this.tiles[11] = new Tile(this, 7, 3, 8);
+	this.tiles[12] = new Tile(this, 8, 4, 9);
+	this.tiles[13] = new Tile(this, 9, 5, 10);
+	this.tiles[14] = new Tile(this, 10, 1, 6);
+    // 5 faces around point 11
+	this.tiles[15] = new Tile(this, 7, 11, 6);
+	this.tiles[16] = new Tile(this, 8, 11, 7);
+	this.tiles[17] = new Tile(this, 9, 11, 8);
+	this.tiles[18] = new Tile(this, 10, 11, 9);
+	this.tiles[19] = new Tile(this, 6, 11, 10);
+	// Manually set neighbors for 20 faces
+	this.tiles[0].setNeighbors(1, 5, 4);
+	this.tiles[1].setNeighbors(2, 6, 0);
+	this.tiles[2].setNeighbors(3, 7, 1);
+	this.tiles[3].setNeighbors(4, 8, 2);
+	this.tiles[4].setNeighbors(0, 9, 3);
+	
+	this.tiles[5].setNeighbors(10, 0, 14);
+	this.tiles[6].setNeighbors(11, 1, 10);
+	this.tiles[7].setNeighbors(12, 2, 11);
+	this.tiles[8].setNeighbors(13, 3, 12);
+	this.tiles[9].setNeighbors(14, 4, 13);
+	
+	this.tiles[10].setNeighbors(6, 15, 5);
+	this.tiles[11].setNeighbors(7, 16, 6);
+	this.tiles[12].setNeighbors(8, 17, 7);
+	this.tiles[13].setNeighbors(9, 18, 8);
+	this.tiles[14].setNeighbors(5, 19, 9);
+	
+	this.tiles[15].setNeighbors(19, 10, 16);
+	this.tiles[16].setNeighbors(15, 11, 17);
+	this.tiles[17].setNeighbors(16, 12, 18);
+	this.tiles[18].setNeighbors(17, 13, 19);
+	this.tiles[19].setNeighbors(18, 14, 15);
 	
 	//Set indices for initial tiles
 	for (var i = 0; i < this.tiles.length; i++) {
@@ -548,6 +665,8 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 			console.log("n");
 		}
 	}
+
+
 };
 
 //Helper function of cluster, raises a portion of land around the center tile
