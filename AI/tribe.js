@@ -37,7 +37,7 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
             // create mesh
 
-            this.tile = ico.tiles[698]; // list of tiles
+            this.tile = ico.tiles[1034]; // list of tiles
             this.calculateFood();
 
             this.entity.setPosition(this.tile.center);

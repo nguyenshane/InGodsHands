@@ -594,7 +594,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var mountains = mountainCount / contCount;
 	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 	mountains = Math.floor(mountains);
-	cluster(icosphere, 698, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+	cluster(icosphere, 1034, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 	mountainCount -= mountains;
 	contCount--;
 	
