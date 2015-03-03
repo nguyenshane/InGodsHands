@@ -53,7 +53,10 @@ pc.script.create('globalInterface', function (context) {
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
 					if (Math.random() < 0.002) ico.tiles[i].startFog();
-					if (Math.random() < 0.0015) ico.tiles[i].startRain();
+					if (Math.random() < 0.0015) {
+						ico.tiles[i].startRain();
+						ico.tiles[i].startFog();
+					}
 				}
 			}
 			

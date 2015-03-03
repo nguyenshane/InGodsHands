@@ -8,6 +8,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.index;
     this.normal;
     this.center;
+	this.localRotNormal;
+	this.localRotCenter;
     this.neighbora;
     this.neighborb;
     this.neighborc;
@@ -21,7 +23,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isRaining = false;
 	this.isFoggy = false;
 	
-	this.rainDuration = 3;
+	this.rainDuration = 4;
 	this.fogDuration = 5;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
@@ -113,6 +115,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         if (!this.isOcean) return -1;
         return this.center.length;
     };
+	
+	//Called in _recalculateMesh, use the variables instead of the below functions when accessing
+	this.calculateRotationVectors = function() {
+		this.localRotNormal = this.getRotationAlignedWithNormal();
+		this.localRotCenter = this.getRotationAlignedWithSphere();
+	};
 
     this.getRotationAlignedWithNormal = function() {
         //var x = Math.acos(this.center.z/ico.radius) * 180/Math.PI;

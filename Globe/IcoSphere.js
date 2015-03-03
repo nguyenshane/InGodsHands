@@ -328,6 +328,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
 		tile.calculateNormal();
+		tile.calculateRotationVectors();
 		tile.isOcean = true;
 		
 		var verts = tile.vertexIndices;

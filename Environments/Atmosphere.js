@@ -22,8 +22,8 @@ pc.script.create('Atmosphere', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            var x = Math.floor((Math.random() * 360) + 0);
-            var z = Math.floor((Math.random() * 360) + 0);
+            //var x = Math.floor((Math.random() * 360) + 0);
+            //var z = Math.floor((Math.random() * 360) + 0);
             
 			/*
             if (this.rainstack.length < this.stackBuffer) {
