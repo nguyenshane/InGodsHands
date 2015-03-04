@@ -80,7 +80,7 @@ pc.script.create('animals', function (context) {
             else animal = e.findByName("pig");
 
             animal.enabled = true;
-            var scale = Math.floor((Math.random() * 1.5) + 1.0)/5 * animal.getLocalScale.x;
+            var scale = Math.floor((Math.random() * 1.5) + 1.0) * animal.getLocalScale.x;
             animal.setLocalScale(scale, scale, scale);
 
 
