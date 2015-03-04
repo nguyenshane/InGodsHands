@@ -52,7 +52,7 @@ pc.script.create('tribe', function (context) {
 
             this.calculateInfluence();
 
-            console.log("The influenced tiles length: " + this.influencedTiles.length);
+           // console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -170,6 +170,7 @@ pc.script.create('tribe', function (context) {
                 this.denounceGod();
                 this.isSpiteful = true;
                 this.isBusy = false;
+                this.entity.getChildren()[0].enabled = false;
             }
 
             if((this.currTileTemperature > (this.idealTemperature - 5) &&
@@ -180,6 +181,7 @@ pc.script.create('tribe', function (context) {
                 this.praiseGod();
                 this.prayerTimer = 0;
                 this.isBusy = false;
+                this.entity.getChildren()[0].enabled = false;
             }
 
             //console.log(this.currTileTemperature);
@@ -192,6 +194,7 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer = time;
             this.currentAction = this.waitForTemperaturePrayerAnswer;
             this.isBusy = true;
+            this.entity.getChildren()[0].enabled = true;
         },
 
         //////////////////////////////
