@@ -7,6 +7,8 @@
 //pc.script.attribute('fogChance', 'number', 0.002);
 //pc.script.attribute('rainChance', 'number', 0.0003);
 
+pc.script.attribute('globalSunRotation', 'number', 30);
+
 pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
@@ -27,7 +29,7 @@ pc.script.create('globalInterface', function (context) {
 
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
-            globalSunRotation = 50;
+            //globalSunRotation = 50;
 
             maxTotalBelief = 100;
             totalBelief = maxTotalBelief;
