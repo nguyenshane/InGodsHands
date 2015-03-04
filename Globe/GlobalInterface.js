@@ -57,10 +57,18 @@ pc.script.create('globalInterface', function (context) {
 				this.envRespawnTimer += this.envRespawnTime;
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
-					if (Math.random() < this.fogChance) ico.tiles[i].startFog();
-					if (Math.random() < this.rainChance) {
-						ico.tiles[i].startRain();
-						ico.tiles[i].startFog();
+					var tile = ico.tiles[i];
+					var temp = tile.getTemperature();
+					if (temp < 0) temp = 0;
+					else if (temp > 100) temp = 100;
+					
+					if (Math.random() < this.fogChance) {
+						tile.startFog();
+					}
+					
+					if (Math.random() < this.rainChance * (300 / (temp * 4 + 100))) {
+						tile.startRain();
+						tile.startFog();
 					}
 				}
 			}
