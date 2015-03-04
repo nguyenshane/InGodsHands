@@ -259,11 +259,14 @@ pc.script.create('tribe', function (context) {
             console.log("Stockpile" + this.stockpile);
 
             // Increase population when stockpile is at 100% of required food
+            // Take any additional food beyond 100 and add it back to the stock
             if(this.stockpile >= 1){
                 ++this.population;
-                // Take any additional food beyond 100 and add it back to the stock
                 --this.stockpile;
-            }
+            } else if(this.stockpile <= -1){
+                --this.population;
+                ++this.stockpile;
+            } 
         },
 
         calculateInfluence: function() {
