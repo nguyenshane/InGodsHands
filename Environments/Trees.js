@@ -67,10 +67,18 @@ pc.script.create('trees', function (context) {
 			
             var treetype = Math.floor((Math.random() * 2) + 0);
             var tree;
-            if (treetype == 0) tree = e.findByName("tree1");
-            else tree = e.findByName("tree2");
+            switch (treetype) {
+                case 0:
+                    tree = e.findByName("tree1");
+                    break;
+                case 1:
+                    tree = e.findByName("tree2");
+                    break;
+                default:
+                    animal = e.findByName("fox");
+            }
 			
-            var scale = Math.floor((Math.random() * 2) + 1.3)/5;
+            var scale = Math.floor((Math.random() * 2) + 1.3)/8;
             tree.setLocalScale(scale, scale, scale);
 			tree.rotate(rotation.x - 90, rotation.y, rotation.z);
 			tree.setPosition(position);
