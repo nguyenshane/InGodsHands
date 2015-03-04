@@ -328,12 +328,13 @@ IcoSphere.prototype._recalculateMesh = function() {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
 		tile.calculateNormal();
-		tile.isOcean = true;
+		tile.calculateRotationVectors();
+		tile.isOcean = false;
 		
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
-			if (this.vertexHeights[verts[j]] != 0) tile.isOcean = false;
+			if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
 		}
     }
 	
