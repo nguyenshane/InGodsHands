@@ -4,6 +4,9 @@
  * 
 */
 
+pc.script.attribute('fogChance', 'number', 0.002);
+pc.script.attribute('rainChance', 'number', 0.0003);
+
 pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
@@ -52,8 +55,8 @@ pc.script.create('globalInterface', function (context) {
 				this.envRespawnTimer += this.envRespawnTime;
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
-					if (Math.random() < 0.002) ico.tiles[i].startFog();
-					if (Math.random() < 0.0015) {
+					if (Math.random() < this.fogChance) ico.tiles[i].startFog();
+					if (Math.random() < this.rainChance) {
 						ico.tiles[i].startRain();
 						ico.tiles[i].startFog();
 					}

@@ -23,6 +23,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isRaining = false;
 	this.isFoggy = false;
 	
+	this.atmoHeight = 0.4;
 	this.rainDuration = 4;
 	this.fogDuration = 5;
 	this.rainTimer = 0, this.fogTimer = 0;
@@ -164,7 +165,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			this.rain.enabled = true;
 		} else {
 			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.rain = atmo.makeRain(this.getLatitude() - 90, -this.getLongitude() - 90, 0);
+			this.rain = atmo.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isRaining = true;
@@ -172,7 +173,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.stopRain = function() {
-		if (this.rain !== undefined) this.rain.enabled = false;
+		if (this.rain !== undefined) {
+			this.rain.destroy = true;
+			this.rain = undefined;
+		}
 		
 		this.isRaining = false;
 	};
@@ -182,7 +186,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			this.fog.enabled = true;
 		} else {
 			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.fog = atmo.makeFog(this.getLatitude() - 90, -this.getLongitude() - 90, 0);
+			this.fog = atmo.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isFoggy = true;
@@ -190,7 +194,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.stopFog = function() {
-		if (this.fog !== undefined) this.fog.enabled = false;
+		if (this.fog !== undefined) {
+			this.fog.destroy = true;
+			this.fog = undefined;
+		}
 		
 		this.isFoggy = false;
 	};

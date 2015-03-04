@@ -22,9 +22,6 @@ pc.script.create('Atmosphere', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            //var x = Math.floor((Math.random() * 360) + 0);
-            //var z = Math.floor((Math.random() * 360) + 0);
-            
 			/*
             if (this.rainstack.length < this.stackBuffer) {
                 this.makeFog(x,0,z);
@@ -41,37 +38,67 @@ pc.script.create('Atmosphere', function (context) {
                 else this.rainstack.unshift(e)
             }
 			*/
+			
+			for (var i = 0; i < this.rainstack.length; i++) {
+				var e = this.rainstack.shift();
+				if (this.checkDestroyable(e)) {
+					e.destroy();
+				} else {
+					this.rainstack.push(e);
+				}
+			}
+			
+			for (var i = 0; i < this.fogstack.length; i++) {
+				var e = this.fogstack.shift();
+				if (this.checkDestroyable(e)) {
+					e.destroy();
+				} else {
+					this.fogstack.push(e);
+				}
+			}
         },
         
-        makeRain: function(x,y,z) {
+        makeRain: function(position, rotation) {
             var e = this.atm.clone(); // Clone Atmosphere
             
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
+			
+			e.destroyable = false;
+			
+			var rain = e.findByName("RainPS");
             
-            e.rotateLocal(x, y, z);
-            e.findByName("RainPS").particlesystem.enabled = true;
-            e.findByName("RainPS").particlesystem.play();
+            rain.rotate(rotation.x - 90, rotation.y, rotation.z);
+			rain.setPosition(position);
+			
+            rain.particlesystem.enabled = true;
+            rain.particlesystem.play();
             
             this.rainstack.push(e);
-			
 			return e;
         },
         
-        makeFog: function(x,y,z) {
+        makeFog: function(position, rotation) {
             var e = this.atm.clone(); // Clone Atmosphere
             
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
-            
-            e.rotateLocal(x, y, z);
-            e.findByName("FogPS").particlesystem.enabled = true;
-            e.findByName("FogPS").particlesystem.play();
-            
-            this.fogstack.push(e);
 			
+			e.destroyable = false;
+            
+			var fog = e.findByName("FogPS");
+            
+            fog.rotate(rotation.x - 90, rotation.y, rotation.z);
+			fog.setPosition(position);
+			
+            fog.particlesystem.enabled = true;
+            fog.particlesystem.play();
+			
+            this.fogstack.push(e);
 			return e;
         },
         
         checkDestroyable: function(e) {
+			if (!e.destroyable) return false;
+			
             if (e.findByName("RainPS").particlesystem.enabled && !e.findByName("RainPS").particlesystem.isPlaying())
                 return true;
             

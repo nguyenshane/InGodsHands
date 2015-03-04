@@ -9,7 +9,6 @@ pc.script.create('trees', function (context) {
     // Creates a new Tree instance
     var Trees = function (entity) {
         this.entity = entity;
-        
     };
 
     Trees.prototype = {
@@ -32,13 +31,6 @@ pc.script.create('trees', function (context) {
                 if (!tile.isOcean) this.makeTree(tile.center, tile.localRotNormal);
                 else noOcean = true;
             }
-			
-			/*
-			for (var i = 0; i < ico.tiles.length; i++) {
-				var tile = ico.tiles[i];
-				if (!tile.isOcean) this.makeTree(tile.center, tile.localRotNormal);
-			}
-			*/
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -78,7 +70,6 @@ pc.script.create('trees', function (context) {
         
         checkDestroyable: function(e) {            
             return false;
-            
         },
     };
 

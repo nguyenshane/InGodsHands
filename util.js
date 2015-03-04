@@ -844,3 +844,11 @@ function Queue() {
 	this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};
 	this.peek=function(){return 0<a.length?a[b]:void 0};
 };
+
+function extendVector(vector, dist) {
+	var v = new pc.Vec3(vector.x, vector.y, vector.z);
+	v.normalize();
+	v.scale(dist);
+	v.add(vector);
+	return v;
+};

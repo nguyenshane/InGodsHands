@@ -9,7 +9,6 @@ pc.script.create('animals', function (context) {
     // Creates a new Animal instance
     var Animals = function (entity) {
         this.entity = entity;
-        
     };
 
     Animals.prototype = {
