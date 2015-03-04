@@ -4,19 +4,21 @@
  * 
 */
 
-pc.script.attribute('fogChance', 'number', 0.002);
-pc.script.attribute('rainChance', 'number', 0.0003);
+//pc.script.attribute('fogChance', 'number', 0.002);
+//pc.script.attribute('rainChance', 'number', 0.0003);
 
 pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
         this.entity = entity;
-        //time = 0;
     };
 
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			this.fogChance = 0.002;
+			this.rainChance = 0.0004;
+			
 			this.envRespawnTime = 0.5;
 			this.envRespawnTimer = 0;
 			
