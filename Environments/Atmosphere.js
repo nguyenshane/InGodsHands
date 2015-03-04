@@ -64,15 +64,18 @@ pc.script.create('Atmosphere', function (context) {
             if(this.rainstack.length < this.stackBuffer){
 
                 var e = this.atm.clone(); // Clone Atmosphere
-                
+                e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                //e.setPosition(position);
+
                 this.entity.getParent().addChild(e); // Add it as a sibling to the original
     			
     			//e.destroyable = false;
     			
     			var rain = e.findByName("RainPS");
+                //console.log('rain', rain.getRotation().x, rain.getRotation().y,rain.getRotation().z,rain.getRotation().w, rain.getPosition().x,rain.getPosition().y,rain.getPosition().z);
                 
-                rain.rotate(rotation.x - 90, rotation.y, rotation.z);
-    			rain.setPosition(position);
+                //rain.rotate(rotation.x - 90, rotation.y, rotation.z);
+    			//rain.setPosition(position);
     			
                 rain.particlesystem.enabled = true;
                 rain.particlesystem.play();
@@ -84,9 +87,10 @@ pc.script.create('Atmosphere', function (context) {
                     var e = this.rainstack.shift();
                     if (this.checkDestroyable(e)) {
                         // if this is reusable
+                        e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                        //e.setPosition(position);
                         var rain = e.findByName("RainPS");
-                        //rain.rotate(rotation.x - 90, rotation.y, rotation.z);
-                        rain.setPosition(position);
+                        
 
                         rain.particlesystem.reset();
                         rain.particlesystem.play();
@@ -101,15 +105,14 @@ pc.script.create('Atmosphere', function (context) {
         makeFog: function(position, rotation) {
             if(this.fogstack.length < this.stackBuffer){
                 var e = this.atm.clone(); // Clone Atmosphere
-                
+                e.rotate(rotation.x - 90, rotation.y, rotation.z);
                 this.entity.getParent().addChild(e); // Add it as a sibling to the original
     			
     			//e.destroyable = false;
                 
     			var fog = e.findByName("FogPS");
-                
-                fog.rotate(rotation.x - 90, rotation.y, rotation.z);
-    			fog.setPosition(position);
+
+    			//fog.setPosition(position);
     			
                 fog.particlesystem.enabled = true;
                 fog.particlesystem.play();
@@ -121,10 +124,11 @@ pc.script.create('Atmosphere', function (context) {
                 for (var i = 0; i < this.fogstack.length; i++) {
                     var e = this.fogstack.shift();
                     if (this.checkDestroyable(e)) {
+                        e.rotate(rotation.x - 90, rotation.y, rotation.z);
                         // if this is reusable
                         var fog = e.findByName("FogPS");
-                        fog.rotate(rotation.x - 90, rotation.y, rotation.z);
-                        fog.setPosition(position);
+                        
+                        //fog.setPosition(position);
 
                         fog.particlesystem.reset();
                         fog.particlesystem.play();
