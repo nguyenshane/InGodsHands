@@ -29,6 +29,7 @@ pc.script.create('tribe', function (context) {
 
     // Variables for lerp, in milliseconds
 
+    var _foodPopTimer = 0;
     var _travelTime = 3000;
     var _travelStartTime;
 
@@ -62,21 +63,13 @@ pc.script.create('tribe', function (context) {
             // if the NPC is busy (moving, praying, etc.), currentAction is called instead      //
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
+
             if(!this.isBusy){
-                this.rules.sort(function(a, b){return b.weight - a.weight});
-                for(var i = 0; i < this.rules.length; i++){
-                    if(this.rules[i].testConditions(this)){
-                        this.rules[i].consequence(this);
-                    }
-                }
+                this.runRuleList();
+                this.foodAndPopTimer(dt);
             } else {
                 this.currentAction(dt);
             }
-            ///////////////////////////////////////////////////////////////////////////////////////
-
-
-            // Calculate food every frame in case weather changes tile food count
-            //this.calculateFood();
 
             // Set temperature of tile
             this.currTileTemperature = this.tile.getTemperature();
@@ -235,10 +228,22 @@ pc.script.create('tribe', function (context) {
             --this.belief;
         },
 
+        foodAndPopTimer: function(dt) {
+            _foodPopTimer += dt
+            if(_foodPopTimer >= 8){
+                _foodPopTimer = 0;
+                this.calculateFood();
+                this.calculatePopulation();
+            }
+            //console.log("Timer: " _foodPopTimer);
+        },
+
         calculateFood: function() {
             var tilesForFood = [];
             this.incomingFood = 0;
 
+            // Take the food from the highest foodcount tiles in the sphere of influence
+            // depending on how much population you have. (ex. 2 pop = 2 highest tiles food)
             this.influencedTiles.sort(function(a, b){return b.getFood() - a.getFood()});
             for (var i = 0; i < this.population + 1 && i < this.influencedTiles.length; i++){
                 this.incomingFood += this.influencedTiles[i].getFood();
@@ -250,10 +255,15 @@ pc.script.create('tribe', function (context) {
         },
 
         calculatePopulation: function() {
-            this.stockpile;
+            this.stockpile += (this.incomingFood - this.population)/100;
+            console.log("Stockpile" + this.stockpile);
 
-            this.stockpile = (this.incomingFood - this.population)/100;
-            this.population += this.stockpile;
+            // Increase population when stockpile is at 100% of required food
+            if(this.stockpile >= 1){
+                ++this.population;
+                // Take any additional food beyond 100 and add it back to the stock
+                --this.stockpile;
+            }
         },
 
         calculateInfluence: function() {
@@ -286,8 +296,17 @@ pc.script.create('tribe', function (context) {
 		
         // Constructs the NPC's list of rules
         createRuleList: function() {
-            this.rules.push(new wantToMigrate());
-            this.rules.push(new needTemperatureChange());
+            //this.rules.push(new wantToMigrate());
+            //this.rules.push(new needTemperatureChange());
+        },
+
+        runRuleList: function() { 
+            this.rules.sort(function(a, b){return b.weight - a.weight});
+            for(var i = 0; i < this.rules.length; i++){
+                if(this.rules[i].testConditions(this)){
+                    this.rules[i].consequence(this);
+                }
+            }            
         }
     };
 
