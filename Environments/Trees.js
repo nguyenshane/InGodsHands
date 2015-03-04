@@ -75,12 +75,12 @@ pc.script.create('trees', function (context) {
                     tree = e.findByName("tree2");
                     break;
                 default:
-                    animal = e.findByName("fox");
+                    tree = e.findByName("tree1");
             }
 			
             var scale = Math.floor((Math.random() * 2) + 1.3)/8;
             tree.setLocalScale(scale, scale, scale);
-			tree.rotate(rotation.x - 90, rotation.y, rotation.z);
+			tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 			tree.setPosition(position);
 			
 			tree.enabled = true;

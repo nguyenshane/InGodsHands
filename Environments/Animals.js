@@ -50,16 +50,10 @@ pc.script.create('animals', function (context) {
                 //console.log("here", x,z);
                 this.makeAnimal(x, y, z);
             }*/
-
-
-
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            //var x = Math.floor((Math.random() * 360) + 0);
-            //var z = Math.floor((Math.random() * 360) + 0);
-			
             var destroyFailed = false;
             while (this.animal_stack.length >= this.stackBuffer && !destroyFailed) {
                 var e = this.animal_stack.shift();
@@ -75,20 +69,11 @@ pc.script.create('animals', function (context) {
         
         makeAnimal: function(position, rotation) {
             var e = this.animals.clone(); // Clone Atmosphere
-            //console.log('called');
             
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
             
-
-            //console.log(this.animal_stack);
-            
             var animaltype = Math.floor((Math.random() * 3) + 0);
             var animal;
-
-            // if(animaltype == 0)
-            //     animal = e.findByName("fox");
-            // else animal = e.findByName("pig");
-
             switch (animaltype) {
                 case 0:
                     animal = e.findByName("fox");
@@ -103,7 +88,7 @@ pc.script.create('animals', function (context) {
                     animal = e.findByName("fox");
             }
 
-            animal.rotate(rotation.x - 90, rotation.y, rotation.z);
+            animal.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
             animal.setPosition(position);
             animal.enabled = true;
 

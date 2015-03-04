@@ -61,10 +61,10 @@ pc.script.create('Atmosphere', function (context) {
         },
         
         makeRain: function(position, rotation) {
-            if(this.rainstack.length < this.stackBuffer){
-
+            if (this.rainstack.length < this.stackBuffer){
                 var e = this.atm.clone(); // Clone Atmosphere
-                e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                //e.rotate(rotation.x - 90, rotation.y, rotation.z);
+				e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
                 //e.setPosition(position);
 
                 this.entity.getParent().addChild(e); // Add it as a sibling to the original
@@ -72,8 +72,6 @@ pc.script.create('Atmosphere', function (context) {
     			//e.destroyable = false;
     			
     			var rain = e.findByName("RainPS");
-                //console.log('rain', rain.getRotation().x, rain.getRotation().y,rain.getRotation().z,rain.getRotation().w, rain.getPosition().x,rain.getPosition().y,rain.getPosition().z);
-                
                 //rain.rotate(rotation.x - 90, rotation.y, rotation.z);
     			//rain.setPosition(position);
     			
@@ -82,12 +80,13 @@ pc.script.create('Atmosphere', function (context) {
                 
                 this.rainstack.push(e);
     			return e;
-            } else{
+            } else {
                 for (var i = 0; i < this.rainstack.length; i++) {
                     var e = this.rainstack.shift();
                     if (this.checkDestroyable(e)) {
                         // if this is reusable
-                        e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                        //e.rotate(rotation.x - 90, rotation.y, rotation.z);
+						e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
                         //e.setPosition(position);
                         var rain = e.findByName("RainPS");
                         
@@ -103,9 +102,10 @@ pc.script.create('Atmosphere', function (context) {
         },
         
         makeFog: function(position, rotation) {
-            if(this.fogstack.length < this.stackBuffer){
+            if (this.fogstack.length < this.stackBuffer) {
                 var e = this.atm.clone(); // Clone Atmosphere
-                e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                //e.rotate(rotation.x - 90, rotation.y, rotation.z);
+				e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
                 this.entity.getParent().addChild(e); // Add it as a sibling to the original
     			
     			//e.destroyable = false;
@@ -120,11 +120,11 @@ pc.script.create('Atmosphere', function (context) {
                 this.fogstack.push(e);
     			return e;
             } else {
-                
                 for (var i = 0; i < this.fogstack.length; i++) {
                     var e = this.fogstack.shift();
                     if (this.checkDestroyable(e)) {
-                        e.rotate(rotation.x - 90, rotation.y, rotation.z);
+                        //e.rotate(rotation.x - 90, rotation.y, rotation.z);
+						e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
                         // if this is reusable
                         var fog = e.findByName("FogPS");
                         
