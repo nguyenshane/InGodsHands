@@ -15,20 +15,20 @@
 
 // usually the rotary encoders three pins have the ground pin in the middle
 enum PinAssignments {
-  encoderPinA_T = 2,
+  encoderPinA_T = 4,
   encoderPinB_T = 3,
   
-  encoderPinA_A = 4,
+  encoderPinA_A = 6,
   encoderPinB_A = 5,
   
-  encoderPinA_P = 6,
-  encoderPinB_P = 7,
+  encoderPinA_P = 9,
+  encoderPinB_P = 10,
   
-  encoderPinA_E = 10,
-  encoderPinB_E = 11,
+  encoderPinA_E = 11,
+  encoderPinB_E = 12,
   
-  encoderPinA_W = 15,
-  encoderPinB_W = 16,
+  encoderPinA_W = 17,
+  encoderPinB_W = 18,
   
   clearButton = 14
 };
@@ -104,10 +104,11 @@ void setup() {
   digitalWrite(encoderPinB_P, HIGH);
   digitalWrite(encoderPinA_E, HIGH);
   digitalWrite(encoderPinB_E, HIGH);
-  digitalWrite(encoderPinA_W, HIGH);
-  digitalWrite(encoderPinB_W, HIGH);
+
+  digitalWrite(encoderPinA_W, LOW);
+  digitalWrite(encoderPinB_W, LOW);
   
-  digitalWrite(clearButton, HIGH);
+  digitalWrite(clearButton, LOW);
 
 // encoder pin on interrupt
   attachPinChangeInterrupt(encoderPinA_T, doEncoderA_T, CHANGE);
@@ -320,7 +321,7 @@ void doEncoderA_W(){
   // debounce
   if ( rotating_W ) delay (1);  // wait a little until the bouncing is done
 
-  // Test transition, did things really change? 
+  // Test transition, did things really change? sw
   if( digitalRead(encoderPinA_W) != A_set_W ) {  // debounce once more
     A_set_W = !A_set_W;
 

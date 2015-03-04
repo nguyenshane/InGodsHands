@@ -1,8 +1,8 @@
 ///
-// Description: This is the Atmosphere Particle Effects
+// Description: ANIMALS
 ///
 
-pc.script.attribute('stackBuffer', 'number', 50); // change this number to optimal the buffer
+pc.script.attribute('stackBuffer', 'number', 2); // change this number to optimal the buffer
 
 
 pc.script.create('animals', function (context) {
@@ -17,11 +17,11 @@ pc.script.create('animals', function (context) {
         initialize: function () {
             this.animals = context.root.findByName("Animals");
             this.animal_stack = [];
-
+            /*
             var randomTiles = [];
             for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
             var noOcean = false;
-            while (this.trees_stack.length < this.stackBuffer && !noOcean) {
+            while (this.animal_stack.length < this.stackBuffer && !noOcean) {
                 shuffleArray(randomTiles);
                 
                 var tile = ico.tiles[randomTiles[0]];
@@ -29,11 +29,22 @@ pc.script.create('animals', function (context) {
                     tile = ico.tiles[randomTiles[i]];
                 }
                 
-                if (!tile.isOcean) this.makeTree(tile.getLatitude() - 90, -tile.getLongitude() - 90, 0);
+                if (!tile.isOcean) this.makeAnimal(tile.getLatitude() - 90, -tile.getLongitude() - 90, 0);
                 else noOcean = true;
+            */
                 //this.makeTree(x, 0, z);
+            //}
+
+            while (this.animal_stack.length < this.stackBuffer){
+                var x = Math.floor((Math.random() * 360) + 0);
+                var z = Math.floor((Math.random() * 360) + 0);
+                var y = Math.floor((Math.random() * 360) + 0);
+                console.log("here", x,z);
+                this.makeAnimal(x, y, z);
             }
-            
+
+
+
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -41,40 +52,41 @@ pc.script.create('animals', function (context) {
             //var x = Math.floor((Math.random() * 360) + 0);
             //var z = Math.floor((Math.random() * 360) + 0);
 			
-
-			var destroyFailed = false;
-            while (this.trees_stack.length >= this.stackBuffer && !destroyFailed) {
-                var e = this.trees_stack.shift();
+            if (this.animal_stack.length >= this.stackBuffer) {
+                var e = this.animal_stack.shift();
                 var destroyable = this.checkDestroyable(e);
                 
                 if (destroyable) e.destroy();
                 else {
-					this.trees_stack.unshift(e);
-					destroyFailed = true;
+					this.animal_stack.unshift(e);
 				}
             }
         },
         
-        makeTree: function(x,y,z) {
-            var e = this.trees.clone(); // Clone Atmosphere
+        makeAnimal: function(x,y,z) {
+            var e = this.animals.clone(); // Clone Atmosphere
+            console.log('called');
             
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
             
             e.rotateLocal(x, y, z);
+            console.log(this.animal_stack);
             
-            var treetype = Math.floor((Math.random() * 2) + 0);
-            var tree;
+            var animaltype = Math.floor((Math.random() * 2) + 0);
+            var animal;
             //console.log("treetype", treetype)
 
-            if(treetype == 0)
-                tree = e.findByName("tree1");
-            else tree = e.findByName("tree2");
+            if(animaltype == 0)
+                animal = e.findByName("fox");
+            else animal = e.findByName("pig");
 
-            tree.enabled = true;
-            var scale = Math.floor((Math.random() * 2) + 1.3)/5;
-            tree.setLocalScale(scale, scale, scale);
+            animal.enabled = true;
+            var scale = Math.floor((Math.random() * 1.5) + 1.0)/5 * animal.getLocalScale.x;
+            animal.setLocalScale(scale, scale, scale);
 
-            this.trees_stack.push(e);
+
+            this.animal_stack.push(e);
+            
         },
         
         
