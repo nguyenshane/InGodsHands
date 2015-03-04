@@ -85,7 +85,7 @@ pc.script.create('AudioController', function (context) {
 			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
-            console.log("Tribe has moved");
+            //console.log("Tribe has moved");
             this.audio.audiosource.play("tribeMovement");
 		},
     };
