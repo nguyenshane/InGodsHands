@@ -7,6 +7,8 @@
 //pc.script.attribute('fogChance', 'number', 0.002);
 //pc.script.attribute('rainChance', 'number', 0.0003);
 
+//pc.script.attribute('globalSunRotation', 'number', 30);
+
 pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
