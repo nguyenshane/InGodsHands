@@ -852,3 +852,9 @@ function extendVector(vector, dist) {
 	v.add(vector);
 	return v;
 };
+
+function multScalar(vector, scalar) {
+	vector.x *= scalar;
+	vector.y *= scalar;
+	vector.z *= scalar;
+}

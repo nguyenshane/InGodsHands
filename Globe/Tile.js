@@ -19,7 +19,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.rain, this.fog;
 
-    this.isOcean = true;//(Math.random()>0.01) ? true : false;
+    this.isOcean = true;
+	this.hasTree = false;
 	this.isRaining = false;
 	this.isFoggy = false;
 	

@@ -24,12 +24,24 @@ pc.script.create('trees', function (context) {
                 shuffleArray(randomTiles);
                 
                 var tile = ico.tiles[randomTiles[0]];
-                for (var i = 1; i < ico.tiles.length && tile.isOcean; i++) {
+                for (var i = 1; i < ico.tiles.length && (tile.isOcean || tile.hasTree); i++) {
                     tile = ico.tiles[randomTiles[i]];
                 }
                 
-                if (!tile.isOcean) this.makeTree(tile.center, tile.localRotNormal);
-                else noOcean = true;
+                if (!tile.isOcean && !tile.hasTree) {
+					var normal = new pc.Vec3(tile.normal.x, tile.normal.y, tile.normal.z);
+					normal.normalize();
+					var center = new pc.Vec3(tile.center.x, tile.center.y, tile.center.z);
+					center.normalize();
+					multScalar(center, 2);
+					normal.add(center);
+					
+					var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+					var angle = m.getEulerAngles();
+					
+					this.makeTree(tile.center, angle);
+					tile.hasTree = true;
+				} else noOcean = true;
             }
         },
 
