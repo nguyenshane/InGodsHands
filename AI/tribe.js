@@ -147,6 +147,7 @@ pc.script.create('tribe', function (context) {
 
                 if (bestTile.equals(this.tile)){
                     this.isBusy = false;
+                    this.isSpiteful = false;
                 } else {
                    this.setDestination(bestTile); 
                 }
@@ -155,6 +156,7 @@ pc.script.create('tribe', function (context) {
                 this.calculatePopulation();
                 this.calculateInfluence();
                 this.isBusy = false;
+                this.isSpiteful = false;
             }
 
         },
