@@ -296,8 +296,8 @@ pc.script.create('tribe', function (context) {
 		
         // Constructs the NPC's list of rules
         createRuleList: function() {
-            //this.rules.push(new wantToMigrate());
-            //this.rules.push(new needTemperatureChange());
+            this.rules.push(new wantToMigrate());
+            this.rules.push(new needTemperatureChange());
         },
 
         runRuleList: function() { 
