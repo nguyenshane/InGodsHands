@@ -2,6 +2,8 @@ function IcoSphere(device, radius, subdivisions) {
     'use strict;'
     subdivisions = (subdivisions || 1);
 
+    ico = this;
+
     // golden ratio, phi
     var x = 1;
     var y = 0.5 * (1 + Math.sqrt(5));
@@ -58,21 +60,21 @@ function IcoSphere(device, radius, subdivisions) {
     l = (   0,   0, -Z1) 3*/
 
     //Comment (New)
-    var startingVerts = [   0,  Z1,   0,
+    var startingVerts = [  0,  Z1,   0,
 
-						    R,  Z2,   0,
-						   Cy,  Z2,  Cx,
+						   R,  Z2,   0,
+						  Cy,  Z2,  Cx,
 						  -H,  Z2,  S/2,
-						 -H,  Z2,  -S/2,
+						  -H,  Z2, -S/2,
 						  Cy,  Z2,  -Cx,
 
-						  H, -Z2,   S/2,
-						   -Cy, -Z2, Cx,
-						    -R, -Z2,  0,
-						  -Cy, -Z2, -Cx,
-						 H, -Z2,   -S/2,
+						   H, -Z2,  S/2,
+						 -Cy, -Z2,   Cx,
+						  -R, -Z2,    0,
+						 -Cy, -Z2,  -Cx,
+						   H, -Z2, -S/2,
 
-						    0, -Z1,   0];
+						   0, -Z1,    0];
 
 	/*var startingVerts = [   0,  Z1,   0,
 						    R,  Z2,   0,
