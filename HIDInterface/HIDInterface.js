@@ -65,16 +65,16 @@ pc.script.create('HIDInterface', function (context) {
 		
 		move_T: function(position, distance, speed) {
 			console.log("FIRED string T: ", position, distance, speed);
-			 temperatureChange = true;
-			 temperatureStart = globalTemperature;
-			 temperatureDest = globalTemperature + distance;
-			 velocity = Math.abs((speed) * 1000);
-			 timer = new Date();
-			 lerpStartTime = timer.getTime();
-			 console.log("Global Temp: " + globalTemperature);
-			 for (var i = 0; i < 20; ++i) {
-			 	console.log(ico.tiles[i].getTemperature());
-			 }
+			temperatureChange = true;
+			temperatureStart = globalTemperature;
+			temperatureDest = globalTemperature + distance;
+			velocity = Math.abs((speed) * 500);
+			timer = new Date();
+			lerpStartTime = timer.getTime();
+			console.log("Global Temp: " + globalTemperature);
+			for (var i = 0; i < 20; ++i) {
+				console.log(ico.tiles[i].getTemperature());
+			}
 
 		},
 		
@@ -90,12 +90,13 @@ pc.script.create('HIDInterface', function (context) {
 		
 		move_E: function(position, distance, speed) {
 			console.log("FIRED string E: ", position, distance, speed);
-
+			
 		},
 		
 		move_W: function(position, distance, speed) {
 			console.log("FIRED string W: ", position, distance, speed);
-
+			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
+			atmo.makeStorm();
 		},
 
     };

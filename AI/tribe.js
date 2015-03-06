@@ -71,6 +71,8 @@ pc.script.create('tribe', function (context) {
                 this.currentAction(dt);
             }
 
+            console.log("Spiteful: " + this.isSpiteful);
+
             // Set temperature of tile
             this.currTileTemperature = this.tile.getTemperature();
 

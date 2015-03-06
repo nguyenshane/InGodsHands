@@ -140,6 +140,23 @@ pc.script.create('Atmosphere', function (context) {
             }
         },
         
+        makeStorm: function() {
+            var storm = this.entity.findByName("ThunderStormPS");
+            // var position = new pc.Vec3(0, 0, 0);
+            // var target = new pc.Vec3(this.center.x, this.center.y, this.center.z);
+            // var up = new pc.Vec3(0, 1, 0);
+            // var m = new pc.Mat4().setLookAt(position, target, up);
+            // m.getEulerAngles();
+            // var cameraPos = this.entity.getParent().findByName("Camera").getPosition();
+            // console.log("Camera's Position: " + cameraPos + " End position: " + cameraPos.add2(pc.Vec3.FORWARD.scale(100000)));
+            // context.systems.rigidbody.raycastFirst(cameraPos, cameraPos.add2(pc.Vec3.FORWARD.scale(100000)), function(result){
+            //     console.log("Result of ray: " + result.entity.getName());
+            // });
+            storm.setEulerAngles(90, 0, 0);
+            storm.particlesystem.enabled = true;
+            storm.particlesystem.play();
+        },
+
         checkDestroyable: function(e) {
 			//if (!e.destroyable) return false;
 			
