@@ -22,8 +22,12 @@ function VertexNode(indices) {
 
 	this.edges = [];
 
+	this.addIndex = function(index) {
+		this.group.push(index);
+	}
+
 	this.getVertex = function() {
-		return new pc.vec3(ico.vertices[this.group[0], this.group[0] + 1, this.group[0] + 2]);
+		return new pc.Vec3(ico.vertices[this.group[0] * 3], ico.vertices[this.group[0] * 3 + 1], ico.vertices[this.group[0] * 3 + 2]);
 	}
 
 	this.addEdge = function(direction, index) {

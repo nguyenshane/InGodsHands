@@ -204,9 +204,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
     
     this.calculateNormal = function(){
-        var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);
-        var vectorb = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[1]][0]);
-        var vectorc = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[2]][0]);
+        var vectora = this.getVertex(0);
+        var vectorb = this.getVertex(1);
+        var vectorc = this.getVertex(2);
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
@@ -263,7 +263,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.getVertex = function(vertexIndex) {
-		return handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[vertexIndex]][0]);
+		return ico.vertexGraph[this.vertexIndices[vertexIndex]].getVertex();
 	}
     
     this.getVertexIndex = function(vertex){        
