@@ -65,12 +65,12 @@ pc.script.create('globalInterface', function (context) {
 					else if (temp > 100) temp = 100;
 					
 					if (Math.random() < this.fogChance) {
-						tile.startFog();
+						//tile.startFog();
 					}
 					
 					if (Math.random() < this.rainChance * (300 / (temp * 4 + 100))) {
-						tile.startRain();
-						tile.startFog();
+						//tile.startRain();
+						//tile.startFog();
 					}
 				}
 			}

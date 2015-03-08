@@ -20,6 +20,7 @@ pc.script.create('tribe', function (context) {
         this.rules = [];
         this.isBusy = false;
         this.isSpiteful = false;
+        this.previousAction;
         this.currentAction;
         this.prayerTimer;
         
@@ -117,7 +118,7 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
-            this.currentAction = this.moveTo;   
+            this.setCurrentAction(this.moveTo);   
 
             var timer = new Date();
             _travelStartTime = timer.getTime();
@@ -175,6 +176,7 @@ pc.script.create('tribe', function (context) {
                 this.isSpiteful = true;
                 this.isBusy = false;
                 this.entity.getChildren()[0].enabled = false;
+                this.entity.getChildren()[1].enabled = false;
             }
 
             if((this.currTileTemperature > (this.idealTemperature - 5) &&
@@ -186,6 +188,7 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer = 0;
                 this.isBusy = false;
                 this.entity.getChildren()[0].enabled = false;
+                this.entity.getChildren()[1].enabled = false;
             }
 
             //console.log(this.currTileTemperature);
@@ -196,9 +199,13 @@ pc.script.create('tribe', function (context) {
         prayForTemperature: function (time) {
             console.log("TIME TO PRAY");
             this.prayerTimer = time;
-            this.currentAction = this.waitForTemperaturePrayerAnswer;
+            this.setCurrentAction(this.waitForTemperaturePrayerAnswer);
             this.isBusy = true;
-            this.entity.getChildren()[0].enabled = true;
+            if(this.currTileTemperature < this.idealTemperature){
+                this.entity.getChildren()[0].enabled = true;
+            } else {
+                this.entity.getChildren()[1].enabled = true;
+            }
         },
 
         //////////////////////////////
@@ -233,6 +240,11 @@ pc.script.create('tribe', function (context) {
 
         decreaseBelief: function() {
             --this.belief;
+        },
+
+        setCurrentAction: function(newAction) {
+            this.previousAction = this.currentAction;
+            this.currentAction = newAction;
         },
 
         foodAndPopTimer: function(dt) {
