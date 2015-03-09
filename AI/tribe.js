@@ -11,6 +11,7 @@ pc.script.create('tribe', function (context) {
         this.currTileTemperature;
 
         this.belief = 1;
+        this.fear = 0;
 
         this.tile;
         this.destinationTile;
@@ -22,7 +23,10 @@ pc.script.create('tribe', function (context) {
         this.isSpiteful = false;
         this.previousAction;
         this.currentAction;
-        this.prayerTimer;
+        this.prayerTimer = 0;
+        this.cowerTimer = 0;
+        this.denounceTimer = 0;
+        this.godInactionTimer = 0;
         
         // COMMENT TO TEST NEW GIT PROCEDURE
 
@@ -43,6 +47,8 @@ pc.script.create('tribe', function (context) {
             this.calculateFood();
 
             this.entity.setPosition(this.tile.center);
+            this.tile.hasTribe = true;
+
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.15, .5, .15);
 
@@ -65,6 +71,10 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
+            //console.log("busy: " + this.isBusy +
+            //            "\nDenounce timer: " + this.denounceTimer + 
+            //            "\nAction: " + this.currentAction);
+
             if(!this.isBusy){
                 this.runRuleList();
                 this.foodAndPopTimer(dt);
@@ -72,14 +82,15 @@ pc.script.create('tribe', function (context) {
                 this.currentAction(dt);
             }
 
-            console.log("Spiteful: " + this.isSpiteful);
-
             // Set temperature of tile
             this.currTileTemperature = this.tile.getTemperature();
 
             // Set lighting in shader
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalEulerAngles(this.rotation.x + 90, this.rotation.y, this.rotation.z);
+
+            // God inaction timer goes up so long as God doesn't act (Duh)
+            this.godInactionTimer += dt;
         },
 
         //////////////////////////////////
@@ -87,7 +98,7 @@ pc.script.create('tribe', function (context) {
         //////////////////////////////////
 
         // Called every movement frame, lerps from one tile center to the next
-        moveTo: function(deltaTime) {
+        move: function(deltaTime) {
 
             // Find change in time since the start, and divide by the desired total travel time
             // This will give you the percentage of the travel time covered. Send this for the lerp
@@ -108,8 +119,10 @@ pc.script.create('tribe', function (context) {
 
             // Once tribe is at next tile's center, movement is done.
             if(percentTravelled >= 1){
+                this.tile.hasTribe = false;
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
+                this.tile.hasTribe = true;
                 this.migrate();
             }
         },
@@ -118,7 +131,7 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
-            this.setCurrentAction(this.moveTo);   
+            this.setCurrentAction(this.move);   
 
             var timer = new Date();
             _travelStartTime = timer.getTime();
@@ -168,20 +181,20 @@ pc.script.create('tribe', function (context) {
         //  Tribe prayer action functions //
         ////////////////////////////////////
 
-        waitForTemperaturePrayerAnswer: function (deltaTime) {
+        prayForTemperature: function (deltaTime) {
             if(this.prayerTimer <= 0){
                 console.log("Prayer timer up");
                 this.prayerTimer = 0;
-                this.denounceGod();
+                this.decreaseBelief();
                 this.isSpiteful = true;
                 this.isBusy = false;
                 this.entity.getChildren()[0].enabled = false;
                 this.entity.getChildren()[1].enabled = false;
             }
 
-            if((this.currTileTemperature > (this.idealTemperature - 5) &&
-                this.currTileTemperature < (this.idealTemperature + 5)) &&
-                this.prayerTimer > 0){
+            if ((this.currTileTemperature > (this.idealTemperature - 5) &&
+                 this.currTileTemperature < (this.idealTemperature + 5)) &&
+                 this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
                 this.praiseGod();
@@ -196,35 +209,89 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer -= deltaTime;
         },
 
-        prayForTemperature: function (time) {
+        startPrayForTemperature: function (time) {
             console.log("TIME TO PRAY");
             this.prayerTimer = time;
-            this.setCurrentAction(this.waitForTemperaturePrayerAnswer);
+            this.setCurrentAction(this.prayForTemperature);
             this.isBusy = true;
-            if(this.currTileTemperature < this.idealTemperature){
+            if(this.currTileTemperature > this.idealTemperature){
                 this.entity.getChildren()[0].enabled = true;
             } else {
                 this.entity.getChildren()[1].enabled = true;
             }
         },
 
+        ///////////////////////////
+        //  Tribe fear functions //
+        ///////////////////////////
+       
+        startCowering: function () {
+            console.log("Tribe is now cowering");
+            this.cowerTimer = 5;
+            this.setCurrentAction(this.cower);
+            this.isBusy = true;
+        },
+
+        cower: function(deltaTime) {
+            // This will become a switch statement when we have more rules.
+            // Depending on what the tribe was doing before hand, their fear
+            // and belief will increase and decrease accordingly.
+            if(this.cowerTimer <= 0){
+                switch(this.previousAction){
+                    case this.denounce:
+                        this.increaseFear();
+                        this.increaseBelief();
+                        this.isBusy = false
+                        console.log("THOU HAST BEEN SMITED");
+                        break;
+                    default:
+                        this.increaseFear();
+                        this.increaseBelief();
+                        this.setCurrentAction(this.previousAction);
+                        console.log("Cower done");
+
+                        break;
+                }
+
+                this.cowerTimer = 0;                    
+            }
+
+            this.cowerTimer -= deltaTime;
+        },
+
         //////////////////////////////
         // Tribe feedback functions //
         //////////////////////////////
 
-        praiseGod: function() {
+        praise: function() {
             this.increaseBelief();
             // Play animation here
         },
 
-        denounceGod: function() {
-            this.decreaseBelief();
-            // play animation
+        startDenouncing: function() {
+            this.denounceTimer = 10;
+            this.setCurrentAction(this.denounce);
+            this.isBusy = true;
+        },
+
+        denounce: function(deltaTime) {
+            if(this.denounceTimer <= 0){
+                console.log("DENOUNCED GOD");
+                this.decreaseBelief();
+                this.denounceTimer = 0;
+                this.isBusy = false;
+            }
+            
+            this.denounceTimer -= deltaTime;
         },
 
         /////////////////////////////////
         //  Tribe data acces functions //
         /////////////////////////////////
+
+        resetInactionTimer: function() {
+            this.godInactionTimer = 0;
+        },
 
         getPopulation: function() {
             return this.population;
@@ -240,6 +307,14 @@ pc.script.create('tribe', function (context) {
 
         decreaseBelief: function() {
             --this.belief;
+        },
+
+        increaseFear: function() {
+            ++this.fear;
+        },
+
+        decreaseFear: function() {
+            --this.fear;
         },
 
         setCurrentAction: function(newAction) {
@@ -320,6 +395,7 @@ pc.script.create('tribe', function (context) {
         createRuleList: function() {
             this.rules.push(new wantToMigrate());
             this.rules.push(new needTemperatureChange());
+            this.rules.push(new wantToDenounce());
         },
 
         runRuleList: function() { 
@@ -327,6 +403,7 @@ pc.script.create('tribe', function (context) {
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this)){
                     this.rules[i].consequence(this);
+                    break;
                 }
             }            
         }

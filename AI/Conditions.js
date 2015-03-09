@@ -58,13 +58,19 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
-
         isSpiteful: function(tribe){
             return tribe.isSpiteful;
         },
 
         isNotSpiteful: function(tribe){
             return !tribe.isSpiteful;
+        },
+
+        isGodInactive: function(tribe){
+            if(tribe.godInactionTimer >= 20){ 
+                return true;
+            }
+            return false;
         }
     };
 

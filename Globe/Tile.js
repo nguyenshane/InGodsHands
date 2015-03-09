@@ -4,7 +4,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.colors = [];
     this.neighbora, this.neighborb, this.neighborc;
 	
-    var normalIndex, hasHuman, divided;
+    var normalIndex, hasTribe, divided;
 	this.index;
     this.normal;
     this.center;
@@ -32,7 +32,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle = icosphere;
 	ico = handle;
     this.divided = false;
-    this.hasHuman = false;
+    this.hasTribe = false;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;

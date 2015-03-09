@@ -20,6 +20,7 @@ pc.script.create('HIDInterface', function (context) {
 	var temperatureStart;
 	var lerpStartTime;
 	var velocity;
+	var tribe;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -30,6 +31,8 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
 			
+			tribe = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("BaseTribe").script.tribe;
+
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
@@ -75,28 +78,34 @@ pc.script.create('HIDInterface', function (context) {
 			for (var i = 0; i < 20; ++i) {
 				console.log(ico.tiles[i].getTemperature());
 			}
+			tribe.resetInactionTimer();
 
 		},
 		
 		move_A: function(position, distance, speed) {
 			console.log("FIRED string A: ", position, distance, speed);
+			tribe.resetInactionTimer();
 
 		},
 		
 		move_P: function(position, distance, speed) {
 			console.log("FIRED string P: ", position, distance, speed);
+			tribe.resetInactionTimer();
 
 		},
 		
 		move_E: function(position, distance, speed) {
 			console.log("FIRED string E: ", position, distance, speed);
-			
+			// Temporarily here, will make it a function call to tile eventually
+			tribe.startCowering();
+			tribe.resetInactionTimer();
+
 		},
 		
 		move_W: function(position, distance, speed) {
 			console.log("FIRED string W: ", position, distance, speed);
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			atmo.makeStorm();
+			tribe.resetInactionTimer();
+			
 		},
 
     };
