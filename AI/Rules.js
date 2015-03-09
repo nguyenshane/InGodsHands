@@ -195,6 +195,37 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         console.log("Need temperature change fired");
-        tribe.prayForTemperature(10);
+        tribe.startPrayForTemperature(10);
+    }    
+};
+
+/* 
+ *  wantToDenounce means the tribe will denounce God the player's existence 
+ *  If not punished, they will lose belief
+ *    
+ */
+
+var wantToDenounce = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 5;
+    this.conditions = [allConditions.isGodInactive];
+};
+
+wantToDenounce.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        console.log("Does God truly exist?!");
+        tribe.resetInactionTimer();
+        tribe.startDenouncing();
     }    
 };
