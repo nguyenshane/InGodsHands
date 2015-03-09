@@ -4,8 +4,7 @@
 
 pc.script.attribute('stackBuffer', 'number', 50); // change this number to optimal the buffer
 
-
-pc.script.create('trees', function (context) {
+pc.script.create('Trees', function (context) {
     // Creates a new Tree instance
     var Trees = function (entity) {
         this.entity = entity;
@@ -17,6 +16,7 @@ pc.script.create('trees', function (context) {
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
 			
+			//Spawn initial set of trees
             var randomTiles = [];
             for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
             var noOcean = false;
@@ -29,24 +29,21 @@ pc.script.create('trees', function (context) {
                 }
                 
                 if (!tile.isOcean && !tile.hasTree) {
-					var normal = new pc.Vec3(tile.normal.x, tile.normal.y, tile.normal.z);
-					normal.normalize();
-					var center = new pc.Vec3(tile.center.x, tile.center.y, tile.center.z);
-					center.normalize();
-					multScalar(center, 2);
-					normal.add(center);
-					
-					var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
-					var angle = m.getEulerAngles();
-					
-					this.makeTree(tile.center, angle);
-					tile.hasTree = true;
+					tile.spawnTree();
 				} else noOcean = true;
             }
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+			for (var i = 0; i < this.trees_stack.length; i++) {
+				if (this.trees_stack[i].destroyFlag) {
+					var e = this.trees_stack[i];
+					this.trees_stack.splice(i, 1);
+					e.destroy();
+				}
+			}
+			
 			var destroyFailed = false;
             while (this.trees_stack.length >= this.stackBuffer && !destroyFailed) {
                 var e = this.trees_stack.shift();
@@ -61,30 +58,34 @@ pc.script.create('trees', function (context) {
         },
         
         makeTree: function(position, rotation) {
-            var e = this.trees.clone(); // Clone Atmosphere
-            
-            this.entity.getParent().addChild(e); // Add it as a sibling to the original
-			
-            var treetype = Math.floor((Math.random() * 2) + 0);
-            var tree;
-            switch (treetype) {
-                case 0:
-                    tree = e.findByName("tree1");
-                    break;
-                case 1:
-                    tree = e.findByName("tree2");
-                    break;
-                default:
-                    tree = e.findByName("tree1");
-            }
-			
-            var scale = Math.floor((Math.random() * 2) + 1.3)/8;
-            tree.setLocalScale(scale, scale, scale);
-			tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-			tree.setPosition(position);
-			
-			tree.enabled = true;
-            this.trees_stack.push(e);
+			if (this.trees_stack.length < this.stackBuffer) {
+				var e = this.trees.clone(); // Clone Trees
+				
+				this.entity.getParent().addChild(e); // Add it as a sibling to the original
+				
+				var treetype = Math.floor((Math.random() * 2) + 0);
+				var tree;
+				switch (treetype) {
+					case 0:
+						tree = e.findByName("tree1");
+						break;
+					case 1:
+						tree = e.findByName("tree2");
+						break;
+					default:
+						tree = e.findByName("tree1");
+				}
+				
+				var scale = Math.floor((Math.random() * 2) + 1.3)/8;
+				tree.setLocalScale(scale, scale, scale);
+				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+				tree.setPosition(position);
+				
+				tree.enabled = true;
+				e.destroyFlag = false;
+				this.trees_stack.push(e);
+				return e;
+			}
         },
         
         

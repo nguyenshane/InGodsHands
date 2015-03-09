@@ -17,7 +17,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 	
-	this.rain, this.fog;
+	this.tree, this.rain, this.fog;
 
     this.isOcean = true;
 	this.hasTree = false;
@@ -41,6 +41,32 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexa);
     handle.indices.push(vertexb);
     handle.indices.push(vertexc);
+	
+	this.update = function(dt) {
+		if (this.isRaining) {
+			this.rainTimer -= dt;
+			if (this.rainTimer <= 0) this.stopRain();
+		}
+		
+		if (this.isFoggy) {
+			this.fogTimer -= dt;
+			if (this.fogTimer <= 0) this.stopFog();
+		}
+	};
+	
+	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
+	this.updateEnv = function() {
+		var temp = this.getTemperature();
+		if (temp < 0) temp = 0;
+		else if (temp > 100) temp = 100;
+		
+		if (Math.random() < rainChance * (300 / (temp * 4 + 100))) {
+			this.startRain();
+			this.startFog();
+		} else if (Math.random() < fogChance) {
+			this.startFog();
+		}
+	};
 
     this.getNorthNeighbor = function() {
         if (this.neighbora.center.y > this.neighborb.center.y && this.neighbora.center.y > this.neighborc.center.y) {
@@ -161,12 +187,33 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         return this.temperature;
     };
 	
+	this.spawnTree = function() {
+		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+		normal.normalize();
+		var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
+		center.normalize();
+		multScalar(center, 2);
+		normal.add(center);
+		
+		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+		var angle = m.getEulerAngles();
+		
+		if (g_Trees === undefined) g_Trees = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Trees;
+		this.tree = g_Trees.makeTree(this.center, angle);
+		this.hasTree = true;
+	};
+	
+	this.removeTree = function() {
+		if (this.tree !== undefined) this.tree.destroyFlag = true;
+		this.hasTree = false;
+	};
+	
 	this.startRain = function() {
 		if (this.rain !== undefined) {
 			this.rain.enabled = true;
 		} else {
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.rain = atmo.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
+			if (g_Atmosphere === undefined) g_Atmosphere = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.A
+			this.rain = g_Atmosphere.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isRaining = true;
@@ -174,10 +221,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.stopRain = function() {
+		/*
 		if (this.rain !== undefined) {
 			this.rain.destroy = true;
 			this.rain = undefined;
 		}
+		*/
 		
 		this.isRaining = false;
 	};
@@ -186,8 +235,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		if (this.fog !== undefined) {
 			this.fog.enabled = true;
 		} else {
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.fog = atmo.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
+			if (g_Atmosphere === undefined) g_Atmosphere = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.A
+			this.fog = g_Atmosphere.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isFoggy = true;
@@ -195,10 +244,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.stopFog = function() {
+		/*
 		if (this.fog !== undefined) {
 			this.fog.destroy = true;
 			this.fog = undefined;
 		}
+		*/
 		
 		this.isFoggy = false;
 	};
