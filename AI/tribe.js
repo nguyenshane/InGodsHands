@@ -11,6 +11,7 @@ pc.script.create('tribe', function (context) {
         this.currTileTemperature;
 
         this.belief = 1;
+        this.fear = 0;
 
         this.tile;
         this.destinationTile;
@@ -23,6 +24,7 @@ pc.script.create('tribe', function (context) {
         this.previousAction;
         this.currentAction;
         this.prayerTimer;
+        this.cowerTimer;
         
         // COMMENT TO TEST NEW GIT PROCEDURE
 
@@ -43,6 +45,8 @@ pc.script.create('tribe', function (context) {
             this.calculateFood();
 
             this.entity.setPosition(this.tile.center);
+            this.tile.hasTribe = true;
+
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.entity.setLocalScale(.15, .5, .15);
 
@@ -71,8 +75,6 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.currentAction(dt);
             }
-
-            console.log("Spiteful: " + this.isSpiteful);
 
             // Set temperature of tile
             this.currTileTemperature = this.tile.getTemperature();
@@ -108,8 +110,10 @@ pc.script.create('tribe', function (context) {
 
             // Once tribe is at next tile's center, movement is done.
             if(percentTravelled >= 1){
+                this.tile.hasTribe = false;
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
+                this.tile.hasTribe = true;
                 this.migrate();
             }
         },
@@ -179,9 +183,9 @@ pc.script.create('tribe', function (context) {
                 this.entity.getChildren()[1].enabled = false;
             }
 
-            if((this.currTileTemperature > (this.idealTemperature - 5) &&
-                this.currTileTemperature < (this.idealTemperature + 5)) &&
-                this.prayerTimer > 0){
+            if ((this.currTileTemperature > (this.idealTemperature - 5) &&
+                 this.currTileTemperature < (this.idealTemperature + 5)) &&
+                 this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
                 this.praiseGod();
@@ -206,6 +210,31 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.entity.getChildren()[1].enabled = true;
             }
+        },
+
+        ///////////////////////////
+        //  Tribe fear functions //
+        ///////////////////////////
+       
+        startCowering: function () {
+            console.log("Tribe is now cowering");
+            this.cowerTimer = 5;
+            this.setCurrentAction(this.cower);
+            this.isBusy = true;
+        },
+
+        cower: function(deltaTime) {
+            // This will become a switch statement when we have more rules.
+            // Depending on what the tribe was doing before hand, their fear
+            // and belief will increase and decrease accordingly.
+            if(this.cowerTimer <= 0){
+                this.increaseFear();
+                this.increaseBelief();
+                this.setCurrentAction(this.previousAction);
+                console.log("Cower done");
+            }
+
+            this.cowerTimer -= deltaTime;
         },
 
         //////////////////////////////
@@ -240,6 +269,14 @@ pc.script.create('tribe', function (context) {
 
         decreaseBelief: function() {
             --this.belief;
+        },
+
+        increaseFear: function() {
+            ++this.fear;
+        },
+
+        decreaseFear: function() {
+            --this.fear;
         },
 
         setCurrentAction: function(newAction) {

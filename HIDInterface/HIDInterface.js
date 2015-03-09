@@ -90,13 +90,14 @@ pc.script.create('HIDInterface', function (context) {
 		
 		move_E: function(position, distance, speed) {
 			console.log("FIRED string E: ", position, distance, speed);
-			
+			// Temporarily here, will make it a function call to tile eventually
+			var tribe = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("BaseTribe").script.tribe;
+			tribe.startCowering();
 		},
 		
 		move_W: function(position, distance, speed) {
 			console.log("FIRED string W: ", position, distance, speed);
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			atmo.makeStorm();
+			
 		},
 
     };
