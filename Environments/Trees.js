@@ -13,6 +13,8 @@ pc.script.create('Trees', function (context) {
     Trees.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
+			
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
 			

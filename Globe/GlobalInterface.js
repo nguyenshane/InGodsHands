@@ -18,11 +18,8 @@ pc.script.create('globalInterface', function (context) {
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-			//Script references
-			g_Trees = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Trees;
-			g_Atmosphere = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
+			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
-			//Other global variables
 			fogChance = 0.001;
 			rainChance = 0.0002;
 			

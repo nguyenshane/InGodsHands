@@ -198,8 +198,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
 		var angle = m.getEulerAngles();
 		
-		if (g_Trees === undefined) g_Trees = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Trees;
-		this.tree = g_Trees.makeTree(this.center, angle);
+		this.tree = scripts.Trees.makeTree(this.center, angle);
 		this.hasTree = true;
 	};
 	
@@ -212,8 +211,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		if (this.rain !== undefined) {
 			this.rain.enabled = true;
 		} else {
-			if (g_Atmosphere === undefined) g_Atmosphere = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.A
-			this.rain = g_Atmosphere.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
+			this.rain = scripts.Atmosphere.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isRaining = true;
@@ -235,8 +233,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		if (this.fog !== undefined) {
 			this.fog.enabled = true;
 		} else {
-			if (g_Atmosphere === undefined) g_Atmosphere = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.A
-			this.fog = g_Atmosphere.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
+			this.fog = scripts.Atmosphere.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
 		
 		this.isFoggy = true;
