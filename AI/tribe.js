@@ -237,11 +237,23 @@ pc.script.create('tribe', function (context) {
             // Depending on what the tribe was doing before hand, their fear
             // and belief will increase and decrease accordingly.
             if(this.cowerTimer <= 0){
-                this.increaseFear();
-                this.increaseBelief();
-                this.setCurrentAction(this.previousAction);
-                this.cowerTimer = 0;
-                console.log("Cower done");
+                switch(this.previousAction){
+                    case this.denounce:
+                        this.increaseFear();
+                        this.increaseBelief();
+                        this.isBusy = false
+                        console.log("THOU HAST BEEN SMITED");
+                        break;
+                    default:
+                        this.increaseFear();
+                        this.increaseBelief();
+                        this.setCurrentAction(this.previousAction);
+                        console.log("Cower done");
+
+                        break;
+                }
+
+                this.cowerTimer = 0;                    
             }
 
             this.cowerTimer -= deltaTime;
@@ -262,7 +274,8 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
         },
 
-        denounce: function(deltaTime) if(this.denounceTimer <= 0){
+        denounce: function(deltaTime) {
+            if(this.denounceTimer <= 0){
                 console.log("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
