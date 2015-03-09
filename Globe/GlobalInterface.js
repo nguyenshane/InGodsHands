@@ -20,6 +20,7 @@ pc.script.create('globalInterface', function (context) {
         initialize: function () {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
+			treeDensity = 0.35; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
 			fogChance = 0.001;
 			rainChance = 0.0002;
 			

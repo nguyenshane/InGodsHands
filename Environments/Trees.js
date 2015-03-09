@@ -14,6 +14,7 @@ pc.script.create('Trees', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
+			//if (treeDensity === undefined) treeDensity = 0.35;
 			
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
@@ -21,6 +22,13 @@ pc.script.create('Trees', function (context) {
 			//Spawn initial set of trees
             var randomTiles = [];
             for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
+			shuffleArray(randomTiles);
+			
+			for (var i = 1; i < ico.tiles.length; i++) {
+				ico.tiles[randomTiles[i]].spawnTree();
+			}
+			
+			/*
             var noOcean = false;
             while (this.trees_stack.length < this.stackBuffer && !noOcean) {
                 shuffleArray(randomTiles);
@@ -31,9 +39,10 @@ pc.script.create('Trees', function (context) {
                 }
                 
                 if (!tile.isOcean && !tile.hasTree) {
-					tile.spawnTree();
+					tile.createTree();
 				} else noOcean = true;
             }
+			*/
         },
 
         // Called every frame, dt is time in seconds since last update

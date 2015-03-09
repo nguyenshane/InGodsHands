@@ -187,14 +187,60 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
         return this.temperature;
     };
 	
+	//Creates a new tree on this tile if the tree density in the area is too low
 	this.spawnTree = function() {
+		if (this.hasTree || this.isOcean) return;
+		
+		var maxDist = 3;
+		var localTreeCount = 0.0;
+		visitedTileCount = 0.0;
+		
+		var queue = new Queue();
+		var visited = [];
+		for (var size = ico.tiles.length-1; size >= 0; size--) visited[size] = false;
+		var distances = [];
+		for (var size = ico.tiles.length-1; size >= 0; size--) distances[size] = -2;
+		
+		queue.enqueue(this.index);
+		visited[this.index] = true;
+		distances[this.index] = 0;
+		visitedTileCount++;
+		
+		while (!queue.isEmpty()) {
+			var tileIndex = queue.dequeue();
+			var tile = ico.tiles[tileIndex];
+			var neighbors = tile.getNeighborIndices();
+			
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = neighbors[i];
+				if (!visited[neighbor]) {
+					if (distances[tileIndex] < maxDist && !ico.tiles[neighbor].isOcean) {
+						if (ico.tiles[neighbor].hasTree) localTreeCount++;
+						visitedTileCount++;
+						
+						visited[neighbor] = true;
+						queue.enqueue(neighbor);
+						distances[neighbor] = distances[tileIndex] + 1;
+					}
+				} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			}
+		}
+		
+		var localTreeDensity = localTreeCount / visitedTileCount;
+		
+		if (localTreeDensity <= treeDensity) this.createTree();
+	};
+	
+	//Adds a tree to this tile
+	this.createTree = function() {
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		normal.normalize();
 		var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
 		center.normalize();
 		multScalar(center, 2);
 		normal.add(center);
-		
 		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
 		var angle = m.getEulerAngles();
 		
