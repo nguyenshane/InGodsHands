@@ -12,6 +12,11 @@ pc.script.create('Globe', function (context) {
             ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
             var mesh = ico.toReturn.mesh;
 
+            // test verts
+            //ico.vertexGraph[0].setHeight(1.5);
+            ico.updateReturnMesh();
+            mesh = ico.toReturn.mesh;
+
             // create entity
             var entity = new pc.Entity();
             entity.name = "Globe";
@@ -99,12 +104,13 @@ pc.script.create('Globe', function (context) {
 			//this.material = phong;
             
             // create mesh instance, need node, mesh and material
-            var meshInstance = new pc.scene.MeshInstance(entity, mesh, this.material);
+            this.meshInstance = new pc.scene.MeshInstance(entity, mesh, this.material);
+            console.log(this.meshInstance);
             
             // create model with node and mesh instance
             var model = new pc.scene.Model();
             //model.graph = node;
-            model.meshInstances = [ meshInstance ];
+            model.meshInstances = [ this.meshInstance ];
 			
 			//this.globe.model = model;
             this.entity.addChild(entity);
@@ -115,7 +121,7 @@ pc.script.create('Globe', function (context) {
 			//this.stringW = this.entity.script.HIDInterface.stringW;
 			//this.stringW.on("moved", this.move, this.position, this.distance, this.speed);
 			//this.stringW.on("moving", this.moving, this.position, this.distance, this.speed);
-			//console.log(this.globe);
+
 			// 
 			// add rigid body
 			context.systems.rigidbody.addComponent(this.globe, {
@@ -129,6 +135,10 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+            if (ico.updateFlag == true) {
+                this.updateMesh();
+            }
+            //ico.toReturn.mesh;
 
             // Set temperature variables in shader
         	this.material.setParameter('temperature', globalTemperature);
@@ -143,7 +153,14 @@ pc.script.create('Globe', function (context) {
             //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
             //console.log(angle.x, angle.y, angle.z);
             //console.log(sun.rotation);
+            //this.model.meshInstances[0].
         },
+
+        updateMesh: function () {
+            ico.updateReturnMesh();
+            this.meshInstance.mesh = ico.toReturn.mesh;
+            console.log("Updating Globe Mesh");
+        }
 		/*
 		move: function(position, distance, speed) {
 			console.log("FIRED string W in Globe: ", position, distance, speed);

@@ -18,6 +18,8 @@ pc.script.create('globalInterface', function (context) {
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+        	globalTime = 0;
+
 			this.fogChance = 0.002;
 			this.rainChance = 0.0004;
 			
@@ -34,10 +36,19 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 100;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
+
+            // test vertex neighbors init
+            this.testvertex1 = 1;
+            //ico.vertexGraph[this.testvertex1].setHeight(1.5);
+            this.testvertex2 = 6;
+            this.vertexstep = 0;
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	// Update globalTime, do not update anywhere else
+        	globalTime += dt;
+
 			//'Update' tiles (should probably be in the tile class instead but they aren't a proper pc object...)
 			for (var i = 0; i < ico.tiles.length; i++) {
 				var tile = ico.tiles[i];
@@ -91,6 +102,20 @@ pc.script.create('globalInterface', function (context) {
                 totalBelief += dt* 10;
             }
 
+            // Test vertex neighbors update
+            if (Math.floor(globalTime) % 10 == 0) {
+            	//console.log(this.testvertex1);
+            	//console.log(ico.vertexGraph[this.testvertex1]);
+            	var height = ico.vertexGraph[this.testvertex1].getHeight() * 1.1;
+            	ico.vertexGraph[this.testvertex1].setHeight(1);
+            	this.testvertex1 = ico.vertexGraph[this.testvertex1].getNeighbor(DIRECTION.EAST);
+            	ico.vertexGraph[this.testvertex1].setHeight(1.5);
+
+            	height = ico.vertexGraph[this.testvertex2].getHeight() * 1.1;
+            	ico.vertexGraph[this.testvertex2].setHeight(1);
+            	this.testvertex2 = ico.vertexGraph[this.testvertex2].getNeighbor(DIRECTION.WEST);
+            	ico.vertexGraph[this.testvertex2].setHeight(1.5);
+        	}
 
             sun.setPosition(0, 0, 0);
 

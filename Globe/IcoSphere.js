@@ -1,8 +1,13 @@
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
+
+    this.device = device;
+
     ico = this;
 
     subdivisions = (subdivisions || 1);
+
+    this.updateFlag = false;
 
 	this.radius = radius;
 	
@@ -297,6 +302,21 @@ function IcoSphere(device, radius, subdivisions) {
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
 }
 
+IcoSphere.prototype.updateReturnMesh = function() {
+	var options = {
+        normals: this.normals,
+        indices: this.indices
+    };
+
+	this.toReturn = {
+        mesh: pc.createMesh(this.device, this.vertices, options),
+        options: options,
+        positions: this.vertices
+    };
+
+    this.updateFlag = false;
+}
+
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	this.vertexHeights[index] = height;
 	this.setVertexMagnitude(index, height + this.radius);
@@ -349,6 +369,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 };
 
 IcoSphere.prototype._getUnbufferedVertex = function(i) {
+	return this.vertexGraph[i].getVertex();
     return new pc.alVec3(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]);
 };
 
@@ -541,26 +562,33 @@ IcoSphere.prototype.unshareVertices = function() {
 			//Add each tile's vertex to vertices
 			vertices.push(this._getUnbufferedVertex(tile.vertexIndices[j]));
 
-			//Group vertices in the same position
+			this.vertexGraph[tile.vertexIndices[j]].addIndex(vertices.length-1);
+
+
+			/*Group vertices in the same position
 			var newV = vertices[vertices.length-1];
-			vertexParents[vertices.length-1] = vertexGroups.length;
+			vertexParents[vertices.length-1] = this.vertexGraph.length;
 			for (var k = 0, done = false; k < vertices.length-1 && !done; k++) {
 				var v = vertices[k];
 				
 				//Try to find an existing group for this vertex
 				if (v.x === newV.x && v.y === newV.y && v.z === newV.z) {
 					vertexParents[vertices.length-1] = vertexParents[k];
-					vertexGroups[vertexParents[k]].addIndex(vertices.length-1);
+					this.vertexGraph[vertexParents[k]].addIndex(vertices.length-1);
 					done = true;
 				}
 			}
 			
 			if (vertexParents[vertices.length-1] === vertexGroups.length) {
-				vertexGroups.push(new VertexNode([vertices.length-1])); //No existing shared vertices found, create a new group with the new vertex
+				this.vertexGraph.push(this.vertexGraph[vertices.length-1]); //No existing shared vertices found, create a new group with the new vertex
 			}
 			
-			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group
+			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group*/
 		}
+	}
+
+	for (var i = 0; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].deleteFirst();
 	}
 	
 	//Buffer vertices
@@ -571,7 +599,7 @@ IcoSphere.prototype.unshareVertices = function() {
 	}
 	
 	//Set data in icosphere
-	this.vertexGraph = vertexGroups;
+	//this.vertexGraph = vertexGroups;
 	this.vertexParents = vertexParents;
 	this.vertices = bufferedVertices;
 

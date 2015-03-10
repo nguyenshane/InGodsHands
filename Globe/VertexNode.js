@@ -11,8 +11,8 @@ DIRECTION = {
 };
 
 function edge(direction, index) {
-	this.direction;
-	this.index;
+	this.direction = direction;
+	this.index = index;
 	this.divided = false;
 }
 
@@ -26,8 +26,29 @@ function VertexNode(indices) {
 		this.group.push(index);
 	}
 
+	this.deleteFirst = function() {
+		this.group.splice(0, 1);
+	}
+
 	this.getVertex = function() {
 		return new pc.Vec3(ico.vertices[this.group[0] * 3], ico.vertices[this.group[0] * 3 + 1], ico.vertices[this.group[0] * 3 + 2]);
+	}
+
+	this.getHeight = function() {
+		var vertex = this.getVertex();
+		return vertex.length();
+	}
+
+	this.setHeight = function(height) {
+		var vertex = this.getVertex();
+		vertex.normalize();
+		vertex.scale(ico.radius * height)
+		for (var i = 0; i < this.group.length; ++i) {
+			ico.vertices[this.group[i] * 3] = vertex.x;
+			ico.vertices[this.group[i] * 3 + 1] = vertex.y;
+			ico.vertices[this.group[i] * 3 + 2] = vertex.z;
+		}
+		ico.updateFlag = true;
 	}
 
 	this.addEdge = function(direction, index) {
