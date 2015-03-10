@@ -197,7 +197,7 @@ pc.script.create('tribe', function (context) {
                  this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
-                this.praiseGod();
+                this.praise();
                 this.prayerTimer = 0;
                 this.isBusy = false;
                 this.entity.getChildren()[0].enabled = false;
