@@ -14,14 +14,17 @@ pc.script.create('globalInterface', function (context) {
     var GlobalVariables = function (entity) {
         this.entity = entity;
     };
-
+	
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-			this.fogChance = 0.002;
-			this.rainChance = 0.0004;
+			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
-			this.envRespawnTime = 0.5;
+			treeDensity = 0.35; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
+			fogChance = 0.001;
+			rainChance = 0.0002;
+			
+			this.envRespawnTime = 0.25;
 			this.envRespawnTimer = 0;
 			
             globalTemperature = 90;
@@ -38,19 +41,9 @@ pc.script.create('globalInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-			//'Update' tiles (should probably be in the tile class instead but they aren't a proper pc object...)
+			//Update tiles
 			for (var i = 0; i < ico.tiles.length; i++) {
-				var tile = ico.tiles[i];
-				
-				if (tile.isRaining) {
-					tile.rainTimer -= dt;
-					if (tile.rainTimer <= 0) tile.stopRain();
-				}
-				
-				if (tile.isFoggy) {
-					tile.fogTimer -= dt;
-					if (tile.fogTimer <= 0) tile.stopFog();
-				}
+				ico.tiles[i].update(dt);
 			}
 			
 			//Start rain/fog randomly (temporary)
@@ -59,19 +52,23 @@ pc.script.create('globalInterface', function (context) {
 				this.envRespawnTimer += this.envRespawnTime;
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
+					ico.tiles[i].updateEnv();
+					
+					/*
 					var tile = ico.tiles[i];
 					var temp = tile.getTemperature();
 					if (temp < 0) temp = 0;
 					else if (temp > 100) temp = 100;
 					
-					if (Math.random() < this.fogChance) {
+					if (Math.random() < fogChance) {
 						//tile.startFog();
 					}
 					
-					if (Math.random() < this.rainChance * (300 / (temp * 4 + 100))) {
+					if (Math.random() < rainChance * (300 / (temp * 4 + 100))) {
 						//tile.startRain();
 						//tile.startFog();
 					}
+					*/
 				}
 			}
 			
