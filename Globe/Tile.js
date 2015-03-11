@@ -25,7 +25,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isFoggy = false;
 	
 	this.atmoHeight = 0.4;
-	this.rainDuration = 4;
+	this.rainDuration = 3;
 	this.fogDuration = 5;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
@@ -46,11 +46,23 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		if (this.isRaining) {
 			this.rainTimer -= dt;
 			if (this.rainTimer <= 0) this.stopRain();
+			else if (this.checkAtmoAnimCompleted(this.rain)) {
+				//(Re)start rain animation
+				var r = this.rain.findByName("RainPS");
+				r.particlesystem.reset();
+				r.particlesystem.play();
+			}
 		}
 		
 		if (this.isFoggy) {
 			this.fogTimer -= dt;
 			if (this.fogTimer <= 0) this.stopFog();
+			else if (this.checkAtmoAnimCompleted(this.fog)) {
+				//(Re)start fog animation
+				var f = this.fog.findByName("FogPS");
+				f.particlesystem.reset();
+				f.particlesystem.play();
+			}
 		}
 	};
 	
@@ -257,7 +269,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.startRain = function() {
 		if (this.rain !== undefined) {
+			/*
 			this.rain.enabled = true;
+			var r = this.rain.findByName("RainPS");
+			r.particlesystem.reset();
+			r.particlesystem.play();
+			*/
 		} else {
 			this.rain = scripts.Atmosphere.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
@@ -279,7 +296,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.startFog = function() {
 		if (this.fog !== undefined) {
-			this.fog.enabled = true;
+			//this.fog.enabled = true;
 		} else {
 			this.fog = scripts.Atmosphere.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
 		}
@@ -298,6 +315,22 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		this.isFoggy = false;
 	};
+	
+	this.checkAtmoAnimCompleted = function(e) {
+		var rps = e.findByName("RainPS").particlesystem;
+		if (rps.enabled) {
+			if (!rps.isPlaying()) return true;
+			else return false;
+		}
+		
+        var fps = e.findByName("FogPS").particlesystem;
+		if (fps.enabled) {
+			if (!fps.isPlaying()) return true;
+			else return false;
+		}
+		
+		return true;
+	}
     
     this.calculateNormal = function(){
         var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);

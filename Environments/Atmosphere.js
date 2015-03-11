@@ -86,6 +86,7 @@ pc.script.create('Atmosphere', function (context) {
                         return e;
                     } else {
                         this.rainstack.push(e);
+						return e;
                     }
                 }
             }
@@ -125,6 +126,7 @@ pc.script.create('Atmosphere', function (context) {
                         return e;
                     } else {
                         this.fogstack.push(e);
+						return e;
                     }
                 }
             }
