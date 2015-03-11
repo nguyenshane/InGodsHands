@@ -68,7 +68,7 @@ pc.script.create('Globe', function (context) {
                     "    if (dist > radius) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     "    } else {",
-                    "       color = intensity * sunIntensity * vec4(0.0, 0.0, 1.0, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(0.154902, 0.361765, 0.982353, 1.0);",
                     "    }",
                     "    gl_FragColor = color;",
                     "}"
