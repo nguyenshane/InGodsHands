@@ -20,16 +20,15 @@ pc.script.create('globalInterface', function (context) {
         initialize: function () {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
-			treeDensity = 0.35; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
-			fogChance = 0.001;
-			rainChance = 0.0002;
+			this.intermittentUpdateDuration = 4.0;
 			
-			this.envRespawnTime = 0.25;
-			this.envRespawnTimer = 0;
+			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
+			fogChance = 0.03 * this.intermittentUpdateDuration; //Base chance per second per tile
+			rainChance = 0.002 * this.intermittentUpdateDuration;
 			
             globalTemperature = 90;
             globalTemperatureMax = 100;
-
+			
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
             //globalSunRotation = 50;
@@ -37,22 +36,57 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 100;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
+			
+			this.init = false;
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-			//Update tiles
+			//Only called on first update (since ico isn't defined in initialize)
+			if (!this.init) {
+				this.lastUpdatedTile = 0;
+				this.randomTiles = [];
+				for (var size = ico.tiles.length-1; size >= 0; size--) this.randomTiles[size] = size;
+				shuffleArray(this.randomTiles);
+				this.init = true;
+			}
+
+			
+			//Update all tiles
 			for (var i = 0; i < ico.tiles.length; i++) {
 				ico.tiles[i].update(dt);
 			}
+
 			
+			//Call intermittent update on a subset of tiles
+			var tilesToUpdate = ico.tiles.length * dt / this.intermittentUpdateDuration;
+			if (tilesToUpdate > ico.tiles.length) tilesToUpdate = ico.tiles.length;
+			tilesToUpdate = Math.floor(tilesToUpdate);
+			
+			if (ico.tiles.length - this.lastUpdatedTile < tilesToUpdate) {
+				//Do remaining tiles, then continue from the beginning in next block
+				for (var i = this.lastUpdatedTile; i < ico.tiles.length; i++) {
+					ico.tiles[i].intermittentUpdate();
+				}
+				
+				tilesToUpdate -= ico.tiles.length - this.lastUpdatedTile;
+				this.lastUpdatedTile = 0;
+				shuffleArray(this.randomTiles);
+			}
+			
+			for (var i = this.lastUpdatedTile; i < tilesToUpdate + this.lastUpdatedTile; i++) {
+				ico.tiles[i].intermittentUpdate();
+			}
+			this.lastUpdatedTile += tilesToUpdate;
+			
+			/*
 			//Start rain/fog randomly (temporary)
 			this.envRespawnTimer -= dt;
 			if (this.envRespawnTimer <= 0) {
 				this.envRespawnTimer += this.envRespawnTime;
 				
 				for (var i = 0; i < ico.tiles.length; i++) {
-					ico.tiles[i].updateEnv();
+					ico.tiles[i].intermittentUpdate();
 					
 					/*
 					var tile = ico.tiles[i];
@@ -68,9 +102,10 @@ pc.script.create('globalInterface', function (context) {
 						//tile.startRain();
 						//tile.startFog();
 					}
-					*/
+					//*
 				}
 			}
+			*/
 			
 			
             // Test temperature

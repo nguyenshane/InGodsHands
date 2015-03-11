@@ -55,7 +55,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
-	this.updateEnv = function() {
+	this.intermittentUpdate = function() {
+		this.spawnTree();
+		
 		var temp = this.getTemperature();
 		if (temp < 0) temp = 0;
 		else if (temp > 100) temp = 100;
@@ -230,7 +232,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		var localTreeDensity = localTreeCount / visitedTileCount;
 		
-		if (localTreeDensity <= treeDensity) this.createTree();
+		if (localTreeDensity < treeDensity) this.createTree();
 	};
 	
 	//Adds a tree to this tile
