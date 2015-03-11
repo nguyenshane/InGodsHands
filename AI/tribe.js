@@ -22,6 +22,7 @@ pc.script.create('tribe', function (context) {
         this.sunIcon;
         this.rainIcon;
         this.stormIcon;
+        this.praiseIcon;
 
         this.rules = [];
         this.isBusy = false;
@@ -31,6 +32,7 @@ pc.script.create('tribe', function (context) {
         this.prayerTimer = 0;
         this.cowerTimer = 0;
         this.denounceTimer = 0;
+        this.praiseTimer = 0;
         this.godInactionTimer = 0;
         
         // COMMENT TO TEST NEW GIT PROCEDURE
@@ -65,10 +67,12 @@ pc.script.create('tribe', function (context) {
 
             this.calculateInfluence();
 
-            this.icons = this.entity.getChildren();
-            this.rainIcon = this.icons[0];
-            this.sunIcon = this.icons[1];
-            this.stormIcon = this.icons[2];
+            //this.icons = this.entity.getChildren();
+            this.rainIcon = this.entity.findByName("PrayClouds");
+            this.sunIcon = this.entity.findByName("PraySun");
+            this.stormIcon = this.entity.findByName("FearStorm");
+            this.praiseIcon = this.entity.findByName("PraiseHands");
+            console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
 
            // console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
@@ -208,11 +212,11 @@ pc.script.create('tribe', function (context) {
                  this.prayerTimer > 0){
 
                 console.log("Prayer fulfilled!");
-                this.praise();
                 this.prayerTimer = 0;
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
+                this.startPraise();
             }
 
             //console.log(this.currTileTemperature);
@@ -276,9 +280,25 @@ pc.script.create('tribe', function (context) {
         // Tribe feedback functions //
         //////////////////////////////
 
-        praise: function() {
+        startPraise: function() {
+            console.log("I love god!");
             this.increaseBelief();
+            this.praiseTimer = 6;
+            this.setCurrentAction(this.praise);
+            this.isBusy = true;
+            this.praiseIcon.enabled = true;
             // Play animation here
+        },
+
+        praise: function(deltaTime) {
+            if(this.praiseTimer <= 0){
+                console.log("God is good!");
+                this.increaseBelief();
+                this.praiseTimer = 0;
+                this.praiseIcon.enabled = false;
+                this.isBusy = false;
+            }
+            this.praiseTimer -= deltaTime;
         },
 
         startDenouncing: function() {
