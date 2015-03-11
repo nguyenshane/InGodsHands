@@ -18,6 +18,11 @@ pc.script.create('tribe', function (context) {
         this.startPosition;
         this.influencedTiles = [];
         
+        this.icons = [];
+        this.sunIcon;
+        this.rainIcon;
+        this.stormIcon;
+
         this.rules = [];
         this.isBusy = false;
         this.isSpiteful = false;
@@ -50,7 +55,8 @@ pc.script.create('tribe', function (context) {
             this.tile.hasTribe = true;
 
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalScale(.15, .5, .15);
+            //this.entity.setLocalScale(.1, .1, .1);
+            console.log('localscale',this.rotation, this);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -58,6 +64,11 @@ pc.script.create('tribe', function (context) {
             this.createRuleList();
 
             this.calculateInfluence();
+
+            this.icons = this.entity.getChildren();
+            this.rainIcon = this.icons[0];
+            this.sunIcon = this.icons[1];
+            this.stormIcon = this.icons[2];
 
            // console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
@@ -87,7 +98,7 @@ pc.script.create('tribe', function (context) {
 
             // Set lighting in shader
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalEulerAngles(this.rotation.x + 90, this.rotation.y, this.rotation.z);
+            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
             // God inaction timer goes up so long as God doesn't act (Duh)
             this.godInactionTimer += dt;
@@ -188,8 +199,8 @@ pc.script.create('tribe', function (context) {
                 this.decreaseBelief();
                 this.isSpiteful = true;
                 this.isBusy = false;
-                this.entity.getChildren()[0].enabled = false;
-                this.entity.getChildren()[1].enabled = false;
+                this.sunIcon.enabled = false;
+                this.rainIcon.enabled = false;
             }
 
             if ((this.currTileTemperature > (this.idealTemperature - 5) &&
@@ -200,8 +211,8 @@ pc.script.create('tribe', function (context) {
                 this.praise();
                 this.prayerTimer = 0;
                 this.isBusy = false;
-                this.entity.getChildren()[0].enabled = false;
-                this.entity.getChildren()[1].enabled = false;
+                this.sunIcon.enabled = false;
+                this.rainIcon.enabled = false;
             }
 
             //console.log(this.currTileTemperature);
@@ -215,9 +226,9 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.prayForTemperature);
             this.isBusy = true;
             if(this.currTileTemperature > this.idealTemperature){
-                this.entity.getChildren()[0].enabled = true;
+                this.rainIcon.enabled = true;
             } else {
-                this.entity.getChildren()[1].enabled = true;
+                this.sunIcon.enabled = true;
             }
         },
 
@@ -230,10 +241,10 @@ pc.script.create('tribe', function (context) {
             this.cowerTimer = 5;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
+            this.stormIcon.enabled = true;
         },
 
         cower: function(deltaTime) {
-            // This will become a switch statement when we have more rules.
             // Depending on what the tribe was doing before hand, their fear
             // and belief will increase and decrease accordingly.
             if(this.cowerTimer <= 0){
@@ -242,14 +253,16 @@ pc.script.create('tribe', function (context) {
                         this.increaseFear();
                         this.increaseBelief();
                         this.isBusy = false
+                        this.stormIcon.enabled = false;
                         console.log("THOU HAST BEEN SMITED");
                         break;
+
                     default:
                         this.increaseFear();
                         this.increaseBelief();
                         this.setCurrentAction(this.previousAction);
                         console.log("Cower done");
-
+                        this.stormIcon.enabled = false;
                         break;
                 }
 
