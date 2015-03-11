@@ -55,7 +55,8 @@ pc.script.create('tribe', function (context) {
             this.tile.hasTribe = true;
 
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalScale(.15, .5, .15);
+            //this.entity.setLocalScale(.1, .1, .1);
+            console.log('localscale',this.rotation, this);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -97,7 +98,7 @@ pc.script.create('tribe', function (context) {
 
             // Set lighting in shader
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalEulerAngles(this.rotation.x + 90, this.rotation.y, this.rotation.z);
+            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
             // God inaction timer goes up so long as God doesn't act (Duh)
             this.godInactionTimer += dt;
