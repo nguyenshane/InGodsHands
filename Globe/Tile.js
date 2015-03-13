@@ -2,17 +2,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     'use strict;'
     this.vertexIndices = [];
     this.colors = [];
-    this.neighbora, this.neighborb, this.neighborc;
 	
     var normalIndex, hasTribe, divided;
 	this.index;
-    this.normal;
-    this.center;
-	this.localRotNormal;
-	this.localRotCenter;
-    this.neighbora;
-    this.neighborb;
-    this.neighborc;
+    this.normal, this.center;
+	this.localRotNormal, this.localRotCenter;
+    this.neighbora, this.neighborb, this.neighborc;
     
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
