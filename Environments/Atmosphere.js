@@ -90,7 +90,7 @@ pc.script.create('Atmosphere', function (context) {
                         //e.setPosition(position);
                         var rain = e.findByName("RainPS");
                         
-
+                        rain.particlesystem.stop();
                         rain.particlesystem.reset();
                         rain.particlesystem.play();
                         return e;
@@ -129,7 +129,7 @@ pc.script.create('Atmosphere', function (context) {
                         var fog = e.findByName("FogPS");
                         
                         //fog.setPosition(position);
-
+                        fog.particlesystem.stop();
                         fog.particlesystem.reset();
                         fog.particlesystem.play();
                         return e;
