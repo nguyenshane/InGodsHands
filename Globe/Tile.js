@@ -48,10 +48,14 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			if (this.rainTimer <= 0) this.stopRain();
 			else if (this.checkAtmoAnimCompleted(this.rain)) {
 				//(Re)start rain animation
-				var r = this.rain.findByName("RainPS");
-				r.particlesystem.reset();
-				r.particlesystem.play();
+				if (!this.rain.enabled) this.rain.enabled = true;
+				var r = this.rain.findByName("RainPS").particlesystem;
+				r.stop();
+				r.reset();
+				r.play();
 			}
+		} else if (this.rain.enabled && this.checkAtmoAnimCompleted(this.rain)) {
+			this.rain.enabled = false;
 		}
 		
 		if (this.isFoggy) {
@@ -59,10 +63,14 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			if (this.fogTimer <= 0) this.stopFog();
 			else if (this.checkAtmoAnimCompleted(this.fog)) {
 				//(Re)start fog animation
-				var f = this.fog.findByName("FogPS");
-				f.particlesystem.reset();
-				f.particlesystem.play();
+				if (!this.fog.enabled) this.fog.enabled = true;
+				var f = this.fog.findByName("FogPS").particlesystem;
+				f.stop();
+				f.reset();
+				f.play();
 			}
+		} else if (this.fog.enabled && this.checkAtmoAnimCompleted(this.fog)) {
+			this.fog.enabled = false;
 		}
 	};
 	
@@ -268,51 +276,20 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.startRain = function() {
-		if (this.rain !== undefined) {
-			/*
-			this.rain.enabled = true;
-			var r = this.rain.findByName("RainPS");
-			r.particlesystem.reset();
-			r.particlesystem.play();
-			*/
-		} else {
-			this.rain = scripts.Atmosphere.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
-		}
-		
 		this.isRaining = true;
 		this.rainTimer = this.rainDuration;
 	};
 	
 	this.stopRain = function() {
-		/*
-		if (this.rain !== undefined) {
-			this.rain.destroy = true;
-			this.rain = undefined;
-		}
-		*/
-		
 		this.isRaining = false;
 	};
 	
 	this.startFog = function() {
-		if (this.fog !== undefined) {
-			//this.fog.enabled = true;
-		} else {
-			this.fog = scripts.Atmosphere.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
-		}
-		
 		this.isFoggy = true;
 		this.fogTimer = this.fogDuration;
 	};
 	
 	this.stopFog = function() {
-		/*
-		if (this.fog !== undefined) {
-			this.fog.destroy = true;
-			this.fog = undefined;
-		}
-		*/
-		
 		this.isFoggy = false;
 	};
 	

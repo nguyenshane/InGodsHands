@@ -15,8 +15,8 @@ pc.script.create('Atmosphere', function (context) {
         initialize: function () {
             this.atm = context.root.findByName("Atmosphere");
             
-			this.rainstack = [];
-			this.fogstack = [];
+			//this.rainstack = [];
+			//this.fogstack = [];
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -51,6 +51,21 @@ pc.script.create('Atmosphere', function (context) {
         },
         
         makeRain: function(position, rotation) {
+			var e = this.atm.clone(); // Clone Atmosphere
+			this.entity.getParent().addChild(e); // Add it as a sibling to the original
+			
+			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+			
+			var rain = e.findByName("RainPS");
+			//rain.rotate(rotation.x - 90, rotation.y, rotation.z);
+			//rain.setPosition(position);
+			
+			rain.particlesystem.enabled = true;
+			//rain.particlesystem.play();
+			
+			return e;
+			
+			/*
             if (this.rainstack.length < this.stackBuffer){
                 var e = this.atm.clone(); // Clone Atmosphere
                 //e.rotate(rotation.x - 90, rotation.y, rotation.z);
@@ -90,9 +105,25 @@ pc.script.create('Atmosphere', function (context) {
                     }
                 }
             }
+			*/
         },
         
         makeFog: function(position, rotation) {
+			var e = this.atm.clone(); // Clone Atmosphere
+			this.entity.getParent().addChild(e); // Add it as a sibling to the original
+			
+			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+			
+			var fog = e.findByName("FogPS");
+			//fog.rotate(rotation.x - 90, rotation.y, rotation.z);
+			//fog.setPosition(position);
+			
+			fog.particlesystem.enabled = true;
+			//fog.particlesystem.play();
+			
+			return e;
+			
+			/*
             if (this.fogstack.length < this.stackBuffer) {
                 var e = this.atm.clone(); // Clone Atmosphere
                 //e.rotate(rotation.x - 90, rotation.y, rotation.z);
@@ -130,6 +161,7 @@ pc.script.create('Atmosphere', function (context) {
                     }
                 }
             }
+			*/
         },
         
         makeStorm: function() {

@@ -23,8 +23,8 @@ pc.script.create('globalInterface', function (context) {
 			this.intermittentUpdateDuration = 4.0;
 			
 			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
-			fogChance = 0.03 * this.intermittentUpdateDuration; //Base chance per second per tile
-			rainChance = 0.002 * this.intermittentUpdateDuration;
+			fogChance = 0.004 * this.intermittentUpdateDuration; //Base chance per second per tile
+			rainChance = 0.001 * this.intermittentUpdateDuration;
 			
             globalTemperature = 90;
             globalTemperatureMax = 100;
@@ -44,19 +44,32 @@ pc.script.create('globalInterface', function (context) {
         update: function (dt) {
 			//Only called on first update (since ico isn't defined in initialize)
 			if (!this.init) {
+				//Initialize variables for intermittentUpdate
 				this.lastUpdatedTile = 0;
 				this.randomTiles = [];
 				for (var size = ico.tiles.length-1; size >= 0; size--) this.randomTiles[size] = size;
 				shuffleArray(this.randomTiles);
+				
+				//Initialize rain/fog particle systems for all tiles
+				var atmo = scripts.Atmosphere;
+				for (var i = ico.tiles.length-1; i >= 0; i--) {
+					var tile = ico.tiles[i];
+					tile.rain = atmo.makeRain(extendVector(tile.center, tile.atmoHeight), tile.localRotCenter);
+					tile.rain.enabled = false;
+					tile.fog = scripts.Atmosphere.makeFog(extendVector(tile.center, tile.atmoHeight), tile.localRotCenter);
+					tile.fog.enabled = false;
+				}
+				
 				this.init = true;
 			}
-
+			
 			
 			//Update all tiles
-			for (var i = 0; i < ico.tiles.length; i++) {
-				ico.tiles[i].update(dt);
+			var tiles = ico.tiles;
+			for (var i = tiles.length-1; i >= 0; i--) {
+				tiles[i].update(dt);
 			}
-
+			
 			
 			//Call intermittent update on a subset of tiles
 			var tilesToUpdate = ico.tiles.length * dt / this.intermittentUpdateDuration;
