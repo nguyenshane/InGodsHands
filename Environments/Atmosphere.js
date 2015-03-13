@@ -21,16 +21,6 @@ pc.script.create('Atmosphere', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            
-            //console.log('fogstack', this.fogstack.length);
-            //console.log('rainstack', this.rainstack.length);
-			/*
-            if (this.rainstack.length < this.stackBuffer) {
-                this.makeFog(x,0,z);
-                this.makeRain(x,0,z);
-            }
-            */
-            
 			/*
             if (this.rainstack.length >= this.stackBuffer) {
                 var e = this.rainstack.shift();

@@ -71,7 +71,7 @@ pc.script.create('HIDInterface', function (context) {
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
 			temperatureDest = globalTemperature + distance;
-			velocity = Math.abs((speed) * 500);
+			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 			console.log("Global Temp: " + globalTemperature);
