@@ -21,6 +21,7 @@ pc.script.create('HIDInterface', function (context) {
 	var lerpStartTime;
 	var velocity;
 	var tribe;
+	var storm;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -32,6 +33,7 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringW = new pc.StringTAPEW('W');
 			
 			tribe = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("BaseTribe").script.tribe;
+			storm = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
@@ -97,7 +99,10 @@ pc.script.create('HIDInterface', function (context) {
 		move_E: function(position, distance, speed) {
 			console.log("FIRED string E: ", position, distance, speed);
 			// Temporarily here, will make it a function call to tile eventually
-			tribe.startCowering();
+			if(speed > 30 && Math.abs(distance) > 5){
+				tribe.startCowering();
+				console.log("Sufficient string pull for storm");
+			}
 			tribe.resetInactionTimer();
 
 		},
