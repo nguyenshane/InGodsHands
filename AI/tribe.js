@@ -24,6 +24,8 @@ pc.script.create('tribe', function (context) {
         this.stormIcon;
         this.praiseIcon;
 
+        this.stormImage;
+
         this.rules = [];
         this.isBusy = false;
         this.isSpiteful = false;
@@ -72,6 +74,7 @@ pc.script.create('tribe', function (context) {
             this.sunIcon = this.entity.findByName("PraySun");
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
+            this.stormImage = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
             console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
 
            // console.log("The influenced tiles length: " + this.influencedTiles.length);
@@ -246,6 +249,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.cower);
             this.isBusy = true;
             this.stormIcon.enabled = true;
+            this.stormImage.enabled = true;
         },
 
         cower: function(deltaTime) {
@@ -258,6 +262,7 @@ pc.script.create('tribe', function (context) {
                         this.increaseBelief();
                         this.isBusy = false
                         this.stormIcon.enabled = false;
+                        this.stormImage.enabled = false;
                         console.log("THOU HAST BEEN SMITED");
                         break;
 
@@ -267,6 +272,7 @@ pc.script.create('tribe', function (context) {
                         this.setCurrentAction(this.previousAction);
                         console.log("Cower done");
                         this.stormIcon.enabled = false;
+                        this.stormImage.enabled = false;
                         break;
                 }
 
