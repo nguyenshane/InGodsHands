@@ -21,11 +21,12 @@ pc.script.create('Trees', function (context) {
 			
 			//Spawn initial set of trees
             var randomTiles = [];
-            for (var size = ico.tiles.length-1; size >= 0; size--) randomTiles[size] = size;
+            for (var s = ico.tiles.length-1; s >= 0; s--) randomTiles[s] = s;
 			shuffleArray(randomTiles);
 			
 			for (var i = 1; i < ico.tiles.length; i++) {
-				ico.tiles[randomTiles[i]].spawnTree();
+				var tile = ico.tiles[randomTiles[i]];
+				tile.spawnTree(tile.getTemperature(), Math.floor((Math.random() * 2) + 1.3)/8);
 			}
 			
 			/*
@@ -68,27 +69,57 @@ pc.script.create('Trees', function (context) {
             }
         },
         
-        makeTree: function(position, rotation) {
+        makeTree: function(position, rotation, type, size) {
 			if (this.trees_stack.length < this.stackBuffer) {
 				var e = this.trees.clone(); // Clone Trees
 				
 				this.entity.getParent().addChild(e); // Add it as a sibling to the original
 				
-				var treetype = Math.floor((Math.random() * 2) + 0);
+				//var treetype = Math.floor((Math.random() * 2) + 0);
 				var tree;
-				switch (treetype) {
+				switch (type) {
 					case 0:
 						tree = e.findByName("tree1");
+						e.stats = Tile.treeStats.tree1;
+						/*
+						e.minTemp = 20;
+						e.maxTemp = 70;
+						e.idealTemp = 50;
+						e.minWater = 50;
+						e.maxWater = 100;
+						e.idealWater = 80;
+						e.waterUsage = 1.0;
+						*/
 						break;
 					case 1:
 						tree = e.findByName("tree2");
+						e.stats = Tile.treeStats.tree2;
+						/*
+						e.minTemp = 50;
+						e.maxTemp = 95;
+						e.idealTemp = 75;
+						e.minWater = 30;
+						e.maxWater = 100;
+						e.idealWater = 50;
+						e.waterUsage = 0.6;
+						*/
 						break;
 					default:
 						tree = e.findByName("tree1");
+						e.stats = Tile.treeStats.tree1;
+						/*
+						e.minTemp = 30;
+						e.maxTemp = 80;
+						e.idealTemp = 55;
+						e.minWater = 40;
+						e.maxWater = 60;
+						e.idealWater = 50;
+						e.waterUsage = 1.0;
+						*/
 				}
 				
-				var scale = Math.floor((Math.random() * 2) + 1.3)/8;
-				tree.setLocalScale(scale, scale, scale);
+				//var scale = Math.floor((Math.random() * 2) + 1.3)/8;
+				tree.setLocalScale(size, size, size);
 				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 				tree.setPosition(position);
 				

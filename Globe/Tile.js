@@ -19,10 +19,45 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isRaining = false;
 	this.isFoggy = false;
 	
-	this.atmoHeight = 0.4;
-	this.rainDuration = 3;
-	this.fogDuration = 5;
+	this.humidity = 50.0 * pc.math.random(0.7, 1.3); //Current absolute humidity rating
+	this.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
+	this.humidityRegenerationRate = 1.0; //Constant regeneration (for an ocean tile)
+	this.landHumidityRegenerationMultiplier = 0.1; //Multiplier of above for land tiles
+	this.humidityDegenerationRate = 2.0; //Loss while raining on tile
+	
+	this.groundwater = 50.0 * pc.math.random(0.6, 1.4); //Current groundwater rating
+	this.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
+	this.groundwaterRegenerationRate = 2.0; //Regeneration when raining on tile
+	this.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
+	
+	Tile.atmoHeight = 0.4;
+	Tile.rainDuration = 3;
+	Tile.fogDuration = 5;
 	this.rainTimer = 0, this.fogTimer = 0;
+	
+	Tile.treeStats = {
+		tree1: {
+			minTemp: 30,
+			maxTemp: 100,
+			idealTemp: 60,
+			minWater: 50,
+			maxWater: 100,
+			idealWater: 80,
+			waterUsage: 1.0,
+			growRate: 0.75
+		},
+		
+		tree2: {
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 30,
+			maxWater: 100,
+			idealWater: 50,
+			waterUsage: 0.6,
+			growRate: 1.0
+		}
+	};
 	
     handle = icosphere;
 	ico = handle;
@@ -38,7 +73,17 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexc);
 	
 	this.update = function(dt) {
+		if (!this.isOcean) this.humidity += this.humidityRegenerationRate * dt;
+		else this.humidity += this.landHumidityRegenerationMultiplier * this.humidityRegenerationRate * dt;
+		
 		if (this.isRaining) {
+			if (!this.isOcean) {
+				this.humidity -= this.humidityDegenerationRate * dt;
+				this.groundwater += this.groundwaterRegenerationRate * dt;
+			} else {
+				this.humidity -= this.humidityDegenerationRate * dt;
+			}
+			
 			this.rainTimer -= dt;
 			if (this.rainTimer <= 0) this.stopRain();
 			else if (this.checkAtmoAnimCompleted(this.rain)) {
@@ -52,6 +97,43 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		} else if (this.rain.enabled && this.checkAtmoAnimCompleted(this.rain)) {
 			this.rain.enabled = false;
 		}
+		
+		//Spread humidity and groundwater to neighbors
+		var neighbors = this.getNeighbors();
+		shuffleArray(neighbors); //Choose order randomly each frame to keep the first one from always receiving more than others
+		for (var i = 0; i < neighbors.length; i++) {
+			var neighbor = neighbors[i];
+			
+			if (this.humidity > 0) {
+				if (neighbor.humidity < this.humidity) {
+					var diff = (this.humidity - neighbor.humidity) / this.humidity;
+					var rate = this.humiditySpreadRate * dt / diff;
+					neighbor.humidity += rate;
+					this.humidity -= rate;
+				}
+			}
+			
+			if (!this.isOcean && this.groundwater > 0) {
+				if (!neighbor.isOcean && neighbor.groundwater < this.groundwater) {
+					var diff = (this.groundwater - neighbor.groundwater) / this.groundwater;
+					var rate = this.groundwaterSpreadRate * dt / diff;
+					neighbor.groundwater += rate;
+					this.groundwater -= rate;
+				}
+			}
+		}
+		
+		//Grow tree
+		if (this.hasTree) {
+			///handle tree growing, killing etc here
+			this.groundwater -= this.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
+		}
+		
+		if (this.humidity < 0) this.humidity = 0;
+		if (this.humidity > 100) this.humidity = 100;
+		
+		if (this.groundwater < 0) this.groundwater = 0;
+		if (this.groundwater > 100) this.groundwater = 100;
 		
 		if (this.isFoggy) {
 			this.fogTimer -= dt;
@@ -71,11 +153,14 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
-		this.spawnTree();
-		
 		var temp = this.getTemperature();
+		
+		this.spawnTree(temp, 0);
+		
 		if (temp < 0) temp = 0;
 		else if (temp > 100) temp = 100;
+		
+		///calculate and use relative humidity etc when determining rain/fog chance instead
 		
 		if (Math.random() < rainChance * (300 / (temp * 4 + 100))) {
 			this.startRain();
@@ -205,7 +290,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
 	
 	//Creates a new tree on this tile if the tree density in the area is too low
-	this.spawnTree = function() {
+	this.spawnTree = function(temperature, size) {
 		if (this.hasTree || this.isOcean) return;
 		
 		var maxDist = 3;
@@ -214,9 +299,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		var queue = new Queue();
 		var visited = [];
-		for (var size = ico.tiles.length-1; size >= 0; size--) visited[size] = false;
+		for (var s = ico.tiles.length-1; s >= 0; s--) visited[s] = false;
 		var distances = [];
-		for (var size = ico.tiles.length-1; size >= 0; size--) distances[size] = -2;
+		for (var s = ico.tiles.length-1; s >= 0; s--) distances[s] = -2;
 		
 		queue.enqueue(this.index);
 		visited[this.index] = true;
@@ -247,11 +332,11 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		var localTreeDensity = localTreeCount / visitedTileCount;
 		
-		if (localTreeDensity < treeDensity) this.createTree();
+		if (localTreeDensity < treeDensity) this.createTree(temperature, size);
 	};
 	
 	//Adds a tree to this tile
-	this.createTree = function() {
+	this.createTree = function(temperature, size) {
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		normal.normalize();
 		var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
@@ -261,7 +346,16 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
 		var angle = m.getEulerAngles();
 		
-		this.tree = scripts.Trees.makeTree(this.center, angle);
+		//Determine ideal tree type given this tile's current properties
+		var t1dist = this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater);
+		var t2dist = this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater);
+		
+		t2dist *= pc.math.random(0.8, 1.2); //Randomize slightly to provide some variability
+		
+		var type = 0;
+		if (t2dist < t1dist) type = 1;
+		
+		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
 	};
 	
@@ -270,9 +364,31 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		this.hasTree = false;
 	};
 	
+	this.determineDistanceFromIdeal = function(tree, temperature, water) {
+		var d = 0;
+		
+		if (temperature < tree.idealTemp) {
+			var t = (tree.idealTemp - temperature) / (tree.idealTemp - tree.minTemp);
+			d += t;
+		} else {
+			var t = (temperature - tree.idealTemp) / (tree.maxTemp - tree.idealTemp);
+			d += t;
+		}
+		
+		if (water < tree.idealWater) {
+			var t = (tree.idealWater - water) / (tree.idealWater - tree.minWater);
+			d += t;
+		} else {
+			var t = (water - tree.idealWater) / (tree.maxWater - tree.idealWater);
+			d += t;
+		}
+		
+		return d;
+	};
+	
 	this.startRain = function() {
 		this.isRaining = true;
-		this.rainTimer = this.rainDuration;
+		this.rainTimer = Tile.rainDuration;
 	};
 	
 	this.stopRain = function() {
@@ -281,7 +397,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.startFog = function() {
 		this.isFoggy = true;
-		this.fogTimer = this.fogDuration;
+		this.fogTimer = Tile.fogDuration;
 	};
 	
 	this.stopFog = function() {

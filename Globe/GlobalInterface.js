@@ -20,7 +20,7 @@ pc.script.create('globalInterface', function (context) {
         initialize: function () {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
-			this.intermittentUpdateDuration = 4.0;
+			this.intermittentUpdateDuration = 4.0; //How long it takes for intermittentUpdate to traverse all tiles; this directly affects tree respawn rate as well as performance of atmosphere, might be wise to separate the two
 			
 			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
 			fogChance = 0.004 * this.intermittentUpdateDuration; //Base chance per second per tile

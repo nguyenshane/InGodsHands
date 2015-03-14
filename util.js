@@ -857,4 +857,9 @@ function multScalar(vector, scalar) {
 	vector.x *= scalar;
 	vector.y *= scalar;
 	vector.z *= scalar;
-}
+};
+
+function scale(obj, scale) {
+	var s = obj.getLocalScale.x + scale;
+	obj.setLocalScale(s, s, s);
+};
