@@ -20,7 +20,7 @@ pc.script.create('Atmosphere', function (context) {
         update: function (dt) {
         },
         
-        makeRain: function(position, rotation) {
+        makeRain: function(rotation) {
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
@@ -36,7 +36,7 @@ pc.script.create('Atmosphere', function (context) {
 			return e;
         },
         
-        makeFog: function(position, rotation) {
+        makeFog: function(rotation) {
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			

@@ -58,9 +58,9 @@ pc.script.create('globalInterface', function (context) {
 				var atmo = scripts.Atmosphere;
 				for (var i = ico.tiles.length-1; i >= 0; i--) {
 					var tile = ico.tiles[i];
-					tile.rain = atmo.makeRain(extendVector(tile.center, tile.atmoHeight), tile.localRotCenter);
+					tile.rain = atmo.makeRain(tile.localRotCenter);
 					tile.rain.enabled = false;
-					tile.fog = scripts.Atmosphere.makeFog(extendVector(tile.center, tile.atmoHeight), tile.localRotCenter);
+					tile.fog = atmo.makeFog(tile.localRotCenter);
 					tile.fog.enabled = false;
 				}
 				
