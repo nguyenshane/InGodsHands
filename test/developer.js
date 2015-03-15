@@ -593,31 +593,31 @@ pc.script.create('ui', function (context) {
 
 
         onTouchStart: function (touch) {
-           if(needToStartTimeT && touch.target == StringsliderT){
+           if(needToStartTimeT && touch.target == this.StringsliderT){
                 //console.log("inside pullStarted")
                 pullStartTimeT = this.time;
                 needToStartTimeT = false
                 }
 
-                if(needToStartTimeA && touch.target == StringsliderA){
+                if(needToStartTimeA && touch.target == this.StringsliderA){
                // console.log("inside pullStarted")
                 pullStartTimeA = this.time;
                 needToStartTimeA = false
                 }
 
-                if(needToStartTimeP && touch.target == StringsliderP){
+                if(needToStartTimeP && touch.target == this.StringsliderP){
                 //console.log("inside pullStarted")
                 pullStartTimeP = this.time;
                 needToStartTimeP = false
                 }
 
-                if(needToStartTimeE && touch.target == StringsliderE){
+                if(needToStartTimeE && touch.target == this.StringsliderE){
                 //console.log("inside pullStarted")
                 pullStartTimeE = this.time;
                 needToStartTimeE = false
                 }
 
-                if(needToStartTimeW && touch.target == StringsliderW){
+                if(needToStartTimeW && touch.target == this.StringsliderW){
                 //console.log("inside pullStarted")
                 pullStartTimeW = this.time;
                 needToStartTimeW = false
