@@ -26,7 +26,9 @@ pc.script.create('Atmosphere', function (context) {
 			
 			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 			
-			var rain = e.findByName("RainPS");
+			//var rain = e.findByName("RainPS");
+            var rain = e._children[2];
+            console.log('makeRain');
 			//rain.rotate(rotation.x - 90, rotation.y, rotation.z);
 			//rain.setPosition(position);
 			
@@ -41,8 +43,9 @@ pc.script.create('Atmosphere', function (context) {
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
 			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-			
-			var fog = e.findByName("FogPS");
+			console.log('makeFog');
+			//var fog = e.findByName("FogPS");
+            var fog = e._children[1];
 			//fog.rotate(rotation.x - 90, rotation.y, rotation.z);
 			//fog.setPosition(position);
 			
