@@ -96,6 +96,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 				this.humidity -= Tile.humidityDegenerationRate * dt;
 			}
 			
+			if (this.rain === undefined) this.rain = scripts.Atmosphere.makeRain(this.localRotCenter);
+			
 			this.rainTimer -= dt;
 			if (this.rainTimer <= 0) this.stopRain();
 			else if (this.checkAtmoAnimCompleted(this.rain)) {
@@ -106,8 +108,30 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 				r.reset();
 				r.play();
 			}
-		} else if (this.rain.enabled && this.checkAtmoAnimCompleted(this.rain)) {
+		} else if (this.rain !== undefined && this.rain.enabled && this.checkAtmoAnimCompleted(this.rain)) {
 			this.rain.enabled = false;
+			this.rain = undefined;
+		}
+		
+		this.checkResourceLimits();
+		
+		//Handle fog
+		if (this.isFoggy) {
+			if (this.fog === undefined) this.fog = scripts.Atmosphere.makeFog(this.localRotCenter);
+			
+			this.fogTimer -= dt;
+			if (this.fogTimer <= 0) this.stopFog();
+			else if (this.checkAtmoAnimCompleted(this.fog)) {
+				//(Re)start fog animation
+				if (!this.fog.enabled) this.fog.enabled = true;
+				var f = this.fog.findByName("FogPS").particlesystem;
+				f.stop();
+				f.reset();
+				f.play();
+			}
+		} else if (this.fog !== undefined && this.fog.enabled && this.checkAtmoAnimCompleted(this.fog)) {
+			this.fog.enabled = false;
+			this.fog = undefined;
 		}
 		
 		this.checkResourceLimits();
@@ -148,22 +172,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		}
 		
 		this.checkResourceLimits();
-		
-		//Handle fog
-		if (this.isFoggy) {
-			this.fogTimer -= dt;
-			if (this.fogTimer <= 0) this.stopFog();
-			else if (this.checkAtmoAnimCompleted(this.fog)) {
-				//(Re)start fog animation
-				if (!this.fog.enabled) this.fog.enabled = true;
-				var f = this.fog.findByName("FogPS").particlesystem;
-				f.stop();
-				f.reset();
-				f.play();
-			}
-		} else if (this.fog.enabled && this.checkAtmoAnimCompleted(this.fog)) {
-			this.fog.enabled = false;
-		}
 		
 		/*
 		///temporary

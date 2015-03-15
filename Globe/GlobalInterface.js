@@ -54,6 +54,7 @@ pc.script.create('globalInterface', function (context) {
 				for (var size = ico.tiles.length-1; size >= 0; size--) this.randomTiles[size] = size;
 				shuffleArray(this.randomTiles);
 				
+				/*
 				//Initialize rain/fog particle systems for all tiles
 				var atmo = scripts.Atmosphere;
 				for (var i = ico.tiles.length-1; i >= 0; i--) {
@@ -63,6 +64,7 @@ pc.script.create('globalInterface', function (context) {
 					tile.fog = atmo.makeFog(tile.localRotCenter);
 					tile.fog.enabled = false;
 				}
+				*/
 				
 				var t2 = new Date();
 			

@@ -14,13 +14,34 @@ pc.script.create('Atmosphere', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             this.atm = context.root.findByName("Atmosphere");
+			
+			this.fogstack = [];
+			this.rainstack = [];
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+			//console.log(this.rainstack.length + " " + this.fogstack.length);
         },
         
-        makeRain: function(rotation) {
+		makeRain: function(rotation) {
+			for (var i = 0; i < this.rainstack.length; i++) {
+				var r = this.rainstack[i];
+				if (!r.enabled) {
+					//Found an unused one
+					r.enabled = true;
+					r.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+					return this.rainstack[i];
+				}
+			}
+			
+			//Create a new one
+			var r = this.createRain(rotation);
+			this.rainstack.push(r);
+			return r;
+		},
+		
+        createRain: function(rotation) {
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
@@ -28,9 +49,6 @@ pc.script.create('Atmosphere', function (context) {
 			
 			//var rain = e.findByName("RainPS");
             var rain = e._children[2];
-            //console.log('makeRain');
-			//rain.rotate(rotation.x - 90, rotation.y, rotation.z);
-			//rain.setPosition(position);
 			
 			rain.particlesystem.enabled = true;
 			//rain.particlesystem.play();
@@ -38,16 +56,31 @@ pc.script.create('Atmosphere', function (context) {
 			return e;
         },
         
-        makeFog: function(rotation) {
+		makeFog: function(rotation) {
+			for (var i = 0; i < this.fogstack.length; i++) {
+				var r = this.fogstack[i];
+				if (!r.enabled) {
+					//Found an unused one
+					r.enabled = true;
+					r.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+					return this.fogstack[i];
+				}
+			}
+			
+			//Create a new one
+			var r = this.createFog(rotation);
+			this.fogstack.push(r);
+			return r;
+		},
+		
+        createFog: function(rotation) {
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
 			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-			//console.log('makeFog');
+			
 			//var fog = e.findByName("FogPS");
             var fog = e._children[1];
-			//fog.rotate(rotation.x - 90, rotation.y, rotation.z);
-			//fog.setPosition(position);
 			
 			fog.particlesystem.enabled = true;
 			//fog.particlesystem.play();
