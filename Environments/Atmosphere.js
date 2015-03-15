@@ -17,6 +17,8 @@ pc.script.create('Atmosphere', function (context) {
 			
 			this.fogstack = [];
 			this.rainstack = [];
+
+			this.audio = context.root._children[0].script.AudioController;
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -53,6 +55,8 @@ pc.script.create('Atmosphere', function (context) {
 			
 			rain.particlesystem.enabled = true;
 			//rain.particlesystem.play();
+
+			this.audio.sound_MakeRain();
 			
 			return e;
         },

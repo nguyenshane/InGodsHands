@@ -100,6 +100,15 @@ pc.script.create('ui', function (context) {
             // sliderT.style.left = '7%';
 
 
+            //Touch stuff
+            if (this.context.touch) {
+                this.context.touch.on("touchstart", this.onTouchStart, this);
+                this.context.touch.on("touchmove", this.onTouchMove, this);
+                this.context.touch.on("touchend", this.onTouchEnd, this);
+            } else {
+                console.log("No touch input available");
+            }
+
              //create a Slider string pull
             var StringsliderT = document.createElement("INPUT");
             StringsliderT.setAttribute("type", "range");
@@ -200,6 +209,65 @@ pc.script.create('ui', function (context) {
             div.style.color = 'white';
             div.style.fontSize = 'xx-large';
 
+            //text for the Tribe Population read out
+            var tribePop = document.createElement('div');
+            tribePop.style.position = 'absolute';
+            tribePop.style.width = '32x';
+            tribePop.style.top = '5%';
+            tribePop.style.left = '70%';
+            tribePop.style.marginLeft = '0px';
+            tribePop.style.textAlign = 'center';
+            tribePop.style.color = 'white';
+            tribePop.style.fontSize = '16';
+
+
+            //text for the Tribe food read out
+            var tribeFood = document.createElement('div');
+            tribeFood.style.position = 'absolute';
+            tribeFood.style.width = '32x';
+            tribeFood.style.top = '12%';
+            tribeFood.style.left = '70%';
+            tribeFood.style.marginLeft = '0px';
+            tribeFood.style.textAlign = 'center';
+            tribeFood.style.color = 'white';
+            tribeFood.style.fontSize = '16';
+
+            //text for the Tribe food read out
+            var tribeStockpile= document.createElement('div');
+            tribeStockpile.style.position = 'absolute';
+            tribeStockpile.style.width = '32x';
+            tribeStockpile.style.top = '16%';
+            tribeStockpile.style.left = '70%';
+            tribeStockpile.style.marginLeft = '0px';
+            tribeStockpile.style.textAlign = 'center';
+            tribeStockpile.style.color = 'white';
+            tribeStockpile.style.fontSize = '16';
+
+
+            //text for the Tribe Prayer read out
+            var tribeBelief = document.createElement('div');
+            tribeBelief.style.position = 'absolute';
+            tribeBelief.style.width = '32x';
+            tribeBelief.style.top = '20%';
+            tribeBelief.style.left = '70%';
+            tribeBelief.style.marginLeft = '0px';
+            tribeBelief.style.textAlign = 'center';
+            tribeBelief.style.color = 'white';
+            tribeBelief.style.fontSize = '16';
+
+
+            //text for the Tribe Prayer read out
+            var tribeFear = document.createElement('div');
+            tribeFear.style.position = 'absolute';
+            tribeFear.style.width = '32x';
+            tribeFear.style.top = '24%';
+            tribeFear.style.left = '70%';
+            tribeFear.style.marginLeft = '0px';
+            tribeFear.style.textAlign = 'center';
+            tribeFear.style.color = 'white';
+            tribeFear.style.fontSize = '16';
+
+
             //text for the Temperature slider
             var divTString = document.createElement('div');
             divTString.style.position = 'absolute';
@@ -275,6 +343,12 @@ pc.script.create('ui', function (context) {
             document.body.appendChild(divEString);
             document.body.appendChild(divWString);
 
+            document.body.appendChild(tribePop);
+            document.body.appendChild(tribeFood);
+            document.body.appendChild(tribeStockpile);
+            document.body.appendChild(tribeBelief);
+            document.body.appendChild(tribeFear);
+
             document.body.appendChild(buttonSub);
             document.body.appendChild(buttonPlus);
             //document.body.appendChild(sliderT);
@@ -292,6 +366,13 @@ pc.script.create('ui', function (context) {
             this.divEString = divEString;
             this.divWString = divWString;
 
+
+            this.tribePop = tribePop;
+            this.tribeStockpile = tribeStockpile;
+            this.tribeFood = tribeFood;
+            this.tribeBelief = tribeBelief;
+            this.tribeFear = tribeFear;
+
             this.buttonPlus = buttonPlus;
             this.buttonSub = buttonSub;
             this.StringsliderT = StringsliderT;
@@ -305,13 +386,23 @@ pc.script.create('ui', function (context) {
             // Set some default state on the UI element
              this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'));
              
-            // this.setVisibility(true);
+             var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
+
+             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
+               ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
+           
         },
 
          // Called every frame, dt is time in seconds since last update
         update: function (dt) {
              //updates the global temperature
+
+             var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
+
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'));
+
+            this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
+               ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
 
              this.time += dt;
 
@@ -500,6 +591,48 @@ pc.script.create('ui', function (context) {
             }
         },
 
+
+        onTouchStart: function (touch) {
+           if(needToStartTimeT && touch.target == this.StringsliderT){
+                //console.log("inside pullStarted")
+                pullStartTimeT = this.time;
+                needToStartTimeT = false
+                }
+
+                if(needToStartTimeA && touch.target == this.StringsliderA){
+               // console.log("inside pullStarted")
+                pullStartTimeA = this.time;
+                needToStartTimeA = false
+                }
+
+                if(needToStartTimeP && touch.target == this.StringsliderP){
+                //console.log("inside pullStarted")
+                pullStartTimeP = this.time;
+                needToStartTimeP = false
+                }
+
+                if(needToStartTimeE && touch.target == this.StringsliderE){
+                //console.log("inside pullStarted")
+                pullStartTimeE = this.time;
+                needToStartTimeE = false
+                }
+
+                if(needToStartTimeW && touch.target == this.StringsliderW){
+                //console.log("inside pullStarted")
+                pullStartTimeW = this.time;
+                needToStartTimeW = false
+                }
+        },
+        
+        onTouchEnd: function (touch) {
+            // When the touches end, send to string pull functions
+              this.sendToMove_T();
+              this.sendToMove_A();
+              this.sendToMove_P();
+              this.sendToMove_E();
+              this.sendToMove_W();
+        },
+
         sendToMove_T: function(){
              if (hasMovedT){
                             var distance = this.sliderTDistance;
@@ -602,7 +735,17 @@ pc.script.create('ui', function (context) {
             this.divPString.innerHTML = message4;
             this.divEString.innerHTML = message5;
             this.divWString.innerHTML = message6;
-        }
+        },
+
+
+        setTribeText: function (message, message2, message3, message4, message5) {
+        this.tribePop.innerHTML = message;
+        this.tribeFood.innerHTML = message2;
+        this.tribeStockpile.innerHTML = message3;
+        this.tribeBelief.innerHTML = message4;
+        this.tribeFear.innerHTML = message5;
+        },
+
     };
 
     return UI;
