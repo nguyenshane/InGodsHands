@@ -28,7 +28,7 @@ pc.script.create('Atmosphere', function (context) {
 			
 			//var rain = e.findByName("RainPS");
             var rain = e._children[2];
-            console.log('makeRain');
+            //console.log('makeRain');
 			//rain.rotate(rotation.x - 90, rotation.y, rotation.z);
 			//rain.setPosition(position);
 			
