@@ -19,16 +19,19 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.isRaining = false;
 	this.isFoggy = false;
 	
-	this.humidity = 50.0 * pc.math.random(0.7, 1.3); //Current absolute humidity rating
-	this.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
-	this.humidityRegenerationRate = 1.0; //Constant regeneration (for an ocean tile)
-	this.landHumidityRegenerationMultiplier = 0.1; //Multiplier of above for land tiles
-	this.humidityDegenerationRate = 2.0; //Loss while raining on tile
+	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
+	Tile.humidityBaseMax = 100;
+	this.maxHumidity = Tile.humidityBaseMax;
+	Tile.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
+	Tile.humidityRegenerationRate = 2.0; //Constant regeneration (for an ocean tile)
+	Tile.landHumidityRegenerationMultiplier = 0.25; //Multiplier of above for land tiles
+	Tile.humidityDegenerationRate = 0.5; //Loss while raining on tile
 	
-	this.groundwater = 50.0 * pc.math.random(0.6, 1.4); //Current groundwater rating
-	this.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
-	this.groundwaterRegenerationRate = 2.0; //Regeneration when raining on tile
-	this.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
+	this.groundwater = 50.0 * pc.math.random(0.7, 1.3); //Current groundwater rating
+	Tile.groundwaterMax = 100;
+	Tile.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
+	Tile.groundwaterRegenerationRate = 0.5; //Regeneration when raining on tile
+	Tile.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
 	
 	Tile.atmoHeight = 0.4;
 	Tile.rainDuration = 3;
@@ -73,15 +76,22 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexc);
 	
 	this.update = function(dt) {
-		if (!this.isOcean) this.humidity += this.humidityRegenerationRate * dt;
-		else this.humidity += this.landHumidityRegenerationMultiplier * this.humidityRegenerationRate * dt;
+		var tempHumidityMultiplier = this.getTemperature() / 200 + 0.5;
+		if (tempHumidityMultiplier < 0.2) tempHumidityMultiplier = 0.2;
+		
+		this.maxHumidity = Tile.humidityBaseMax * tempHumidityMultiplier;
+		
+		if (!this.isOcean) this.humidity += Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+		else this.humidity += Tile.landHumidityRegenerationMultiplier * Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+		
+		this.checkResourceLimits();
 		
 		if (this.isRaining) {
 			if (!this.isOcean) {
-				this.humidity -= this.humidityDegenerationRate * dt;
-				this.groundwater += this.groundwaterRegenerationRate * dt;
+				this.humidity -= Tile.humidityDegenerationRate * dt;
+				this.groundwater += Tile.groundwaterRegenerationRate * dt;
 			} else {
-				this.humidity -= this.humidityDegenerationRate * dt;
+				this.humidity -= Tile.humidityDegenerationRate * dt;
 			}
 			
 			this.rainTimer -= dt;
@@ -98,6 +108,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			this.rain.enabled = false;
 		}
 		
+		this.checkResourceLimits();
+		
 		//Spread humidity and groundwater to neighbors
 		var neighbors = this.getNeighbors();
 		shuffleArray(neighbors); //Choose order randomly each frame to keep the first one from always receiving more than others
@@ -107,7 +119,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			if (this.humidity > 0) {
 				if (neighbor.humidity < this.humidity) {
 					var diff = (this.humidity - neighbor.humidity) / this.humidity;
-					var rate = this.humiditySpreadRate * dt / diff;
+					var rate = Tile.humiditySpreadRate * dt * diff;
 					neighbor.humidity += rate;
 					this.humidity -= rate;
 				}
@@ -116,24 +128,22 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			if (!this.isOcean && this.groundwater > 0) {
 				if (!neighbor.isOcean && neighbor.groundwater < this.groundwater) {
 					var diff = (this.groundwater - neighbor.groundwater) / this.groundwater;
-					var rate = this.groundwaterSpreadRate * dt / diff;
+					var rate = Tile.groundwaterSpreadRate * dt * diff;
 					neighbor.groundwater += rate;
 					this.groundwater -= rate;
 				}
 			}
 		}
 		
+		this.checkResourceLimits();
+		
 		//Grow tree
 		if (this.hasTree) {
 			///handle tree growing, killing etc here
-			this.groundwater -= this.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
+			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
 		}
 		
-		if (this.humidity < 0) this.humidity = 0;
-		if (this.humidity > 100) this.humidity = 100;
-		
-		if (this.groundwater < 0) this.groundwater = 0;
-		if (this.groundwater > 100) this.groundwater = 100;
+		this.checkResourceLimits();
 		
 		if (this.isFoggy) {
 			this.fogTimer -= dt;
@@ -157,10 +167,19 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		this.spawnTree(temp, 0);
 		
+		var rh = (this.humidity / 100) / ((temp * 2 / 100) + 0.5);
+		if (this.humidity < 10.0) rh = this.humidity / 100;
+		
+		if (Math.random() < rainChance + (rh * rainHumidityChance)) {
+			this.startRain();
+			this.startFog();
+		} else if (Math.random() < fogChance + (rh * fogHumidityChance)) {
+			this.startFog();
+		}
+		
+		/*
 		if (temp < 0) temp = 0;
 		else if (temp > 100) temp = 100;
-		
-		///calculate and use relative humidity etc when determining rain/fog chance instead
 		
 		if (Math.random() < rainChance * (300 / (temp * 4 + 100))) {
 			this.startRain();
@@ -168,6 +187,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		} else if (Math.random() < fogChance) {
 			this.startFog();
 		}
+		*/
+	};
+	
+	this.checkResourceLimits = function() {
+		if (this.humidity < 0) this.humidity = 0;
+		if (this.humidity > this.maxHumidity) this.humidity = this.maxHumidity;
+		
+		if (this.groundwater < 0) this.groundwater = 0;
+		if (this.groundwater > Tile.groundwaterMax) this.groundwater = Tile.groundwaterMax;
 	};
 
     this.getNorthNeighbor = function() {

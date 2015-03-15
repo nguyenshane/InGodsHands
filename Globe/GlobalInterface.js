@@ -4,9 +4,6 @@
  * 
 */
 
-//pc.script.attribute('fogChance', 'number', 0.002);
-//pc.script.attribute('rainChance', 'number', 0.0003);
-
 pc.script.attribute('globalSunRotation', 'number', 30);
 
 pc.script.create('globalInterface', function (context) {
@@ -21,10 +18,15 @@ pc.script.create('globalInterface', function (context) {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
 			this.intermittentUpdateDuration = 4.0; //How long it takes for intermittentUpdate to traverse all tiles; this directly affects tree respawn rate as well as performance of atmosphere, might be wise to separate the two
+			var m = this.intermittentUpdateDuration / 1280;
 			
 			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
-			fogChance = 0.004 * this.intermittentUpdateDuration; //Base chance per second per tile
-			rainChance = 0.001 * this.intermittentUpdateDuration;
+			
+			fogChance = 1.6 * m; //Base clouds created per second for the entire globe
+			fogHumidityChance = 3.5 * m; //Added to chance based on current humidity
+			
+			rainChance = 0.5 * m;
+			rainHumidityChance = 0.8 * m;
 			
             globalTemperature = 90;
             globalTemperatureMax = 100;
