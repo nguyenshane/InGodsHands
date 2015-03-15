@@ -13,6 +13,8 @@ pc.script.create('Trees', function (context) {
     Trees.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+			
 			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			//if (treeDensity === undefined) treeDensity = 0.35;
 			
@@ -44,6 +46,10 @@ pc.script.create('Trees', function (context) {
 				} else noOcean = true;
             }
 			*/
+			
+			var t2 = new Date();
+			
+			console.log("tree init time: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update

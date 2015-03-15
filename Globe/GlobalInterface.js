@@ -46,6 +46,8 @@ pc.script.create('globalInterface', function (context) {
         update: function (dt) {
 			//Only called on first update (since ico isn't defined in initialize)
 			if (!this.init) {
+				var t1 = new Date();
+				
 				//Initialize variables for intermittentUpdate
 				this.lastUpdatedTile = 0;
 				this.randomTiles = [];
@@ -61,6 +63,10 @@ pc.script.create('globalInterface', function (context) {
 					tile.fog = scripts.Atmosphere.makeFog(extendVector(tile.center, tile.atmoHeight), tile.localRotCenter);
 					tile.fog.enabled = false;
 				}
+				
+				var t2 = new Date();
+			
+				console.log("globalint init2 time: " + (t2-t1));
 				
 				this.init = true;
 			}

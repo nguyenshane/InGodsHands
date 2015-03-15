@@ -23,14 +23,14 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	Tile.humidityBaseMax = 100;
 	this.maxHumidity = Tile.humidityBaseMax;
 	Tile.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
-	Tile.humidityRegenerationRate = 2.0; //Constant regeneration (for an ocean tile)
+	Tile.humidityRegenerationRate = 2.0; //Base constant regeneration (for an ocean tile), modified by tile temperature
 	Tile.landHumidityRegenerationMultiplier = 0.25; //Multiplier of above for land tiles
-	Tile.humidityDegenerationRate = 0.5; //Loss while raining on tile
+	Tile.humidityDegenerationRate = 15.0; //Loss while raining on tile
 	
 	this.groundwater = 50.0 * pc.math.random(0.7, 1.3); //Current groundwater rating
 	Tile.groundwaterMax = 100;
 	Tile.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
-	Tile.groundwaterRegenerationRate = 0.5; //Regeneration when raining on tile
+	Tile.groundwaterRegenerationRate = 15.0; //Regeneration when raining on tile
 	Tile.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
 	
 	Tile.atmoHeight = 0.4;
@@ -76,7 +76,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     handle.indices.push(vertexc);
 	
 	this.update = function(dt) {
-		var tempHumidityMultiplier = this.getTemperature() / 200 + 0.5;
+		var tempHumidityMultiplier = this.getTemperature() / 100 + 0.5;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
 		
 		this.maxHumidity = Tile.humidityBaseMax * tempHumidityMultiplier;
@@ -164,6 +164,22 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		} else if (this.fog.enabled && this.checkAtmoAnimCompleted(this.fog)) {
 			this.fog.enabled = false;
 		}
+		
+		/*
+		///temporary
+		if (this.index === 500) {
+			if (this.humidity > this.maxHumidity * 0.9) this.startRain();
+			
+			var temp = this.getTemperature();
+			temp = pc.math.clamp(temp, 0, 150);
+			
+			var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
+			if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
+			
+			console.log(this.isOcean + " " + this.isRaining + "\nrelative:\t" + rh + "\nhumidity:\t" + this.humidity + "\ngroundwa:\t" + this.groundwater + "\nmaxhumid:\t" + 
+						this.maxHumidity + "\ntemperat:\t" + this.getTemperature());
+		}
+		*/
 	};
 	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
@@ -172,8 +188,10 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		this.spawnTree(temp, 0);
 		
-		var rh = (this.humidity / 100) / ((temp * 2 / 100) + 0.5);
-		if (this.humidity < 10.0) rh = this.humidity / 100;
+		temp = pc.math.clamp(temp, 0, 150);
+		
+		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
+		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
 		
 		if (Math.random() < rainChance + (rh * rainHumidityChance)) {
 			this.startRain();
