@@ -77,15 +77,17 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 200 + 0.5;
-		if (tempHumidityMultiplier < 0.2) tempHumidityMultiplier = 0.2;
+		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
 		
 		this.maxHumidity = Tile.humidityBaseMax * tempHumidityMultiplier;
 		
+		//Regenerate humidity
 		if (!this.isOcean) this.humidity += Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
 		else this.humidity += Tile.landHumidityRegenerationMultiplier * Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
 		
 		this.checkResourceLimits();
 		
+		//Handle rain
 		if (this.isRaining) {
 			if (!this.isOcean) {
 				this.humidity -= Tile.humidityDegenerationRate * dt;
@@ -120,6 +122,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 				if (neighbor.humidity < this.humidity) {
 					var diff = (this.humidity - neighbor.humidity) / this.humidity;
 					var rate = Tile.humiditySpreadRate * dt * diff;
+					if (rate > this.humidity) rate = this.humidity;
 					neighbor.humidity += rate;
 					this.humidity -= rate;
 				}
@@ -129,6 +132,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 				if (!neighbor.isOcean && neighbor.groundwater < this.groundwater) {
 					var diff = (this.groundwater - neighbor.groundwater) / this.groundwater;
 					var rate = Tile.groundwaterSpreadRate * dt * diff;
+					if (rate > this.groundwater) rate = this.groundwater;
 					neighbor.groundwater += rate;
 					this.groundwater -= rate;
 				}
@@ -145,6 +149,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		this.checkResourceLimits();
 		
+		//Handle fog
 		if (this.isFoggy) {
 			this.fogTimer -= dt;
 			if (this.fogTimer <= 0) this.stopFog();
