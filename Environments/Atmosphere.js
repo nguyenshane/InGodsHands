@@ -43,7 +43,7 @@ pc.script.create('Atmosphere', function (context) {
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
 			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-			console.log('makeFog');
+			//console.log('makeFog');
 			//var fog = e.findByName("FogPS");
             var fog = e._children[1];
 			//fog.rotate(rotation.x - 90, rotation.y, rotation.z);
