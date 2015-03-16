@@ -1,9 +1,11 @@
+pc.script.attribute('distance', 'number', 8); // change this number for camera distance from the globe (center)
+
 pc.script.create('Camera', function (context) {
     // Creates a new Camera instance
     var Camera = function (entity) {
         this.entity = entity;
 
-        this.distance = 8;
+        //this.distance = 8;
         this.height = 0;
         this.orbitAngle = 0;
         
