@@ -610,7 +610,6 @@ pc.script.create('ui', function (context) {
 
 
         onTouchStart: function (event) {
-          getAsyncData(function () {
            if(needToStartTimeT && event.target == this.StringsliderT){
                 //console.log("inside pullStarted")
                 pullStartTimeT = this.time;
@@ -640,19 +639,18 @@ pc.script.create('ui', function (context) {
                 pullStartTimeW = this.time;
                 needToStartTimeW = false
                 }
-            }.bind(this));
-        },
+
+        }.bind(this),
         
         onTouchEnd: function (event) {
             // When the touches end, send to string pull functions
-            getAsyncData(function () {
               this.sendToMove_T();
               this.sendToMove_A();
               this.sendToMove_P();
               this.sendToMove_E();
               this.sendToMove_W();
-          }.bind(this));
-        },
+          
+        }.bind(this),
 
         sendToMove_T: function(){
              if (hasMovedT){
