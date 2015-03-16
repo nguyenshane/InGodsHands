@@ -102,9 +102,8 @@ pc.script.create('ui', function (context) {
 
             //Touch stuff
             if (this.context.touch) {
-                this.context.touch.on("touchstart", this.onTouchStart, this);
-                this.context.touch.on("touchmove", this.onTouchMove, this);
-                this.context.touch.on("touchend", this.onTouchEnd, this);
+                this.context.touch.on(pc.EVENT_TOUCHSTART, this.onTouchStart, this);
+                this.context.touch.on(pc.EVENT_TOUCHEND, this.onTouchEnd, this);
             } else {
                 console.log("No touch input available");
             }
