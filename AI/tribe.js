@@ -78,7 +78,7 @@ pc.script.create('tribe', function (context) {
             console.log(this.stormEffect.darkness);
             console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
 
-           // console.log("The influenced tiles length: " + this.influencedTiles.length);
+            this.audio = context.root._children[0].script.AudioController;
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -238,6 +238,7 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.sunIcon.enabled = true;
             }
+            this.audio.sound_TribePray();
         },
 
         ///////////////////////////
@@ -253,9 +254,8 @@ pc.script.create('tribe', function (context) {
             //this.stormEffect.enabled = true;            
             while(this.stormEffect.darkness < this.cowerTimer){
                 this.stormEffect.darkness += .005;
-            }
-
-            
+            }            
+            this.audio.sound_MakeThunder();
         },
 
         cower: function(deltaTime) {
@@ -267,8 +267,14 @@ pc.script.create('tribe', function (context) {
                         this.increaseFear();
                         this.increaseBelief();
                         this.isBusy = false
-                        this.stormIcon.enabled = false;
+                        
                         console.log("THOU HAST BEEN SMITED");
+                        break;
+
+                    case this.cower:
+                        this.decreaseBelief();
+                        this.isBusy = false;
+                        console.log("Stop scaring me!");
                         break;
 
                     default:
@@ -276,18 +282,17 @@ pc.script.create('tribe', function (context) {
                         this.increaseBelief();
                         this.setCurrentAction(this.previousAction);
                         console.log("Cower done");
-                        this.stormIcon.enabled = false;
                         break;
                 }
-
+                this.stormIcon.enabled = false;
                 this.cowerTimer = 0;                    
             }
 
             this.cowerTimer -= deltaTime;
-            if(this.stormEffect.darkness > 0){
+            if(this.stormEffect.darkness > 1){
                 this.stormEffect.darkness -= deltaTime;
             } else {
-                this.stormEffect.darkness = 0;
+                this.stormEffect.darkness = 1;
             }
         },
 
@@ -302,6 +307,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.praise);
             this.isBusy = true;
             this.praiseIcon.enabled = true;
+            this.audio.sound_TribePraise();
             // Play animation here
         },
 
@@ -320,6 +326,7 @@ pc.script.create('tribe', function (context) {
             this.denounceTimer = 10;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
+            this.audio.sound_TribeDenounce();
         },
 
         denounce: function(deltaTime) {
