@@ -90,10 +90,6 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
-            //console.log("busy: " + this.isBusy +
-            //            "\nDenounce timer: " + this.denounceTimer + 
-            //            "\nAction: " + this.currentAction);
-
             if(!this.isBusy){
                 this.runRuleList();
                 this.foodAndPopTimer(dt);
@@ -201,6 +197,12 @@ pc.script.create('tribe', function (context) {
         ////////////////////////////////////
 
         prayForTemperature: function (deltaTime) {
+            if(this.currTileTemperature > this.idealTemperature){
+                this.rainIcon.enabled = true;
+            } else {
+                this.sunIcon.enabled = true;
+            }
+
             if(this.prayerTimer <= 0){
                 console.log("Prayer timer up");
                 this.prayerTimer = 0;
@@ -233,11 +235,7 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer = time;
             this.setCurrentAction(this.prayForTemperature);
             this.isBusy = true;
-            if(this.currTileTemperature > this.idealTemperature){
-                this.rainIcon.enabled = true;
-            } else {
-                this.sunIcon.enabled = true;
-            }
+
             this.audio.sound_TribePray();
         },
 
@@ -312,6 +310,7 @@ pc.script.create('tribe', function (context) {
         },
 
         praise: function(deltaTime) {
+            this.praiseIcon.enabled = true;
             if(this.praiseTimer <= 0){
                 console.log("God is good!");
                 this.increaseBelief();
@@ -375,6 +374,10 @@ pc.script.create('tribe', function (context) {
         setCurrentAction: function(newAction) {
             this.previousAction = this.currentAction;
             this.currentAction = newAction;
+            this.sunIcon.enabled = false;
+            this.rainIcon.enabled = false;
+            this.stormIcon.enabled = false;
+            this.praiseIcon.enabled = false;
         },
 
         foodAndPopTimer: function(dt) {
