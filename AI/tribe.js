@@ -24,7 +24,7 @@ pc.script.create('tribe', function (context) {
         this.stormIcon;
         this.praiseIcon;
 
-        this.stormImage;
+        this.stormEffect;
 
         this.rules = [];
         this.isBusy = false;
@@ -76,10 +76,12 @@ pc.script.create('tribe', function (context) {
             this.sunIcon = this.entity.findByName("PraySun");
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
-            this.stormImage = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
+            this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            console.log(this.stormEffect.darkness);
             console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
-			
 			// console.log("The influenced tiles length: " + this.influencedTiles.length);
+			
+            this.audio = context.root._children[0].script.AudioController;
 			
 			var t2 = new Date();
 			console.log("tribe initialization: " + (t2-t1));
@@ -242,6 +244,7 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.sunIcon.enabled = true;
             }
+            this.audio.sound_TribePray();
         },
 
         ///////////////////////////
@@ -250,11 +253,15 @@ pc.script.create('tribe', function (context) {
        
         startCowering: function () {
             console.log("Tribe is now cowering");
-            this.cowerTimer = 5;
+            this.cowerTimer = 6;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
             this.stormIcon.enabled = true;
-            this.stormImage.enabled = true;
+            //this.stormEffect.enabled = true;            
+            while(this.stormEffect.darkness < this.cowerTimer){
+                this.stormEffect.darkness += .005;
+            }            
+            this.audio.sound_MakeThunder();
         },
 
         cower: function(deltaTime) {
@@ -266,9 +273,14 @@ pc.script.create('tribe', function (context) {
                         this.increaseFear();
                         this.increaseBelief();
                         this.isBusy = false
-                        this.stormIcon.enabled = false;
-                        this.stormImage.enabled = false;
+                        
                         console.log("THOU HAST BEEN SMITED");
+                        break;
+
+                    case this.cower:
+                        this.decreaseBelief();
+                        this.isBusy = false;
+                        console.log("Stop scaring me!");
                         break;
 
                     default:
@@ -276,15 +288,18 @@ pc.script.create('tribe', function (context) {
                         this.increaseBelief();
                         this.setCurrentAction(this.previousAction);
                         console.log("Cower done");
-                        this.stormIcon.enabled = false;
-                        this.stormImage.enabled = false;
                         break;
                 }
-
+                this.stormIcon.enabled = false;
                 this.cowerTimer = 0;                    
             }
 
             this.cowerTimer -= deltaTime;
+            if(this.stormEffect.darkness > 1){
+                this.stormEffect.darkness -= deltaTime;
+            } else {
+                this.stormEffect.darkness = 1;
+            }
         },
 
         //////////////////////////////
@@ -298,6 +313,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.praise);
             this.isBusy = true;
             this.praiseIcon.enabled = true;
+            this.audio.sound_TribePraise();
             // Play animation here
         },
 
@@ -316,6 +332,7 @@ pc.script.create('tribe', function (context) {
             this.denounceTimer = 10;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
+            this.audio.sound_TribeDenounce();
         },
 
         denounce: function(deltaTime) {
