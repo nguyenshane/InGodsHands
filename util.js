@@ -870,5 +870,5 @@ function lerp(low, high, value) {
 	var h = high - low;
 	var v = value - low;
 	
-	return v / h;
+	return (pc.math.clamp(v, 0, h) / h);
 }

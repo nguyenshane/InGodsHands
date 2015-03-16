@@ -50,6 +50,8 @@ pc.script.create('tribe', function (context) {
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+			
             // create mesh
 
             this.tile = ico.tiles[1034]; // list of tiles
@@ -76,8 +78,11 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormImage = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
             console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
-
-           // console.log("The influenced tiles length: " + this.influencedTiles.length);
+			
+			// console.log("The influenced tiles length: " + this.influencedTiles.length);
+			
+			var t2 = new Date();
+			console.log("tribe initialization: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update

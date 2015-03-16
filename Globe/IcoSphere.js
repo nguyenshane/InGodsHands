@@ -1,5 +1,8 @@
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
+	
+	var t1 = new Date();
+	
     subdivisions = (subdivisions || 1);
 
     // golden ratio, phi
@@ -261,6 +264,9 @@ function IcoSphere(device, radius, subdivisions) {
 	unshareVertices(this);
 	
 	
+	var t2 = new Date();
+	console.log("icosphere initialization: " + (t2-t1));
+	
 	//Generate terrain
 	/*
     // Test extrude, this should be where the repellers algorithm be replaced
@@ -281,6 +287,8 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
+	var t3 = new Date();
+	console.log("terrain generation: " + (t3-t2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();

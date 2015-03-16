@@ -12,12 +12,15 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 	
-	this.tree, this.rain, this.fog;
+	this.tree, this.animal, this.rain, this.fog;
 
     this.isOcean = true;
 	this.hasTree = false;
+	this.hasAnimal = false;
 	this.isRaining = false;
 	this.isFoggy = false;
+	
+	Tile.tempInfluenceMultiplier = 2.0;
 	
 	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
 	Tile.humidityBaseMax = 100;
@@ -34,12 +37,13 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	Tile.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
 	
 	Tile.atmoHeight = 0.4;
-	Tile.rainDuration = 3;
-	Tile.fogDuration = 5;
+	Tile.rainDuration = 3.0;
+	Tile.fogDuration = 4.0;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
 	Tile.treeStats = {
 		tree1: {
+			type: "tree1",
 			minTemp: 30,
 			maxTemp: 100,
 			idealTemp: 60,
@@ -51,6 +55,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		},
 		
 		tree2: {
+			type: "tree2",
 			minTemp: 60,
 			maxTemp: 140,
 			idealTemp: 100,
@@ -59,6 +64,20 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			idealWater: 50,
 			waterUsage: 0.6,
 			growRate: 1.0
+		}
+	};
+	
+	Tile.animalStats = {
+		fox: {
+			type: "fox"
+		},
+		
+		pig: {
+			type: "pig"
+		},
+		
+		cow: {
+			type: "cow"
 		}
 	};
 	
@@ -196,9 +215,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		
 		this.spawnTree(temp, 0);
 		
-		temp = pc.math.clamp(temp, 0, 150);
-		
-		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
+		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
 		
 		if (Math.random() < rainChance + (rh * rainHumidityChance)) {
@@ -447,7 +464,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.startRain = function() {
 		this.isRaining = true;
-		this.rainTimer = Tile.rainDuration;
+		this.rainTimer = Tile.rainDuration * (this.humidity / this.maxHumidity + 1.0) * pc.math.random(0.8, 1.25);
 	};
 	
 	this.stopRain = function() {
@@ -456,7 +473,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	
 	this.startFog = function() {
 		this.isFoggy = true;
-		this.fogTimer = Tile.fogDuration;
+		this.fogTimer = Tile.fogDuration * (this.humidity / this.maxHumidity + 1.0) * pc.math.random(0.8, 1.25);
 	};
 	
 	this.stopFog = function() {
