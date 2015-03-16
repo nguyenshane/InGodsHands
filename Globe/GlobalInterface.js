@@ -22,11 +22,11 @@ pc.script.create('globalInterface', function (context) {
 			
 			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
 			
-			fogChance = 1.0 * m; //Base clouds created per second for the entire globe
-			fogHumidityChance = 4.0 * m; //Added to chance based on current humidity
+			fogChance = 0.3 * m; //Base clouds created per second for the entire globe
+			fogHumidityChance = 2.0 * m; //Added to chance based on current humidity and temperature
 			
-			rainChance = 0.3 * m;
-			rainHumidityChance = 0.9 * m;
+			rainChance = 0.1 * m;
+			rainHumidityChance = 1.2 * m;
 			
             globalTemperature = 90;
             globalTemperatureMax = 100;

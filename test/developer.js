@@ -101,12 +101,12 @@ pc.script.create('ui', function (context) {
 
 
             //Touch stuff
-            if (this.context.touch) {
-                this.context.touch.on(pc.EVENT_TOUCHSTART, this.onTouchStart, this);
-                this.context.touch.on(pc.EVENT_TOUCHEND, this.onTouchEnd, this);
-            } else {
-                console.log("No touch input available");
-            }
+            // if (this.context.touch) {
+            //     this.context.touch.on(pc.EVENT_TOUCHSTART, this.onTouchStart, this);
+            //     this.context.touch.on(pc.EVENT_TOUCHEND, this.onTouchEnd, this);
+            // } else {
+            //     console.log("No touch input available");
+            // }
 
              //create a Slider string pull
             var StringsliderT = document.createElement("INPUT");
@@ -124,6 +124,10 @@ pc.script.create('ui', function (context) {
             StringsliderT.style.top = '50%';
             StringsliderT.style.left = '7%';
             StringsliderT.mouseIsOver = false;
+
+            //attaches a touch listener to it
+            StringsliderT.addEventListener("touchstart", this.onTouchStart, false);
+            StringsliderT.addEventListener("touchend", this.onTouchEnd, false);
 
 
             //create a Slider string pull
@@ -143,6 +147,10 @@ pc.script.create('ui', function (context) {
             StringsliderA.style.left = '7%';
             StringsliderA.mouseIsOver = false;
 
+            //attaches a touch listener to it
+            StringsliderA.addEventListener("touchstart", this.onTouchStart, false);
+            StringsliderA.addEventListener("touchend", this.onTouchEnd, false);
+
             //create a Slider string pull
             var StringsliderP = document.createElement("INPUT");
             StringsliderP.setAttribute("type", "range");
@@ -159,6 +167,10 @@ pc.script.create('ui', function (context) {
             StringsliderP.style.top = '70%';
             StringsliderP.style.left = '7%';
             StringsliderP.mouseIsOver = false;
+
+            //attaches a touch listener to it
+            StringsliderP.addEventListener("touchstart", this.onTouchStart, false);
+            StringsliderP.addEventListener("touchend", this.onTouchEnd, false);
 
              //create a Slider string pull
             var StringsliderE = document.createElement("INPUT");
@@ -178,6 +190,10 @@ pc.script.create('ui', function (context) {
             StringsliderE.mouseIsOver = false;
 
 
+            //attaches a touch listener to it
+            StringsliderE.addEventListener("touchstart", this.onTouchStart, false);
+            StringsliderE.addEventListener("touchend", this.onTouchEnd, false);
+
              //create a Slider string pull
             var StringsliderW = document.createElement("INPUT");
             StringsliderW.setAttribute("type", "range");
@@ -195,7 +211,9 @@ pc.script.create('ui', function (context) {
             StringsliderW.style.left = '7%';
             StringsliderW.mouseIsOver = false;
 
-
+            //attaches a touch listener to it
+            StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
+            StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
 
             //text for the global temperature
             var div = document.createElement('div');
@@ -591,45 +609,120 @@ pc.script.create('ui', function (context) {
         },
 
 
-        onTouchStart: function (touch) {
-           if(needToStartTimeT && touch.target == this.StringsliderT){
+        onTouchStart: function (event) {
+           if(needToStartTimeT && event.target == this.StringsliderT){
                 //console.log("inside pullStarted")
                 pullStartTimeT = this.time;
                 needToStartTimeT = false
                 }
 
-                if(needToStartTimeA && touch.target == this.StringsliderA){
+                if(needToStartTimeA && event.target == this.StringsliderA){
                // console.log("inside pullStarted")
                 pullStartTimeA = this.time;
                 needToStartTimeA = false
                 }
 
-                if(needToStartTimeP && touch.target == this.StringsliderP){
+                if(needToStartTimeP && event.target == this.StringsliderP){
                 //console.log("inside pullStarted")
                 pullStartTimeP = this.time;
                 needToStartTimeP = false
                 }
 
-                if(needToStartTimeE && touch.target == this.StringsliderE){
+                if(needToStartTimeE && event.target == this.StringsliderE){
                 //console.log("inside pullStarted")
                 pullStartTimeE = this.time;
                 needToStartTimeE = false
                 }
 
-                if(needToStartTimeW && touch.target == this.StringsliderW){
+                if(needToStartTimeW && event.target == this.StringsliderW){
                 //console.log("inside pullStarted")
                 pullStartTimeW = this.time;
                 needToStartTimeW = false
                 }
         },
         
-        onTouchEnd: function (touch) {
+        onTouchEnd: function (event) {
             // When the touches end, send to string pull functions
-              this.sendToMove_T();
-              this.sendToMove_A();
-              this.sendToMove_P();
-              this.sendToMove_E();
-              this.sendToMove_W();
+              if (hasMovedT){
+                            var distance = this.sliderTDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeT;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionT;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_T', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeT);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderTLastPos = this.StringsliderT.value;
+                             this.sliderTDistance = 0.0;
+                             needToStartTimeT = true;
+                        }
+
+                if (hasMovedA){
+                            var distance = this.sliderADistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeA;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionA;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_A', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeA);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderALastPos = this.StringsliderA.value;
+                             this.sliderADistance = 0.0;
+                             needToStartTimeA = true;
+                        }
+
+                    if (hasMovedP){
+                            var distance = this.sliderPDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeP;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionP;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_P', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeP);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderPLastPos = this.StringsliderP.value;
+                             this.sliderPDistance = 0.0;
+                             needToStartTimeP = true;
+                        }
+
+                if (hasMovedE){
+                            var distance = this.sliderEDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeE;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionE;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_E', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeE);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderELastPos = this.StringsliderE.value;
+                             this.sliderEDistance = 0.0;
+                             needToStartTimeE = true;
+                        }
+                        
+                if (hasMovedW){
+                            var distance = this.sliderWDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeW;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionW;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_W', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeW);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderWLastPos = this.StringsliderW.value;
+                             this.sliderWDistance = 0.0;
+                             needToStartTimeW = true;
+                        }
+
         },
 
         sendToMove_T: function(){
