@@ -15,12 +15,20 @@ pc.script.create('ui', function (context) {
         this.positionP = 1;
         this.positionE = 1;
         this.positionW = 1;
-
         this.time = 0;
 
         this.context = pc.fw.Application.getApplication('application-canvas').context;
         this.context.mouse.on(pc.EVENT_MOUSEUP, this.onMouseUp, this);
         this.context.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+
+         //Touch stuff
+            if (this.context.touch) {
+                this.context.touch.on("touchstart", this.onTouchStart, this);
+                this.context.touch.on("touchend", this.onTouchEnd, this);
+            } else {
+                console.log("No touch input available");
+            }
+
     };
 
     var hasMovedT  = false;
@@ -99,15 +107,6 @@ pc.script.create('ui', function (context) {
             // sliderT.style.top = '40%';
             // sliderT.style.left = '7%';
 
-
-            //Touch stuff
-            if (this.context.touch) {
-                this.context.touch.on("touchstart", this.onTouchStart, this);
-                this.context.touch.on("touchmove", this.onTouchMove, this);
-                this.context.touch.on("touchend", this.onTouchEnd, this);
-            } else {
-                console.log("No touch input available");
-            }
 
              //create a Slider string pull
             var StringsliderT = document.createElement("INPUT");
@@ -592,32 +591,32 @@ pc.script.create('ui', function (context) {
         },
 
 
-        onTouchStart: function (touch) {
-           if(needToStartTimeT && touch.target == this.StringsliderT){
+        onTouchStart: function (event) {
+           if(needToStartTimeT && event.target == this.StringsliderT){
                 //console.log("inside pullStarted")
                 pullStartTimeT = this.time;
                 needToStartTimeT = false
                 }
 
-                if(needToStartTimeA && touch.target == this.StringsliderA){
+                if(needToStartTimeA && event .target == this.StringsliderA){
                // console.log("inside pullStarted")
                 pullStartTimeA = this.time;
                 needToStartTimeA = false
                 }
 
-                if(needToStartTimeP && touch.target == this.StringsliderP){
+                if(needToStartTimeP && event.target == this.StringsliderP){
                 //console.log("inside pullStarted")
                 pullStartTimeP = this.time;
                 needToStartTimeP = false
                 }
 
-                if(needToStartTimeE && touch.target == this.StringsliderE){
+                if(needToStartTimeE && event.target == this.StringsliderE){
                 //console.log("inside pullStarted")
                 pullStartTimeE = this.time;
                 needToStartTimeE = false
                 }
 
-                if(needToStartTimeW && touch.target == this.StringsliderW){
+                if(needToStartTimeW && event.target == this.StringsliderW){
                 //console.log("inside pullStarted")
                 pullStartTimeW = this.time;
                 needToStartTimeW = false
