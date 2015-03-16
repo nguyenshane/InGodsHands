@@ -10,7 +10,7 @@ pc.script.create('tribe', function (context) {
         this.idealTemperature = 65;
         this.currTileTemperature;
 
-        this.belief = 1;
+        //totalBelief = 25;
         this.fear = 0;
 
         this.tile;
@@ -53,9 +53,11 @@ pc.script.create('tribe', function (context) {
 			var t1 = new Date();
 			
             // create mesh
-
             this.tile = ico.tiles[1034]; // list of tiles
             this.calculateFood();
+
+            totalBelief = 300;
+            prevTotalBelief = totalBelief;
 
             this.entity.setPosition(this.tile.center);
             this.tile.hasTribe = true;
@@ -362,11 +364,13 @@ pc.script.create('tribe', function (context) {
         },
 
         increaseBelief: function() {
-            ++this.belief;
+            prevTotalBelief = totalBelief;
+            ++totalBelief;
         },
 
         decreaseBelief: function() {
-            --this.belief;
+            prevTotalBelief = totalBelief;
+            --totalBelief;
         },
 
         increaseFear: function() {

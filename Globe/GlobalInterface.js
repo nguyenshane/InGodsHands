@@ -12,11 +12,14 @@ pc.script.create('globalInterface', function (context) {
         this.entity = entity;
     };
 	
+    var camera;
+
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
-			
+			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
+
 			this.intermittentUpdateDuration = 4.0; //How long it takes for intermittentUpdate to traverse all tiles; this directly affects tree respawn rate as well as performance of atmosphere, might be wise to separate the two
 			var m = this.intermittentUpdateDuration / 1280;
 			
@@ -35,7 +38,7 @@ pc.script.create('globalInterface', function (context) {
             shaderSun = context.root.findByName("ShaderSun");
             //globalSunRotation = 50;
 
-            maxTotalBelief = 100;
+            maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
 			
@@ -138,22 +141,24 @@ pc.script.create('globalInterface', function (context) {
             // End test temperature
 
             // Test belief
-            if ((prevTotalBelief > totalBelief && totalBelief > 0) || totalBelief > maxTotalBelief) {
-                prevTotalBelief = totalBelief;
-                totalBelief -= dt* 10;
-            } else {
-                prevTotalBelief = totalBelief;
-                totalBelief += dt* 10;
-            }
+            // if ((prevTotalBelief > totalBelief && totalBelief > 0) || totalBelief > maxTotalBelief) {
+            //     prevTotalBelief = totalBelief;
+            //     totalBelief -= dt* 10;
+            // } else {
+            //     prevTotalBelief = totalBelief;
+            //     totalBelief += dt* 10;
+            // }
 
 
             sun.setPosition(0, 0, 0);
 
             /**** Test sun rotation ****/
             //sun.rotate(0, dt * 100, 0);
-            sun.rotate(0, dt * this.globalSunRotation, 0);
+            //sun.rotate(0, dt * this.globalSunRotation, 0);
+            //sun.setEulerAngles(camera.getEulerAngles());
             //sun.rotateLocal(0, dt * 100, 0);
-            shaderSun.rotateLocal(0, dt * this.globalSunRotation * -2, 0);
+            //shaderSun.rotateLocal(0, dt * this.globalSunRotation * -2, 0);
+            //shaderSun.setEulerAngles(camera.getEulerAngles());
             //sun.setEulerAngles(0, 90 + this.time, 0);
             /****                   ****/
         }

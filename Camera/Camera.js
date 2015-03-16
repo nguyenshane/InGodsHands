@@ -49,20 +49,20 @@ pc.script.create('Camera', function (context) {
             this.aura3.rotateLocal(0, dt*-6, 0);
 
             // Scale belief aura
-            var maxScale = 6.5;
-            var minScale = 3.5;
+            var maxScale = 10.5;
+            var minScale = 8.5;
             this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             // Change aura color
             if(totalBelief < prevTotalBelief) {
-                this.aura1Mat.diffuse = new pc.Color(1.0,0.25,0.25);
-                this.aura2Mat.diffuse = new pc.Color(1.0,0.5,0.5);
-                this.aura3Mat.diffuse = new pc.Color(1.0,0.75,0.75);
+                this.aura1Mat.diffuse = new pc.Color(1.0,0.35,0.35);
+                this.aura2Mat.diffuse = new pc.Color(1.0,0.65,0.65);
+                this.aura3Mat.diffuse = new pc.Color(1.0,0.85,0.85);
             } else if(totalBelief > prevTotalBelief) {
-                this.aura1Mat.diffuse = new pc.Color(0.25,1.0,0.25);
-                this.aura2Mat.diffuse = new pc.Color(0.5,1.0,0.5);
-                this.aura3Mat.diffuse = new pc.Color(0.75,1.0,0.75);
+                this.aura1Mat.diffuse = new pc.Color(0.15,1.0,0.15);
+                this.aura2Mat.diffuse = new pc.Color(0.35,1.0,0.35);
+                this.aura3Mat.diffuse = new pc.Color(0.65,1.0,0.65);
             } else {
                 this.aura1Mat.diffuse = new pc.Color(0.25,0.25,0.25);
                 this.aura2Mat.diffuse = new pc.Color(0.5,0.5,0.5);
@@ -75,9 +75,13 @@ pc.script.create('Camera', function (context) {
 
             if (context.keyboard.isPressed(pc.input.KEY_LEFT)) {
                 this.orbitAngle++;
+                shaderSun.rotateLocal(0, -2, 0);
+                sun.rotate(0, .01, 0);
             }
             if (context.keyboard.isPressed(pc.input.KEY_RIGHT)) {
                 this.orbitAngle--;
+                shaderSun.rotateLocal(0, 2, 0);
+                sun.rotate(0, -.01, 0);
             }
             if (context.keyboard.isPressed(pc.input.KEY_UP)) {
                 this.distance-= 0.1;
