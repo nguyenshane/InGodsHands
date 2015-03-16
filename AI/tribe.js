@@ -24,7 +24,7 @@ pc.script.create('tribe', function (context) {
         this.stormIcon;
         this.praiseIcon;
 
-        this.stormImage;
+        this.stormEffect;
 
         this.rules = [];
         this.isBusy = false;
@@ -74,7 +74,8 @@ pc.script.create('tribe', function (context) {
             this.sunIcon = this.entity.findByName("PraySun");
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
-            this.stormImage = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
+            this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            console.log(this.stormEffect.darkness);
             console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
 
            // console.log("The influenced tiles length: " + this.influencedTiles.length);
@@ -245,11 +246,16 @@ pc.script.create('tribe', function (context) {
        
         startCowering: function () {
             console.log("Tribe is now cowering");
-            this.cowerTimer = 5;
+            this.cowerTimer = 6;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
             this.stormIcon.enabled = true;
-            this.stormImage.enabled = true;
+            //this.stormEffect.enabled = true;            
+            while(this.stormEffect.darkness < this.cowerTimer){
+                this.stormEffect.darkness += .005;
+            }
+
+            
         },
 
         cower: function(deltaTime) {
@@ -262,7 +268,6 @@ pc.script.create('tribe', function (context) {
                         this.increaseBelief();
                         this.isBusy = false
                         this.stormIcon.enabled = false;
-                        this.stormImage.enabled = false;
                         console.log("THOU HAST BEEN SMITED");
                         break;
 
@@ -272,7 +277,6 @@ pc.script.create('tribe', function (context) {
                         this.setCurrentAction(this.previousAction);
                         console.log("Cower done");
                         this.stormIcon.enabled = false;
-                        this.stormImage.enabled = false;
                         break;
                 }
 
@@ -280,6 +284,11 @@ pc.script.create('tribe', function (context) {
             }
 
             this.cowerTimer -= deltaTime;
+            if(this.stormEffect.darkness > 0){
+                this.stormEffect.darkness -= deltaTime;
+            } else {
+                this.stormEffect.darkness = 0;
+            }
         },
 
         //////////////////////////////
