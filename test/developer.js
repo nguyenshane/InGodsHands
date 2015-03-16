@@ -101,12 +101,12 @@ pc.script.create('ui', function (context) {
 
 
             //Touch stuff
-            // if (this.context.touch) {
-            //     this.context.touch.on(pc.EVENT_TOUCHSTART, this.onTouchStart, this);
-            //     this.context.touch.on(pc.EVENT_TOUCHEND, this.onTouchEnd, this);
-            // } else {
-            //     console.log("No touch input available");
-            // }
+            if (this.context.touch) {
+                this.context.touch.on("touchstart", this.onTouchStart, this);
+                this.context.touch.on("touchend", this.onTouchEnd, this);
+            } else {
+                console.log("No touch input available");
+            }
 
              //create a Slider string pull
             var StringsliderT = document.createElement("INPUT");
@@ -126,8 +126,8 @@ pc.script.create('ui', function (context) {
             StringsliderT.mouseIsOver = false;
 
             //attaches a touch listener to it
-            StringsliderT.addEventListener("touchstart", this.onTouchStart, false);
-            StringsliderT.addEventListener("touchend", this.onTouchEnd, false);
+            // StringsliderT.addEventListener("touchstart", this.onTouchStart, false);
+            // StringsliderT.addEventListener("touchend", this.onTouchEnd, false);
 
 
             //create a Slider string pull
@@ -148,8 +148,8 @@ pc.script.create('ui', function (context) {
             StringsliderA.mouseIsOver = false;
 
             //attaches a touch listener to it
-            StringsliderA.addEventListener("touchstart", this.onTouchStart, false);
-            StringsliderA.addEventListener("touchend", this.onTouchEnd, false);
+            // StringsliderA.addEventListener("touchstart", this.onTouchStart, false);
+            // StringsliderA.addEventListener("touchend", this.onTouchEnd, false);
 
             //create a Slider string pull
             var StringsliderP = document.createElement("INPUT");
@@ -169,8 +169,8 @@ pc.script.create('ui', function (context) {
             StringsliderP.mouseIsOver = false;
 
             //attaches a touch listener to it
-            StringsliderP.addEventListener("touchstart", this.onTouchStart, false);
-            StringsliderP.addEventListener("touchend", this.onTouchEnd, false);
+            // StringsliderP.addEventListener("touchstart", this.onTouchStart, false);
+            // StringsliderP.addEventListener("touchend", this.onTouchEnd, false);
 
              //create a Slider string pull
             var StringsliderE = document.createElement("INPUT");
@@ -190,9 +190,9 @@ pc.script.create('ui', function (context) {
             StringsliderE.mouseIsOver = false;
 
 
-            //attaches a touch listener to it
-            StringsliderE.addEventListener("touchstart", this.onTouchStart, false);
-            StringsliderE.addEventListener("touchend", this.onTouchEnd, false);
+            // //attaches a touch listener to it
+            // StringsliderE.addEventListener("touchstart", this.onTouchStart, false);
+            // StringsliderE.addEventListener("touchend", this.onTouchEnd, false);
 
              //create a Slider string pull
             var StringsliderW = document.createElement("INPUT");
@@ -212,8 +212,8 @@ pc.script.create('ui', function (context) {
             StringsliderW.mouseIsOver = false;
 
             //attaches a touch listener to it
-            StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
-            StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
+            // StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
+            // StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
 
             //text for the global temperature
             var div = document.createElement('div');
@@ -609,48 +609,53 @@ pc.script.create('ui', function (context) {
         },
 
 
-        onTouchStart: function (event) {
-           if(needToStartTimeT && event.target == this.StringsliderT){
+        onTouchStart: function (touches) {
+         touches.changedTouches.forEach(function (touch) {
+           if(needToStartTimeT && touch.target == this.StringsliderT){
                 //console.log("inside pullStarted")
                 pullStartTimeT = this.time;
                 needToStartTimeT = false
                 }
 
-                if(needToStartTimeA && event.target == this.StringsliderA){
+                if(needToStartTimeA && touch.target == this.StringsliderA){
                // console.log("inside pullStarted")
                 pullStartTimeA = this.time;
                 needToStartTimeA = false
                 }
 
-                if(needToStartTimeP && event.target == this.StringsliderP){
+                if(needToStartTimeP && touch.target == this.StringsliderP){
                 //console.log("inside pullStarted")
                 pullStartTimeP = this.time;
                 needToStartTimeP = false
                 }
 
-                if(needToStartTimeE && event.target == this.StringsliderE){
+                if(needToStartTimeE && touch.target == this.StringsliderE){
                 //console.log("inside pullStarted")
                 pullStartTimeE = this.time;
                 needToStartTimeE = false
                 }
 
-                if(needToStartTimeW && event.target == this.StringsliderW){
+                if(needToStartTimeW && touch.target == this.StringsliderW){
                 //console.log("inside pullStarted")
                 pullStartTimeW = this.time;
                 needToStartTimeW = false
                 }
 
-        }.bind(this),
+            }.bind(this));
+        },
+
         
-        onTouchEnd: function (event) {
+        onTouchEnd: function (touches) {
             // When the touches end, send to string pull functions
+            touches.changedTouches.forEach(function (touch) {
               this.sendToMove_T();
               this.sendToMove_A();
               this.sendToMove_P();
               this.sendToMove_E();
               this.sendToMove_W();
           
-        }.bind(this),
+            }.bind(this));
+       }, 
 
         sendToMove_T: function(){
              if (hasMovedT){
