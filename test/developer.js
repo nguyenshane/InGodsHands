@@ -643,11 +643,86 @@ pc.script.create('ui', function (context) {
         
         onTouchEnd: function (event) {
             // When the touches end, send to string pull functions
-              this.sendToMove_T();
-              this.sendToMove_A();
-              this.sendToMove_P();
-              this.sendToMove_E();
-              this.sendToMove_W();
+              if (hasMovedT){
+                            var distance = this.sliderTDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeT;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionT;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_T', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeT);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderTLastPos = this.StringsliderT.value;
+                             this.sliderTDistance = 0.0;
+                             needToStartTimeT = true;
+                        }
+
+                if (hasMovedA){
+                            var distance = this.sliderADistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeA;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionA;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_A', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeA);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderALastPos = this.StringsliderA.value;
+                             this.sliderADistance = 0.0;
+                             needToStartTimeA = true;
+                        }
+
+                    if (hasMovedP){
+                            var distance = this.sliderPDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeP;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionP;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_P', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeP);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderPLastPos = this.StringsliderP.value;
+                             this.sliderPDistance = 0.0;
+                             needToStartTimeP = true;
+                        }
+
+                if (hasMovedE){
+                            var distance = this.sliderEDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeE;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionE;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_E', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeE);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderELastPos = this.StringsliderE.value;
+                             this.sliderEDistance = 0.0;
+                             needToStartTimeE = true;
+                        }
+                        
+                if (hasMovedW){
+                            var distance = this.sliderWDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeW;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionW;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_W', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeW);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderWLastPos = this.StringsliderW.value;
+                             this.sliderWDistance = 0.0;
+                             needToStartTimeW = true;
+                        }
+
         },
 
         sendToMove_T: function(){
