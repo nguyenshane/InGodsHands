@@ -126,6 +126,10 @@ pc.script.create('globalInterface', function (context) {
             shaderSun.rotateLocal(0, dt * this.globalSunRotation * -2, 0);
             //sun.setEulerAngles(0, 90 + this.time, 0);
             /****                   ****/
+        },
+
+        unitTests: function() {
+        	
         }
     };
 

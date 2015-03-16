@@ -26,6 +26,9 @@ function IcoSphere(device, radius, subdivisions) {
 	
     this.currentVerts = 12;
     this.currentFaces = 20;
+
+    this.topIndex = 0;
+    this.bottomIndex = 11;
 	
     //var numVerts = this._calculateNumVerts(12, 20, subdivisions);
 	//var numFaces = (numVerts - 2) * 2;
@@ -68,7 +71,7 @@ function IcoSphere(device, radius, subdivisions) {
 
 	// Hardcode the initial vertex nodes and their neighbors
 	// Create node for top vertex
-	this.vertexGraph[0] = new VertexNode([0]);
+	this.vertexGraph[0] = new VertexNode(0, [0]);
 	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 1);
 	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 2);
 	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 3);
@@ -77,35 +80,35 @@ function IcoSphere(device, radius, subdivisions) {
 
 
 	// Create nodes for for second row in clockwise order (looking down)
-	this.vertexGraph[1] = new VertexNode([1]);
+	this.vertexGraph[1] = new VertexNode(1, [1]);
 	this.vertexGraph[1].addEdge(DIRECTION.NORTH, 0);
 	this.vertexGraph[1].addEdge(DIRECTION.EAST, 5);
 	this.vertexGraph[1].addEdge(DIRECTION.WEST, 2);
 	this.vertexGraph[1].addEdge(DIRECTION.SOUTHEAST, 10);
 	this.vertexGraph[1].addEdge(DIRECTION.SOUTHWEST, 6);
 
-	this.vertexGraph[2] = new VertexNode([2]);
+	this.vertexGraph[2] = new VertexNode(2, [2]);
 	this.vertexGraph[2].addEdge(DIRECTION.NORTH, 0);
 	this.vertexGraph[2].addEdge(DIRECTION.EAST, 1);
 	this.vertexGraph[2].addEdge(DIRECTION.WEST, 3);
 	this.vertexGraph[2].addEdge(DIRECTION.SOUTHEAST, 6);
 	this.vertexGraph[2].addEdge(DIRECTION.SOUTHWEST, 7);
 
-	this.vertexGraph[3] = new VertexNode([3]);
+	this.vertexGraph[3] = new VertexNode(3, [3]);
 	this.vertexGraph[3].addEdge(DIRECTION.NORTH, 0);
 	this.vertexGraph[3].addEdge(DIRECTION.EAST, 2);
 	this.vertexGraph[3].addEdge(DIRECTION.WEST, 4);
 	this.vertexGraph[3].addEdge(DIRECTION.SOUTHEAST, 7);
 	this.vertexGraph[3].addEdge(DIRECTION.SOUTHWEST, 8);
 
-	this.vertexGraph[4] = new VertexNode([4]);
+	this.vertexGraph[4] = new VertexNode(4, [4]);
 	this.vertexGraph[4].addEdge(DIRECTION.NORTH, 0);
 	this.vertexGraph[4].addEdge(DIRECTION.EAST, 3);
 	this.vertexGraph[4].addEdge(DIRECTION.WEST, 5);
 	this.vertexGraph[4].addEdge(DIRECTION.SOUTHEAST, 8);
 	this.vertexGraph[4].addEdge(DIRECTION.SOUTHWEST, 9);
 
-	this.vertexGraph[5] = new VertexNode([5]);
+	this.vertexGraph[5] = new VertexNode(5, [5]);
 	this.vertexGraph[5].addEdge(DIRECTION.NORTH, 0);
 	this.vertexGraph[5].addEdge(DIRECTION.EAST, 4);
 	this.vertexGraph[5].addEdge(DIRECTION.WEST, 1);
@@ -113,35 +116,35 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexGraph[5].addEdge(DIRECTION.SOUTHWEST, 10);
 
 	// Create nodes for for third row in clockwise order offset by +0.5 from second row
-	this.vertexGraph[6] = new VertexNode([6]);
+	this.vertexGraph[6] = new VertexNode(6, [6]);
 	this.vertexGraph[6].addEdge(DIRECTION.NORTHEAST, 1);
 	this.vertexGraph[6].addEdge(DIRECTION.NORTHWEST, 2);
 	this.vertexGraph[6].addEdge(DIRECTION.EAST, 10);
 	this.vertexGraph[6].addEdge(DIRECTION.WEST, 7);
 	this.vertexGraph[6].addEdge(DIRECTION.SOUTH, 11);
 
-	this.vertexGraph[7] = new VertexNode([7]);
+	this.vertexGraph[7] = new VertexNode(7, [7]);
 	this.vertexGraph[7].addEdge(DIRECTION.NORTHEAST, 2);
 	this.vertexGraph[7].addEdge(DIRECTION.NORTHWEST, 3);
 	this.vertexGraph[7].addEdge(DIRECTION.EAST, 6);
 	this.vertexGraph[7].addEdge(DIRECTION.WEST, 8);
 	this.vertexGraph[7].addEdge(DIRECTION.SOUTH, 11);
 
-	this.vertexGraph[8] = new VertexNode([8]);
+	this.vertexGraph[8] = new VertexNode(8, [8]);
 	this.vertexGraph[8].addEdge(DIRECTION.NORTHEAST, 3);
 	this.vertexGraph[8].addEdge(DIRECTION.NORTHWEST, 4);
 	this.vertexGraph[8].addEdge(DIRECTION.EAST, 7);
 	this.vertexGraph[8].addEdge(DIRECTION.WEST, 9);
 	this.vertexGraph[8].addEdge(DIRECTION.SOUTH, 11);
 
-	this.vertexGraph[9] = new VertexNode([9]);
+	this.vertexGraph[9] = new VertexNode(9, [9]);
 	this.vertexGraph[9].addEdge(DIRECTION.NORTHEAST, 4);
 	this.vertexGraph[9].addEdge(DIRECTION.NORTHWEST, 5);
 	this.vertexGraph[9].addEdge(DIRECTION.EAST, 8);
 	this.vertexGraph[9].addEdge(DIRECTION.WEST, 10);
 	this.vertexGraph[9].addEdge(DIRECTION.SOUTH, 11);
 
-	this.vertexGraph[10] = new VertexNode([10]);
+	this.vertexGraph[10] = new VertexNode(10, [10]);
 	this.vertexGraph[10].addEdge(DIRECTION.NORTHEAST, 5);
 	this.vertexGraph[10].addEdge(DIRECTION.NORTHWEST, 1);
 	this.vertexGraph[10].addEdge(DIRECTION.EAST, 9);
@@ -149,7 +152,7 @@ function IcoSphere(device, radius, subdivisions) {
 	this.vertexGraph[10].addEdge(DIRECTION.SOUTH, 11);
 
 	// Create node for bottom vertex
-	this.vertexGraph[11] = new VertexNode([11]);
+	this.vertexGraph[11] = new VertexNode(11, [11]);
 	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 6);
 	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 7);
 	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 8);
@@ -224,6 +227,7 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[18].setNeighbors(17, 13, 19);
 	this.tiles[19].setNeighbors(18, 14, 15);
 	
+
 	//Set indices for initial tiles
 	for (var i = 0; i < this.tiles.length; i++) {
 		this.tiles[i].index = i;
@@ -243,6 +247,8 @@ function IcoSphere(device, radius, subdivisions) {
     		this.tiles[j].divided = false;
     	}
     }*/
+    this.subdivideGraph();
+    console.log(this);
 	
 	// Normalize to radius
     for (var i = 0; i < this.currentVerts; i++) {
@@ -253,10 +259,14 @@ function IcoSphere(device, radius, subdivisions) {
 		this.vertices[i*3 + 1] = vert.y;
 		this.vertices[i*3 + 2] = vert.z;
     }
+
+    for (var i = 0; i < this.vertexGraph.length; i++) {
+    	this.vertexGraph[i].setHeight(this.radius);
+    }
 	
 	
 	//Create non-shared-vertex sphere
-	this.unshareVertices();
+	//this.unshareVertices();
 	
 	
 	//Generate terrain
@@ -283,7 +293,7 @@ function IcoSphere(device, radius, subdivisions) {
 	*/
 	
     // Calculate the center and normal for each tile and build the vertex buffer
-	this._recalculateMesh();
+	//this._recalculateMesh();
 	
 	
     // Set mesh data
@@ -377,6 +387,24 @@ IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces,
     if (subdivisions === 0) return 0;
     return currentVertices + this._calculateNumVerts(parseInt(currentFaces * 1.5), currentFaces * 4, subdivisions - 1);
 };
+
+IcoSphere.prototype.subdivideGraph = function() {
+	var startingVertNum = this.vertexGraph.length;
+	var i = 0;
+	console.log("Starting Subdivision...");
+	
+	for (; i < startingVertNum; ++i) {
+		this.vertexGraph[i].divideEdges();
+	}
+	console.log("Divided Edges.");
+	for (; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].calculateNeighbors();
+	}
+	console.log("Calculated neighbors.");
+	for (i = 0; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].divided = false;
+	}
+}
 
 IcoSphere.prototype._subdivideFace = function(index) {
     var midpointc = this.tiles[index].getMidpoint(0,1);
