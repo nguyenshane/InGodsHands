@@ -104,8 +104,8 @@ pc.extend(pc, function(){
         onKeyUp: function (event) {
             this.rotating = false;
             this.distance += this.direction;
-			if(this.direction>=0) this.direction = 1;
-			else if (this.direction<0)this.direction=-1;
+			if(this.direction>0) this.direction = 1;
+			else if (this.direction<=0) this.direction = -1;
             if(this.counter !== 0) {
 				this.speed = Math.abs(this.distance)/this.counter*100;
 				this.fire("moving", this.direction, this.distance, this.speed);

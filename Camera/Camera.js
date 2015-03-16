@@ -1,4 +1,4 @@
-pc.script.create('camera', function (context) {
+pc.script.create('Camera', function (context) {
     // Creates a new Camera instance
     var Camera = function (entity) {
         this.entity = entity;
@@ -12,8 +12,8 @@ pc.script.create('camera', function (context) {
     Camera.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.stringW = context.root._children[0].script.HIDInterface.stringW;
-            this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
+            //this.stringW = context.root._children[0].script.HIDInterface.stringW;
+            //this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
 
 			this.bgplane = this.entity.findByName("Plane");
             this.aura1 = this.entity.findByName("Aura1");
@@ -26,11 +26,14 @@ pc.script.create('camera', function (context) {
 			
         },
         
-        move_W: function(position, distance, speed, orbitAngle) {
+        move_W: function(position, distance, speed) {
+            console.log('move_W', position);
 			if(position>0) {
-			    context.root.findByName("Camera").script.camera.orbitAngle++;
+			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
+                this.orbitAngle+=15;
 			}
-			else context.root.findByName("Camera").script.camera.orbitAngle--;
+			else //context.root.findByName("Camera").script.camera.orbitAngle-=15;
+                this.orbitAngle-=15;
 		},
 
         // Called every frame, dt is time in seconds since last update

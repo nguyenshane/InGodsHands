@@ -22,6 +22,7 @@ pc.script.create('HIDInterface', function (context) {
 	var velocity;
 	var tribe;
 	var storm;
+	var camera;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -32,18 +33,25 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
 			
-			tribe = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("BaseTribe").script.tribe;
-			storm = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Storm");
+			tribe = context.root.findByName("BaseTribe").script.tribe;
+			//storm = context.root.findByName("Storm");
+			camera = context.root.findByName("Camera");
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
 			
-			this.stringT.on("moved", this.move_T, this.direction, this.distance, this.speed);
-			this.stringA.on("moved", this.move_A, this.direction, this.distance, this.speed);
-			this.stringP.on("moved", this.move_P, this.direction, this.distance, this.speed);
-			this.stringE.on("moved", this.move_E, this.direction, this.distance, this.speed);
-			this.stringW.on("moved", this.move_W, this.direction, this.distance, this.speed);
+			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
+			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
+			this.stringP.on("moved", this.moved_P, this.direction, this.distance, this.speed);
+			this.stringE.on("moved", this.moved_E, this.direction, this.distance, this.speed);
+			this.stringW.on("moved", this.moved_W, this.direction, this.distance, this.speed);
+
+			this.stringT.on("moving", this.moving_T, this.direction, this.distance, this.speed);
+			this.stringA.on("moving", this.moving_A, this.direction, this.distance, this.speed);
+			this.stringP.on("moving", this.moving_P, this.direction, this.distance, this.speed);
+			this.stringE.on("moving", this.moving_E, this.direction, this.distance, this.speed);
+			this.stringW.on("moving", this.moving_W, this.direction, this.distance, this.speed);
 
         },
 
@@ -68,8 +76,8 @@ pc.script.create('HIDInterface', function (context) {
         	//console.log(temperatureDest);
         },
 		
-		move_T: function(position, distance, speed) {
-			console.log("FIRED string T: ", position, distance, speed);
+		moved_T: function(position, distance, speed) {
+			console.log("String T moved: ", position, distance, speed);
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
 			temperatureDest = globalTemperature + distance;
@@ -84,20 +92,20 @@ pc.script.create('HIDInterface', function (context) {
 
 		},
 		
-		move_A: function(position, distance, speed) {
-			console.log("FIRED string A: ", position, distance, speed);
+		moved_A: function(position, distance, speed) {
+			console.log("String A moved: ", position, distance, speed);
 			tribe.resetInactionTimer();
 
 		},
 		
-		move_P: function(position, distance, speed) {
-			console.log("FIRED string P: ", position, distance, speed);
+		moved_P: function(position, distance, speed) {
+			console.log("String P moved: ", position, distance, speed);
 			tribe.resetInactionTimer();
 
 		},
 		
-		move_E: function(position, distance, speed) {
-			console.log("FIRED string E: ", position, distance, speed);
+		moved_E: function(position, distance, speed) {
+			console.log("String E moved: ", position, distance, speed);
 			// Temporarily here, will make it a function call to tile eventually
 			if(speed > 30 && Math.abs(distance) > 5){
 				tribe.startCowering();
@@ -107,9 +115,46 @@ pc.script.create('HIDInterface', function (context) {
 
 		},
 		
-		move_W: function(position, distance, speed) {
-			console.log("FIRED string W: ", position, distance, speed);
+		moved_W: function(position, distance, speed) {
+			console.log("String W moved: ", position, distance, speed);
 			tribe.resetInactionTimer();
+			
+		},
+
+		moved_T: function(position, distance, speed) {
+			console.log("String T moved: ", position, distance, speed);
+			temperatureChange = true;
+			temperatureStart = globalTemperature;
+			temperatureDest = globalTemperature + distance;
+			velocity = Math.abs((speed) * 50);
+			timer = new Date();
+			lerpStartTime = timer.getTime();
+			console.log("Global Temp: " + globalTemperature);
+			for (var i = 0; i < 20; ++i) {
+				console.log(ico.tiles[i].getTemperature());
+			}
+			tribe.resetInactionTimer();
+
+		},
+		
+		moving_A: function(position, distance, speed) {
+			console.log("String A moving: ", position, distance, speed);
+
+		},
+		
+		moving_P: function(position, distance, speed) {
+			console.log("String P moving: ", position, distance, speed);
+
+		},
+		
+		moving_E: function(position, distance, speed) {
+			console.log("String E moving: ", position, distance, speed);
+
+		},
+		
+		moving_W: function(position, distance, speed) {
+			console.log("String W moving: ", position, distance, speed);
+			camera.script.Camera.move_W(position,distance,speed);
 			
 		},
 
