@@ -639,7 +639,7 @@ pc.script.create('ui', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionT;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_T', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moved_T', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeT);
                             console.log("Time " + this.time);
@@ -657,7 +657,7 @@ pc.script.create('ui', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionA;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_A', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moved_A', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeA);
                             console.log("Time " + this.time);
@@ -675,7 +675,7 @@ pc.script.create('ui', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionP;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_P', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moved_P', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeP);
                             console.log("Time " + this.time);
@@ -693,7 +693,7 @@ pc.script.create('ui', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionE;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_E', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moved_E', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeE);
                             console.log("Time " + this.time);
@@ -711,7 +711,7 @@ pc.script.create('ui', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_W', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moved_W', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeW);
                             console.log("Time " + this.time);

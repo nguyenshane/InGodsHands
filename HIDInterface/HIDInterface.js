@@ -121,19 +121,10 @@ pc.script.create('HIDInterface', function (context) {
 			
 		},
 
-		moved_T: function(position, distance, speed) {
-			console.log("String T moved: ", position, distance, speed);
-			temperatureChange = true;
-			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + distance;
-			velocity = Math.abs((speed) * 50);
-			timer = new Date();
-			lerpStartTime = timer.getTime();
-			console.log("Global Temp: " + globalTemperature);
-			for (var i = 0; i < 20; ++i) {
-				console.log(ico.tiles[i].getTemperature());
-			}
-			tribe.resetInactionTimer();
+
+
+		moving_T: function(position, distance, speed) {
+			console.log("String T moving: ", position, distance, speed);
 
 		},
 		
