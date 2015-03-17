@@ -128,6 +128,18 @@ function VertexNode(index, indices) {
 		return -1;
 	}
 
+	this.getCommonNeighbor = function(otherNode) {
+		for (var i = 0; i < this.edges.length; ++i) {
+			for (var j = 0; j < otherNode.edges.length; ++j) {
+				if (this.edges[i].toNode == otherNode.edges[j].toNode) {
+					return this.edges[i].toNode;
+				}
+			}
+		}
+		// Returns -1 if neighbor not found
+		return -1;
+	}
+
 	this.hasEdge = function(direction) {
 		for (var i = 0; i < this.edges.length; ++i) {
 			if (this.edges[i].direction == direction) {
@@ -240,6 +252,9 @@ function VertexNode(index, indices) {
 		}
 
 		// DEBUG print count
+		if (count != 4) {
+			console.error(count);
+		}
 		console.log(count);
 
 	}
@@ -308,20 +323,20 @@ function VertexNode(index, indices) {
 			return (leftbound + 1) % 8;
 		} else if (distance == 3) {
 			if (leftbound == DIRECTION.NORTH || leftbound == DIRECTION.SOUTH) {
-				return (rightbound + 1) % 8;
+				return (rightbound - 1) % 8;
 			} else if (rightbound == DIRECTION.NORTH || rightbound == DIRECTION.SOUTH) {
 				return (leftbound + 1) % 8;
 			} else if ((leftbound % 2) == 0) {
 				return (leftbound + 1) % 8;
 			} else if ((rightbound % 2) == 0) {
-				return (rightbound + 1) % 8;
+				return (rightbound - 1) % 8;
 			} else {
-				console.log("Error: Vertex " + this.index + "");
+				console.error("Error: Vertex " + this.index + "");
 			}
 		} else if (distance == 4) {
 			return (leftbound + 2) % 8;
 		} else {
-			console.log("Error at Vertex " + this.index + ": distance " + distance + ", not 1 or 2.");
+			console.error("Error at Vertex " + this.index + ": distance " + distance + ", not 1 or 2.");
 		}
 	}
 }

@@ -179,29 +179,29 @@ function IcoSphere(device, radius, subdivisions) {
 
 	// Hardcode initial faces
 	// 5 faces around point 0
-	this.tiles[0] = new Tile(this, 1, 0, 2);
-	this.tiles[1] = new Tile(this, 2, 0, 3);
-	this.tiles[2] = new Tile(this, 3, 0, 4);
-	this.tiles[3] = new Tile(this, 4, 0, 5);
-	this.tiles[4] = new Tile(this, 5, 0, 1);
+	this.tiles[0] = new Tile(0, 1, 0, 2);
+	this.tiles[1] = new Tile(1, 2, 0, 3);
+	this.tiles[2] = new Tile(2, 3, 0, 4);
+	this.tiles[3] = new Tile(3, 4, 0, 5);
+	this.tiles[4] = new Tile(4, 5, 0, 1);
 	// 5 adjacent faces
-	this.tiles[5] = new Tile(this, 2, 6, 1);
-	this.tiles[6] = new Tile(this, 3, 7, 2);
-	this.tiles[7] = new Tile(this, 4, 8, 3);
-	this.tiles[8] = new Tile(this, 5, 9, 4);
-	this.tiles[9] = new Tile(this, 1, 10, 5);
+	this.tiles[5] = new Tile(5, 2, 6, 1);
+	this.tiles[6] = new Tile(6, 3, 7, 2);
+	this.tiles[7] = new Tile(7, 4, 8, 3);
+	this.tiles[8] = new Tile(8, 5, 9, 4);
+	this.tiles[9] = new Tile(9, 1, 10, 5);
     // 5 faces around point 3
-	this.tiles[10] = new Tile(this, 6, 2, 7);
-	this.tiles[11] = new Tile(this, 7, 3, 8);
-	this.tiles[12] = new Tile(this, 8, 4, 9);
-	this.tiles[13] = new Tile(this, 9, 5, 10);
-	this.tiles[14] = new Tile(this, 10, 1, 6);
+	this.tiles[10] = new Tile(10, 6, 2, 7);
+	this.tiles[11] = new Tile(11, 7, 3, 8);
+	this.tiles[12] = new Tile(12, 8, 4, 9);
+	this.tiles[13] = new Tile(13, 9, 5, 10);
+	this.tiles[14] = new Tile(14, 10, 1, 6);
     // 5 faces around point 11
-	this.tiles[15] = new Tile(this, 7, 11, 6);
-	this.tiles[16] = new Tile(this, 8, 11, 7);
-	this.tiles[17] = new Tile(this, 9, 11, 8);
-	this.tiles[18] = new Tile(this, 10, 11, 9);
-	this.tiles[19] = new Tile(this, 6, 11, 10);
+	this.tiles[15] = new Tile(15, 7, 11, 6);
+	this.tiles[16] = new Tile(16, 8, 11, 7);
+	this.tiles[17] = new Tile(17, 9, 11, 8);
+	this.tiles[18] = new Tile(18, 10, 11, 9);
+	this.tiles[19] = new Tile(19, 6, 11, 10);
 	// Manually set neighbors for 20 faces
 	this.tiles[0].setNeighbors(1, 5, 4);
 	this.tiles[1].setNeighbors(2, 6, 0);
@@ -209,11 +209,11 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[3].setNeighbors(4, 8, 2);
 	this.tiles[4].setNeighbors(0, 9, 3);
 	
-	this.tiles[5].setNeighbors(10, 0, 14);
-	this.tiles[6].setNeighbors(11, 1, 10);
-	this.tiles[7].setNeighbors(12, 2, 11);
-	this.tiles[8].setNeighbors(13, 3, 12);
-	this.tiles[9].setNeighbors(14, 4, 13);
+	this.tiles[5].setNeighbors(14, 0, 10);
+	this.tiles[6].setNeighbors(10, 1, 11);
+	this.tiles[7].setNeighbors(11, 2, 12);
+	this.tiles[8].setNeighbors(12, 3, 13);
+	this.tiles[9].setNeighbors(13, 4, 14);
 	
 	this.tiles[10].setNeighbors(6, 15, 5);
 	this.tiles[11].setNeighbors(7, 16, 6);
@@ -247,26 +247,28 @@ function IcoSphere(device, radius, subdivisions) {
     		this.tiles[j].divided = false;
     	}
     }*/
-    this.subdivideGraph();
+    for (var i = 1; i < subdivisions; ++i) {
+    	this.subdivideGraph();
+    }
     console.log(this);
 	
 	// Normalize to radius
-    for (var i = 0; i < this.currentVerts; i++) {
+    /*for (var i = 0; i < this.currentVerts; i++) {
 		var vert = this._getUnbufferedVertex(i);
 		vert.normalize();
 		vert.scale(Math.max(1, Math.min(2, this.radius)));
 		this.vertices[i*3] = vert.x;
 		this.vertices[i*3 + 1] = vert.y;
 		this.vertices[i*3 + 2] = vert.z;
-    }
+    }*/
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
-    	this.vertexGraph[i].setHeight(this.radius);
+    	this.vertexGraph[i].setHeight(1);
     }
 	
 	
 	//Create non-shared-vertex sphere
-	//this.unshareVertices();
+	this.unshareVertices();
 	
 	
 	//Generate terrain
@@ -293,7 +295,7 @@ function IcoSphere(device, radius, subdivisions) {
 	*/
 	
     // Calculate the center and normal for each tile and build the vertex buffer
-	//this._recalculateMesh();
+	this._recalculateMesh();
 	
 	
     // Set mesh data
@@ -348,8 +350,8 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 IcoSphere.prototype._recalculateMesh = function() {
 	// Calculate the center and normal for each tile
 	var unbufferedNormals = [];
-	unbufferedNormals[this.currentFaces*3-1] = 0;
-    for (var i = 0; i < this.currentFaces; ++i) {
+	unbufferedNormals[this.tiles.length*3-1] = 0;
+    for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
 		tile.calculateNormal();
@@ -390,6 +392,7 @@ IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces,
 
 IcoSphere.prototype.subdivideGraph = function() {
 	var startingVertNum = this.vertexGraph.length;
+	var startingTileNum = this.tiles.length;
 	var i = 0;
 	console.log("Starting Subdivision...");
 	
@@ -403,6 +406,15 @@ IcoSphere.prototype.subdivideGraph = function() {
 	console.log("Calculated neighbors.");
 	for (i = 0; i < this.vertexGraph.length; ++i) {
 		this.vertexGraph[i].divided = false;
+		//this.vertexGraph[i].setHeight(this.radius);
+	}
+
+	for (i = 0; i < startingTileNum; ++i) {
+		this.tiles[i].subdivide();
+	}
+
+	for (i = 0; i < this.tiles.length; ++i) {
+		this.tiles[i].divided = false;
 	}
 }
 
