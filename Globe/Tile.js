@@ -258,6 +258,12 @@ function Tile(index, vertexa, vertexb, vertexc){
 			this.neighborc = ico.tiles[index];
 		}
     };
+
+    this.updateNeighbors = function() {
+        this.neighbora = this.neighbors[0];
+        this.neighborb = this.neighbors[1];
+        this.neighborc = this.neighbors[2];
+    }
 	
 	this.getNeighbors = function() {
 		return [this.neighbora, this.neighborb, this.neighborc];

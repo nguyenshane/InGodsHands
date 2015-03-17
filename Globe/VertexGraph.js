@@ -1,3 +1,27 @@
+function Eroder(startingIndex, numSteps) {
+	this.index = startingIndex;
+
+	this.steps = numSteps;
+
+	this.update = function() {
+		if (this.steps > 0) {
+			var height = ico.VertexGraph[this.index].getHeight();
+			var lowestNeighbor = ico.VertexGraph[this.index].getLowestNeighbor();
+			ico.VertexGraph[this.index].setHeight(Math.max(height - 0.1, ico.radius));
+			if (lowestNeighbor > ico.radius) {
+				this.index = lowestNeighbor;
+			} else {
+				this.index = pc.math.random(0, ico.VertexGraph.length)
+			}
+		}
+
+	}
+}
+
+
+
+
+
 function VertexGraph() {
 
 	this.vertexNodes = [];

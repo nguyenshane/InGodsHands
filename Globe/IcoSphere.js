@@ -263,7 +263,7 @@ function IcoSphere(device, radius, subdivisions) {
     }*/
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
-    	this.vertexGraph[i].setHeight(1);
+    	this.vertexGraph[i].setHeight(ico.radius);
     }
 	
 	
@@ -280,19 +280,19 @@ function IcoSphere(device, radius, subdivisions) {
 	*/
 
 	// Uncomment
-	/*this.vertexHeights = [];
-	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
+	this.vertexHeights = [];
+	for (var size = this.vertexGraph.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.04,
-		repellerSizeMin = 1, repellerSizeMax = 3,
-		repellerHeightMin = 0.03, repellerHeightMax = 0.07,
+	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.05,
+		repellerSizeMin = 1, repellerSizeMax = 4,
+		repellerHeightMin = 0.05, repellerHeightMax = 0.15,
 		continentCountMin = 3, continentCountMax = 6,
-		continentSizeMin = 7, continentSizeMax = 12,
-		mountainCountMin = 4, mountainCountMax = 6,
-		mountainHeightMin = 0.13, mountainHeightMax = 0.2;
+		continentSizeMin = 10, continentSizeMax = 16,
+		mountainCountMin = 5, mountainCountMax = 8,
+		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
-	*/
+	
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
@@ -335,7 +335,8 @@ IcoSphere.prototype.setVertexHeight = function(index, height) {
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
-	for (var i = 0; i < this.vertexGroups[index].length; i++) {
+	this.vertexGraph[index].setHeight(magnitude);
+	/*for (var i = 0; i < this.vertexGroups[index].length; i++) {
 		var vertexIndex = this.vertexGroups[index][i];
 		var vert = this._getUnbufferedVertex(vertexIndex);
 		vert.normalize();
@@ -343,7 +344,7 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 		this.vertices[vertexIndex*3] = vert.x;
 		this.vertices[vertexIndex*3 + 1] = vert.y;
 		this.vertices[vertexIndex*3 + 2] = vert.z;
-	}
+	}*/
 };
 
 //Should only be called once per frame if the mesh has been altered
@@ -415,6 +416,7 @@ IcoSphere.prototype.subdivideGraph = function() {
 
 	for (i = 0; i < this.tiles.length; ++i) {
 		this.tiles[i].divided = false;
+		this.tiles[i].updateNeighbors();
 	}
 }
 
@@ -744,7 +746,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 	
 	var queue = new Queue();
 	var visitedIndices = [];
-	for (var size = icosphere.vertexGroups.length-1; size >= 0; size--) visitedIndices[size] = false;
+	for (var size = icosphere.vertexGraph.length-1; size >= 0; size--) visitedIndices[size] = false;
 	var visited = [];
 	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
 	var distances = [];

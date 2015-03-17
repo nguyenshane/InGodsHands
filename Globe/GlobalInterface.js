@@ -38,10 +38,10 @@ pc.script.create('globalInterface', function (context) {
             prevTotalBelief = totalBelief;
 
             // test vertex neighbors init
-            this.testvertex1 = 1;
-            //ico.vertexGraph[this.testvertex1].setHeight(1.5);
-            this.testvertex2 = 6;
-            this.vertexstep = 0;
+            this.testVerts = [];
+            for (var i = 0; i < 10; ++i) {
+            	this.testVerts[i] = Math.floor(pc.math.random(0, 600));
+            }
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -103,19 +103,10 @@ pc.script.create('globalInterface', function (context) {
             }
 
             // Test vertex neighbors update
-            if (Math.floor(globalTime) % 10 == 0) {
-            	//console.log(this.testvertex1);
-            	//console.log(ico.vertexGraph[this.testvertex1]);
-            	var height = ico.vertexGraph[this.testvertex1].getHeight() * 1.1;
-            	ico.vertexGraph[this.testvertex1].setHeight(1);
-            	this.testvertex1 = ico.vertexGraph[this.testvertex1].getNeighbor(DIRECTION.EAST);
-            	ico.vertexGraph[this.testvertex1].setHeight(1.5);
-
-            	height = ico.vertexGraph[this.testvertex2].getHeight() * 1.1;
-            	ico.vertexGraph[this.testvertex2].setHeight(1);
-            	this.testvertex2 = ico.vertexGraph[this.testvertex2].getNeighbor(DIRECTION.WEST);
-            	ico.vertexGraph[this.testvertex2].setHeight(1.5);
-        	}
+            for (var i = 0; i < this.testVerts.length; ++i) {
+            	//this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
+            	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
+            }
 
             sun.setPosition(0, 0, 0);
 
@@ -128,8 +119,12 @@ pc.script.create('globalInterface', function (context) {
             /****                   ****/
         },
 
-        unitTests: function() {
-        	
+        vertexMovementTest: function(vertex, direction, backup) {
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1);
+            	if (ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup) != null) {
+            		this.testVerts[vertex] = ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup);
+            	}
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1.5);
         }
     };
 

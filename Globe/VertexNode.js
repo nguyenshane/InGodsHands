@@ -57,7 +57,7 @@ function VertexNode(index, indices) {
 	this.setHeight = function(height) {
 		var vertex = this.getVertex();
 		vertex.normalize();
-		vertex.scale(ico.radius * height)
+		vertex.scale(height)
 		for (var i = 0; i < this.group.length; ++i) {
 			ico.vertices[this.group[i] * 3] = vertex.x;
 			ico.vertices[this.group[i] * 3 + 1] = vertex.y;
@@ -106,6 +106,17 @@ function VertexNode(index, indices) {
 				this.edges[i].divided = true;
 			}
 		}
+	}
+
+	this.getLowestNeighbor = function() {
+		var lowest = this.index;
+		var lowHeight = this.getHeight();
+		for (var i = 0; i < this.edges.length; ++i) {
+			if (ico.vertexGraph[this.edges[i].toNode].getHeight() <= lowHeight) {
+				lowest = this.edges[i].toNode;
+			}
+		}
+		return lowest;
 	}
 
 	this.getNeighborDirection = function(index) {
