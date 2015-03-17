@@ -123,11 +123,11 @@ pc.script.create('globalInterface', function (context) {
         },
 
         vertexMovementTest: function(vertex, direction, backup) {
-            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1);
-            	if (ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup) != null) {
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1.5);
+            	if (ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup) != -1) {
             		this.testVerts[vertex] = ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup);
             	}
-            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1.5);
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(2);
         }
     };
 
