@@ -5,14 +5,21 @@ function Eroder(startingIndex, numSteps) {
 
 	this.update = function() {
 		if (this.steps > 0) {
-			var height = ico.VertexGraph[this.index].getHeight();
-			var lowestNeighbor = ico.VertexGraph[this.index].getLowestNeighbor();
-			ico.VertexGraph[this.index].setHeight(Math.max(height - 0.1, ico.radius));
-			if (lowestNeighbor > ico.radius) {
+			var height = ico.vertexGraph[this.index].getHeight();
+			console.log("Eroder at " + this.index + " with height " + height);
+			var lowestNeighbor = ico.vertexGraph[this.index].getLowestNeighbor();
+			ico.vertexGraph[this.index].setHeight(Math.max(height - 0.1, ico.radius));
+			console.log("Eroder at " + this.index + " changing height to " + ico.vertexGraph[this.index].getHeight());
+			if (height - 0.1 > ico.radius) {
 				this.index = lowestNeighbor;
 			} else {
-				this.index = pc.math.random(0, ico.VertexGraph.length)
+				--this.steps;
+				this.index = Math.floor(pc.math.random(0, ico.vertexGraph.length));
+				console.log("Eroder moving to " + this.index + " with height " + height);
 			}
+		} else if (this.steps == 0) {
+			ico._recalculateMesh();
+			--this.steps;
 		}
 
 	}
@@ -22,7 +29,7 @@ function Eroder(startingIndex, numSteps) {
 
 
 
-function VertexGraph() {
+/*function VertexGraph() {
 
 	this.vertexNodes = [];
 
@@ -182,7 +189,7 @@ function VertexGraph() {
 		var v2Direction = this.vertexNodes[vertex2].getNeighborDirection(vertex1);
 
 		// Create new node
-		this.vertexNodes[index] = new VertexNode({/* CREATE A NEW VERTEX AND ADD ITS INDEX */});
+		this.vertexNodes[index] = new VertexNode({ CREATE A NEW VERTEX AND ADD ITS INDEX });
 
 		// Set edge of new node to vertex1 and vertex2
 		this.vertexNodes[index].addEdge(v1Direction, vertex2);
@@ -239,4 +246,4 @@ function VertexGraph() {
 	this.getNorthwest = function(index) {
 
 	}
-}
+}*/

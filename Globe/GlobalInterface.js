@@ -42,6 +42,8 @@ pc.script.create('globalInterface', function (context) {
             for (var i = 0; i < 10; ++i) {
             	this.testVerts[i] = Math.floor(pc.math.random(0, 600));
             }
+
+            this.eroder = new Eroder(0, 150);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -107,6 +109,7 @@ pc.script.create('globalInterface', function (context) {
             	//this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
             	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
             }
+            this.eroder.update();
 
             sun.setPosition(0, 0, 0);
 
