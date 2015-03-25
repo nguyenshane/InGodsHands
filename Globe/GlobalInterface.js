@@ -108,6 +108,7 @@ pc.script.create('globalInterface', function (context) {
             for (var i = 0; i < this.testVerts.length; ++i) {
             	//this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
             	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
+            	//this.vertexMovementTest(i, (i + (Math.floor((globalTime/2) % 2) * 4)) % 8, (i + (Math.floor((globalTime/2) % 2) * 4) + 4) % 8);
             }
             this.eroder.update();
 

@@ -7,7 +7,7 @@ pc.script.create('Globe', function (context) {
 
     Globe.prototype = {
         // Called once after all resources are loaded and before the first update
-        initialize: function () {			
+        initialize: function () {
             // create mesh
             ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
             var mesh = ico.toReturn.mesh;
@@ -133,6 +133,10 @@ pc.script.create('Globe', function (context) {
 			this.globe.rigidbody.angularVelocity = pc.Vec3.ZERO;
         },
 
+        moveContinents: function (direction, distance, speed) {
+
+        },
+
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if (ico.updateFlag == true) {
@@ -157,6 +161,7 @@ pc.script.create('Globe', function (context) {
         },
 
         updateMesh: function () {
+            //ico._recalculateMesh();
             ico.updateReturnMesh();
             this.meshInstance.mesh = ico.toReturn.mesh;
             console.log("Updating Globe Mesh");

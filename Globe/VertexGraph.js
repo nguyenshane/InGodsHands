@@ -18,6 +18,7 @@ function Eroder(startingIndex, numSteps) {
 				console.log("Eroder moving to " + this.index + " with height " + height);
 			}
 		} else if (this.steps == 0) {
+			//console.error("RecalcMesh!");
 			ico._recalculateMesh();
 			--this.steps;
 		}

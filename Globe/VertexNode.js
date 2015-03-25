@@ -350,4 +350,17 @@ function VertexNode(index, indices) {
 			console.error("Error at Vertex " + this.index + ": distance " + distance + ", not 1 or 2.");
 		}
 	}
+
+	this.stagger = function(amount) {
+		var vertex = this.getVertex();
+		var newX = vertex.x + pc.math.random(-amount, amount);
+		var newY = vertex.y + pc.math.random(-amount, amount);
+		var newZ = vertex.z + pc.math.random(-amount, amount);
+		for (var i = 0; i < this.group.length; ++i) {
+			ico.vertices[this.group[i] * 3] = newX;
+			ico.vertices[this.group[i] * 3 + 1] = newY;
+			ico.vertices[this.group[i] * 3 + 2] = newZ;
+		}
+		ico.updateFlag = true;
+	}
 }

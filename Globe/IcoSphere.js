@@ -263,6 +263,7 @@ function IcoSphere(device, radius, subdivisions) {
     }*/
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
+    	this.vertexGraph[i].stagger(0.075);
     	this.vertexGraph[i].setHeight(ico.radius);
     }
 	
