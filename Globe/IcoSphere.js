@@ -1,36 +1,44 @@
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
-	
-	var t1 = new Date();
-	
+
+    this.device = device;
+
+    ico = this;
+
     subdivisions = (subdivisions || 1);
 
-    // golden ratio, phi
-    var x = 1;
-    var y = 0.5 * (1 + Math.sqrt(5));
+    this.updateFlag = false;
 
-    var l = radius / Math.sqrt(x * x + y * y);
+	this.radius = radius;
+	
+    this.vertices = [];
+	this.normals = [];
+    this.indices = [];
+	
+	this.vertexGraph = [];
+	this.vertexParents; //?
+	this.vertexHeights; //?
+	this.graphRows = [];
+    
+    this.tiles = [];
 
-    x *= l;
-    y *= l;
+    this.clusters = [];
+	
+    this.currentVerts = 12;
+    this.currentFaces = 20;
 
-    //Uncomment (Old)
-    /*var startingVerts = [-x,  y, 0,
-						  x,  y, 0,
-						 -x, -y, 0,
-						  x, -y, 0,
+    this.topIndex = 0;
+    this.bottomIndex = 11;
+	
+    //var numVerts = this._calculateNumVerts(12, 20, subdivisions);
+	//var numFaces = (numVerts - 2) * 2;
 
-						 0, -x,  y,
-						 0,  x,  y,
-						 0, -x, -y,
-						 0,  x, -y,
 
-						 y,  0, -x,
-						 y,  0,  x,
-						-y,  0, -x,
-						-y,  0,  x];*/
 
-	var S  = radius * 2 * Math.sqrt(50 - 10 * Math.sqrt(5)) / 5;
+	//*** Start setting initial vertices ***
+
+	// Random math for creating the icosphere upright, taken from http://www.vb-helper.com/tutorial_platonic_solids.html
+	var S  = this.radius * 2 * Math.sqrt(50 - 10 * Math.sqrt(5)) / 5;
     var t1 = 2 * Math.PI / 5;
     var t2 = Math.PI / 10;
     var t4 = Math.PI / 5;
@@ -44,168 +52,156 @@ function IcoSphere(device, radius, subdivisions) {
     var Z2 = (H2 - H1) / 2;
     var Z1 = Z2 + H1;
 
-    /*a = (   0,   0,  Z1) 0
+    // Hardcode an icosahedron's vertices using the above math
+    this.vertices = [  0,  Z1,   0,
 
-    b = (   0,   R,  Z2) 1
-    c = (  Cx,  Cy,  Z2) 5
-    d = ( S/2,  -H,  Z2) 11
-    e = (-S/2,  -H,  Z2) 10
-    f = ( -Cx,  Cy,  Z2) 7
+					   R,  Z2,   0,
+					  Cy,  Z2,  Cx,
+					  -H,  Z2,  S/2,
+					  -H,  Z2, -S/2,
+					  Cy,  Z2,  -Cx,
 
-    g = (   0,  -R, -Z2) 2
-    h = ( -Cx, -Cy, -Z2) 6
-    i = (-S/2,   H, -Z2) 8
-    j = ( S/2,   H, -Z2) 9
-    k = (  Cx, -Cy, -Z2) 4
+					   H, -Z2,  S/2,
+					 -Cy, -Z2,   Cx,
+					  -R, -Z2,    0,
+					 -Cy, -Z2,  -Cx,
+					   H, -Z2, -S/2,
 
-    l = (   0,   0, -Z1) 3*/
+					   0, -Z1,    0];
 
-    //Comment (New)
-    var startingVerts = [   0,  Z1,   0,
+	// Hardcode the initial vertex nodes and their neighbors
+	// Create node for top vertex
+	this.vertexGraph[0] = new VertexNode(0, [0]);
+	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 1);
+	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 2);
+	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 3);
+	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 4);
+	this.vertexGraph[0].addEdge(DIRECTION.SOUTH, 5);
 
-						    R,  Z2,   0,
-						   Cy,  Z2,  Cx,
-						  -H,  Z2,  S/2,
-						 -H,  Z2,  -S/2,
-						  Cy,  Z2,  -Cx,
 
-						  H, -Z2,   S/2,
-						   -Cy, -Z2, Cx,
-						    -R, -Z2,  0,
-						  -Cy, -Z2, -Cx,
-						 H, -Z2,   -S/2,
+	// Create nodes for for second row in clockwise order (looking down)
+	this.vertexGraph[1] = new VertexNode(1, [1]);
+	this.vertexGraph[1].addEdge(DIRECTION.NORTH, 0);
+	this.vertexGraph[1].addEdge(DIRECTION.EAST, 5);
+	this.vertexGraph[1].addEdge(DIRECTION.WEST, 2);
+	this.vertexGraph[1].addEdge(DIRECTION.SOUTHEAST, 10);
+	this.vertexGraph[1].addEdge(DIRECTION.SOUTHWEST, 6);
 
-						    0, -Z1,   0];
+	this.vertexGraph[2] = new VertexNode(2, [2]);
+	this.vertexGraph[2].addEdge(DIRECTION.NORTH, 0);
+	this.vertexGraph[2].addEdge(DIRECTION.EAST, 1);
+	this.vertexGraph[2].addEdge(DIRECTION.WEST, 3);
+	this.vertexGraph[2].addEdge(DIRECTION.SOUTHEAST, 6);
+	this.vertexGraph[2].addEdge(DIRECTION.SOUTHWEST, 7);
 
-	/*var startingVerts = [   0,  Z1,   0,
-						    R,  Z2,   0,
-						    -R, -Z2,  0,
-						    0, -Z1,   0,
+	this.vertexGraph[3] = new VertexNode(3, [3]);
+	this.vertexGraph[3].addEdge(DIRECTION.NORTH, 0);
+	this.vertexGraph[3].addEdge(DIRECTION.EAST, 2);
+	this.vertexGraph[3].addEdge(DIRECTION.WEST, 4);
+	this.vertexGraph[3].addEdge(DIRECTION.SOUTHEAST, 7);
+	this.vertexGraph[3].addEdge(DIRECTION.SOUTHWEST, 8);
 
-						   -Cy, -Z2, Cx,
-						   Cy,  Z2,  Cx,
-						  -Cy, -Z2, -Cx,
-						  Cy,  Z2,  -Cx,
+	this.vertexGraph[4] = new VertexNode(4, [4]);
+	this.vertexGraph[4].addEdge(DIRECTION.NORTH, 0);
+	this.vertexGraph[4].addEdge(DIRECTION.EAST, 3);
+	this.vertexGraph[4].addEdge(DIRECTION.WEST, 5);
+	this.vertexGraph[4].addEdge(DIRECTION.SOUTHEAST, 8);
+	this.vertexGraph[4].addEdge(DIRECTION.SOUTHWEST, 9);
 
-						 H, -Z2,   -S/2,
-						  H, -Z2,   S/2,
-						 -H,  Z2,  -S/2,
-						  -H,  Z2,  S/2];*/
+	this.vertexGraph[5] = new VertexNode(5, [5]);
+	this.vertexGraph[5].addEdge(DIRECTION.NORTH, 0);
+	this.vertexGraph[5].addEdge(DIRECTION.EAST, 4);
+	this.vertexGraph[5].addEdge(DIRECTION.WEST, 1);
+	this.vertexGraph[5].addEdge(DIRECTION.SOUTHEAST, 9);
+	this.vertexGraph[5].addEdge(DIRECTION.SOUTHWEST, 10);
 
-    var colors = [];
+	// Create nodes for for third row in clockwise order offset by +0.5 from second row
+	this.vertexGraph[6] = new VertexNode(6, [6]);
+	this.vertexGraph[6].addEdge(DIRECTION.NORTHEAST, 1);
+	this.vertexGraph[6].addEdge(DIRECTION.NORTHWEST, 2);
+	this.vertexGraph[6].addEdge(DIRECTION.EAST, 10);
+	this.vertexGraph[6].addEdge(DIRECTION.WEST, 7);
+	this.vertexGraph[6].addEdge(DIRECTION.SOUTH, 11);
+
+	this.vertexGraph[7] = new VertexNode(7, [7]);
+	this.vertexGraph[7].addEdge(DIRECTION.NORTHEAST, 2);
+	this.vertexGraph[7].addEdge(DIRECTION.NORTHWEST, 3);
+	this.vertexGraph[7].addEdge(DIRECTION.EAST, 6);
+	this.vertexGraph[7].addEdge(DIRECTION.WEST, 8);
+	this.vertexGraph[7].addEdge(DIRECTION.SOUTH, 11);
+
+	this.vertexGraph[8] = new VertexNode(8, [8]);
+	this.vertexGraph[8].addEdge(DIRECTION.NORTHEAST, 3);
+	this.vertexGraph[8].addEdge(DIRECTION.NORTHWEST, 4);
+	this.vertexGraph[8].addEdge(DIRECTION.EAST, 7);
+	this.vertexGraph[8].addEdge(DIRECTION.WEST, 9);
+	this.vertexGraph[8].addEdge(DIRECTION.SOUTH, 11);
+
+	this.vertexGraph[9] = new VertexNode(9, [9]);
+	this.vertexGraph[9].addEdge(DIRECTION.NORTHEAST, 4);
+	this.vertexGraph[9].addEdge(DIRECTION.NORTHWEST, 5);
+	this.vertexGraph[9].addEdge(DIRECTION.EAST, 8);
+	this.vertexGraph[9].addEdge(DIRECTION.WEST, 10);
+	this.vertexGraph[9].addEdge(DIRECTION.SOUTH, 11);
+
+	this.vertexGraph[10] = new VertexNode(10, [10]);
+	this.vertexGraph[10].addEdge(DIRECTION.NORTHEAST, 5);
+	this.vertexGraph[10].addEdge(DIRECTION.NORTHWEST, 1);
+	this.vertexGraph[10].addEdge(DIRECTION.EAST, 9);
+	this.vertexGraph[10].addEdge(DIRECTION.WEST, 6);
+	this.vertexGraph[10].addEdge(DIRECTION.SOUTH, 11);
+
+	// Create node for bottom vertex
+	this.vertexGraph[11] = new VertexNode(11, [11]);
+	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 6);
+	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 7);
+	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 8);
+	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 9);
+	this.vertexGraph[11].addEdge(DIRECTION.NORTH, 10);
+
+	// Set how many vertices are initially in each row
+	this.graphRows[0] = 1;
+	this.graphRows[1] = 5;
+	this.graphRows[2] = 5;
+	this.graphRows[3] = 1;
+
+	// Add indices of rows that are edge cases
+	// Edge Case 0: between top third of icosphere and middle third
+	this.edgeCaseRow1 = 1;
+	// Edge Case 1: between middle third of icosphere and bottom third
+	this.edgeCaseRow2 = 2;
+
+	//*** End setting initial vertices ***
+
+
 	
-	this.radius = radius;
-	
-    this.vertices = [];
-	this.normals = [];
-    this.indices = [];
-	
-	this.vertexGroups;
-	this.vertexParents;
-	this.vertexHeights;
-    
-    this.tiles = [];
+	//*** Start setting initial faces ***
 
-    this.clusters = [];
-	
-    this.currentVerts = 0;
-    this.currentFaces = 20;
-	
-    var numVerts = this._calculateNumVerts(12, 20, subdivisions);
-	var numFaces = (numVerts - 2) * 2;
-	
-	console.log("numVerts & Faces:",numVerts, numFaces);
-	
-	// put startingVerts to vertices
-	for (; this.currentVerts < startingVerts.length/3; ++this.currentVerts) {
-		this.vertices[this.currentVerts * 3] = startingVerts[this.currentVerts * 3];
-		this.vertices[this.currentVerts * 3 + 1] = startingVerts[this.currentVerts * 3 + 1];
-		this.vertices[this.currentVerts * 3 + 2] = startingVerts[this.currentVerts * 3 + 2];
-	}
-
-    for (var i = 0; i < numVerts * 4; i += 4) {
-		colors[i] = Math.random();
-		colors[i + 1] = 1.0;
-		colors[i + 2] = 0.0;
-		colors[i + 3] = 1.0;
-	}
-
-	/*Uncomment (Old)
+	// Hardcode initial faces
 	// 5 faces around point 0
-	this.tiles[0] = new Tile(this, 0, 11, 5);
-	this.tiles[1] = new Tile(this, 0, 5, 1);
-	this.tiles[2] = new Tile(this, 0, 1, 7);
-	this.tiles[3] = new Tile(this, 0, 7, 10);
-	this.tiles[4] = new Tile(this, 0, 10, 11);
+	this.tiles[0] = new Tile(0, 1, 0, 2);
+	this.tiles[1] = new Tile(1, 2, 0, 3);
+	this.tiles[2] = new Tile(2, 3, 0, 4);
+	this.tiles[3] = new Tile(3, 4, 0, 5);
+	this.tiles[4] = new Tile(4, 5, 0, 1);
 	// 5 adjacent faces
-	this.tiles[5] = new Tile(this, 1, 5, 9);
-	this.tiles[6] = new Tile(this, 5, 11, 4);
-	this.tiles[7] = new Tile(this, 11, 10, 2);
-	this.tiles[8] = new Tile(this, 10, 7, 6);
-	this.tiles[9] = new Tile(this, 7, 1, 8);
+	this.tiles[5] = new Tile(5, 2, 6, 1);
+	this.tiles[6] = new Tile(6, 3, 7, 2);
+	this.tiles[7] = new Tile(7, 4, 8, 3);
+	this.tiles[8] = new Tile(8, 5, 9, 4);
+	this.tiles[9] = new Tile(9, 1, 10, 5);
     // 5 faces around point 3
-	this.tiles[10] = new Tile(this, 3, 9, 4);
-	this.tiles[11] = new Tile(this, 3, 4, 2);
-	this.tiles[12] = new Tile(this, 3, 2, 6);
-	this.tiles[13] = new Tile(this, 3, 6, 8);
-	this.tiles[14] = new Tile(this, 3, 8, 9);
-    // 5 adjacent faces
-	this.tiles[15] = new Tile(this, 4, 9, 5);
-	this.tiles[16] = new Tile(this, 2, 4, 11);
-	this.tiles[17] = new Tile(this, 6, 2, 10);
-	this.tiles[18] = new Tile(this, 8, 6, 7);
-	this.tiles[19] = new Tile(this, 9, 8, 1);
-	// Manually set neighbors for 20 faces
-	this.tiles[0].setNeighbors(6, 1, 4);
-	this.tiles[1].setNeighbors(5, 2, 0);
-	this.tiles[2].setNeighbors(9, 3, 1);
-	this.tiles[3].setNeighbors(8, 4, 2);
-	this.tiles[4].setNeighbors(7, 0, 3);
-	
-	this.tiles[5].setNeighbors(15, 19, 1);
-	this.tiles[6].setNeighbors(16, 15, 0);
-	this.tiles[7].setNeighbors(17, 16, 4);
-	this.tiles[8].setNeighbors(18, 17, 3);
-	this.tiles[9].setNeighbors(19, 18, 2);
-	
-	this.tiles[10].setNeighbors(15, 11, 14);
-	this.tiles[11].setNeighbors(16, 12, 10);
-	this.tiles[12].setNeighbors(17, 13, 11);
-	this.tiles[13].setNeighbors(18, 14, 12);
-	this.tiles[14].setNeighbors(19, 10, 13);
-	
-	this.tiles[15].setNeighbors(5, 6, 10);
-	this.tiles[16].setNeighbors(6, 7, 11);
-	this.tiles[17].setNeighbors(7, 8, 12);
-	this.tiles[18].setNeighbors(8, 9, 13);
-	this.tiles[19].setNeighbors(9, 5, 14);
-	*/
-
-	//Comment (New)
-	// 5 faces around point 0
-	this.tiles[0] = new Tile(this, 1, 0, 2);
-	this.tiles[1] = new Tile(this, 2, 0, 3);
-	this.tiles[2] = new Tile(this, 3, 0, 4);
-	this.tiles[3] = new Tile(this, 4, 0, 5);
-	this.tiles[4] = new Tile(this, 5, 0, 1);
-	// 5 adjacent faces
-	this.tiles[5] = new Tile(this, 2, 6, 1);
-	this.tiles[6] = new Tile(this, 3, 7, 2);
-	this.tiles[7] = new Tile(this, 4, 8, 3);
-	this.tiles[8] = new Tile(this, 5, 9, 4);
-	this.tiles[9] = new Tile(this, 1, 10, 5);
-    // 5 faces around point 3
-	this.tiles[10] = new Tile(this, 6, 2, 7);
-	this.tiles[11] = new Tile(this, 7, 3, 8);
-	this.tiles[12] = new Tile(this, 8, 4, 9);
-	this.tiles[13] = new Tile(this, 9, 5, 10);
-	this.tiles[14] = new Tile(this, 10, 1, 6);
+	this.tiles[10] = new Tile(10, 6, 2, 7);
+	this.tiles[11] = new Tile(11, 7, 3, 8);
+	this.tiles[12] = new Tile(12, 8, 4, 9);
+	this.tiles[13] = new Tile(13, 9, 5, 10);
+	this.tiles[14] = new Tile(14, 10, 1, 6);
     // 5 faces around point 11
-	this.tiles[15] = new Tile(this, 7, 11, 6);
-	this.tiles[16] = new Tile(this, 8, 11, 7);
-	this.tiles[17] = new Tile(this, 9, 11, 8);
-	this.tiles[18] = new Tile(this, 10, 11, 9);
-	this.tiles[19] = new Tile(this, 6, 11, 10);
+	this.tiles[15] = new Tile(15, 7, 11, 6);
+	this.tiles[16] = new Tile(16, 8, 11, 7);
+	this.tiles[17] = new Tile(17, 9, 11, 8);
+	this.tiles[18] = new Tile(18, 10, 11, 9);
+	this.tiles[19] = new Tile(19, 6, 11, 10);
 	// Manually set neighbors for 20 faces
 	this.tiles[0].setNeighbors(1, 5, 4);
 	this.tiles[1].setNeighbors(2, 6, 0);
@@ -213,11 +209,11 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[3].setNeighbors(4, 8, 2);
 	this.tiles[4].setNeighbors(0, 9, 3);
 	
-	this.tiles[5].setNeighbors(10, 0, 14);
-	this.tiles[6].setNeighbors(11, 1, 10);
-	this.tiles[7].setNeighbors(12, 2, 11);
-	this.tiles[8].setNeighbors(13, 3, 12);
-	this.tiles[9].setNeighbors(14, 4, 13);
+	this.tiles[5].setNeighbors(14, 0, 10);
+	this.tiles[6].setNeighbors(10, 1, 11);
+	this.tiles[7].setNeighbors(11, 2, 12);
+	this.tiles[8].setNeighbors(12, 3, 13);
+	this.tiles[9].setNeighbors(13, 4, 14);
 	
 	this.tiles[10].setNeighbors(6, 15, 5);
 	this.tiles[11].setNeighbors(7, 16, 6);
@@ -231,13 +227,16 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[18].setNeighbors(17, 13, 19);
 	this.tiles[19].setNeighbors(18, 14, 15);
 	
+
 	//Set indices for initial tiles
 	for (var i = 0; i < this.tiles.length; i++) {
 		this.tiles[i].index = i;
+		this.tiles[i].calculateCenter2();
+		this.tiles[i].calculateNormal();
 	}
 	
-	// Run subdivide
-	for (var i = 1; i < subdivisions; ++i) {
+	// Run subdivide (Uncomment)
+	/*for (var i = 1; i < subdivisions; ++i) {
     	var jMax = this.currentFaces;
     	
     	for (var j = 0; j < jMax; ++j) {
@@ -247,21 +246,30 @@ function IcoSphere(device, radius, subdivisions) {
     	for (j = 0; j < jMax; ++j) {
     		this.tiles[j].divided = false;
     	}
+    }*/
+    for (var i = 1; i < subdivisions; ++i) {
+    	this.subdivideGraph();
     }
+    console.log(this);
 	
 	// Normalize to radius
-    for (var i = 0; i < this.currentVerts; i++) {
+    /*for (var i = 0; i < this.currentVerts; i++) {
 		var vert = this._getUnbufferedVertex(i);
 		vert.normalize();
 		vert.scale(Math.max(1, Math.min(2, this.radius)));
 		this.vertices[i*3] = vert.x;
 		this.vertices[i*3 + 1] = vert.y;
 		this.vertices[i*3 + 2] = vert.z;
+    }*/
+
+    for (var i = 0; i < this.vertexGraph.length; i++) {
+    	this.vertexGraph[i].stagger(0.075);
+    	this.vertexGraph[i].setHeight(ico.radius);
     }
 	
 	
 	//Create non-shared-vertex sphere
-	unshareVertices(this);
+	this.unshareVertices();
 	
 	
 	var t2 = new Date();
@@ -274,16 +282,18 @@ function IcoSphere(device, radius, subdivisions) {
        tiles[i].testExtrude();
     }
 	*/
+
+	// Uncomment
 	this.vertexHeights = [];
-	for (var size = this.vertexGroups.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
+	for (var size = this.vertexGraph.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.04,
-		repellerSizeMin = 1, repellerSizeMax = 3,
-		repellerHeightMin = 0.03, repellerHeightMax = 0.07,
+	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.05,
+		repellerSizeMin = 1, repellerSizeMax = 4,
+		repellerHeightMin = 0.05, repellerHeightMax = 0.15,
 		continentCountMin = 3, continentCountMax = 6,
-		continentSizeMin = 7, continentSizeMax = 12,
-		mountainCountMin = 4, mountainCountMax = 6,
-		mountainHeightMin = 0.13, mountainHeightMax = 0.2;
+		continentSizeMin = 10, continentSizeMax = 16,
+		mountainCountMin = 5, mountainCountMax = 8,
+		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
 	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
@@ -310,13 +320,29 @@ function IcoSphere(device, radius, subdivisions) {
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
 }
 
+IcoSphere.prototype.updateReturnMesh = function() {
+	var options = {
+        normals: this.normals,
+        indices: this.indices
+    };
+
+	this.toReturn = {
+        mesh: pc.createMesh(this.device, this.vertices, options),
+        options: options,
+        positions: this.vertices
+    };
+
+    this.updateFlag = false;
+}
+
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	this.vertexHeights[index] = height;
 	this.setVertexMagnitude(index, height + this.radius);
 };
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
-	for (var i = 0; i < this.vertexGroups[index].length; i++) {
+	this.vertexGraph[index].setHeight(magnitude);
+	/*for (var i = 0; i < this.vertexGroups[index].length; i++) {
 		var vertexIndex = this.vertexGroups[index][i];
 		var vert = this._getUnbufferedVertex(vertexIndex);
 		vert.normalize();
@@ -324,27 +350,31 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 		this.vertices[vertexIndex*3] = vert.x;
 		this.vertices[vertexIndex*3 + 1] = vert.y;
 		this.vertices[vertexIndex*3 + 2] = vert.z;
-	}
+	}*/
 };
 
 //Should only be called once per frame if the mesh has been altered
 IcoSphere.prototype._recalculateMesh = function() {
 	// Calculate the center and normal for each tile
 	var unbufferedNormals = [];
-	unbufferedNormals[this.currentFaces*3-1] = 0;
-    for (var i = 0; i < this.currentFaces; ++i) {
+	unbufferedNormals[this.tiles.length*3-1] = 0;
+    for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
 		tile.calculateNormal();
 		tile.calculateRotationVectors();
 		tile.isOcean = false;
+
+		console.log(tile);
 		
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
+			// Uncomment
 			if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
 		}
     }
+
 	
 	// Buffer normals
 	this.normals = [];
@@ -353,10 +383,12 @@ IcoSphere.prototype._recalculateMesh = function() {
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;
+		console.log("Normal " + i + ": (" + this.normals[i*3] + ", " + this.normals[i*3+1] + ", " + this.normals[i*3+2] + ")");
     }
 };
 
 IcoSphere.prototype._getUnbufferedVertex = function(i) {
+	return this.vertexGraph[i].getVertex();
     return new pc.alVec3(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]);
 };
 
@@ -365,6 +397,36 @@ IcoSphere.prototype._calculateNumVerts = function(currentVertices, currentFaces,
     return currentVertices + this._calculateNumVerts(parseInt(currentFaces * 1.5), currentFaces * 4, subdivisions - 1);
 };
 
+IcoSphere.prototype.subdivideGraph = function() {
+	var startingVertNum = this.vertexGraph.length;
+	var startingTileNum = this.tiles.length;
+	var i = 0;
+	console.log("Starting Subdivision...");
+	
+	for (; i < startingVertNum; ++i) {
+		this.vertexGraph[i].divideEdges();
+	}
+	console.log("Divided Edges.");
+	for (; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].calculateNeighbors();
+	}
+	console.log("Calculated neighbors.");
+	for (i = 0; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].divided = false;
+		//this.vertexGraph[i].setHeight(this.radius);
+	}
+
+	for (i = 0; i < startingTileNum; ++i) {
+		this.tiles[i].subdivide();
+	}
+
+	for (i = 0; i < this.tiles.length; ++i) {
+		this.tiles[i].divided = false;
+		this.tiles[i].updateNeighbors();
+	}
+}
+
+/*
 IcoSphere.prototype._subdivideFace = function(index) {
     var midpointc = this.tiles[index].getMidpoint(0,1);
     var vertexc;
@@ -533,42 +595,49 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	this.tiles[index].neighborc = tilec;
 	
 	this.tiles[index].divided = true;
-};
+};*/
 
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
-function unshareVertices(icosphere) {
+IcoSphere.prototype.unshareVertices = function() {
 	var vertexGroups = [];
 	var vertexParents = []; //The group that each vertex belongs to
 	var vertices = [];
 	var bufferedVertices = [];
-    var tiles = icosphere.tiles;
+    var tiles = this.tiles;
 
 	for (var i = 0; i < tiles.length; i++) {
 		var tile = tiles[i];
 		for (var j = 0; j < tile.vertexIndices.length; j++) {
 			//Add each tile's vertex to vertices
-			vertices.push(icosphere._getUnbufferedVertex(tile.vertexIndices[j]));
+			vertices.push(this._getUnbufferedVertex(tile.vertexIndices[j]));
 
-			//Group vertices in the same position
+			this.vertexGraph[tile.vertexIndices[j]].addIndex(vertices.length-1);
+
+
+			/*Group vertices in the same position
 			var newV = vertices[vertices.length-1];
-			vertexParents[vertices.length-1] = vertexGroups.length;
+			vertexParents[vertices.length-1] = this.vertexGraph.length;
 			for (var k = 0, done = false; k < vertices.length-1 && !done; k++) {
 				var v = vertices[k];
 				
 				//Try to find an existing group for this vertex
 				if (v.x === newV.x && v.y === newV.y && v.z === newV.z) {
 					vertexParents[vertices.length-1] = vertexParents[k];
-					vertexGroups[vertexParents[k]].push(vertices.length-1);
+					this.vertexGraph[vertexParents[k]].addIndex(vertices.length-1);
 					done = true;
 				}
 			}
 			
 			if (vertexParents[vertices.length-1] === vertexGroups.length) {
-				vertexGroups.push([vertices.length-1]); //No existing shared vertices found, create a new group with the new vertex
+				this.vertexGraph.push(this.vertexGraph[vertices.length-1]); //No existing shared vertices found, create a new group with the new vertex
 			}
 			
-			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group
+			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group*/
 		}
+	}
+
+	for (var i = 0; i < this.vertexGraph.length; ++i) {
+		this.vertexGraph[i].deleteFirst();
 	}
 	
 	//Buffer vertices
@@ -579,14 +648,14 @@ function unshareVertices(icosphere) {
 	}
 	
 	//Set data in icosphere
-	icosphere.vertexGroups = vertexGroups;
-	icosphere.vertexParents = vertexParents;
-	icosphere.vertices = bufferedVertices;
+	//this.vertexGraph = vertexGroups;
+	this.vertexParents = vertexParents;
+	this.vertices = bufferedVertices;
 
-	icosphere.indices = [];
-	for (var size = vertices.length-1; size >= 0; size--) icosphere.indices[size] = size;
+	this.indices = [];
+	for (var size = vertices.length-1; size >= 0; size--) this.indices[size] = size;
 	
-	icosphere.tiles = tiles;
+	this.tiles = tiles;
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices
@@ -684,7 +753,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 	
 	var queue = new Queue();
 	var visitedIndices = [];
-	for (var size = icosphere.vertexGroups.length-1; size >= 0; size--) visitedIndices[size] = false;
+	for (var size = icosphere.vertexGraph.length-1; size >= 0; size--) visitedIndices[size] = false;
 	var visited = [];
 	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
 	var distances = [];

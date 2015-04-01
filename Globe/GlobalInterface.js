@@ -17,6 +17,12 @@ pc.script.create('globalInterface', function (context) {
     GlobalVariables.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+
+        	globalTime = 0;
+
+			this.fogChance = 0.002;
+			this.rainChance = 0.0004;
+
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 
@@ -41,12 +47,23 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
-			
+
+            // test vertex neighbors init
+            this.testVerts = [];
+            for (var i = 0; i < 10; ++i) {
+            	this.testVerts[i] = Math.floor(pc.math.random(0, 600));
+            }
+
+            this.eroder = new Eroder(0, 150);
+
 			this.init = false;
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	// Update globalTime, do not update anywhere else
+        	globalTime += dt;
+
 			//Only called on first update (since ico isn't defined in initialize)
 			if (!this.init) {
 				var t1 = new Date();
@@ -119,7 +136,6 @@ pc.script.create('globalInterface', function (context) {
 					var temp = tile.getTemperature();
 					if (temp < 0) temp = 0;
 					else if (temp > 100) temp = 100;
-					
 					if (Math.random() < fogChance) {
 						//tile.startFog();
 					}
@@ -149,6 +165,13 @@ pc.script.create('globalInterface', function (context) {
             //     totalBelief += dt* 10;
             // }
 
+            // Test vertex neighbors update
+            for (var i = 0; i < this.testVerts.length; ++i) {
+            	//this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
+            	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
+            	//this.vertexMovementTest(i, (i + (Math.floor((globalTime/2) % 2) * 4)) % 8, (i + (Math.floor((globalTime/2) % 2) * 4) + 4) % 8);
+            }
+            this.eroder.update();
 
             sun.setPosition(0, 0, 0);
 
@@ -161,6 +184,14 @@ pc.script.create('globalInterface', function (context) {
             //shaderSun.setEulerAngles(camera.getEulerAngles());
             //sun.setEulerAngles(0, 90 + this.time, 0);
             /****                   ****/
+        },
+
+        vertexMovementTest: function(vertex, direction, backup) {
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(1.5);
+            	if (ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup) != -1) {
+            		this.testVerts[vertex] = ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup);
+            	}
+            	ico.vertexGraph[this.testVerts[vertex]].setHeight(2);
         }
     };
 
