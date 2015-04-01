@@ -366,7 +366,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
 			// Uncomment
-			//if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
+			if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
 		}
     }
 
@@ -421,6 +421,7 @@ IcoSphere.prototype.subdivideGraph = function() {
 	}
 }
 
+/*
 IcoSphere.prototype._subdivideFace = function(index) {
     var midpointc = this.tiles[index].getMidpoint(0,1);
     var vertexc;
@@ -589,7 +590,7 @@ IcoSphere.prototype._subdivideFace = function(index) {
 	this.tiles[index].neighborc = tilec;
 	
 	this.tiles[index].divided = true;
-};
+};*/
 
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
 IcoSphere.prototype.unshareVertices = function() {

@@ -70,7 +70,7 @@ pc.script.create('Globe', function (context) {
                     "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
-                    "    if (dist > radius) {",
+                    "    if (dist > radius + 0.01) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     "    } else {",
                     "       color = intensity * sunIntensity * vec4(0.0, 0.0, 1.0, 1.0);",
