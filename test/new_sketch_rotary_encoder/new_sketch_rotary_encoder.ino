@@ -15,22 +15,22 @@
 
 // usually the rotary encoders three pins have the ground pin in the middle
 enum PinAssignments {
-  encoderPinA_T = 4,
+  encoderPinA_T = 2,
   encoderPinB_T = 3,
   
-  encoderPinA_A = 6,
-  encoderPinB_A = 5,
+  encoderPinA_A = 5,
+  encoderPinB_A = 4,
   
-  encoderPinA_P = 9,
-  encoderPinB_P = 10,
+  encoderPinA_P = 6,
+  encoderPinB_P = 7,
   
-  encoderPinA_E = 11,
-  encoderPinB_E = 12,
+  encoderPinA_E = 10,
+  encoderPinB_E = 11,
   
-  encoderPinA_W = 17,
-  encoderPinB_W = 18,
+  encoderPinA_W = 9,
+  encoderPinB_W = 12,
   
-  clearButton = 14
+  //clearButton = 14
 };
 
 int led = 13;
@@ -92,7 +92,7 @@ void setup() {
   pinMode(encoderPinA_W, INPUT); 
   pinMode(encoderPinB_W, INPUT); 
   
-  pinMode(clearButton, INPUT);
+  //pinMode(clearButton, INPUT);
   pinMode(led, OUTPUT);
   
  // turn on pullup resistors
@@ -104,11 +104,10 @@ void setup() {
   digitalWrite(encoderPinB_P, HIGH);
   digitalWrite(encoderPinA_E, HIGH);
   digitalWrite(encoderPinB_E, HIGH);
-
-  digitalWrite(encoderPinA_W, LOW);
-  digitalWrite(encoderPinB_W, LOW);
+  digitalWrite(encoderPinA_W, HIGH);
+  digitalWrite(encoderPinB_W, HIGH);
   
-  digitalWrite(clearButton, LOW);
+  //digitalWrite(clearButton, LOW);
 
 // encoder pin on interrupt
   attachPinChangeInterrupt(encoderPinA_T, doEncoderA_T, CHANGE);
@@ -148,47 +147,47 @@ void loop() {
   if (lastReportedPos_T != encoderPos_T) {
     //Serial.print("T_Index:");
     //Serial.println(encoderPos_T, DEC);
-    if(lastReportedPos_T > encoderPos_T) { /*Serial.print("a"); }//*/keyCommand(0,4); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_T < encoderPos_T) { /*Serial.print("d"); }//*/keyCommand(0,7); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_T > encoderPos_T) { /*Serial.print("a"); }//*/keyCommand(0,4); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_T < encoderPos_T) { /*Serial.print("d"); }//*/keyCommand(0,7); delay(50); keyCommand(0,0); blinkled();}
     lastReportedPos_T = encoderPos_T;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_A != encoderPos_A) {
     //Serial.print("A_Index:");
     //Serial.println(encoderPos_A, DEC);
-    if(lastReportedPos_A > encoderPos_A) { /*Serial.print("w"); }//*/keyCommand(0,26); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_A < encoderPos_A) { /*Serial.print("s"); }//*/keyCommand(0,22); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_A > encoderPos_A) { /*Serial.print("w"); }//*/keyCommand(0,26); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_A < encoderPos_A) { /*Serial.print("s"); }//*/keyCommand(0,22); delay(50); keyCommand(0,0); blinkled();}
     lastReportedPos_A = encoderPos_A;
   }//else keyCommand(0,0); 
 
   if (lastReportedPos_P != encoderPos_P) {
     //Serial.print("P_Index:");
     //Serial.println(encoderPos_P, DEC);
-    if(lastReportedPos_P > encoderPos_P) { /*Serial.print("j"); }//*/keyCommand(0,13); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_P < encoderPos_P) { /*Serial.print("l"); }//*/keyCommand(0,15); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_P > encoderPos_P) { /*Serial.print("j"); }//*/keyCommand(0,13); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_P < encoderPos_P) { /*Serial.print("l"); }//*/keyCommand(0,15); delay(50); keyCommand(0,0); blinkled();}
     lastReportedPos_P = encoderPos_P;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_E != encoderPos_E) {
     //Serial.print("E_Index:");
     //Serial.println(encoderPos_E, DEC);
-    if(lastReportedPos_E > encoderPos_E) { /*Serial.print("i"); }//*/keyCommand(0,12); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_E < encoderPos_E) { /*Serial.print("k"); }//*/keyCommand(0,14); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_E > encoderPos_E) { /*Serial.print("i"); }//*/keyCommand(0,12); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_E < encoderPos_E) { /*Serial.print("k"); }//*/keyCommand(0,14); delay(50); keyCommand(0,0); blinkled();}
     lastReportedPos_E = encoderPos_E;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_W != encoderPos_W) {
     //Serial.print("W_Index:");
     //Serial.println(encoderPos_W, DEC);
-    if(lastReportedPos_W > encoderPos_W) { /*Serial.print("v"); }//*/keyCommand(0,25); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_W < encoderPos_W) { /*Serial.print("n"); }//*/keyCommand(0,17); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_W > encoderPos_W) { /*Serial.print("v"); }//*/keyCommand(0,25); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_W < encoderPos_W) { /*Serial.print("n"); }//*/keyCommand(0,17); delay(50); keyCommand(0,0); blinkled();}
     lastReportedPos_W = encoderPos_W;
   }//else keyCommand(0,0); 
   
   
-  if (digitalRead(clearButton) == LOW )  {
+  /*if (digitalRead(clearButton) == LOW )  {
     encoderPos_T = encoderPos_A = encoderPos_P = encoderPos_E = encoderPos_W = 0;
-  }
+  }*/
   
 
 }

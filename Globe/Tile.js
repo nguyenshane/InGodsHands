@@ -2,6 +2,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     'use strict;'
     this.vertexIndices = [];
     this.colors = [];
+
     this.neighbora, this.neighborb, this.neighborc;
     this.neighbors = [];
 	
@@ -11,29 +12,84 @@ function Tile(index, vertexa, vertexb, vertexc){
     this.center;
 	this.localRotNormal;
 	this.localRotCenter;
-    this.neighbora;
-    this.neighborb;
-    this.neighborc;
     
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
 	
-	this.rain, this.fog;
+	this.tree, this.animal, this.rain, this.fog;
 
     this.isOcean = true;
 	this.hasTree = false;
+	this.hasAnimal = false;
 	this.isRaining = false;
 	this.isFoggy = false;
 	
-	this.atmoHeight = 0.4;
-	this.rainDuration = 4;
-	this.fogDuration = 5;
+	Tile.tempInfluenceMultiplier = 2.0;
+	
+	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
+	Tile.humidityBaseMax = 100;
+	this.maxHumidity = Tile.humidityBaseMax;
+	Tile.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
+	Tile.humidityRegenerationRate = 2.0; //Base constant regeneration (for an ocean tile), modified by tile temperature
+	Tile.landHumidityRegenerationMultiplier = 0.25; //Multiplier of above for land tiles
+	Tile.humidityDegenerationRate = 15.0; //Loss while raining on tile
+	
+	this.groundwater = 50.0 * pc.math.random(0.7, 1.3); //Current groundwater rating
+	Tile.groundwaterMax = 100;
+	Tile.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
+	Tile.groundwaterRegenerationRate = 15.0; //Regeneration when raining on tile
+	Tile.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
+	
+	Tile.atmoHeight = 0.4;
+	Tile.rainDuration = 3.0;
+	Tile.fogDuration = 4.0;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
-    //ico = icosphere;
-	//ico = ico;
+
+	Tile.treeStats = {
+		tree1: {
+			type: "tree1",
+			minTemp: 30,
+			maxTemp: 100,
+			idealTemp: 60,
+			minWater: 50,
+			maxWater: 100,
+			idealWater: 80,
+			waterUsage: 1.0,
+			growRate: 0.75
+		},
+		
+		tree2: {
+			type: "tree2",
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 30,
+			maxWater: 100,
+			idealWater: 50,
+			waterUsage: 0.6,
+			growRate: 1.0
+		}
+	};
+	
+	Tile.animalStats = {
+		fox: {
+			type: "fox"
+		},
+		
+		pig: {
+			type: "pig"
+		},
+		
+		cow: {
+			type: "cow"
+		}
+	};
+	
+    handle = ico;
+
     this.divided = false;
-    this.hasHuman = false;
+    this.hasTribe = false;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
@@ -42,6 +98,158 @@ function Tile(index, vertexa, vertexb, vertexc){
     ico.indices.push(vertexa);
     ico.indices.push(vertexb);
     ico.indices.push(vertexc);
+	
+	this.update = function(dt) {
+		var tempHumidityMultiplier = this.getTemperature() / 100 + 0.5;
+		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
+		
+		this.maxHumidity = Tile.humidityBaseMax * tempHumidityMultiplier;
+		
+		//Regenerate humidity
+		if (!this.isOcean) this.humidity += Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+		else this.humidity += Tile.landHumidityRegenerationMultiplier * Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+		
+		this.checkResourceLimits();
+		
+		//Handle rain
+		if (this.isRaining) {
+			if (!this.isOcean) {
+				this.humidity -= Tile.humidityDegenerationRate * dt;
+				this.groundwater += Tile.groundwaterRegenerationRate * dt;
+			} else {
+				this.humidity -= Tile.humidityDegenerationRate * dt;
+			}
+			
+			if (this.rain === undefined) this.rain = scripts.Atmosphere.makeRain(this.localRotCenter);
+			
+			this.rainTimer -= dt;
+			if (this.rainTimer <= 0) this.stopRain();
+			else if (this.checkAtmoAnimCompleted(this.rain)) {
+				//(Re)start rain animation
+				if (!this.rain.enabled) this.rain.enabled = true;
+				var r = this.rain.findByName("RainPS").particlesystem;
+				r.stop();
+				r.reset();
+				r.play();
+			}
+		} else if (this.rain !== undefined && this.rain.enabled && this.checkAtmoAnimCompleted(this.rain)) {
+			this.rain.enabled = false;
+			this.rain = undefined;
+		}
+		
+		this.checkResourceLimits();
+		
+		//Handle fog
+		if (this.isFoggy) {
+			if (this.fog === undefined) this.fog = scripts.Atmosphere.makeFog(this.localRotCenter);
+			
+			this.fogTimer -= dt;
+			if (this.fogTimer <= 0) this.stopFog();
+			else if (this.checkAtmoAnimCompleted(this.fog)) {
+				//(Re)start fog animation
+				if (!this.fog.enabled) this.fog.enabled = true;
+				var f = this.fog.findByName("FogPS").particlesystem;
+				f.stop();
+				f.reset();
+				f.play();
+			}
+		} else if (this.fog !== undefined && this.fog.enabled && this.checkAtmoAnimCompleted(this.fog)) {
+			this.fog.enabled = false;
+			this.fog = undefined;
+		}
+		
+		this.checkResourceLimits();
+		
+		//Spread humidity and groundwater to neighbors
+		var neighbors = this.getNeighbors();
+		shuffleArray(neighbors); //Choose order randomly each frame to keep the first one from always receiving more than others
+		for (var i = 0; i < neighbors.length; i++) {
+			var neighbor = neighbors[i];
+			
+			if (this.humidity > 0) {
+				if (neighbor.humidity < this.humidity) {
+					var diff = (this.humidity - neighbor.humidity) / this.humidity;
+					var rate = Tile.humiditySpreadRate * dt * diff;
+					if (rate > this.humidity) rate = this.humidity;
+					neighbor.humidity += rate;
+					this.humidity -= rate;
+				}
+			}
+			
+			if (!this.isOcean && this.groundwater > 0) {
+				if (!neighbor.isOcean && neighbor.groundwater < this.groundwater) {
+					var diff = (this.groundwater - neighbor.groundwater) / this.groundwater;
+					var rate = Tile.groundwaterSpreadRate * dt * diff;
+					if (rate > this.groundwater) rate = this.groundwater;
+					neighbor.groundwater += rate;
+					this.groundwater -= rate;
+				}
+			}
+		}
+		
+		this.checkResourceLimits();
+		
+		//Grow tree
+		if (this.hasTree) {
+			///handle tree growing, killing etc here
+			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
+		}
+		
+		this.checkResourceLimits();
+		
+		/*
+		///temporary
+		if (this.index === 500) {
+			if (this.humidity > this.maxHumidity * 0.9) this.startRain();
+			
+			var temp = this.getTemperature();
+			temp = pc.math.clamp(temp, 0, 150);
+			
+			var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
+			if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
+			
+			console.log(this.isOcean + " " + this.isRaining + "\nrelative:\t" + rh + "\nhumidity:\t" + this.humidity + "\ngroundwa:\t" + this.groundwater + "\nmaxhumid:\t" + 
+						this.maxHumidity + "\ntemperat:\t" + this.getTemperature());
+		}
+		*/
+	};
+	
+	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
+	this.intermittentUpdate = function() {
+		var temp = this.getTemperature();
+		
+		this.spawnTree(temp, 0);
+		
+		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
+		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
+		
+		if (Math.random() < rainChance + (rh * rainHumidityChance)) {
+			this.startRain();
+			this.startFog();
+		} else if (Math.random() < fogChance + (rh * fogHumidityChance)) {
+			this.startFog();
+		}
+		
+		/*
+		if (temp < 0) temp = 0;
+		else if (temp > 100) temp = 100;
+		
+		if (Math.random() < rainChance * (300 / (temp * 4 + 100))) {
+			this.startRain();
+			this.startFog();
+		} else if (Math.random() < fogChance) {
+			this.startFog();
+		}
+		*/
+	};
+	
+	this.checkResourceLimits = function() {
+		if (this.humidity < 0) this.humidity = 0;
+		if (this.humidity > this.maxHumidity) this.humidity = this.maxHumidity;
+		
+		if (this.groundwater < 0) this.groundwater = 0;
+		if (this.groundwater > Tile.groundwaterMax) this.groundwater = Tile.groundwaterMax;
+	};
 
     this.getNorthNeighbor = function() {
         if (this.neighbora.center.y > this.neighborb.center.y && this.neighbora.center.y > this.neighborc.center.y) {
@@ -162,47 +370,136 @@ function Tile(index, vertexa, vertexb, vertexc){
         return this.temperature;
     };
 	
-	this.startRain = function() {
-		if (this.rain !== undefined) {
-			this.rain.enabled = true;
-		} else {
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.rain = atmo.makeRain(extendVector(this.center, this.atmoHeight), this.localRotCenter);
+	//Creates a new tree on this tile if the tree density in the area is too low
+	this.spawnTree = function(temperature, size) {
+		if (this.hasTree || this.isOcean) return;
+		
+		var maxDist = 3;
+		var localTreeCount = 0.0;
+		visitedTileCount = 0.0;
+		
+		var queue = new Queue();
+		var visited = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) visited[s] = false;
+		var distances = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) distances[s] = -2;
+		
+		queue.enqueue(this.index);
+		visited[this.index] = true;
+		distances[this.index] = 0;
+		visitedTileCount++;
+		
+		while (!queue.isEmpty()) {
+			var tileIndex = queue.dequeue();
+			var tile = ico.tiles[tileIndex];
+			var neighbors = tile.getNeighborIndices();
+			
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = neighbors[i];
+				if (!visited[neighbor]) {
+					if (distances[tileIndex] < maxDist && !ico.tiles[neighbor].isOcean) {
+						if (ico.tiles[neighbor].hasTree) localTreeCount++;
+						visitedTileCount++;
+						
+						visited[neighbor] = true;
+						queue.enqueue(neighbor);
+						distances[neighbor] = distances[tileIndex] + 1;
+					}
+				} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			}
 		}
 		
+		var localTreeDensity = localTreeCount / visitedTileCount;
+		
+		if (localTreeDensity < treeDensity) this.createTree(temperature, size);
+	};
+	
+	//Adds a tree to this tile
+	this.createTree = function(temperature, size) {
+		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+		normal.normalize();
+		var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
+		center.normalize();
+		multScalar(center, 2);
+		normal.add(center);
+		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+		var angle = m.getEulerAngles();
+		
+		//Determine ideal tree type given this tile's current properties
+		var t1dist = this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater);
+		var t2dist = this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater);
+		
+		t2dist *= pc.math.random(0.8, 1.2); //Randomize slightly to provide some variability
+		
+		var type = 0;
+		if (t2dist < t1dist) type = 1;
+		
+		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
+		this.hasTree = true;
+	};
+	
+	this.removeTree = function() {
+		if (this.tree !== undefined) this.tree.destroyFlag = true;
+		this.hasTree = false;
+	};
+	
+	this.determineDistanceFromIdeal = function(tree, temperature, water) {
+		var d = 0;
+		
+		if (temperature < tree.idealTemp) {
+			var t = (tree.idealTemp - temperature) / (tree.idealTemp - tree.minTemp);
+			d += t;
+		} else {
+			var t = (temperature - tree.idealTemp) / (tree.maxTemp - tree.idealTemp);
+			d += t;
+		}
+		
+		if (water < tree.idealWater) {
+			var t = (tree.idealWater - water) / (tree.idealWater - tree.minWater);
+			d += t;
+		} else {
+			var t = (water - tree.idealWater) / (tree.maxWater - tree.idealWater);
+			d += t;
+		}
+		
+		return d;
+	};
+	
+	this.startRain = function() {
 		this.isRaining = true;
-		this.rainTimer = this.rainDuration;
+		this.rainTimer = Tile.rainDuration * (this.humidity / this.maxHumidity + 1.0) * pc.math.random(0.8, 1.25);
 	};
 	
 	this.stopRain = function() {
-		if (this.rain !== undefined) {
-			this.rain.destroy = true;
-			this.rain = undefined;
-		}
-		
 		this.isRaining = false;
 	};
 	
 	this.startFog = function() {
-		if (this.fog !== undefined) {
-			this.fog.enabled = true;
-		} else {
-			var atmo = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script.Atmosphere;
-			this.fog = atmo.makeFog(extendVector(this.center, this.atmoHeight), this.localRotCenter);
-		}
-		
 		this.isFoggy = true;
-		this.fogTimer = this.fogDuration;
+		this.fogTimer = Tile.fogDuration * (this.humidity / this.maxHumidity + 1.0) * pc.math.random(0.8, 1.25);
 	};
 	
 	this.stopFog = function() {
-		if (this.fog !== undefined) {
-			this.fog.destroy = true;
-			this.fog = undefined;
-		}
-		
 		this.isFoggy = false;
 	};
+	
+	this.checkAtmoAnimCompleted = function(e) {
+		var rps = e.findByName("RainPS").particlesystem;
+		if (rps.enabled) {
+			if (!rps.isPlaying()) return true;
+			else return false;
+		}
+		
+        var fps = e.findByName("FogPS").particlesystem;
+		if (fps.enabled) {
+			if (!fps.isPlaying()) return true;
+			else return false;
+		}
+		
+		return true;
+	}
     
     this.calculateNormal = function(){
         var vectora = this.getVertex(0);

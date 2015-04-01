@@ -857,4 +857,18 @@ function multScalar(vector, scalar) {
 	vector.x *= scalar;
 	vector.y *= scalar;
 	vector.z *= scalar;
+};
+
+function scale(obj, scale) {
+	var s = obj.getLocalScale.x + scale;
+	obj.setLocalScale(s, s, s);
+};
+
+//Not actually a lerp, this one is just more useful to me
+//Returns the distance between low and high that value is as [0, 1]
+function lerp(low, high, value) {
+	var h = high - low;
+	var v = value - low;
+	
+	return (pc.math.clamp(v, 0, h) / h);
 }

@@ -14,130 +14,84 @@ pc.script.create('Atmosphere', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             this.atm = context.root.findByName("Atmosphere");
-            
-			this.rainstack = [];
+			
 			this.fogstack = [];
+			this.rainstack = [];
+
+			this.audio = context.root._children[0].script.AudioController;
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            
-            //console.log('fogstack', this.fogstack.length);
-            //console.log('rainstack', this.rainstack.length);
-			/*
-            if (this.rainstack.length < this.stackBuffer) {
-                this.makeFog(x,0,z);
-                this.makeRain(x,0,z);
-            }
-            */
-            
-			/*
-            if (this.rainstack.length >= this.stackBuffer) {
-                var e = this.rainstack.shift();
-                var destroyable = this.checkDestroyable(e);
-                
-                if (destroyable) e.destroy();
-                else this.rainstack.unshift(e)
-            }
-			*/
-			/*
+			//console.log(this.rainstack.length + " " + this.fogstack.length);
+        },
+        
+		makeRain: function(rotation) {
 			for (var i = 0; i < this.rainstack.length; i++) {
-				var e = this.rainstack.shift();
-				if (this.checkDestroyable(e)) {
-					//e.destroy();
-				} else {
-					this.rainstack.push(e);
+				var r = this.rainstack[i];
+				if (!r.enabled) {
+					//Found an unused one
+					r.enabled = true;
+					r.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+					return this.rainstack[i];
 				}
 			}
 			
+			//Create a new one
+			var r = this.createRain(rotation);
+			this.rainstack.push(r);
+			return r;
+		},
+		
+        createRain: function(rotation) {
+            console.log('rainStack new length:', this.rainstack.length);
+			var e = this.atm.clone(); // Clone Atmosphere
+			this.entity.getParent().addChild(e); // Add it as a sibling to the original
+			
+			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+			
+			//var rain = e.findByName("RainPS");
+            var rain = e._children[2];
+			
+			rain.particlesystem.enabled = true;
+			//rain.particlesystem.play();
+
+			this.audio.sound_MakeRain();
+			
+			return e;
+        },
+        
+		makeFog: function(rotation) {
 			for (var i = 0; i < this.fogstack.length; i++) {
-				var e = this.fogstack.shift();
-				if (this.checkDestroyable(e)) {
-					//e.destroy();
-				} else {
-					this.fogstack.push(e);
+				var r = this.fogstack[i];
+				if (!r.enabled) {
+					//Found an unused one
+					r.enabled = true;
+					r.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+					return this.fogstack[i];
 				}
-			}*/
-        },
-        
-        makeRain: function(position, rotation) {
-            if (this.rainstack.length < this.stackBuffer){
-                var e = this.atm.clone(); // Clone Atmosphere
-                //e.rotate(rotation.x - 90, rotation.y, rotation.z);
-				e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-                //e.setPosition(position);
-
-                this.entity.getParent().addChild(e); // Add it as a sibling to the original
-    			
-    			//e.destroyable = false;
-    			
-    			var rain = e.findByName("RainPS");
-                //rain.rotate(rotation.x - 90, rotation.y, rotation.z);
-    			//rain.setPosition(position);
-    			
-                rain.particlesystem.enabled = true;
-                rain.particlesystem.play();
-                
-                this.rainstack.push(e);
-    			return e;
-            } else {
-                for (var i = 0; i < this.rainstack.length; i++) {
-                    var e = this.rainstack.shift();
-                    if (this.checkDestroyable(e)) {
-                        // if this is reusable
-                        //e.rotate(rotation.x - 90, rotation.y, rotation.z);
-						e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-                        //e.setPosition(position);
-                        var rain = e.findByName("RainPS");
-                        
-
-                        rain.particlesystem.reset();
-                        rain.particlesystem.play();
-                        return e;
-                    } else {
-                        this.rainstack.push(e);
-                    }
-                }
-            }
-        },
-        
-        makeFog: function(position, rotation) {
-            if (this.fogstack.length < this.stackBuffer) {
-                var e = this.atm.clone(); // Clone Atmosphere
-                //e.rotate(rotation.x - 90, rotation.y, rotation.z);
-				e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-                this.entity.getParent().addChild(e); // Add it as a sibling to the original
-    			
-    			//e.destroyable = false;
-                
-    			var fog = e.findByName("FogPS");
-
-    			//fog.setPosition(position);
-    			
-                fog.particlesystem.enabled = true;
-                fog.particlesystem.play();
-    			
-                this.fogstack.push(e);
-    			return e;
-            } else {
-                for (var i = 0; i < this.fogstack.length; i++) {
-                    var e = this.fogstack.shift();
-                    if (this.checkDestroyable(e)) {
-                        //e.rotate(rotation.x - 90, rotation.y, rotation.z);
-						e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-                        // if this is reusable
-                        var fog = e.findByName("FogPS");
-                        
-                        //fog.setPosition(position);
-
-                        fog.particlesystem.reset();
-                        fog.particlesystem.play();
-                        return e;
-                    } else {
-                        this.fogstack.push(e);
-                    }
-                }
-            }
+			}
+			
+			//Create a new one
+			var r = this.createFog(rotation);
+			this.fogstack.push(r);
+			return r;
+		},
+		
+        createFog: function(rotation) {
+            console.log('fogStack new length:', this.fogstack.length);
+			var e = this.atm.clone(); // Clone Atmosphere
+			this.entity.getParent().addChild(e); // Add it as a sibling to the original
+			
+			e.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+			
+			//var fog = e.findByName("FogPS");
+            var fog = e._children[1];
+			
+			fog.particlesystem.enabled = true;
+			//fog.particlesystem.play();
+			
+			return e;
         },
         
         makeStorm: function() {
@@ -158,12 +112,9 @@ pc.script.create('Atmosphere', function (context) {
         },
 
         checkDestroyable: function(e) {
-			//if (!e.destroyable) return false;
-			
             if (e.findByName("RainPS").particlesystem.enabled && !e.findByName("RainPS").particlesystem.isPlaying())
                 return true;
-            
-            
+			
             if (e.findByName("FogPS").particlesystem.enabled && !e.findByName("FogPS").particlesystem.isPlaying())
                 return true;
             

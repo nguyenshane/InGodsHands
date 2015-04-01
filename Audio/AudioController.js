@@ -81,12 +81,63 @@ pc.script.create('AudioController', function (context) {
             
 			this.audio.audiosource.play("string_pull");
 		},
+
 		sound_TribeMov: function(){
 			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             //console.log("Tribe has moved");
             this.audio.audiosource.play("tribeMovement");
+		},
+
+		sound_TribePray: function(){
+			console.log("Play sound: Tribe Pray");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Prayer");
+		},
+
+		sound_TribePraise: function(){
+			console.log("Play sound: Tribe Praise");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Praise");
+		},
+
+		sound_TribeDenounce: function(){
+			console.log("Play sound: Tribe Denounce");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Angry Chant");
+		},
+
+		sound_MakeThunder: function(){
+			console.log("Play sound: Thunder");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Thunder");
+		},
+
+		sound_MakeRain: function(){
+			console.log("Play sound: Rain");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Rain Loop");
 		},
     };
 
