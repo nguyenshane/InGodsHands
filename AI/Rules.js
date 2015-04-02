@@ -144,7 +144,8 @@ var wantToMigrate = function() {
     
     this.weight = 2;
     this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isSpiteful];
+                       allConditions.isSpiteful,
+                       allConditions.isStockpileDecreasing];
 };
 
 wantToMigrate.prototype = {
@@ -180,7 +181,8 @@ var needTemperatureChange = function() {
     
     this.weight = 3;
     this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isNotSpiteful];
+                       allConditions.isNotSpiteful,
+                       allConditions.isStockpileDecreasing];
 };
 
 needTemperatureChange.prototype = {
