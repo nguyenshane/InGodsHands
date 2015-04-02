@@ -74,15 +74,39 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	Tile.animalStats = {
 		fox: {
-			type: "fox"
+			type: "fox",
+			minTemp: 30,
+			maxTemp: 100,
+			idealTemp: 60,
+			minWater: 20,
+			maxWater: 100,
+			idealWater: 40,
+			waterUsage: 1.0,
+			growRate: 0.75
 		},
 		
 		pig: {
-			type: "pig"
+			type: "pig",
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 30,
+			maxWater: 100,
+			idealWater: 50,
+			waterUsage: 0.6,
+			growRate: 0.6
 		},
 		
 		cow: {
-			type: "cow"
+			type: "cow",
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 40,
+			maxWater: 100,
+			idealWater: 55,
+			waterUsage: 0.7,
+			growRate: 0.3
 		}
 	};
 	
@@ -219,6 +243,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
+		this.spawnAnimal();
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -374,7 +399,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.spawnTree = function(temperature, size) {
 		if (this.hasTree || this.isOcean) return;
 		
-		var maxDist = 3;
+		var maxDist = 4;
 		var localTreeCount = 0.0;
 		visitedTileCount = 0.0;
 		
@@ -431,7 +456,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var t1dist = this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater);
 		var t2dist = this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater);
 		
-		t2dist *= pc.math.random(0.8, 1.2); //Randomize slightly to provide some variability
+		//Randomize slightly to provide some variability
+		t1dist *= pc.math.random(0.8, 1.2);
+		t2dist *= pc.math.random(0.8, 1.2);
 		
 		var type = 0;
 		if (t2dist < t1dist) type = 1;
@@ -465,6 +492,81 @@ function Tile(index, vertexa, vertexb, vertexc){
 		}
 		
 		return d;
+	};
+	
+	//Creates a new animal on this tile if the animal density in the area is too low
+	this.spawnAnimal = function(temperature, size) {
+		if (this.hasAnimal || this.isOcean) return;
+		
+		var maxDist = 8;
+		var localAnimalCount = 0.0;
+		visitedTileCount = 0.0;
+		
+		var queue = new Queue();
+		var visited = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) visited[s] = false;
+		var distances = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) distances[s] = -2;
+		
+		queue.enqueue(this.index);
+		visited[this.index] = true;
+		distances[this.index] = 0;
+		visitedTileCount++;
+		
+		while (!queue.isEmpty()) {
+			var tileIndex = queue.dequeue();
+			var tile = ico.tiles[tileIndex];
+			var neighbors = tile.getNeighborIndices();
+			
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = neighbors[i];
+				if (!visited[neighbor]) {
+					if (distances[tileIndex] < maxDist && !ico.tiles[neighbor].isOcean) {
+						if (ico.tiles[neighbor].hasAnimal) localAnimalCount++;
+						visitedTileCount++;
+						
+						visited[neighbor] = true;
+						queue.enqueue(neighbor);
+						distances[neighbor] = distances[tileIndex] + 1;
+					}
+				} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			}
+		}
+		
+		var localAnimalDensity = localAnimalCount / visitedTileCount;
+		
+		if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
+	};
+	
+	//Adds an animal to this tile
+	this.createAnimal = function(temperature, size) {
+		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+		var angle = m.getEulerAngles();
+		
+		//Determine ideal animal type given this tile's current properties
+		var t1dist = this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater);
+		var t2dist = this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater);
+		var t3dist = this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater);
+		
+		//Randomize slightly to provide some variability
+		t1dist *= pc.math.random(0.8, 1.2);
+		t2dist *= pc.math.random(0.8, 1.2);
+		t3dist *= pc.math.random(0.8, 1.2);
+		
+		var type = 0;
+		if (t2dist < t1dist && t2dist < t3dist) type = 1; //most inelegant way of doing this...
+		else if (t3dist < t2dist && t3dist < t1dist) type = 2;
+		
+		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
+		this.hasAnimal = true;
+	};
+	
+	this.removeAnimal = function() {
+		if (this.animal !== undefined) this.animal.destroyFlag = true;
+		this.hasAnimal = false;
 	};
 	
 	this.startRain = function() {

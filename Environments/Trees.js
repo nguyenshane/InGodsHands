@@ -2,7 +2,9 @@
 // Description: TREES
 ///
 
+
 pc.script.attribute('stackBuffer', 'number', 50); // change this number to optimal the buffer
+
 
 pc.script.create('Trees', function (context) {
     // Creates a new Tree instance
@@ -16,7 +18,6 @@ pc.script.create('Trees', function (context) {
 			var t1 = new Date();
 			
 			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
-			//if (treeDensity === undefined) treeDensity = 0.35;
 			
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
@@ -31,24 +32,7 @@ pc.script.create('Trees', function (context) {
 				tile.spawnTree(tile.getTemperature(), Math.floor((Math.random() * 2) + 1.3)/8);
 			}
 			
-			/*
-            var noOcean = false;
-            while (this.trees_stack.length < this.stackBuffer && !noOcean) {
-                shuffleArray(randomTiles);
-                
-                var tile = ico.tiles[randomTiles[0]];
-                for (var i = 1; i < ico.tiles.length && (tile.isOcean || tile.hasTree); i++) {
-                    tile = ico.tiles[randomTiles[i]];
-                }
-                
-                if (!tile.isOcean && !tile.hasTree) {
-					tile.createTree();
-				} else noOcean = true;
-            }
-			*/
-			
 			var t2 = new Date();
-			
 			console.log("tree init time: " + (t2-t1));
         },
 
@@ -62,6 +46,7 @@ pc.script.create('Trees', function (context) {
 				}
 			}
 			
+			/*
 			var destroyFailed = false;
             while (this.trees_stack.length >= this.stackBuffer && !destroyFailed) {
                 var e = this.trees_stack.shift();
@@ -73,6 +58,7 @@ pc.script.create('Trees', function (context) {
 					destroyFailed = true;
 				}
             }
+			*/
         },
         
         makeTree: function(position, rotation, type, size) {
@@ -97,7 +83,6 @@ pc.script.create('Trees', function (context) {
 						e.stats = Tile.treeStats.tree1;
 				}
 				
-				//var scale = Math.floor((Math.random() * 2) + 1.3)/8;
 				tree.setLocalScale(size, size, size);
 				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 				tree.setPosition(position);

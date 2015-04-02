@@ -71,9 +71,6 @@ pc.script.create('HIDInterface', function (context) {
 					console.log("Done temp change");
 				}
         	}
-
-        	//console.log(globalTemperature);
-        	//console.log(temperatureDest);
         },
 		
 		moved_T: function(position, distance, speed) {
