@@ -150,20 +150,6 @@ pc.script.create('globalInterface', function (context) {
 			*/
 			
 			
-            // Test temperature
-            // time += dt;
-            // var t = (time % 10);
-            // globalTemperature = t*10;
-            // End test temperature
-
-            // Test belief
-            // if ((prevTotalBelief > totalBelief && totalBelief > 0) || totalBelief > maxTotalBelief) {
-            //     prevTotalBelief = totalBelief;
-            //     totalBelief -= dt* 10;
-            // } else {
-            //     prevTotalBelief = totalBelief;
-            //     totalBelief += dt* 10;
-            // }
 
             // Test vertex neighbors update
             for (var i = 0; i < this.testVerts.length; ++i) {
@@ -171,19 +157,11 @@ pc.script.create('globalInterface', function (context) {
             	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
             	//this.vertexMovementTest(i, (i + (Math.floor((globalTime/2) % 2) * 4)) % 8, (i + (Math.floor((globalTime/2) % 2) * 4) + 4) % 8);
             }
+
+            // Eroder agent update. Comment to not have erosion on continents
             this.eroder.update();
 
             sun.setPosition(0, 0, 0);
-
-            /**** Test sun rotation ****/
-            //sun.rotate(0, dt * 100, 0);
-            //sun.rotate(0, dt * this.globalSunRotation, 0);
-            //sun.setEulerAngles(camera.getEulerAngles());
-            //sun.rotateLocal(0, dt * 100, 0);
-            //shaderSun.rotateLocal(0, dt * this.globalSunRotation * -2, 0);
-            //shaderSun.setEulerAngles(camera.getEulerAngles());
-            //sun.setEulerAngles(0, 90 + this.time, 0);
-            /****                   ****/
         },
 
         vertexMovementTest: function(vertex, direction, backup) {

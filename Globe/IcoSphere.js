@@ -29,11 +29,6 @@ function IcoSphere(device, radius, subdivisions) {
 
     this.topIndex = 0;
     this.bottomIndex = 11;
-	
-    //var numVerts = this._calculateNumVerts(12, 20, subdivisions);
-	//var numFaces = (numVerts - 2) * 2;
-
-
 
 	//*** Start setting initial vertices ***
 
@@ -202,6 +197,7 @@ function IcoSphere(device, radius, subdivisions) {
 	this.tiles[17] = new Tile(17, 9, 11, 8);
 	this.tiles[18] = new Tile(18, 10, 11, 9);
 	this.tiles[19] = new Tile(19, 6, 11, 10);
+
 	// Manually set neighbors for 20 faces
 	this.tiles[0].setNeighbors(1, 5, 4);
 	this.tiles[1].setNeighbors(2, 6, 0);
@@ -234,33 +230,11 @@ function IcoSphere(device, radius, subdivisions) {
 		this.tiles[i].calculateCenter2();
 		this.tiles[i].calculateNormal();
 	}
-	
-	// Run subdivide (Uncomment)
-	/*for (var i = 1; i < subdivisions; ++i) {
-    	var jMax = this.currentFaces;
-    	
-    	for (var j = 0; j < jMax; ++j) {
-    		this._subdivideFace(j);
-    	}
-    		
-    	for (j = 0; j < jMax; ++j) {
-    		this.tiles[j].divided = false;
-    	}
-    }*/
     for (var i = 1; i < subdivisions; ++i) {
     	this.subdivideGraph();
     }
     console.log(this);
 	
-	// Normalize to radius
-    /*for (var i = 0; i < this.currentVerts; i++) {
-		var vert = this._getUnbufferedVertex(i);
-		vert.normalize();
-		vert.scale(Math.max(1, Math.min(2, this.radius)));
-		this.vertices[i*3] = vert.x;
-		this.vertices[i*3 + 1] = vert.y;
-		this.vertices[i*3 + 2] = vert.z;
-    }*/
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
     	this.vertexGraph[i].stagger(0.075);
@@ -276,14 +250,6 @@ function IcoSphere(device, radius, subdivisions) {
 	console.log("icosphere initialization: " + (t2-t1));
 	
 	//Generate terrain
-	/*
-    // Test extrude, this should be where the repellers algorithm be replaced
-    for (i = 0; i < this.currentFaces; ++i) {
-       tiles[i].testExtrude();
-    }
-	*/
-
-	// Uncomment
 	this.vertexHeights = [];
 	for (var size = this.vertexGraph.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
@@ -342,15 +308,6 @@ IcoSphere.prototype.setVertexHeight = function(index, height) {
 
 IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 	this.vertexGraph[index].setHeight(magnitude);
-	/*for (var i = 0; i < this.vertexGroups[index].length; i++) {
-		var vertexIndex = this.vertexGroups[index][i];
-		var vert = this._getUnbufferedVertex(vertexIndex);
-		vert.normalize();
-		vert.scale(Math.max(1, Math.min(2, magnitude)));
-		this.vertices[vertexIndex*3] = vert.x;
-		this.vertices[vertexIndex*3 + 1] = vert.y;
-		this.vertices[vertexIndex*3 + 2] = vert.z;
-	}*/
 };
 
 //Should only be called once per frame if the mesh has been altered
@@ -365,7 +322,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		tile.calculateRotationVectors();
 		tile.isOcean = false;
 
-		console.log(tile);
+		//console.log(tile);
 		
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
@@ -383,7 +340,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;
-		console.log("Normal " + i + ": (" + this.normals[i*3] + ", " + this.normals[i*3+1] + ", " + this.normals[i*3+2] + ")");
+		//console.log("Normal " + i + ": (" + this.normals[i*3] + ", " + this.normals[i*3+1] + ", " + this.normals[i*3+2] + ")");
     }
 };
 
@@ -426,177 +383,6 @@ IcoSphere.prototype.subdivideGraph = function() {
 	}
 }
 
-/*
-IcoSphere.prototype._subdivideFace = function(index) {
-    var midpointc = this.tiles[index].getMidpoint(0,1);
-    var vertexc;
-	
-    if (this.tiles[index].neighborc.divided === true) {
-		vertexc = this.tiles[index].neighborc.getVertexIndex(midpointc);
-		if (vertexc == -1) {
-			console.log("Vertex c at tile " + index + ": " + midpointc + "not found.");
-		}
-	} else {
-		vertexc = this.currentVerts;
-		this.vertices[this.currentVerts * 3] = midpointc.x;
-		this.vertices[this.currentVerts * 3 + 1] = midpointc.y;
-		this.vertices[this.currentVerts * 3 + 2] = midpointc.z;
-		++this.currentVerts;
-	}
-	
-	var midpointb = this.tiles[index].getMidpoint(0, 2);
-	var vertexb;
-	if (this.tiles[index].neighborb.divided === true) {
-		vertexb = this.tiles[index].neighborb.getVertexIndex(midpointb);
-		if (vertexb == -1) {
-			console.log("Vertex b at tile " + index + ": " + midpointb + "not found.");
-		}
-	} else {
-		vertexb = this.currentVerts;
-		this.vertices[this.currentVerts * 3] = midpointb.x;
-		this.vertices[this.currentVerts * 3 + 1] = midpointb.y;
-		this.vertices[this.currentVerts * 3 + 2] = midpointb.z;
-		++this.currentVerts;
-	}
-	
-	
-	var midpointa = this.tiles[index].getMidpoint(1, 2);
-    var vertexa;
-	if (this.tiles[index].neighbora.divided === true) {
-		vertexa = this.tiles[index].neighbora.getVertexIndex(midpointa);
-		if (vertexa == -1) {
-			console.log("Vertex a at tile " + index + ": " + midpointa + "not found.");
-		}
-	} else {
-		vertexa = this.currentVerts;
-		this.vertices[this.currentVerts * 3] = midpointa.x;
-		this.vertices[this.currentVerts * 3 + 1] = midpointa.y;
-		this.vertices[this.currentVerts * 3 + 2] = midpointa.z;
-		++this.currentVerts;
-	}
-	
-
-	var tilea = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[0], vertexc, vertexb);
-	tilea.index = this.currentFaces-1;
-	var tileb = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[1], vertexa, vertexc);
-	tileb.index = this.currentFaces-1;
-	var tilec = this.tiles[this.currentFaces++] = new Tile(this, this.tiles[index].vertexIndices[2], vertexb, vertexa);
-	tilec.index = this.currentFaces-1;
-	
-	var neighbors = this.tiles[index].getNeighborIndices();
-	tilea.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
-	tileb.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
-	tilec.setNeighbors(neighbors[0], neighbors[1], neighbors[2]);
-	
-	if (this.tiles[index].neighborc.divided === true) {
-			var ac = null, bb = null;			
-			if (this.tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
-				ac = this.tiles[index].neighborc.neighbora;
-			} if (this.tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
-				ac = this.tiles[index].neighborc.neighborb;
-			} if (this.tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) != -1) {
-				ac = this.tiles[index].neighborc.neighborc;
-			}
-			if (ac === null) {
-				console.log("Tile " + index + " has poor neighbor structure at ac.");
-			}
-			tilea.neighborc = ac;
-			
-			ac.neighborb = tilea;
-			
-			if (this.tiles[index].neighborc.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bb = this.tiles[index].neighborc.neighbora;
-			} else if (this.tiles[index].neighborc.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bb = this.tiles[index].neighborc.neighborb;
-			} else if (this.tiles[index].neighborc.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bb = this.tiles[index].neighborc.neighborc;
-			}
-			if (bb === null) {
-    			console.log("Tile " + index + " has poor neighbor structure at bb.");
-			}
-			tileb.neighborb = bb;
-			bb.neighborc = tileb;
-	}
-	
-	if (this.tiles[index].neighborb.divided === true) {
-			var ab = null, cc = null;
-			
-			if (this.tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
-				ab = this.tiles[index].neighborb.neighbora;
-			} else if (this.tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
-				ab = this.tiles[index].neighborb.neighborb;
-			} else if (this.tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[0])) == this.tiles[index].vertexIndices[0]) {
-				ab = this.tiles[index].neighborb.neighborc;
-			}
-			if (ab === null) {
-				console.log("Tile " + index + " has poor neighbor structure at ab.");
-			}
-			tilea.neighborb = ab;
-			ab.neighborc = tilea;
-			
-			if (this.tiles[index].neighborb.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cc = this.tiles[index].neighborb.neighbora;
-			} else if (this.tiles[index].neighborb.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cc = this.tiles[index].neighborb.neighborb;
-			} else if (this.tiles[index].neighborb.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cc = this.tiles[index].neighborb.neighborc;
-			}
-			if (cc === null) {
-				console.log("Tile " + index + " has poor neighbor structure at cc.");
-			}
-			tilec.neighborc = cc;
-			cc.neighborb = tilec;
-	}
-	
-	if (this.tiles[index].neighbora.divided === true) {
-			var bc = null, cb = null;
-			
-			if (this.tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bc = this.tiles[index].neighbora.neighbora;
-			} else if (this.tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bc = this.tiles[index].neighbora.neighborb;
-			} else if (this.tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[1])) == this.tiles[index].vertexIndices[1]) {
-				bc = this.tiles[index].neighbora.neighborc;
-			}
-			if (bc === null) {
-				console.log("Tile " + index + " has poor neighbor structure at bc.");
-			}
-			tileb.neighborc = bc;
-			bc.neighborb = tileb;
-			
-			if (this.tiles[index].neighbora.neighbora.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cb = this.tiles[index].neighbora.neighbora;
-			} else if (this.tiles[index].neighbora.neighborb.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cb = this.tiles[index].neighbora.neighborb;
-			} else if (this.tiles[index].neighbora.neighborc.getVertexIndex(this._getUnbufferedVertex(this.tiles[index].vertexIndices[2])) == this.tiles[index].vertexIndices[2]) {
-				cb = this.tiles[index].neighbora.neighborc;
-			}
-			if (cb === null) {
-				console.log("Tile " + index + " has poor neighbor structure at cb.");
-			}
-			tilec.neighborb = cb;
-			cb.neighborc = tilec;
-	}
-	
-	this.tiles[index].vertexIndices[0] = vertexa;
-    this.tiles[index].vertexIndices[1] = vertexb;
-    this.tiles[index].vertexIndices[2] = vertexc;
-    this.indices[index*3] = vertexa;
-    this.indices[index*3 + 1] = vertexb;
-    this.indices[index*3 + 2] = vertexc;
-
-
-    tilea.neighbora = this.tiles[index];
-    tileb.neighbora = this.tiles[index];
-    tilec.neighbora = this.tiles[index];
-	
-	this.tiles[index].neighbora = tilea;
-	this.tiles[index].neighborb = tileb;
-	this.tiles[index].neighborc = tilec;
-	
-	this.tiles[index].divided = true;
-};*/
-
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
 IcoSphere.prototype.unshareVertices = function() {
 	var vertexGroups = [];
@@ -612,27 +398,6 @@ IcoSphere.prototype.unshareVertices = function() {
 			vertices.push(this._getUnbufferedVertex(tile.vertexIndices[j]));
 
 			this.vertexGraph[tile.vertexIndices[j]].addIndex(vertices.length-1);
-
-
-			/*Group vertices in the same position
-			var newV = vertices[vertices.length-1];
-			vertexParents[vertices.length-1] = this.vertexGraph.length;
-			for (var k = 0, done = false; k < vertices.length-1 && !done; k++) {
-				var v = vertices[k];
-				
-				//Try to find an existing group for this vertex
-				if (v.x === newV.x && v.y === newV.y && v.z === newV.z) {
-					vertexParents[vertices.length-1] = vertexParents[k];
-					this.vertexGraph[vertexParents[k]].addIndex(vertices.length-1);
-					done = true;
-				}
-			}
-			
-			if (vertexParents[vertices.length-1] === vertexGroups.length) {
-				this.vertexGraph.push(this.vertexGraph[vertices.length-1]); //No existing shared vertices found, create a new group with the new vertex
-			}
-			
-			tile.vertexIndices[j] = vertexParents[vertices.length-1]; //Set the tile 'reference' to the vertex group*/
 		}
 	}
 
@@ -648,7 +413,6 @@ IcoSphere.prototype.unshareVertices = function() {
 	}
 	
 	//Set data in icosphere
-	//this.vertexGraph = vertexGroups;
 	this.vertexParents = vertexParents;
 	this.vertices = bufferedVertices;
 

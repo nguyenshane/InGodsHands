@@ -649,318 +649,6 @@ function Tile(index, vertexa, vertexb, vertexc){
         this.createSubface(1, new2, this.vertexIndices[1], new0);
 
         this.createSubface(2, new1, new0, this.vertexIndices[2]);
-
-        /*// Create tile based at vertex 0
-        ico.tiles[ico.tiles.length] = new Tile(ico.tiles.length, this.vertexIndices[0], new2.index, new1.index);
-
-        // Set its c neighbor if its c neighbor is divided
-        if (this.neighborc.divided == true) {
-            if (this.neighborc.neighbora.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborc.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighbora.neighbora == this) {
-                    this.neighborc.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighbora.neighborb == this) {
-                    this.neighborc.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighbora.neighborc == this) {
-                    this.neighborc.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborc.neighborb.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborc.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighborb.neighbora == this) {
-                    this.neighborc.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborb.neighborb == this) {
-                    this.neighborc.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborb.neighborc == this) {
-                    this.neighborc.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborc.neighborc.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborc.neighborc subdiv here!");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighborc;
-
-
-                //console.log("Neighbora: " + this.neighborc.neighborc.neighbora.index);
-                console.log(ico.tiles[ico.tiles.length - 1].index);
-                console.log(this.index);
-                console.log("Neighbora: " + this.neighborc.neighborc.neighbora.index);
-                console.log("Neighborb: " + this.neighborc.neighborc.neighborb.index);
-                console.log("Neighborc: " + this.neighborc.neighborc.neighborc.index);
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighborc.neighbora == this) {
-                    this.neighborc.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborc.neighborb == this) {
-                    this.neighborc.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborc.neighborc == this) {
-                    this.neighborc.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-
-
-                console.log(ico.tiles[ico.tiles.length - 1].index);
-                console.log(this.index);
-                console.log("Neighbora: " + this.neighborc.neighborc.neighbora.index);
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc;
-        }
-        if (this.neighborb.divided == true) {
-            if (this.neighborb.neighbora.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighbora.neighbora == this) {
-                    this.neighborb.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighbora.neighborb == this) {
-                    this.neighborb.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighbora.neighborc == this) {
-                    this.neighborb.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborb.neighborb.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighborb.neighbora == this) {
-                    this.neighborb.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborb.neighborb == this) {
-                    this.neighborb.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborb.neighborc == this) {
-                    this.neighborb.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborb.neighborc.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighborc subdiv");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighborc;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighborc.neighbora == this) {
-                    this.neighborb.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborc.neighborb == this) {
-                    this.neighborb.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborc.neighborc == this) {
-                    this.neighborb.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb;
-        }
-
-        // Create tile based at vertex 1
-        ico.tiles[ico.tiles.length] = new Tile(ico.tiles.length, new2.index, this.vertexIndices[1], new0.index);
-
-        // Set its c neighbor if its c neighbor is divided
-        if (this.neighborc.divided == true) {
-            if (this.neighborc.neighbora.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighborc.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighbora.neighbora == this) {
-                    this.neighborc.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighbora.neighborb == this) {
-                    this.neighborc.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighbora.neighborc == this) {
-                    this.neighborc.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborc.neighborb.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighborc.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighborb.neighbora == this) {
-                    this.neighborc.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborb.neighborb == this) {
-                    this.neighborc.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborb.neighborc == this) {
-                    this.neighborc.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborc.neighborc.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighborc.neighborc subdiv");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc.neighborc;
-
-                // Update other's neighbor to new tile
-                if (this.neighborc.neighborc.neighbora == this) {
-                    this.neighborc.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborc.neighborb == this) {
-                    this.neighborc.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborc.neighborc.neighborc == this) {
-                    this.neighborc.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighborc = this.neighborc;
-        }
-        if (this.neighbora.divided == true) {
-            if (this.neighbora.neighbora.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighbora.neighbora == this) {
-                    this.neighbora.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighbora.neighborb == this) {
-                    this.neighbora.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighbora.neighborc == this) {
-                    this.neighbora.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighbora.neighborb.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighborb.neighbora == this) {
-                    this.neighbora.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborb.neighborb == this) {
-                    this.neighbora.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborb.neighborc == this) {
-                    this.neighbora.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighbora.neighborc.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighborc subdiv");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighborc;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighborc.neighbora == this) {
-                    this.neighbora.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborc.neighborb == this) {
-                    this.neighbora.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborc.neighborc == this) {
-                    this.neighbora.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora;
-        }
-
-        // Create tile based at vertex 2
-        ico.tiles[ico.tiles.length] = new Tile(ico.tiles.length, new1.index, new0.index, this.vertexIndices[2]);
-
-        // Set its b neighbor if its b neighbor is divided
-        if (this.neighborb.divided == true) {
-            if (this.neighborb.neighbora.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighbora.neighbora == this) {
-                    this.neighborb.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighbora.neighborb == this) {
-                    this.neighborb.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighbora.neighborc == this) {
-                    this.neighborb.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborb.neighborb.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighborb.neighbora == this) {
-                    this.neighborb.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborb.neighborb == this) {
-                    this.neighborb.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborb.neighborc == this) {
-                    this.neighborb.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighborb.neighborc.containsVertex(this.vertexIndices[0])) {
-                console.log("Tile " + this.index + ": in neighborb.neighborc subdiv");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb.neighborc;
-
-                // Update other's neighbor to new tile
-                if (this.neighborb.neighborc.neighbora == this) {
-                    this.neighborb.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborc.neighborb == this) {
-                    this.neighborb.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighborb.neighborc.neighborc == this) {
-                    this.neighborb.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighborb = this.neighborb;
-        }
-        if (this.neighbora.divided == true) {
-            if (this.neighbora.neighbora.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighbora subdiv");
-
-                // Set neighbor to neighbora
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighbora;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighbora.neighbora == this) {
-                    this.neighbora.neighbora.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighbora.neighborb == this) {
-                    this.neighbora.neighbora.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighbora.neighborc == this) {
-                    this.neighbora.neighbora.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighbora.neighborb.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighborb subdiv");
-
-                // Set neighbor to neighborb
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighborb;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighborb.neighbora == this) {
-                    this.neighbora.neighborb.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborb.neighborb == this) {
-                    this.neighbora.neighborb.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborb.neighborc == this) {
-                    this.neighbora.neighborb.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            } else if (this.neighbora.neighborc.containsVertex(this.vertexIndices[1])) {
-                console.log("Tile " + this.index + ": in neighbora.neighborc subdiv");
-
-                // Set neighbor to neighborc
-                ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora.neighborc;
-
-                // Update other's neighbor to new tile
-                if (this.neighbora.neighborc.neighbora == this) {
-                    this.neighbora.neighborc.neighbora = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborc.neighborb == this) {
-                    this.neighbora.neighborc.neighborb = ico.tiles[ico.tiles.length - 1];
-                } else if (this.neighbora.neighborc.neighborc == this) {
-                    this.neighbora.neighborc.neighborc = ico.tiles[ico.tiles.length - 1];
-                }
-            }
-        } else {
-            ico.tiles[ico.tiles.length - 1].neighbora = this.neighbora;
-        }*/
-
-        
         
         this.neighbors[0] = ico.tiles[ico.tiles.length - 3];
         ico.tiles[ico.tiles.length - 3].neighbors[0] = this;
@@ -977,7 +665,6 @@ function Tile(index, vertexa, vertexb, vertexc){
         this.vertexIndices[2] = new2;
 
         this.divided = true;
-        //ico.tiles[ico.tiles.length] = new Tile(ico, vertexIndices[0], new2.index, new1.index);
     };
 
     this.getNeighborContainingVertex = function(index) {
@@ -986,11 +673,11 @@ function Tile(index, vertexa, vertexb, vertexc){
                 return this.neighbors[i];
             }
         }
-        console.error("Tile " + this.index + " has no neighbors containing vertex " + index);
-        console.log(this);
-        console.log(this.neighbors[0]);
-        console.log(this.neighbors[1]);
-        console.log(this.neighbors[2]);
+        //console.error("Tile " + this.index + " has no neighbors containing vertex " + index);
+        //console.log(this);
+        //console.log(this.neighbors[0]);
+        //console.log(this.neighbors[1]);
+        //console.log(this.neighbors[2]);
     }
 
     this.getNeighborIndexToTile = function(otherIndex) {
@@ -999,11 +686,11 @@ function Tile(index, vertexa, vertexb, vertexc){
                 return i;
             }
         }
-        console.error("Tile " + this.index + " has no neighbors to tile " + index);
-        console.log(this);
-        console.log(this.neighbors[0]);
-        console.log(this.neighbors[1]);
-        console.log(this.neighbors[2]);
+        //console.error("Tile " + this.index + " has no neighbors to tile " + index);
+        //console.log(this);
+        //console.log(this.neighbors[0]);
+        //console.log(this.neighbors[1]);
+        //console.log(this.neighbors[2]);
     }
 
     this.containsVertex = function(index) {
@@ -1011,21 +698,17 @@ function Tile(index, vertexa, vertexb, vertexc){
     };
 
     this.createSubface = function(vertex, a, b, c) {
-        console.log("Creating subface " + ico.tiles.length + " for face " + this.index);
+        //console.log("Creating subface " + ico.tiles.length + " for face " + this.index);
 
         // Create tile
         ico.tiles[ico.tiles.length] = new Tile(ico.tiles.length, a, b, c);
         var newFace = ico.tiles[ico.tiles.length - 1];
 
-        console.log(newFace);
+        //console.log(newFace);
 
         this.calculateSubfaceNeighbor(vertex, (vertex + 1) % 3);
         this.calculateSubfaceNeighbor(vertex, (vertex + 2) % 3);
 
-        //this.neighbors[vertex] = newFace;
-        //newFace.neighbors[vertex] = this;
-
-        //newFace.updateNeighbors();
     };
 
     this.calculateSubfaceNeighbor = function(vertex, neighbor) {
@@ -1034,16 +717,16 @@ function Tile(index, vertexa, vertexb, vertexc){
 
         // Set the vertex's neighbor if neighbor is divided
         if (this.neighbors[neighbor].divided == true) {
-            console.log("Neighbor " + neighbor + " divided for face " + this.index);
+            //console.log("Neighbor " + neighbor + " divided for face " + this.index);
 
             newNeighbor = this.neighbors[neighbor].getNeighborContainingVertex(this.vertexIndices[vertex]);
 
             if (newNeighbor == null) {
-                console.log(this);
-                console.log(this.neighbors[neighbor]);
+                //console.log(this);
+                //console.log(this.neighbors[neighbor]);
             }
 
-            console.log(newNeighbor);
+            //console.log(newNeighbor);
 
             ico.tiles[ico.tiles.length - 1].neighbors[neighbor] = newNeighbor;
 
