@@ -6,6 +6,7 @@ pc.script.create('tribe', function (context) {
         this.population = 1;
         this.stockpile = 0;
         this.incomingFood = 0;
+        this.stockpileChange = 0;
         
         this.idealTemperature = 65;
         this.currTileTemperature;
@@ -27,6 +28,7 @@ pc.script.create('tribe', function (context) {
         this.stormEffect;
 
         this.rules = [];
+
         this.isBusy = false;
         this.isSpiteful = false;
         this.previousAction;
@@ -417,8 +419,9 @@ pc.script.create('tribe', function (context) {
         },
 
         calculatePopulation: function() {
-            this.stockpile += (this.incomingFood - this.population)/100;
-            console.log("Stockpile" + this.stockpile);
+            this.stockpileChange = (this.incomingFood - this.population)/100; 
+            this.stockpile += this.stockpileChange
+            console.log("Stockpile" + this.stockpileChange);
 
             // Increase population when stockpile is at 100% of required food
             // Take any additional food beyond 100 and add it back to the stock
