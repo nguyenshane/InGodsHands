@@ -77,14 +77,14 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
-        isStockpileIncreasing: function(){
+        isStockpileIncreasing: function(tribe){
             if(tribe.stockpileChange > 0){
                 return true;
             }
             return false;    
         },
 
-        isStockpileDecreasing: function(){
+        isStockpileDecreasing: function(tribe){
             if(tribe.stockpileChange < 0){
                 return true;
             }
