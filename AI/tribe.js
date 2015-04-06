@@ -39,8 +39,8 @@ pc.script.create('tribe', function (context) {
         this.praiseTimer = 0;
         this.godInactionTimer = 0;
         
-        // COMMENT TO TEST NEW GIT PROCEDURE
-
+        this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
+		this.preyInInfluence = [];
     };
 
     // Variables for lerp, in milliseconds
@@ -116,6 +116,17 @@ pc.script.create('tribe', function (context) {
 
             // God inaction timer goes up so long as God doesn't act (Duh)
             this.godInactionTimer += dt;
+			
+			//Check influenced tiles for predators or prey
+			this.predatorsInInfluence = [];
+			this.preyInInfluence = [];
+			for (var i = this.influencedTiles.length-1; i >= 0; i--) {
+				var tile = this.influencedTiles[i];
+				if (tile.hasAnimal) {
+					if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
+					else this.preyInInfluence.push(tile);
+				}
+			}
         },
 
         //////////////////////////////////

@@ -56,7 +56,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 80,
 			waterUsage: 1.0,
-			growRate: 0.75
+			growRate: 0.75,
+			foodContribution: 0.7
 		},
 		
 		tree2: {
@@ -68,7 +69,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 50,
 			waterUsage: 0.6,
-			growRate: 1.0
+			growRate: 1.0,
+			foodContribution: 0.3
 		}
 	};
 	
@@ -82,7 +84,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 40,
 			waterUsage: 1.0,
-			growRate: 0.75
+			growRate: 0.75,
+			foodContribution: 0.2,
+			aggressiveness: 0.4
 		},
 		
 		pig: {
@@ -94,7 +98,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 50,
 			waterUsage: 0.6,
-			growRate: 0.6
+			growRate: 0.6,
+			foodContribution: 0.8,
+			aggressiveness: 0.0
 		},
 		
 		cow: {
@@ -106,7 +112,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 55,
 			waterUsage: 0.7,
-			growRate: 0.3
+			growRate: 0.3,
+			foodContribution: 0.75,
+			aggressiveness: 0.0
 		}
 	};
 	
@@ -220,22 +228,6 @@ function Tile(index, vertexa, vertexb, vertexc){
 		}
 		
 		this.checkResourceLimits();
-		
-		/*
-		///temporary
-		if (this.index === 500) {
-			if (this.humidity > this.maxHumidity * 0.9) this.startRain();
-			
-			var temp = this.getTemperature();
-			temp = pc.math.clamp(temp, 0, 150);
-			
-			var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
-			if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
-			
-			console.log(this.isOcean + " " + this.isRaining + "\nrelative:\t" + rh + "\nhumidity:\t" + this.humidity + "\ngroundwa:\t" + this.groundwater + "\nmaxhumid:\t" + 
-						this.maxHumidity + "\ntemperat:\t" + this.getTemperature());
-		}
-		*/
 	};
 	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)

@@ -45,28 +45,13 @@ pc.script.create('Animals', function (context) {
 					e.destroy();
 				}
 			}
-			
-			/*
-            var destroyFailed = false;
-            while (this.animal_stack.length >= this.stackBuffer && !destroyFailed) {
-                var e = this.animal_stack.shift();
-                var destroyable = this.checkDestroyable(e);
-                
-                if (destroyable) e.destroy();
-                else {
-                    this.animal_stack.unshift(e);
-                    destroyFailed = true;
-                }
-            }
-			*/
         },
         
         makeAnimal: function(position, rotation, type, size) {
             var e = this.animals.clone(); // Clone Animal
 			
             this.entity.getParent().addChild(e); // Add it as a sibling to the original
-            
-            //var animaltype = Math.floor((Math.random() * 3) + 0);
+			
             var animal;
             switch (type) {
                 case 0:

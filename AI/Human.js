@@ -1,5 +1,5 @@
 pc.script.create('Human', function (context) {
-    // Creates a new Tribe instance
+    // Creates a new Human instance
     var Human = function (entity) {
         this.entity = entity;
         
