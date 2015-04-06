@@ -105,7 +105,7 @@ pc.script.create('Globe', function (context) {
             
             // create mesh instance, need node, mesh and material
             this.meshInstance = new pc.scene.MeshInstance(entity, mesh, this.material);
-            console.log(this.meshInstance);
+            //console.log(this.meshInstance);
             
             // create model with node and mesh instance
             var model = new pc.scene.Model();

@@ -44,7 +44,7 @@ pc.script.create('Atmosphere', function (context) {
 		},
 		
         createRain: function(rotation) {
-            console.log('rainStack new length:', this.rainstack.length);
+            //console.log('rainStack new length:', this.rainstack.length);
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			
@@ -79,7 +79,7 @@ pc.script.create('Atmosphere', function (context) {
 		},
 		
         createFog: function(rotation) {
-            console.log('fogStack new length:', this.fogstack.length);
+            //console.log('fogStack new length:', this.fogstack.length);
 			var e = this.atm.clone(); // Clone Atmosphere
 			this.entity.getParent().addChild(e); // Add it as a sibling to the original
 			

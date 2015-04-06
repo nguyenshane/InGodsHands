@@ -243,7 +243,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
-		this.spawnAnimal();
+		this.spawnAnimal(temp, 1.0);
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -399,7 +399,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.spawnTree = function(temperature, size) {
 		if (this.hasTree || this.isOcean) return;
 		
-		var maxDist = 4;
+		var maxDist = 7;
 		var localTreeCount = 0.0;
 		visitedTileCount = 0.0;
 		
@@ -498,7 +498,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.spawnAnimal = function(temperature, size) {
 		if (this.hasAnimal || this.isOcean) return;
 		
-		var maxDist = 8;
+		var maxDist = 12;
 		var localAnimalCount = 0.0;
 		visitedTileCount = 0.0;
 		
@@ -737,14 +737,14 @@ function Tile(index, vertexa, vertexb, vertexc){
     }
 
     this.subdivide = function() {
-        console.log("Entering subdivide for face " + this.index);
+        //console.log("Entering subdivide for face " + this.index);
 
         // Get the three new midpoint vertices
         var new0 = ico.vertexGraph[this.vertexIndices[1]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[2]]);
         var new1 = ico.vertexGraph[this.vertexIndices[2]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[0]]);
         var new2 = ico.vertexGraph[this.vertexIndices[0]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[1]]);
 
-        console.log(new0 + " " + new1 + " " + new2);
+        //console.log(new0 + " " + new1 + " " + new2);
 
         this.createSubface(0, this.vertexIndices[0], new2, new1);
 

@@ -66,7 +66,7 @@ pc.script.create('tribe', function (context) {
 
             this.rotation = this.tile.getRotationAlignedWithNormal();
             //this.entity.setLocalScale(.1, .1, .1);
-            console.log('localscale',this.rotation, this);
+            //console.log('localscale',this.rotation, this);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -81,8 +81,8 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
-            console.log(this.stormEffect.darkness);
-            console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
+            //console.log(this.stormEffect.darkness);
+            //console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
 			// console.log("The influenced tiles length: " + this.influencedTiles.length);
 			
             this.audio = context.root._children[0].script.AudioController;
@@ -214,7 +214,7 @@ pc.script.create('tribe', function (context) {
             }
 
             if(this.prayerTimer <= 0){
-                console.log("Prayer timer up");
+                //console.log("Prayer timer up");
                 this.prayerTimer = 0;
                 this.decreaseBelief();
                 this.isSpiteful = true;
@@ -227,7 +227,7 @@ pc.script.create('tribe', function (context) {
                  this.currTileTemperature < (this.idealTemperature + 5)) &&
                  this.prayerTimer > 0){
 
-                console.log("Prayer fulfilled!");
+                //console.log("Prayer fulfilled!");
                 this.prayerTimer = 0;
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
@@ -241,7 +241,7 @@ pc.script.create('tribe', function (context) {
         },
 
         startPrayForTemperature: function (time) {
-            console.log("TIME TO PRAY");
+            //console.log("TIME TO PRAY");
             this.prayerTimer = time;
             this.setCurrentAction(this.prayForTemperature);
             this.isBusy = true;
@@ -254,7 +254,7 @@ pc.script.create('tribe', function (context) {
         ///////////////////////////
        
         startCowering: function () {
-            console.log("Tribe is now cowering");
+            //console.log("Tribe is now cowering");
             this.cowerTimer = 6;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
@@ -276,20 +276,20 @@ pc.script.create('tribe', function (context) {
                         this.increaseBelief();
                         this.isBusy = false
                         
-                        console.log("THOU HAST BEEN SMITED");
+                        //console.log("THOU HAST BEEN SMITED");
                         break;
 
                     case this.cower:
                         this.decreaseBelief();
                         this.isBusy = false;
-                        console.log("Stop scaring me!");
+                        //console.log("Stop scaring me!");
                         break;
 
                     default:
                         this.increaseFear();
                         this.increaseBelief();
                         this.setCurrentAction(this.previousAction);
-                        console.log("Cower done");
+                        //console.log("Cower done");
                         break;
                 }
                 this.stormIcon.enabled = false;
@@ -309,7 +309,7 @@ pc.script.create('tribe', function (context) {
         //////////////////////////////
 
         startPraise: function() {
-            console.log("I love god!");
+            //console.log("I love god!");
             this.increaseBelief();
             this.praiseTimer = 6;
             this.setCurrentAction(this.praise);
@@ -322,7 +322,7 @@ pc.script.create('tribe', function (context) {
         praise: function(deltaTime) {
             this.praiseIcon.enabled = true;
             if(this.praiseTimer <= 0){
-                console.log("God is good!");
+                //console.log("God is good!");
                 this.increaseBelief();
                 this.praiseTimer = 0;
                 this.praiseIcon.enabled = false;
@@ -340,7 +340,7 @@ pc.script.create('tribe', function (context) {
 
         denounce: function(deltaTime) {
             if(this.denounceTimer <= 0){
-                console.log("DENOUNCED GOD");
+                //console.log("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
                 this.isBusy = false;
@@ -414,14 +414,14 @@ pc.script.create('tribe', function (context) {
             }
 
             //this.incomingFood = this.tile.getFood();
-            console.log(this.population);
-            console.log(this.incomingFood);
+            //console.log(this.population);
+            //console.log(this.incomingFood);
         },
 
         calculatePopulation: function() {
             this.stockpileChange = (this.incomingFood - this.population)/100; 
             this.stockpile += this.stockpileChange
-            console.log("Stockpile" + this.stockpileChange);
+            //console.log("Stockpile Change: " + this.stockpileChange);
 
             // Increase population when stockpile is at 100% of required food
             // Take any additional food beyond 100 and add it back to the stock

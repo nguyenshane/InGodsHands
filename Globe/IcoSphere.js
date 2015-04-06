@@ -358,16 +358,18 @@ IcoSphere.prototype.subdivideGraph = function() {
 	var startingVertNum = this.vertexGraph.length;
 	var startingTileNum = this.tiles.length;
 	var i = 0;
-	console.log("Starting Subdivision...");
 	
+	//console.log("Starting Subdivision...");
 	for (; i < startingVertNum; ++i) {
 		this.vertexGraph[i].divideEdges();
 	}
-	console.log("Divided Edges.");
+	//console.log("Divided Edges.");
+	
 	for (; i < this.vertexGraph.length; ++i) {
 		this.vertexGraph[i].calculateNeighbors();
 	}
-	console.log("Calculated neighbors.");
+	//console.log("Calculated neighbors.");
+	
 	for (i = 0; i < this.vertexGraph.length; ++i) {
 		this.vertexGraph[i].divided = false;
 		//this.vertexGraph[i].setHeight(this.radius);

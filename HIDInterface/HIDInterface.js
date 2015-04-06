@@ -74,35 +74,40 @@ pc.script.create('HIDInterface', function (context) {
         },
 		
 		moved_T: function(position, distance, speed) {
-			console.log("String T moved: ", position, distance, speed);
+			//console.log("String T moved: ", position, distance, speed);
+			
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
 			temperatureDest = globalTemperature + distance;
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
+			
 			console.log("Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
-				console.log(ico.tiles[i].getTemperature());
+				//console.log(ico.tiles[i].getTemperature());
 			}
+			
 			tribe.resetInactionTimer();
-
 		},
 		
 		moved_A: function(position, distance, speed) {
-			console.log("String A moved: ", position, distance, speed);
+			//console.log("String A moved: ", position, distance, speed);
+			
+			animalDensity += (distance * 0.0004);
+			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
+			
 			tribe.resetInactionTimer();
-
 		},
 		
 		moved_P: function(position, distance, speed) {
-			console.log("String P moved: ", position, distance, speed);
+			//console.log("String P moved: ", position, distance, speed);
 			tribe.resetInactionTimer();
 
 		},
 		
 		moved_E: function(position, distance, speed) {
-			console.log("String E moved: ", position, distance, speed);
+			//console.log("String E moved: ", position, distance, speed);
 			// Temporarily here, will make it a function call to tile eventually
 			if(speed > 30 && Math.abs(distance) > 5){
 				tribe.startCowering();
@@ -113,7 +118,7 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moved_W: function(position, distance, speed) {
-			console.log("String W moved: ", position, distance, speed);
+			//console.log("String W moved: ", position, distance, speed);
 			tribe.resetInactionTimer();
 			
 		},
