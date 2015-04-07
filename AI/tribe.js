@@ -83,9 +83,10 @@ pc.script.create('tribe', function (context) {
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
             //console.log(this.stormEffect.darkness);
             //console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
-			// console.log("The influenced tiles length: " + this.influencedTiles.length);
 			
             this.audio = context.root._children[0].script.AudioController;
+			
+			tribes.push(this);
 			
 			var t2 = new Date();
 			console.log("tribe initialization: " + (t2-t1));
