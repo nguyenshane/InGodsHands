@@ -71,6 +71,8 @@ pc.script.create('Animals', function (context) {
 					e.stats = Tile.animalStats.fox;
             }
 			
+			e.animalObj = animal;
+			
 			//animal.setLocalScale(size, size, size);
             animal.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
             animal.setPosition(position);

@@ -83,6 +83,8 @@ pc.script.create('Trees', function (context) {
 						e.stats = Tile.treeStats.tree1;
 				}
 				
+				e.treeObj = tree;
+				
 				tree.setLocalScale(size, size, size);
 				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 				tree.setPosition(position);

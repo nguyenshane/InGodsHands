@@ -14,7 +14,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.localRotCenter;
     
     this.temperature;
-    this.food = Math.floor(Math.random() * (5 - 1)) + 1;
+    this.baseFood = Math.floor(Math.random() * (5 - 1)) + 1;
+	this.food = this.baseFood;
 	
 	this.tree, this.animal, this.rain, this.fog;
 
@@ -57,7 +58,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			idealWater: 80,
 			waterUsage: 1.0,
 			growRate: 0.75,
-			foodContribution: 0.7
+			foodContribution: 2.0
 		},
 		
 		tree2: {
@@ -70,7 +71,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			idealWater: 50,
 			waterUsage: 0.6,
 			growRate: 1.0,
-			foodContribution: 0.3
+			foodContribution: 1.2
 		}
 	};
 	
@@ -85,7 +86,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			idealWater: 40,
 			waterUsage: 1.0,
 			growRate: 0.75,
-			foodContribution: 0.2,
+			foodContribution: 0.4,
 			aggressiveness: 0.4
 		},
 		
@@ -99,7 +100,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			idealWater: 50,
 			waterUsage: 0.6,
 			growRate: 0.6,
-			foodContribution: 0.8,
+			foodContribution: 1.6,
 			aggressiveness: 0.0
 		},
 		
@@ -113,7 +114,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			idealWater: 55,
 			waterUsage: 0.7,
 			growRate: 0.3,
-			foodContribution: 0.75,
+			foodContribution: 1.5,
 			aggressiveness: 0.0
 		}
 	};
@@ -377,6 +378,17 @@ function Tile(index, vertexa, vertexb, vertexc){
         var m = new pc.Mat4().setLookAt(position, target, up);
 		return m.getEulerAngles();
 	};
+	
+	this.calculateFood = function() {
+		this.food = this.baseFood;
+		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.animalObj.getLocalScale().x * 50.0;
+		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.treeObj.getLocalScale().x * 4.0;
+	}
+	
+	this.setBaseFood = function(newFood) {
+		this.baseFood = newFood;
+		this.calculateFood();
+	}
 
     this.getFood = function(){
         return this.food;
@@ -457,11 +469,13 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
+		this.calculateFood();
 	};
 	
 	this.removeTree = function() {
 		if (this.tree !== undefined) this.tree.destroyFlag = true;
 		this.hasTree = false;
+		this.calculateFood();
 	};
 	
 	this.determineDistanceFromIdeal = function(tree, temperature, water) {
@@ -554,11 +568,13 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
 		this.hasAnimal = true;
+		this.calculateFood();
 	};
 	
 	this.removeAnimal = function() {
 		if (this.animal !== undefined) this.animal.destroyFlag = true;
 		this.hasAnimal = false;
+		this.calculateFood();
 	};
 	
 	this.startRain = function() {
