@@ -33,7 +33,7 @@ pc.script.create('AudioController', function (context) {
         },
 		
 		sound_T: function(position, distance, speed) {
-			console.log("Play sound string T");
+			//console.log("Play sound string T");
 			
 			this.audio = context.root._children[0];
             this.playing = false;
@@ -43,7 +43,7 @@ pc.script.create('AudioController', function (context) {
 		},
 		
 		sound_A: function(position, distance, speed) {
-			console.log("Play sound string A");
+			//console.log("Play sound string A");
 
 			this.audio = context.root._children[0];
             this.playing = false;
@@ -53,7 +53,7 @@ pc.script.create('AudioController', function (context) {
 		},
 		
 		sound_P: function(position, distance, speed) {
-			console.log("Play sound string P");
+			//console.log("Play sound string P");
 
 			this.audio = context.root._children[0];
             this.playing = false;
@@ -63,7 +63,7 @@ pc.script.create('AudioController', function (context) {
 		},
 		
 		sound_E: function(position, distance, speed) {
-			console.log("Play sound string E");
+			//console.log("Play sound string E");
 
 			this.audio = context.root._children[0];
             this.playing = false;
@@ -73,7 +73,7 @@ pc.script.create('AudioController', function (context) {
 		},
 		
 		sound_W: function(position, distance, speed) {
-			console.log("Play sound string W");
+			//console.log("Play sound string W");
 
 			this.audio = context.root._children[0];
             this.playing = false;
@@ -91,7 +91,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_TribePray: function(){
-			console.log("Play sound: Tribe Pray");
+			//console.log("Play sound: Tribe Pray");
 
 			this.audio = context.root._children[0];
 			this.playing = false;
@@ -101,7 +101,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_TribePraise: function(){
-			console.log("Play sound: Tribe Praise");
+			//console.log("Play sound: Tribe Praise");
 
 			this.audio = context.root._children[0];
 			this.playing = false;
@@ -111,7 +111,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_TribeDenounce: function(){
-			console.log("Play sound: Tribe Denounce");
+			//console.log("Play sound: Tribe Denounce");
 
 			this.audio = context.root._children[0];
 			this.playing = false;
@@ -121,7 +121,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_MakeThunder: function(){
-			console.log("Play sound: Thunder");
+			//console.log("Play sound: Thunder");
 
 			this.audio = context.root._children[0];
 			this.playing = false;
@@ -131,7 +131,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_MakeRain: function(){
-			console.log("Play sound: Rain");
+			//console.log("Play sound: Rain");
 
 			this.audio = context.root._children[0];
 			this.playing = false;

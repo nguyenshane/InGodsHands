@@ -58,6 +58,10 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
+        /////////////////////////////////
+        // States of being //////////////
+        /////////////////////////////////
+
         isSpiteful: function(tribe){
             return tribe.isSpiteful;
         },
@@ -71,7 +75,21 @@ pc.script.create('Conditions', function (context) {
                 return true;
             }
             return false;
-        }
+        },
+
+        isStockpileIncreasing: function(tribe){
+            if(tribe.stockpileChange > 0){
+                return true;
+            }
+            return false;    
+        },
+
+        isStockpileDecreasing: function(tribe){
+            if(tribe.stockpileChange < 0){
+                return true;
+            }
+            return false;    
+        },
     };
 
     return Conditions;

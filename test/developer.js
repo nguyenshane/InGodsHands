@@ -435,7 +435,7 @@ pc.script.create('ui', function (context) {
 
              this.StringsliderT.onmouseover = function(){
                 this.mouseIsOver = true;
-                console.log("overT");
+                //console.log("overT");
               }
               this.StringsliderT.onmouseout = function(){
                 this.mouseIsOver = false;
@@ -444,27 +444,25 @@ pc.script.create('ui', function (context) {
 
               this.StringsliderA.onmouseover = function(){
                 this.mouseIsOver = true;
-                console.log("overA");
+                //console.log("overA");
               }
               this.StringsliderA.onmouseout = function(){
                 this.mouseIsOver = false;
               }
 
 
-
               this.StringsliderP.onmouseover = function(){
                 this.mouseIsOver = true;
-                console.log("overP");
+                //console.log("overP");
               }
               this.StringsliderP.onmouseout = function(){
                 this.mouseIsOver = false;
               }
 
 
-
               this.StringsliderE.onmouseover = function(){
                 this.mouseIsOver = true;
-                console.log("overE");
+                //console.log("overE");
               }
               this.StringsliderE.onmouseout = function(){
                 this.mouseIsOver = false;
@@ -473,7 +471,7 @@ pc.script.create('ui', function (context) {
 
               this.StringsliderW.onmouseover = function(){
                 this.mouseIsOver = true;
-                console.log("overW");
+                //console.log("overW");
               }
               this.StringsliderW.onmouseout = function(){
                 this.mouseIsOver = false;
@@ -517,7 +515,7 @@ pc.script.create('ui', function (context) {
 
         addTemperature: function(){
             globalTemperature = globalTemperature + 1;
-            console.log("clicked");
+            //console.log("clicked");
         },
 
         stringPull: function(){
@@ -666,9 +664,9 @@ pc.script.create('ui', function (context) {
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                              stringPullLerp.script.send('HIDInterface', 'moved_T', position, distance, speed);
 
-                            console.log("pullStartTime " + pullStartTimeT);
-                            console.log("Time " + this.time);
-                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            //console.log("pullStartTime " + pullStartTimeT);
+                            //console.log("Time " + this.time);
+                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderTLastPos = this.StringsliderT.value;
                              this.sliderTDistance = 0.0;
                              needToStartTimeT = true;
@@ -684,9 +682,9 @@ pc.script.create('ui', function (context) {
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                              stringPullLerp.script.send('HIDInterface', 'moved_A', position, distance, speed);
 
-                            console.log("pullStartTime " + pullStartTimeA);
-                            console.log("Time " + this.time);
-                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            //console.log("pullStartTime " + pullStartTimeA);
+                            //console.log("Time " + this.time);
+                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderALastPos = this.StringsliderA.value;
                              this.sliderADistance = 0.0;
                              needToStartTimeA = true;
@@ -702,9 +700,9 @@ pc.script.create('ui', function (context) {
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                              stringPullLerp.script.send('HIDInterface', 'moved_P', position, distance, speed);
 
-                            console.log("pullStartTime " + pullStartTimeP);
-                            console.log("Time " + this.time);
-                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            //console.log("pullStartTime " + pullStartTimeP);
+                            //console.log("Time " + this.time);
+                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderPLastPos = this.StringsliderP.value;
                              this.sliderPDistance = 0.0;
                              needToStartTimeP = true;
@@ -720,9 +718,9 @@ pc.script.create('ui', function (context) {
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                              stringPullLerp.script.send('HIDInterface', 'moved_E', position, distance, speed);
 
-                            console.log("pullStartTime " + pullStartTimeE);
-                            console.log("Time " + this.time);
-                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            //console.log("pullStartTime " + pullStartTimeE);
+                            //console.log("Time " + this.time);
+                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderELastPos = this.StringsliderE.value;
                              this.sliderEDistance = 0.0;
                              needToStartTimeE = true;
@@ -738,9 +736,9 @@ pc.script.create('ui', function (context) {
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                              stringPullLerp.script.send('HIDInterface', 'moved_W', position, distance, speed);
 
-                            console.log("pullStartTime " + pullStartTimeW);
-                            console.log("Time " + this.time);
-                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            //console.log("pullStartTime " + pullStartTimeW);
+                            //console.log("Time " + this.time);
+                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderWLastPos = this.StringsliderW.value;
                              this.sliderWDistance = 0.0;
                              needToStartTimeW = true;
@@ -749,7 +747,7 @@ pc.script.create('ui', function (context) {
 
         subTemperature: function(){
             globalTemperature = globalTemperature - 1;
-             console.log("clicked");
+             //console.log("clicked");
         },
 
         setText: function (message, message2, message3, message4, message5, message6) {

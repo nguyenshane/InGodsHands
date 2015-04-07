@@ -1,13 +1,17 @@
-function Tile(icosphere, vertexa, vertexb, vertexc){
+function Tile(index, vertexa, vertexb, vertexc){
     'use strict;'
     this.vertexIndices = [];
     this.colors = [];
-	
-    var normalIndex, hasTribe, divided;
-	this.index;
-    this.normal, this.center;
-	this.localRotNormal, this.localRotCenter;
+
     this.neighbora, this.neighborb, this.neighborc;
+    this.neighbors = [];
+	
+    var normalIndex, hasHuman, divided;
+	this.index = index;
+    this.normal;
+    this.center;
+	this.localRotNormal;
+	this.localRotCenter;
     
     this.temperature;
     this.food = Math.floor(Math.random() * (5 - 1)) + 1;
@@ -41,6 +45,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	Tile.fogDuration = 4.0;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
+
 	Tile.treeStats = {
 		tree1: {
 			type: "tree1",
@@ -51,7 +56,8 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 80,
 			waterUsage: 1.0,
-			growRate: 0.75
+			growRate: 0.75,
+			foodContribution: 0.7
 		},
 		
 		tree2: {
@@ -63,26 +69,57 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			maxWater: 100,
 			idealWater: 50,
 			waterUsage: 0.6,
-			growRate: 1.0
+			growRate: 1.0,
+			foodContribution: 0.3
 		}
 	};
 	
 	Tile.animalStats = {
 		fox: {
-			type: "fox"
+			type: "fox",
+			minTemp: 30,
+			maxTemp: 100,
+			idealTemp: 60,
+			minWater: 20,
+			maxWater: 100,
+			idealWater: 40,
+			waterUsage: 1.0,
+			growRate: 0.75,
+			foodContribution: 0.2,
+			aggressiveness: 0.4
 		},
 		
 		pig: {
-			type: "pig"
+			type: "pig",
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 30,
+			maxWater: 100,
+			idealWater: 50,
+			waterUsage: 0.6,
+			growRate: 0.6,
+			foodContribution: 0.8,
+			aggressiveness: 0.0
 		},
 		
 		cow: {
-			type: "cow"
+			type: "cow",
+			minTemp: 60,
+			maxTemp: 140,
+			idealTemp: 100,
+			minWater: 40,
+			maxWater: 100,
+			idealWater: 55,
+			waterUsage: 0.7,
+			growRate: 0.3,
+			foodContribution: 0.75,
+			aggressiveness: 0.0
 		}
 	};
 	
-    handle = icosphere;
-	ico = handle;
+    handle = ico;
+
     this.divided = false;
     this.hasTribe = false;
     
@@ -90,9 +127,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     this.vertexIndices[1] = vertexb;
     this.vertexIndices[2] = vertexc;
     
-    handle.indices.push(vertexa);
-    handle.indices.push(vertexb);
-    handle.indices.push(vertexc);
+    ico.indices.push(vertexa);
+    ico.indices.push(vertexb);
+    ico.indices.push(vertexc);
 	
 	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 + 0.5;
@@ -191,22 +228,6 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		}
 		
 		this.checkResourceLimits();
-		
-		/*
-		///temporary
-		if (this.index === 500) {
-			if (this.humidity > this.maxHumidity * 0.9) this.startRain();
-			
-			var temp = this.getTemperature();
-			temp = pc.math.clamp(temp, 0, 150);
-			
-			var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * 0.6 + 0.7);
-			if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
-			
-			console.log(this.isOcean + " " + this.isRaining + "\nrelative:\t" + rh + "\nhumidity:\t" + this.humidity + "\ngroundwa:\t" + this.groundwater + "\nmaxhumid:\t" + 
-						this.maxHumidity + "\ntemperat:\t" + this.getTemperature());
-		}
-		*/
 	};
 	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
@@ -214,6 +235,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
+		this.spawnAnimal(temp, 1.0);
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -369,7 +391,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	this.spawnTree = function(temperature, size) {
 		if (this.hasTree || this.isOcean) return;
 		
-		var maxDist = 3;
+		var maxDist = 7;
 		var localTreeCount = 0.0;
 		visitedTileCount = 0.0;
 		
@@ -426,7 +448,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		var t1dist = this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater);
 		var t2dist = this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater);
 		
-		t2dist *= pc.math.random(0.8, 1.2); //Randomize slightly to provide some variability
+		//Randomize slightly to provide some variability
+		t1dist *= pc.math.random(0.8, 1.2);
+		t2dist *= pc.math.random(0.8, 1.2);
 		
 		var type = 0;
 		if (t2dist < t1dist) type = 1;
@@ -460,6 +484,81 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		}
 		
 		return d;
+	};
+	
+	//Creates a new animal on this tile if the animal density in the area is too low
+	this.spawnAnimal = function(temperature, size) {
+		if (this.hasAnimal || this.isOcean) return;
+		
+		var maxDist = 12;
+		var localAnimalCount = 0.0;
+		visitedTileCount = 0.0;
+		
+		var queue = new Queue();
+		var visited = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) visited[s] = false;
+		var distances = [];
+		for (var s = ico.tiles.length-1; s >= 0; s--) distances[s] = -2;
+		
+		queue.enqueue(this.index);
+		visited[this.index] = true;
+		distances[this.index] = 0;
+		visitedTileCount++;
+		
+		while (!queue.isEmpty()) {
+			var tileIndex = queue.dequeue();
+			var tile = ico.tiles[tileIndex];
+			var neighbors = tile.getNeighborIndices();
+			
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = neighbors[i];
+				if (!visited[neighbor]) {
+					if (distances[tileIndex] < maxDist && !ico.tiles[neighbor].isOcean) {
+						if (ico.tiles[neighbor].hasAnimal) localAnimalCount++;
+						visitedTileCount++;
+						
+						visited[neighbor] = true;
+						queue.enqueue(neighbor);
+						distances[neighbor] = distances[tileIndex] + 1;
+					}
+				} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+					distances[neighbor] = distances[tileIndex] + 1;
+				}
+			}
+		}
+		
+		var localAnimalDensity = localAnimalCount / visitedTileCount;
+		
+		if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
+	};
+	
+	//Adds an animal to this tile
+	this.createAnimal = function(temperature, size) {
+		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+		var angle = m.getEulerAngles();
+		
+		//Determine ideal animal type given this tile's current properties
+		var t1dist = this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater);
+		var t2dist = this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater);
+		var t3dist = this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater);
+		
+		//Randomize slightly to provide some variability
+		t1dist *= pc.math.random(0.8, 1.2);
+		t2dist *= pc.math.random(0.8, 1.2);
+		t3dist *= pc.math.random(0.8, 1.2);
+		
+		var type = 0;
+		if (t2dist < t1dist && t2dist < t3dist) type = 1; //most inelegant way of doing this...
+		else if (t3dist < t2dist && t3dist < t1dist) type = 2;
+		
+		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
+		this.hasAnimal = true;
+	};
+	
+	this.removeAnimal = function() {
+		if (this.animal !== undefined) this.animal.destroyFlag = true;
+		this.hasAnimal = false;
 	};
 	
 	this.startRain = function() {
@@ -497,9 +596,9 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	}
     
     this.calculateNormal = function(){
-        var vectora = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[0]][0]);
-        var vectorb = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[1]][0]);
-        var vectorc = handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[2]][0]);
+        var vectora = this.getVertex(0);
+        var vectorb = this.getVertex(1);
+        var vectorc = this.getVertex(2);
         
         vectorb.sub(vectora);
 		vectorc.sub(vectora);
@@ -518,12 +617,12 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 			console.log("Extruding");
 			
 			if (!this.neighborb.isOcean && !this.neighborc.isOcean) {
-				handle.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + handle.radius));
+				ico.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + ico.radius));
 			}
 			if (!this.neighbora.isOcean && !this.neighborc.isOcean)
-				handle.setVertexMagnitude(this.vertexIndices[1], parseFloat(Math.random()/10 + handle.radius));
+				ico.setVertexMagnitude(this.vertexIndices[1], parseFloat(Math.random()/10 + ico.radius));
 			if (!this.neighbora.isOcean && !this.neighborb.isOcean)
-				handle.setVertexMagnitude(this.vertexIndices[2], parseFloat(Math.random()/10 + handle.radius));
+				ico.setVertexMagnitude(this.vertexIndices[2], parseFloat(Math.random()/10 + ico.radius));
 
 		this.neighbora.isOcean = false;
 		this.neighborb.isOcean = false;
@@ -532,20 +631,30 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     };
     
     this.setNeighbors = function(a,b,c){
-        this.neighbora = handle.tiles[a];
-        this.neighborb = handle.tiles[b];
-        this.neighborc = handle.tiles[c];
+        this.neighbora = ico.tiles[a];
+        this.neighborb = ico.tiles[b];
+        this.neighborc = ico.tiles[c];
+        this.neighbors[0] = ico.tiles[a];
+        this.neighbors[1] = ico.tiles[b];
+        this.neighbors[2] = ico.tiles[c];
     };
     
     this.setNeighbor = function(neighbor, index){
+        this.neighbors[neighbor] = ico.tiles[index];
         if (neighbor === 0) {
-			this.neighbora = handle.tiles[index];
+			this.neighbora = ico.tiles[index];
 		} else if (neighbor === 1) {
-			this.neighborb = handle.tiles[index];
+			this.neighborb = ico.tiles[index];
 		} else if (neighbor === 2) {
-			this.neighborc = handle.tiles[index];
+			this.neighborc = ico.tiles[index];
 		}
     };
+
+    this.updateNeighbors = function() {
+        this.neighbora = this.neighbors[0];
+        this.neighborb = this.neighbors[1];
+        this.neighborc = this.neighbors[2];
+    }
 	
 	this.getNeighbors = function() {
 		return [this.neighbora, this.neighborb, this.neighborc];
@@ -556,29 +665,29 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 	};
 	
 	this.getVertex = function(vertexIndex) {
-		return handle._getUnbufferedVertex(handle.vertexGroups[this.vertexIndices[vertexIndex]][0]);
+		return ico.vertexGraph[this.vertexIndices[vertexIndex]].getVertex();
 	}
     
     this.getVertexIndex = function(vertex){        
-        if (vertex.x == handle.vertices[this.vertexIndices[0] * 3] 
-            && vertex.y == handle.vertices[this.vertexIndices[0] * 3 + 1]	
-            && vertex.z == handle.vertices[this.vertexIndices[0] * 3 + 2]) {
+        if (vertex.x == ico.vertices[this.vertexIndices[0] * 3] 
+            && vertex.y == ico.vertices[this.vertexIndices[0] * 3 + 1]	
+            && vertex.z == ico.vertices[this.vertexIndices[0] * 3 + 2]) {
 			return parseInt(this.vertexIndices[0]);
-		} else if (vertex.x == handle.vertices[this.vertexIndices[1] * 3]
-				&& vertex.y == handle.vertices[this.vertexIndices[1] * 3 + 1]
-				&& vertex.z == handle.vertices[this.vertexIndices[1] * 3 + 2]) {
+		} else if (vertex.x == ico.vertices[this.vertexIndices[1] * 3]
+				&& vertex.y == ico.vertices[this.vertexIndices[1] * 3 + 1]
+				&& vertex.z == ico.vertices[this.vertexIndices[1] * 3 + 2]) {
 			return parseInt(this.vertexIndices[1]);
-		} else if (vertex.x == handle.vertices[this.vertexIndices[2] * 3]
-				&& vertex.y == handle.vertices[this.vertexIndices[2] * 3 + 1]
-				&& vertex.z == handle.vertices[this.vertexIndices[2] * 3 + 2]) {
+		} else if (vertex.x == ico.vertices[this.vertexIndices[2] * 3]
+				&& vertex.y == ico.vertices[this.vertexIndices[2] * 3 + 1]
+				&& vertex.z == ico.vertices[this.vertexIndices[2] * 3 + 2]) {
 			return parseInt(this.vertexIndices[2]);
 		}
 		return -1;
     };
     
     this.getMidpoint = function(verta, vertb){
-        midpoint = new pc.Vec3(handle.vertices[this.vertexIndices[verta] * 3], handle.vertices[this.vertexIndices[verta] * 3 + 1], handle.vertices[this.vertexIndices[verta] * 3 + 2]);
-		vert2 = new pc.Vec3(handle.vertices[this.vertexIndices[vertb] * 3], handle.vertices[this.vertexIndices[vertb] * 3 + 1], handle.vertices[this.vertexIndices[vertb] * 3 + 2]);
+        midpoint = new pc.Vec3(ico.vertices[this.vertexIndices[verta] * 3], ico.vertices[this.vertexIndices[verta] * 3 + 1], ico.vertices[this.vertexIndices[verta] * 3 + 2]);
+		vert2 = new pc.Vec3(ico.vertices[this.vertexIndices[vertb] * 3], ico.vertices[this.vertexIndices[vertb] * 3 + 1], ico.vertices[this.vertexIndices[vertb] * 3 + 2]);
 		midpoint.add(vert2);
 		midpoint.scale(0.5);
 		return midpoint;
@@ -594,7 +703,7 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
     
     this.calculateCenter = function(){
         var center = this.getMidpoint(0, 1);
-        vert = new pc.Vec3(handle.vertices[this.vertexIndices[2] * 3], handle.vertices[this.vertexIndices[2] * 3 + 1], handle.vertices[this.vertexIndices[2] * 3 + 2]);
+        vert = new pc.Vec3(ico.vertices[this.vertexIndices[2] * 3], ico.vertices[this.vertexIndices[2] * 3 + 1], ico.vertices[this.vertexIndices[2] * 3 + 2]);
         center.add(vert);
         center.scale(0.5);
         this.center = center;
@@ -618,4 +727,110 @@ function Tile(icosphere, vertexa, vertexb, vertexc){
 		*/
 		return this.index === other.index;
     }
+
+    this.subdivide = function() {
+        //console.log("Entering subdivide for face " + this.index);
+
+        // Get the three new midpoint vertices
+        var new0 = ico.vertexGraph[this.vertexIndices[1]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[2]]);
+        var new1 = ico.vertexGraph[this.vertexIndices[2]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[0]]);
+        var new2 = ico.vertexGraph[this.vertexIndices[0]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[1]]);
+
+        //console.log(new0 + " " + new1 + " " + new2);
+
+        this.createSubface(0, this.vertexIndices[0], new2, new1);
+
+        this.createSubface(1, new2, this.vertexIndices[1], new0);
+
+        this.createSubface(2, new1, new0, this.vertexIndices[2]);
+        
+        this.neighbors[0] = ico.tiles[ico.tiles.length - 3];
+        ico.tiles[ico.tiles.length - 3].neighbors[0] = this;
+
+        this.neighbors[1] = ico.tiles[ico.tiles.length - 2];
+        ico.tiles[ico.tiles.length - 2].neighbors[1] = this;
+
+        this.neighbors[2] = ico.tiles[ico.tiles.length - 1];
+        ico.tiles[ico.tiles.length - 1].neighbors[2] = this;
+
+
+        this.vertexIndices[0] = new0;
+        this.vertexIndices[1] = new1;
+        this.vertexIndices[2] = new2;
+
+        this.divided = true;
+    };
+
+    this.getNeighborContainingVertex = function(index) {
+        for (var i = 0; i < 3; ++i) {
+            if (this.neighbors[i].containsVertex(index)) {
+                return this.neighbors[i];
+            }
+        }
+        //console.error("Tile " + this.index + " has no neighbors containing vertex " + index);
+        //console.log(this);
+        //console.log(this.neighbors[0]);
+        //console.log(this.neighbors[1]);
+        //console.log(this.neighbors[2]);
+    }
+
+    this.getNeighborIndexToTile = function(otherIndex) {
+        for (var i = 0; i < 3; ++i) {
+            if (this.neighbors[i].index == otherIndex) {
+                return i;
+            }
+        }
+        //console.error("Tile " + this.index + " has no neighbors to tile " + index);
+        //console.log(this);
+        //console.log(this.neighbors[0]);
+        //console.log(this.neighbors[1]);
+        //console.log(this.neighbors[2]);
+    }
+
+    this.containsVertex = function(index) {
+        return (this.vertexIndices[0] == index || this.vertexIndices[1] == index || this.vertexIndices[2] == index);
+    };
+
+    this.createSubface = function(vertex, a, b, c) {
+        //console.log("Creating subface " + ico.tiles.length + " for face " + this.index);
+
+        // Create tile
+        ico.tiles[ico.tiles.length] = new Tile(ico.tiles.length, a, b, c);
+        var newFace = ico.tiles[ico.tiles.length - 1];
+
+        //console.log(newFace);
+
+        this.calculateSubfaceNeighbor(vertex, (vertex + 1) % 3);
+        this.calculateSubfaceNeighbor(vertex, (vertex + 2) % 3);
+
+    };
+
+    this.calculateSubfaceNeighbor = function(vertex, neighbor) {
+
+        var newNeighbor = this.neighbors[neighbor];
+
+        // Set the vertex's neighbor if neighbor is divided
+        if (this.neighbors[neighbor].divided == true) {
+            //console.log("Neighbor " + neighbor + " divided for face " + this.index);
+
+            newNeighbor = this.neighbors[neighbor].getNeighborContainingVertex(this.vertexIndices[vertex]);
+
+            if (newNeighbor == null) {
+                //console.log(this);
+                //console.log(this.neighbors[neighbor]);
+            }
+
+            //console.log(newNeighbor);
+
+            ico.tiles[ico.tiles.length - 1].neighbors[neighbor] = newNeighbor;
+
+            var backNeighbor = newNeighbor.getNeighborIndexToTile(this.index);
+
+            newNeighbor.neighbors[backNeighbor] = ico.tiles[ico.tiles.length - 1];
+
+        } else {
+
+            ico.tiles[ico.tiles.length - 1].neighbors[neighbor] = this.neighbors[neighbor];
+        }
+    };
 }
