@@ -55,7 +55,7 @@ pc.script.create('tribe', function (context) {
 			var t1 = new Date();
 			
             // create mesh
-            this.tile = ico.tiles[1034]; // list of tiles
+            this.tile = ico.tiles[650]; // list of tiles
             this.calculateFood();
 
             totalBelief = 300;

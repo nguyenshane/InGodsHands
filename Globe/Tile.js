@@ -403,7 +403,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.spawnTree = function(temperature, size) {
 		if (this.hasTree || this.isOcean) return;
 		
-		var maxDist = 7;
+		var maxDist = 8;
 		var localTreeCount = 0.0;
 		visitedTileCount = 0.0;
 		

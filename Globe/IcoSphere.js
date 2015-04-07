@@ -428,6 +428,17 @@ IcoSphere.prototype.unshareVertices = function() {
 //Higher repeller count multipliers will result in more landmass,
 // lower repeller size will result in more hilly terrain (and less landmass)
 function generateTerrain(icosphere, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
+	/*
+	//How to find the current tile facing the camera
+	for (var i = 0; i < icosphere.tiles.length; i++) {
+		var t = icosphere.tiles[i];
+		if (icosphere.vertexGraph[t.vertexIndices[0]].getVertex().z > 1.49) {
+			console.log(i);
+			//icosphere.setVertexHeight(t.vertexIndices[0], 1);
+		}
+	}
+	*/
+	
 	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
@@ -438,7 +449,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var mountains = mountainCount / contCount;
 	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 	mountains = Math.floor(mountains);
-	cluster(icosphere, 1034, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+	cluster(icosphere, 650, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 	mountainCount -= mountains;
 	contCount--;
 	
