@@ -49,15 +49,17 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
-
+			
+			tribes = [];
+			
             // test vertex neighbors init
             this.testVerts = [];
             for (var i = 0; i < 10; ++i) {
             	this.testVerts[i] = Math.floor(pc.math.random(0, 600));
             }
-
+			
             this.eroder = new Eroder(0, 150);
-
+			
 			this.init = false;
         },
 

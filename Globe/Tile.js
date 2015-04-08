@@ -46,6 +46,52 @@ function Tile(index, vertexa, vertexb, vertexc){
 	Tile.fogDuration = 4.0;
 	this.rainTimer = 0, this.fogTimer = 0;
 	
+	//colors
+	//var colorGray = 
+	var colorBrown = new pc.Color(183, 112, 59);
+	var colorYellow = new pc.Color(200, 194, 81);
+	var colorGreen = new pc.Color(55, 138, 63);
+	var colorBlue = new pc.Color(54, 152, 167);
+	var colorWhite = new pc.Color(234, 232, 227);
+	var colorGray = new pc.Color(127, 124, 115);
+
+	//Types of tile determine food
+	var TileTypes = {
+		/*TUNDRA: { //should only be on northern and southern extremes
+			name: "tundra",
+			foodVal: 0 //always
+			//color: gray
+		},*/
+		DESERT: {
+			name: "desert",
+			foodVal: 0,
+			color: colorBrown
+		},
+		
+		DRYPLANE: {
+			name: "dry plane",
+			foodVal: 1,
+			color: colorYellow
+		},
+
+		GRASSPLANE: {
+			name: "grass plane",
+			foodVal: 2,
+			color: colorGreen
+		},
+
+		MOUNTAIN: {
+			name: "mountain",
+			foodVal: 1,
+			color: colorGray
+		},
+
+		WATER: {
+			name: "water",
+			foodVal: 1,
+			color: colorBlue
+		},
+	};
 
 	Tile.treeStats = {
 		tree1: {
