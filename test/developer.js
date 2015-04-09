@@ -83,6 +83,17 @@ pc.script.create('ui', function (context) {
             buttonPlus.onClick = this.addTemperature();
 
 
+            // Create a button to add
+            var buttonPause = document.createElement('BUTTON');
+            var p = document.createTextNode("Pause");
+            buttonPause.appendChild(p);
+
+            //positions it
+            buttonPause.style.position = 'absolute';
+            buttonPause.style.top = '3%';
+            buttonPause.style.left = '93%';
+
+
             // //create a Slider for the Global Temperature
             // var sliderT = document.createElement("INPUT");
             // sliderT.setAttribute("type", "range");
@@ -103,6 +114,7 @@ pc.script.create('ui', function (context) {
             //Touch stuff
             if (this.context.touch) {
                 this.context.touch.on("touchstart", this.onTouchStart, this);
+                   this.context.touch.on("touchmove", this.onTouchMove, this);
                 this.context.touch.on("touchend", this.onTouchEnd, this);
             } else {
                 console.log("No touch input available");
@@ -368,12 +380,13 @@ pc.script.create('ui', function (context) {
 
             document.body.appendChild(buttonSub);
             document.body.appendChild(buttonPlus);
-            //document.body.appendChild(sliderT);
+            document.body.appendChild(buttonPause);
             document.body.appendChild(StringsliderT);
             document.body.appendChild(StringsliderA);
             document.body.appendChild(StringsliderP);
             document.body.appendChild(StringsliderE);
             document.body.appendChild(StringsliderW);
+
 
             //this.sliderT = sliderT;
             this.div = div;
@@ -392,6 +405,8 @@ pc.script.create('ui', function (context) {
 
             this.buttonPlus = buttonPlus;
             this.buttonSub = buttonSub;
+            this.buttonPause = buttonPause;
+
             this.StringsliderT = StringsliderT;
             this.StringsliderA = StringsliderA;
             this.StringsliderP = StringsliderP;
@@ -642,7 +657,13 @@ pc.script.create('ui', function (context) {
             }.bind(this));
         },
 
-        
+        onTouchMove: function (touches) {
+            // If the touches move update the position of the cube
+            touches.changedTouches.forEach(function (touch) {
+                console.log("touched here" + touch.x +" " + touch.y)
+            }.bind(this));
+        },
+
         onTouchEnd: function (touches) {
             // When the touches end, send to string pull functions
             touches.changedTouches.forEach(function (touch) {
