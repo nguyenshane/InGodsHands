@@ -39,6 +39,7 @@ pc.script.create('tribe', function (context) {
         this.denounceTimer = 0;
         this.praiseTimer = 0;
         this.godInactionTimer = 0;
+        this.noSunTimer = 0;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
@@ -118,6 +119,13 @@ pc.script.create('tribe', function (context) {
 
             // God inaction timer goes up so long as God doesn't act (Duh)
             this.godInactionTimer += dt;
+
+            // Increase no sun timer whenever tribe doesn't have sun
+            if(!this.inSun){
+                this.noSunTimer += dt;
+            } else {
+                this.noSunTimer = 0;
+            }
 			
 			//Check influenced tiles for predators or prey
 			this.predatorsInInfluence = [];
@@ -479,7 +487,8 @@ pc.script.create('tribe', function (context) {
         createRuleList: function() {
             this.rules.push(new wantToMigrate());
             this.rules.push(new needTemperatureChange());
-            this.rules.push(new wantToDenounce());
+            this.rules.push(new wantToDenounceInactive());
+            this.rules.push(new wantToDenounceNoSun());
         },
 
         runRuleList: function() { 

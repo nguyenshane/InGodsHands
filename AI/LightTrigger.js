@@ -13,14 +13,14 @@ pc.script.create("trigger", function (app) {
         },
 
         onTriggerEnter: function (entity) {
-            // Tribe knows it is lit            
+            // Tribe knows it is lit by sun            
             
             entity.script.tribe.inSun = true;
             //console.log("We've entered the trigger!!!! Tribe lit: " + entity.script.tribe.inSun);
         },
 
         onTriggerLeave: function (entity) {
-            // Tribe knows it isn't lit
+            // Tribe knows it isn't lit by sun
 
             entity.script.tribe.inSun = false;
             //console.log("\nWe've exited the trigger!!!!\n Tribe lit: " + entity.script.tribe.inSun);

@@ -77,6 +77,13 @@ pc.script.create('Conditions', function (context) {
             return false;
         },
 
+        isNoSun: function(tribe){
+            if(tribe.noSunTimer >= 30){
+                return true;
+            }
+            return false;
+        },
+
         isStockpileIncreasing: function(tribe){
             if(tribe.stockpileChange > 0){
                 return true;

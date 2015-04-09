@@ -202,12 +202,12 @@ needTemperatureChange.prototype = {
 };
 
 /* 
- *  wantToDenounce means the tribe will denounce God the player's existence 
+ *  wantToDenounceInactive means the tribe will denounce God the player's existence 
  *  If not punished, they will lose belief
  *    
  */
 
-var wantToDenounce = function() {
+var wantToDenounceInactive = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
@@ -215,7 +215,7 @@ var wantToDenounce = function() {
     this.conditions = [allConditions.isGodInactive];
 };
 
-wantToDenounce.prototype = {
+wantToDenounceInactive.prototype = {
     testConditions: function(tribe){
         for(var i = 0; i < this.conditions.length; i++){
             if(!this.conditions[i](tribe)){
@@ -227,6 +227,37 @@ wantToDenounce.prototype = {
     
     consequence: function(tribe){
         console.log("Does God truly exist?!");
+        tribe.resetInactionTimer();
+        tribe.startDenouncing();
+    }    
+};
+
+/* 
+ *  wantToDenounceNoSun means the tribe will denounce God the player's existence 
+ *  If not punished, they will lose belief
+ *    
+ */
+
+var wantToDenounceNoSun = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 5;
+    this.conditions = [allConditions.isNoSun];
+};
+
+wantToDenounceNoSun.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        console.log("Where is the god damned sun?!?!");
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
