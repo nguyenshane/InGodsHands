@@ -31,6 +31,7 @@ pc.script.create('tribe', function (context) {
 
         this.isBusy = false;
         this.isSpiteful = false;
+        this.inSun = false;
         this.previousAction;
         this.currentAction;
         this.prayerTimer = 0;

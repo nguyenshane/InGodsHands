@@ -9,19 +9,21 @@ pc.script.create("trigger", function (app) {
     Trigger.prototype = {
         initialize: function () {
             this.entity.collision.on('triggerenter', this.onTriggerEnter, this);
+            this.entity.collision.on('triggerleave', this.onTriggerLeave, this);
         },
 
         onTriggerEnter: function (entity) {
-            // Reset back to roughly the position the entity started in.
+            // Tribe knows it is lit            
+            
+            entity.script.tribe.inSun = true;
+            //console.log("We've entered the trigger!!!! Tribe lit: " + entity.script.tribe.inSun);
+        },
 
-            entity.getName();
+        onTriggerLeave: function (entity) {
+            // Tribe knows it isn't lit
 
-            // var position = entity.getPosition();
-            // entity.setPosition(position.x, 10, 0);
-
-            // entity.rigidbody.linearVelocity = zeroVec;
-            // entity.rigidbody.angularVelocity = zeroVec;
-            // entity.rigidbody.syncEntityToBody();
+            entity.script.tribe.inSun = false;
+            //console.log("\nWe've exited the trigger!!!!\n Tribe lit: " + entity.script.tribe.inSun);
         }
     };
 
