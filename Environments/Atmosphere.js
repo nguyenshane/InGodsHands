@@ -14,6 +14,7 @@ pc.script.create('Atmosphere', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             this.atm = context.root.findByName("Atmosphere");
+			this.cam = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 			
 			this.fogstack = [];
 			this.rainstack = [];
@@ -94,7 +95,8 @@ pc.script.create('Atmosphere', function (context) {
 			return e;
         },
         
-        makeStorm: function() {
+        makeStorm: function(latitude, size) {
+			/*
             var storm = this.entity.findByName("ThunderStormPS");
             // var position = new pc.Vec3(0, 0, 0);
             // var target = new pc.Vec3(this.center.x, this.center.y, this.center.z);
@@ -109,6 +111,31 @@ pc.script.create('Atmosphere', function (context) {
             storm.setEulerAngles(90, 0, 0);
             storm.particlesystem.enabled = true;
             storm.particlesystem.play();
+			*/
+			
+			var s = size / 20;
+			s = pc.math.clamp(s, 2, 6);
+			var cameraDir = this.cam.script.Camera.entity.getPosition().normalize();
+			var v = new pc.Vec3(cameraDir.x, cameraDir.y + latitude/50, cameraDir.z);
+			v = v.normalize();
+			var centerTile = ico.tiles[0];
+			var centerDot = v.dot(centerTile.center.normalize());
+			
+			for (var i = 1; i < ico.tiles.length; i++) {
+				var tile = ico.tiles[i];
+				var tileDot = v.dot(tile.center.normalize());
+				
+				if (tileDot > centerDot) {
+					centerTile = tile;
+					centerDot = tileDot;
+				}
+			}
+			
+			var tiles = getTilesInArea(ico, centerTile.index, s);
+			
+			for (var i = 0; i < tiles.length; i++) {
+				ico.tiles[tiles[i]].startStorm();
+			}
         },
 
         checkDestroyable: function(e) {

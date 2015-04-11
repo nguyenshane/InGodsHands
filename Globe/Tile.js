@@ -24,6 +24,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.hasAnimal = false;
 	this.isRaining = false;
 	this.isFoggy = false;
+	this.isStormy = false;
 	
 	Tile.tempInfluenceMultiplier = 2.0;
 	
@@ -44,7 +45,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	Tile.atmoHeight = 0.4;
 	Tile.rainDuration = 3.0;
 	Tile.fogDuration = 4.0;
-	this.rainTimer = 0, this.fogTimer = 0;
+	Tile.stormDuration = 2.5;
+	this.rainTimer = 0, this.fogTimer = 0, this.stormTimer = 0;
 	
 	//colors
 	//var colorGray = 
@@ -218,9 +220,12 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.checkResourceLimits();
 		
-		//Handle fog
+		//Handle fog(clouds) and storm
 		if (this.isFoggy) {
 			if (this.fog === undefined) this.fog = scripts.Atmosphere.makeFog(this.localRotCenter);
+			
+			this.stormTimer -= dt;
+			if (this.stormTimer <= 0) this.stopStorm();
 			
 			this.fogTimer -= dt;
 			if (this.fogTimer <= 0) this.stopFog();
@@ -639,6 +644,18 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	this.stopFog = function() {
 		this.isFoggy = false;
+	};
+	
+	this.startStorm = function() {
+		this.isStormy = true;
+		this.stormTimer = Tile.stormDuration;
+		
+		this.isFoggy = true;
+		this.fogTimer = this.stormTimer;
+	};
+	
+	this.stopStorm = function() {
+		this.isStormy = false;
 	};
 	
 	this.checkAtmoAnimCompleted = function(e) {

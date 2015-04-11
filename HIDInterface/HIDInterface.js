@@ -102,25 +102,31 @@ pc.script.create('HIDInterface', function (context) {
 		
 		moved_P: function(position, distance, speed) {
 			//console.log("String P moved: ", position, distance, speed);
+			
 			tribe.resetInactionTimer();
-
 		},
 		
 		moved_E: function(position, distance, speed) {
 			//console.log("String E moved: ", position, distance, speed);
+			
+			/*
 			// Temporarily here, will make it a function call to tile eventually
-			if(speed > 30 && Math.abs(distance) > 5){
+			if (speed > 30 && Math.abs(distance) > 5) {
 				tribe.startCowering();
 				console.log("Sufficient string pull for storm");
 			}
+			*/
+			
+			scripts.Atmosphere.makeStorm(distance, speed);
+			if (tribe.tile.isStormy) tribe.startCowering();
+			
 			tribe.resetInactionTimer();
-
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
-			tribe.resetInactionTimer();
 			
+			tribe.resetInactionTimer();
 		},
 
 
