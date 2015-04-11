@@ -233,8 +233,7 @@ function IcoSphere(device, radius, subdivisions) {
     for (var i = 1; i < subdivisions; ++i) {
     	this.subdivideGraph();
     }
-    console.log(this);
-	
+    
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
     	this.vertexGraph[i].stagger(0.075);
@@ -261,7 +260,20 @@ function IcoSphere(device, radius, subdivisions) {
 		mountainCountMin = 5, mountainCountMax = 8,
 		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
-	generateTerrain(this, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
+	var initialLocationTiles = [];
+	for (var i = 0; i < this.tiles.length; i++) {
+		var t = this.tiles[i];
+		if (this.vertexGraph[t.vertexIndices[0]].getVertex().z > 1.45) {
+			initialLocationTiles.push(t);
+			//console.log(i);
+			//icosphere.setVertexHeight(t.vertexIndices[0], 1);
+		}
+	}
+	
+	//var initialContinentLocation = 650;
+	initialContinentLocation = initialLocationTiles[Math.floor(pc.math.random(0, initialLocationTiles.length))].index;
+	
+	generateTerrain(this, initialContinentLocation, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 	var t3 = new Date();
 	console.log("terrain generation: " + (t3-t2));
@@ -427,18 +439,7 @@ IcoSphere.prototype.unshareVertices = function() {
 //Generates a heightmap and applies it to the icosphere's vertices
 //Higher repeller count multipliers will result in more landmass,
 // lower repeller size will result in more hilly terrain (and less landmass)
-function generateTerrain(icosphere, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
-	/*
-	//How to find the current tile facing the camera
-	for (var i = 0; i < icosphere.tiles.length; i++) {
-		var t = icosphere.tiles[i];
-		if (icosphere.vertexGraph[t.vertexIndices[0]].getVertex().z > 1.49) {
-			console.log(i);
-			//icosphere.setVertexHeight(t.vertexIndices[0], 1);
-		}
-	}
-	*/
-	
+function generateTerrain(icosphere, initialContinentLocation, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
 	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
@@ -449,7 +450,7 @@ function generateTerrain(icosphere, continentBufferDistance, repellerCountMultip
 	var mountains = mountainCount / contCount;
 	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 	mountains = Math.floor(mountains);
-	cluster(icosphere, 650, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
+	cluster(icosphere, initialContinentLocation, contSize, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
 	mountainCount -= mountains;
 	contCount--;
 	
@@ -683,6 +684,44 @@ function getTilesInArea(icosphere, centerTile, radius) {
 		for (var i = 0; i < neighbors.length; i++) {
 			var neighbor = neighbors[i];
 			if (!visited[neighbor]) {
+				if (distances[tileIndex] < radius) {
+					visited[neighbor] = true;
+					queue.enqueue(neighbor);
+					distances[neighbor] = distances[tileIndex] + 1;
+					tiles.push(neighbor);
+				}
+			} else if (distances[tileIndex] + 1 < distances[neighbor]) {
+				distances[neighbor] = distances[tileIndex] + 1;
+			}
+		}
+	}
+
+	return tiles;
+};
+
+//Returns an array of land tile indices within a radius of a tile
+function getConnectedTilesInArea(icosphere, centerTile, radius) {
+	var tiles = [];
+	var queue = new Queue();
+	var visited = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) visited[size] = false;
+	var distances = [];
+	for (var size = icosphere.tiles.length-1; size >= 0; size--) distances[size] = -2;
+	
+	if (!centerTile.isOcean) {
+		queue.enqueue(centerTile);
+		visited[centerTile] = true;
+		distances[centerTile] = 0;
+	}
+	
+	while (!queue.isEmpty()) {
+		var tileIndex = queue.dequeue();
+		var tile = icosphere.tiles[tileIndex];
+		var neighbors = tile.getNeighborIndices();
+		
+		for (var i = 0; i < neighbors.length; i++) {
+			var neighbor = neighbors[i];
+			if (!visited[neighbor] && !neighbor.isOcean) {
 				if (distances[tileIndex] < radius) {
 					visited[neighbor] = true;
 					queue.enqueue(neighbor);

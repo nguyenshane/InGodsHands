@@ -56,9 +56,10 @@ pc.script.create('tribe', function (context) {
         initialize: function () {
 			var t1 = new Date();
 			
-            // create mesh
-            this.tile = ico.tiles[650]; // list of tiles
-            this.calculateFood();
+			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
+            this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
+            
+			this.calculateFood();
 
             totalBelief = 300;
             prevTotalBelief = totalBelief;

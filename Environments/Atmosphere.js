@@ -114,7 +114,7 @@ pc.script.create('Atmosphere', function (context) {
 			*/
 			
 			var s = size / 20;
-			s = pc.math.clamp(s, 2, 6);
+			s = pc.math.clamp(s, 3, 6);
 			var cameraDir = this.cam.script.Camera.entity.getPosition().normalize();
 			var v = new pc.Vec3(cameraDir.x, cameraDir.y + latitude/50, cameraDir.z);
 			v = v.normalize();
