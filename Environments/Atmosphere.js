@@ -136,6 +136,9 @@ pc.script.create('Atmosphere', function (context) {
 			for (var i = 0; i < tiles.length; i++) {
 				ico.tiles[tiles[i]].startStorm();
 			}
+
+            this.audio.sound_MakeThunder();
+
         },
 
         checkDestroyable: function(e) {

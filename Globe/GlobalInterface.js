@@ -51,6 +51,9 @@ pc.script.create('globalInterface', function (context) {
             prevTotalBelief = totalBelief;
 			
 			tribes = [];
+
+			// Checks how long the player has been inactive
+			inactiveTimer = 0;
 			
             // test vertex neighbors init
             this.testVerts = [];
@@ -67,6 +70,7 @@ pc.script.create('globalInterface', function (context) {
         update: function (dt) {
         	// Update globalTime, do not update anywhere else
         	globalTime += dt;
+        	inactiveTimer += dt;
 		
 		
 			//Only called on first update (since ico isn't defined in initialize)

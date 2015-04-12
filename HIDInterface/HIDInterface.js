@@ -20,7 +20,7 @@ pc.script.create('HIDInterface', function (context) {
 	var temperatureStart;
 	var lerpStartTime;
 	var velocity;
-	var tribe;
+	//var tribe;
 	var storm;
 	var camera;
 
@@ -33,7 +33,7 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
 			
-			tribe = context.root.findByName("BaseTribe").script.tribe;
+			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
 
@@ -88,7 +88,7 @@ pc.script.create('HIDInterface', function (context) {
 				//console.log(ico.tiles[i].getTemperature());
 			}
 			
-			tribe.resetInactionTimer();
+			inactiveTimer = 0;
 		},
 		
 		moved_A: function(position, distance, speed) {
@@ -97,13 +97,13 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity += (distance * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
-			tribe.resetInactionTimer();
+			inactiveTimer = 0;
 		},
 		
 		moved_P: function(position, distance, speed) {
 			//console.log("String P moved: ", position, distance, speed);
 			
-			tribe.resetInactionTimer();
+			inactiveTimer = 0;
 		},
 		
 		moved_E: function(position, distance, speed) {
@@ -118,15 +118,17 @@ pc.script.create('HIDInterface', function (context) {
 			*/
 			
 			scripts.Atmosphere.makeStorm(distance, speed);
-			if (tribe.tile.isStormy) tribe.startCowering();
-			
-			tribe.resetInactionTimer();
+			for(var i = 0; i < tribes.length; i++){
+				if (tribes[i].tile.isStormy) tribes[i].startCowering();
+			}
+
+			inactiveTimer = 0;
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
-			tribe.resetInactionTimer();
+			inactiveTimer = 0;
 		},
 
 

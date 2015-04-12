@@ -38,7 +38,7 @@ pc.script.create('tribe', function (context) {
         this.cowerTimer = 0;
         this.denounceTimer = 0;
         this.praiseTimer = 0;
-        this.godInactionTimer = 0;
+        //this.godInactionTimer = 0;
         this.noSunTimer = 0;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
@@ -285,7 +285,6 @@ pc.script.create('tribe', function (context) {
             while(this.stormEffect.darkness < this.cowerTimer){
                 this.stormEffect.darkness += .005;
             }            
-            this.audio.sound_MakeThunder();
         },
 
         cower: function(deltaTime) {

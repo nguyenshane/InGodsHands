@@ -71,7 +71,7 @@ pc.script.create('Conditions', function (context) {
         },
 
         isGodInactive: function(tribe){
-            if(tribe.godInactionTimer >= 20){ 
+            if(inactiveTimer >= 20){ 
                 return true;
             }
             return false;
