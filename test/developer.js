@@ -47,6 +47,8 @@ pc.script.create('ui', function (context) {
     var pullStartedE = false;
     var pullStartedW = false;
 
+    var isPaused = false;
+
     var needToStartTimeT = true;
     var needToStartTimeA = true;
     var needToStartTimeP = true;
@@ -428,8 +430,8 @@ pc.script.create('ui', function (context) {
          // Called every frame, dt is time in seconds since last update
         update: function (dt) {
              //updates the global temperature
-
-             var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
+             var app = pc.fw.Application.getApplication('application-canvas').context;
+             var tribeInfo = app.root.findByName('BaseTribe').script.tribe;
 
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'));
 
@@ -437,6 +439,17 @@ pc.script.create('ui', function (context) {
                ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
 
              this.time += dt;
+
+             this.buttonPause.onclick = function pauseGame(){
+                if(!isPaused){
+                    app.timeScale = 0;
+                    isPaused = true;
+                }
+                else{ 
+                    app.timeScale = 1;
+                    isPaused = false;
+                }
+             }
 
              // var cast = this.sliderT.value * 1.0;
              //  globalTemperature =  cast;    
