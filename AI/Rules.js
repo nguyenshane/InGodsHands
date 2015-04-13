@@ -144,8 +144,8 @@ var wantToMigrate = function() {
     
     this.weight = 2;
     this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isSpiteful,
-                       allConditions.isStockpileDecreasing];
+                       allConditions.isSpiteful];//,
+                       //allConditions.isStockpileDecreasing];
 };
 
 wantToMigrate.prototype = {
@@ -160,6 +160,7 @@ wantToMigrate.prototype = {
     
     consequence: function(tribe){
         //console.log("Tribe's tile: " + tribe.destinationTile);
+
 
         tribe.migrate();
 
@@ -180,9 +181,9 @@ var needTemperatureChange = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 3;
-    this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isNotSpiteful,
-                       allConditions.isStockpileDecreasing];
+    this.conditions = [ allConditions.isTileTemperatureNotIdeal
+                        ,allConditions.isNotSpiteful];
+                        //,allConditions.isStockpileDecreasing];
 };
 
 needTemperatureChange.prototype = {

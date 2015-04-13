@@ -71,14 +71,14 @@ pc.script.create('Conditions', function (context) {
         },
 
         isGodInactive: function(tribe){
-            if(inactiveTimer >= 20){ 
+            if(inactiveTimer >= 40){ 
                 return true;
             }
             return false;
         },
 
         isNoSun: function(tribe){
-            if(tribe.noSunTimer >= 30){
+            if(tribe.noSunTimer >= 50){
                 return true;
             }
             return false;

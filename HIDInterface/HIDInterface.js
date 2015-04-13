@@ -103,6 +103,14 @@ pc.script.create('HIDInterface', function (context) {
 		moved_P: function(position, distance, speed) {
 			//console.log("String P moved: ", position, distance, speed);
 			
+			//tribes[0].addTribe();
+			for(var i = 0; i < tribes.length; i++){
+				if(!tribes[i].enabled){
+					tribes[i].enabled = true;
+					break;
+				}
+			}
+
 			inactiveTimer = 0;
 		},
 		

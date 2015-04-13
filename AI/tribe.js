@@ -43,13 +43,16 @@ pc.script.create('tribe', function (context) {
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
+    
+        // Variables for lerp, in milliseconds
+
+        this.foodPopTimer = 0;
+        this.travelTime = 3000;
+        this.travelStartTime;
+
     };
 
-    // Variables for lerp, in milliseconds
 
-    var _foodPopTimer = 0;
-    var _travelTime = 3000;
-    var _travelStartTime;
 
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -59,6 +62,8 @@ pc.script.create('tribe', function (context) {
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
+            console.log("I'm on this tile!: " + this.tile.index);
+
 			this.calculateFood();
 
             totalBelief = 300;
@@ -89,7 +94,7 @@ pc.script.create('tribe', function (context) {
 			
             this.audio = context.root._children[0].script.AudioController;
 			
-			tribes.push(this);
+			//tribes.push(this);
 			
 			var t2 = new Date();
 			console.log("tribe initialization: " + (t2-t1));
@@ -103,6 +108,8 @@ pc.script.create('tribe', function (context) {
             // if the NPC is busy (moving, praying, etc.), currentAction is called instead      //
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
+
+            //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
 
             if(!this.isBusy){
                 this.runRuleList();
@@ -119,7 +126,7 @@ pc.script.create('tribe', function (context) {
             this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
             // God inaction timer goes up so long as God doesn't act (Duh)
-            this.godInactionTimer += dt;
+            //this.godInactionTimer += dt;
 
             // Increase no sun timer whenever tribe doesn't have sun
             if(!this.inSun){
@@ -153,8 +160,8 @@ pc.script.create('tribe', function (context) {
             // Delta vec used as middle man for setting tribe's position.
 
             var timer = new Date();
-            var timeSinceTravelStarted = timer.getTime() - _travelStartTime;
-            var percentTravelled = timeSinceTravelStarted / _travelTime;
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
             var deltaVec = new pc.Vec3;
 
@@ -181,7 +188,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.move);   
 
             var timer = new Date();
-            _travelStartTime = timer.getTime();
+            this.travelStartTime = timer.getTime();
         },
 
         migrate: function() {
@@ -190,13 +197,13 @@ pc.script.create('tribe', function (context) {
 
                 var possibleTiles = [];
 
-                if (!this.tile.neighbora.isOcean){
+                if (!this.tile.neighbora.isOcean && !this.tile.neighbora.hasTribe){
                     possibleTiles.push(this.tile.neighbora);
                 }
-                if (!this.tile.neighborb.isOcean){
+                if (!this.tile.neighborb.isOcean && !this.tile.neighborb.hasTribe){
                     possibleTiles.push(this.tile.neighborb);
                 }
-                if (!this.tile.neighborc.isOcean){
+                if (!this.tile.neighborc.isOcean && !this.tile.neighborc.hasTribe){
                     possibleTiles.push(this.tile.neighborc);
                 }
 
@@ -414,13 +421,13 @@ pc.script.create('tribe', function (context) {
         },
 
         foodAndPopTimer: function(dt) {
-            _foodPopTimer += dt
-            if(_foodPopTimer >= 8){
-                _foodPopTimer = 0;
+            this.foodPopTimer += dt
+            if(this.foodPopTimer >= 8){
+                this.foodPopTimer = 0;
                 this.calculateFood();
                 this.calculatePopulation();
             }
-            //console.log("Timer: " _foodPopTimer);
+            //console.log("Timer: " this.foodPopTimer);
         },
 
         calculateFood: function() {
@@ -482,7 +489,10 @@ pc.script.create('tribe', function (context) {
             this.calculateFood();
         },
 		
-		
+		addTribe: function() { 
+            this.entity.clone();
+        },
+
         // Constructs the NPC's list of rules
         createRuleList: function() {
             this.rules.push(new wantToMigrate());

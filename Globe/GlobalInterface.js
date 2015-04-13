@@ -50,7 +50,9 @@ pc.script.create('globalInterface', function (context) {
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
 			
-			tribes = [];
+
+			//tribes = [];
+			tribes = context.root.findByName("TribeParent").getChildren();
 
 			// Checks how long the player has been inactive
 			inactiveTimer = 0;
