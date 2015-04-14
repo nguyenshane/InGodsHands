@@ -8,6 +8,7 @@ pc.script.create('Camera', function (context) {
         //this.distance = 8;
         this.height = 0;
         this.orbitAngle = 0;
+        this.rotationSpeed = 0;
         
     };
 
@@ -29,17 +30,30 @@ pc.script.create('Camera', function (context) {
         },
         
         move_W: function(position, distance, speed) {
-            console.log('move_W', position);
+            console.log('move_W', position, distance, speed);
 			if(position>0) {
 			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
-                this.orbitAngle+=15;
+                //this.orbitAngle++;
+                //shaderSun.rotateLocal(0, -2, 0);
+                //sun.rotate(0, .01, 0);
+                this.rotationSpeed+=0.15;
 			}
-			else //context.root.findByName("Camera").script.camera.orbitAngle-=15;
-                this.orbitAngle-=15;
+			else {
+                //context.root.findByName("Camera").script.camera.orbitAngle-=15;
+                //this.orbitAngle--;
+                //shaderSun.rotateLocal(0, 2, 0);
+                //sun.rotate(0, -.01, 0);
+                this.rotationSpeed-=0.15;
+            }
 		},
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+
+            this.orbitAngle += this.rotationSpeed;
+            shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
+            sun.rotate(0, .01*this.rotationSpeed, 0);
+
 	
 			// Rotate plane background
 			this.bgplane.rotateLocal(0, dt*-2, 0);
