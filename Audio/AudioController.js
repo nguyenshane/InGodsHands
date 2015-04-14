@@ -1,6 +1,7 @@
 ///
 // Description: This is the Audio Controller
 ///
+pc.script.attribute('musicAsset', 'asset', []);
 
 pc.script.create('AudioController', function (context) {
     // Creates a new instance
@@ -25,6 +26,10 @@ pc.script.create('AudioController', function (context) {
 			this.stringP.on("moved", this.sound_P, this.direction, this.distance, this.speed);
 			this.stringE.on("moved", this.sound_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moved", this.sound_W, this.direction, this.distance, this.speed);
+
+			this.music = context.assets.getAssetById(this.musicAsset).resources;
+			console.log("this.music", this.music);
+
 
         },
 
@@ -139,6 +144,9 @@ pc.script.create('AudioController', function (context) {
 			
 			this.audio.audiosource.play("IGH Rain Loop");
 		},
+
+
+
     };
 
     return AudioController;
