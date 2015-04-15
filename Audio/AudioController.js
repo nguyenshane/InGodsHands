@@ -9,6 +9,7 @@ pc.script.create('AudioController', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 		this.musicBuffer = [];
+		this.musicLayer = 0;
 		this.direction, this.distance, this.speed = 0;
     };
 
@@ -35,10 +36,25 @@ pc.script.create('AudioController', function (context) {
 			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new AudioContext());
 
 			console.log("this.backgroundmusic", this.backgroundmusic);
+
+			this.backgroundmusic.playPause.call(this.backgroundmusic);
+
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	if (context.keyboard.isPressed(62)) {
+        		console.log('this.musicLayer',this.musicLayer);
+        		this.musicLayer+=0.05;
+        		if (this.musicLayer>=1) this.musicLayer = 1;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+            }
+            if (context.keyboard.isPressed(60)) {
+            	console.log('this.musicLayer',this.musicLayer);
+                this.musicLayer-=0.05;
+                if (this.musicLayer<=0) this.musicLayer = 0;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+            }
         },
 		
 		sound_T: function(position, distance, speed) {
