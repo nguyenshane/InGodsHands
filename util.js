@@ -924,7 +924,7 @@ BufferLoader.prototype.load = function() {
 
 // BackgroundIntensify
 
-function BackgroundIntensity(assests, context) {
+function BackgroundIntensity(buffers, context) {
   var ctx = this;
 
   /*buttonElement.addEventListener('click', function() {
@@ -937,11 +937,10 @@ function BackgroundIntensity(assests, context) {
     ctx.setIntensity(value / max);
   });*/
 
-  var sources = assests; //['1-atmos.mp3', '2-swell.mp3', '3-pierce.mp3', '4-boss.mp3'];
+  //var sources = ['1-atmos.mp3', '2-swell.mp3', '3-pierce.mp3', '4-boss.mp3'];
 
   // Load all sources.
-  var ctx = this;
-  loader = new BufferLoader(context, sources, onLoaded);
+  /*loader = new BufferLoader(context, sources, onLoaded);
   loader.load();
 
   function onLoaded(buffers) {
@@ -949,9 +948,11 @@ function BackgroundIntensity(assests, context) {
       ctx.buffers = buffers;
       console.log("ctx",ctx);
     }
+   */
 
-  this.sources = new Array(sources.length);
-  this.gains = new Array(sources.length);
+  this.buffers = buffers;
+  this.sources = new Array(buffers.length);
+  this.gains = new Array(buffers.length);
 }
 
 BackgroundIntensity.prototype.playPause = function() {
