@@ -63,7 +63,10 @@ BufferLoader.prototype.load = function() {
   this.loadBuffer(this.urlList[i], i);
 }
 
-  function BackgroundIntensity(buttonElement, rangeElement, context) {
+
+
+
+function BackgroundIntensity(buttonElement, rangeElement, context) {
   var ctx = this;
 
   buttonElement.addEventListener('click', function() {
@@ -84,9 +87,10 @@ BufferLoader.prototype.load = function() {
   loader.load();
 
   function onLoaded(buffers) {
-    // Store the buffers.
-    ctx.buffers = buffers;
-  }
+      // Store the buffers.
+      ctx.buffers = buffers;
+      console.log("ctx",ctx);
+    }
 
   this.sources = new Array(sources.length);
   this.gains = new Array(sources.length);
@@ -97,13 +101,13 @@ BackgroundIntensity.prototype.playPause = function() {
     // Stop all sources.
     for (var i = 0, length = this.sources.length; i < length; i++) {
       var src = this.sources[i];
+      console.log("src",src);
       src.stop(0);
     }
   } else {
     var targetStart = context.currentTime + 0.1;
     // Start all sources simultaneously.
     for (var i = 0, length = this.buffers.length; i < length; i++) {
-      console.log(this);
       this.playSound(i, targetStart);
     }
     this.setIntensity(0);
@@ -150,21 +154,21 @@ BackgroundIntensity.prototype.playSound = function(index, targetTime) {
 }
 
 
-  document.addEventListener('DOMContentLoaded', function() {
-    try {
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      context = new AudioContext();
-    }
-    catch(e) {
-      alert("Web Audio API is not supported in this browser");
-    }
-    
-    background = new BackgroundIntensity(
-        document.querySelector('#bg-button'),
-        document.querySelector('#bg'),
-        context);
-   
-  });
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    context = new AudioContext();
+  }
+  catch(e) {
+    alert("Web Audio API is not supported in this browser");
+  }
+  
+  background = new BackgroundIntensity(
+      document.querySelector('#bg-button'),
+      document.querySelector('#bg'),
+      context);
+ 
+});
 
 </script>
 </html>

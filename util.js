@@ -872,3 +872,141 @@ function lerp(low, high, value) {
 	
 	return (pc.math.clamp(v, 0, h) / h);
 }
+
+// BufferLoader for Music
+function BufferLoader(context, urlList, callback) {
+  this.context = context;
+  this.urlList = urlList;
+  this.onload = callback;
+  this.bufferList = new Array();
+  this.loadCount = 0;
+}
+
+BufferLoader.prototype.loadBuffer = function(url, index) {
+  // Load buffer asynchronously
+  var request = new XMLHttpRequest();
+  request.open("GET", url, true);
+  request.responseType = "arraybuffer";
+
+  var loader = this;
+
+  request.onload = function() {
+    // Asynchronously decode the audio file data in request.response
+    loader.context.decodeAudioData(
+      request.response,
+      function(buffer) {
+        if (!buffer) {
+          alert('error decoding file data: ' + url);
+          return;
+        }
+        loader.bufferList[index] = buffer;
+        if (++loader.loadCount == loader.urlList.length)
+          loader.onload(loader.bufferList);
+      },
+      function(error) {
+        console.error('decodeAudioData error', error);
+      }
+    );
+  }
+
+  request.onerror = function() {
+    alert('BufferLoader: XHR error');
+  }
+
+  request.send();
+}
+
+BufferLoader.prototype.load = function() {
+  for (var i = 0; i < this.urlList.length; ++i)
+  this.loadBuffer(this.urlList[i], i);
+}
+
+
+// BackgroundIntensify
+
+function BackgroundIntensity(buffers, context) {
+  var ctx = this;
+
+  /*buttonElement.addEventListener('click', function() {
+    ctx.playPause.call(ctx);
+  });*/
+
+  /*rangeElement.addEventListener('change', function(e) {
+    var value = parseInt(e.target.value);
+    var max = parseInt(e.target.max);
+    ctx.setIntensity(value / max);
+  });*/
+
+  //var sources = ['1-atmos.mp3', '2-swell.mp3', '3-pierce.mp3', '4-boss.mp3'];
+
+  // Load all sources.
+  /*loader = new BufferLoader(context, sources, onLoaded);
+  loader.load();
+
+  function onLoaded(buffers) {
+      // Store the buffers.
+      ctx.buffers = buffers;
+      console.log("ctx",ctx);
+    }
+   */
+
+  this.buffers = buffers;
+  this.sources = new Array(buffers.length);
+  this.gains = new Array(buffers.length);
+}
+
+BackgroundIntensity.prototype.playPause = function() {
+  if (this.playing) {
+    // Stop all sources.
+    for (var i = 0, length = this.sources.length; i < length; i++) {
+      var src = this.sources[i];
+      src.stop(0);
+    }
+  } else {
+    var targetStart = context.currentTime + 0.1;
+    // Start all sources simultaneously.
+    for (var i = 0, length = this.buffers.length; i < length; i++) {
+      this.playSound(i, targetStart);
+    }
+    this.setIntensity(0);
+  }
+  this.playing = !this.playing;
+}
+
+BackgroundIntensity.prototype.playSound = function(index, targetTime) {
+  var buffer = this.buffers[index];
+  var source = context.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  var gainNode = context.createGain();
+  // Make a gain node.
+  source.connect(gainNode);
+  gainNode.connect(context.destination);
+  // Save the source and gain node.
+  this.sources[index] = source;
+  this.gains[index] = gainNode;
+  source.start(targetTime);
+}
+
+BackgroundIntensity.prototype.setIntensity = function(normVal) {
+  var value = normVal * (this.gains.length - 1);
+  // First reset gains on all nodes.
+  for (var i = 0; i < this.gains.length; i++) {
+    this.gains[i].gain.value = 0;
+  }
+  // Decide which two nodes we are currently between, and do an equal
+  // power crossfade between them.
+  var leftNode = Math.floor(value);
+  // Normalize the value between 0 and 1.
+  var x = value - leftNode;
+  var gain1 = Math.cos(x * 0.5*Math.PI);
+  var gain2 = Math.cos((1.0 - x) * 0.5*Math.PI);
+  //console.log(gain1, gain2);
+  // Set the two gains accordingly.
+  this.gains[leftNode].gain.value = gain1;
+  // Check to make sure that there's a right node.
+  if (leftNode < this.gains.length - 1) {
+    // If there is, adjust its gain.
+    this.gains[leftNode + 1].gain.value = gain2;
+  }
+}

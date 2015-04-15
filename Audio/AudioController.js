@@ -1,13 +1,14 @@
 ///
 // Description: This is the Audio Controller
 ///
+pc.script.attribute('musicAsset', 'asset', []);
 
 pc.script.create('AudioController', function (context) {
     // Creates a new instance
     var AudioController = function (entity) {
         this.entity = entity;
 		pc.events.attach(this);
-		
+		this.musicBuffer = [];
 		this.direction, this.distance, this.speed = 0;
     };
 
@@ -26,6 +27,14 @@ pc.script.create('AudioController', function (context) {
 			this.stringE.on("moved", this.sound_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moved", this.sound_W, this.direction, this.distance, this.speed);
 
+			for (var id in this.musicAsset) {
+				this.musicBuffer.push(context.assets.getAssetById(this.musicAsset[id]).resource.buffer);
+			}
+			console.log("this.musicBuffer", this.musicBuffer);
+
+			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new AudioContext());
+
+			console.log("this.backgroundmusic", this.backgroundmusic);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -139,6 +148,9 @@ pc.script.create('AudioController', function (context) {
 			
 			this.audio.audiosource.play("IGH Rain Loop");
 		},
+
+
+
     };
 
     return AudioController;
