@@ -238,6 +238,7 @@ function IcoSphere(device, radius, subdivisions) {
     for (var i = 0; i < this.vertexGraph.length; i++) {
     	this.vertexGraph[i].stagger(0.075);
     	this.vertexGraph[i].setHeight(ico.radius);
+    	this.vertexGraph[i].updateHeight();
     }
 	
 	
@@ -246,7 +247,7 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	
 	var t2 = new Date();
-	console.log("icosphere initialization: " + (t2-t1));
+	debug.log(DEBUG.WORLDGEN, "icosphere initialization: " + (t2-t1));
 	
 	//Generate terrain
 	this.vertexHeights = [];
@@ -256,7 +257,7 @@ function IcoSphere(device, radius, subdivisions) {
 		repellerSizeMin = 1, repellerSizeMax = 4,
 		repellerHeightMin = 0.05, repellerHeightMax = 0.15,
 		continentCountMin = 3, continentCountMax = 6,
-		continentSizeMin = 10, continentSizeMax = 16,
+		continentSizeMin = 5, continentSizeMax = 16,
 		mountainCountMin = 5, mountainCountMax = 8,
 		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
@@ -275,8 +276,19 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	generateTerrain(this, initialContinentLocation, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
+	//this.clusters[0] = new Cluster(6, 1);
+	//this.clusters[1] = new Cluster(5, 1);
+	//this.clusters[2] = new Cluster(19, 1);
+	//this.clusters[3] = new Cluster(12, 1);
+	//this.clusters[4] = new Cluster(2, 1);
+
+	for (var i = 0; i < this.clusters.length; ++i) {
+		this.clusters[i].extrude();
+	}
+
+
 	var t3 = new Date();
-	console.log("terrain generation: " + (t3-t2));
+	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
@@ -334,7 +346,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		tile.calculateRotationVectors();
 		tile.isOcean = false;
 
-		//console.log(tile);
+		//debug.obj(DEBUG.WORLDGEN, tile);
 		
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
