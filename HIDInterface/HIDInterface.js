@@ -126,8 +126,11 @@ pc.script.create('HIDInterface', function (context) {
 			*/
 			
 			scripts.Atmosphere.makeStorm(distance, speed);
+			
 			for(var i = 0; i < tribes.length; i++){
-				if (tribes[i].tile.isStormy) tribes[i].startCowering();
+				if (tribes[i].enabled){
+					if(tribes[i].script.tribe.tile.isStormy) tribes[i].startCowering();
+				}
 			}
 
 			inactiveTimer = 0;
