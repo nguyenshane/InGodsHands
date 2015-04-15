@@ -70,15 +70,10 @@ pc.script.create('Globe', function (context) {
                     "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
-                    // Land
                     "    if (dist > radius + 0.01) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
-                    // Beaches
-                    "    } else if (dist > radius) {",
-                    "       color = intensity * sunIntensity * vec4(245.0/256.0, 191.0/256.0, 125.0/256.0, 1.0);",
-                    // Ocean
                     "    } else {",
-                    "       color = intensity * sunIntensity * vec4(54.0/256.0, 152.0/256.0, 167.0/256.0, 1.0);",
+                    "       color = intensity * sunIntensity * vec4(0.154902, 0.361765, 0.982353, 1.0);",
                     "    }",
                     "    gl_FragColor = color;",
                     "}"
@@ -169,7 +164,7 @@ pc.script.create('Globe', function (context) {
             //ico._recalculateMesh();
             ico.updateReturnMesh();
             this.meshInstance.mesh = ico.toReturn.mesh;
-            //console.log("Updating Globe Mesh");
+            console.log("Updating Globe Mesh");
         }
 		/*
 		move: function(position, distance, speed) {

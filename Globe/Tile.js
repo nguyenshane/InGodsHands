@@ -179,8 +179,6 @@ function Tile(index, vertexa, vertexb, vertexc){
     ico.indices.push(vertexa);
     ico.indices.push(vertexb);
     ico.indices.push(vertexc);
-
-    this.entities = [];
 	
 	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 + 0.5;
@@ -799,6 +797,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         this.center = center;
         return center;
     };
+
     this.equals = function(other){
 		/*
         return (this.center.x === (other.center.x) &&
@@ -809,7 +808,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     }
 
     this.subdivide = function() {
-        //debug.log(DEBUG.AI, "Entering subdivide for face " + this.index);
+        //console.log("Entering subdivide for face " + this.index);
 
         // Get the three new midpoint vertices
         var new0 = ico.vertexGraph[this.vertexIndices[1]].getCommonNeighbor(ico.vertexGraph[this.vertexIndices[2]]);
@@ -913,40 +912,4 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.tiles[ico.tiles.length - 1].neighbors[neighbor] = this.neighbors[neighbor];
         }
     };
-
-    this.hasEntity = function(object) {
-        for (var i = 0; i < this.entities.length; ++i) {
-            if (this.entities[i] === object) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    this.enter = function(object) {
-        var index = this.entities.indexOf(object);
-
-        if (index == -1) {
-            this.entities.push(object);
-
-            object.tile = this;
-
-            object.altitude = this.center.length;
-
-            object.longitude;
-
-            object.lattitude;
-
-            
-
-        }
-    }
-
-    this.leave = function(object) {
-        var index = this.entities.indexOf(object);
-
-        if (index != -1) {
-            array.splice(index, 1);
-        }
-    }
 }

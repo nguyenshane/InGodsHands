@@ -24,7 +24,7 @@ function edge(direction, fromNode, toNode, edgeIndex) {
 	this.edgeIndex = edgeIndex;
 	this.divided = false;
 	this.tiles = [];
-	//debug.log(DEBUG.WORLDGEN, this);
+	//console.log(this);
 	//this.tiles[CLOCK.CW] = tilecw;
 	//this.tiles[CLOCK.CCW] = tileccw;
 }
@@ -36,8 +36,6 @@ function VertexNode(index, indices) {
 	this.group = indices;
 
 	this.edges = [];
-
-	this.oldHeight = ico.radius;// = this.getHeight();
 
 	this.addIndex = function(index) {
 		this.group.push(index);
@@ -68,10 +66,6 @@ function VertexNode(index, indices) {
 		ico.updateFlag = true;
 	}
 
-	this.updateHeight = function() {
-		this.oldHeight = this.getHeight();
-	}
-
 	this.addEdge = function(direction, index) {
 		this.edges.push(new edge(direction, this.index, index, this.edges.length));
 	}
@@ -82,14 +76,6 @@ function VertexNode(index, indices) {
 				return i;
 			}
 		}
-	}
-
-	this.getNeighbors = function() {
-		var neighbors = [];
-		for (var i = 0; i < this.edges.length; ++i) {
-			neighbors[i] = this.edges[i].toNode;
-		}
-		return neighbors;
 	}
 
 	this.getNeighbor = function(direction, backupDirection) {
@@ -187,13 +173,13 @@ function VertexNode(index, indices) {
 			if (this.edges[i].divided == false) {
 
 				// DEBUG
-				//debug.log(DEBUG.WORLDGEN, "Dividing edge between " + this.edges[i].fromNode + " and " + this.edges[i].toNode);
+				//console.log("Dividing edge between " + this.edges[i].fromNode + " and " + this.edges[i].toNode);
 
 				// Divide edge
 				this.divideEdge(this.edges[i].toNode);
 
 				// DEBUG
-				//debug.log(DEBUG.WORLDGEN, "Vertex " + this.index + ": edge " + i + " divided, adding node " + this.edges[i].toNode);
+				//console.log("Vertex " + this.index + ": edge " + i + " divided, adding node " + this.edges[i].toNode);
 			}
 		}
 	}
@@ -247,9 +233,9 @@ function VertexNode(index, indices) {
 			// Neighboring edge counterclockwise from direction of otherNodeDir
 			var edge2ccw = otherNode.getNeighboringEdge(otherNodeEdge, CLOCK.COUNTERCLOCKWISE);
 
-			//debug.log(DEBUG.WORLDGEN, edge1);
-			//debug.log(DEBUG.WORLDGEN, edge2cw);
-			//debug.log(DEBUG.WORLDGEN, edge2ccw);
+			//console.log(edge1);
+			//console.log(edge2cw);
+			//console.log(edge2ccw);
 
 			// Test distance == 2 and distance == 3
 			for (var distance = 2; distance < 5; ++distance) {
@@ -280,12 +266,12 @@ function VertexNode(index, indices) {
 		if (count != 4) {
 			console.error(count);
 		}
-		//debug.log(DEBUG.WORLDGEN, count);
+		//console.log(count);
 
 	}
 
 	this.getNeighboringEdge = function(edge, clock) {
-		//debug.log(DEBUG.WORLDGEN, this);
+		//console.log(this);
 		// Edge case for top node
 		if (this.index == ico.topIndex) {
 			if (clock == CLOCK.CLOCKWISE) {
@@ -321,7 +307,7 @@ function VertexNode(index, indices) {
 
 					// Return first neighboring edge
 					if (this.edges[j].direction == (edge.direction + i) % 8) {
-						//debug.log(DEBUG.WORLDGEN, "Returning getNeighboringEdge: Vertex " + this.index + ", startDirection " + edge.direction + ", returnDirection " + this.edges[j].direction + ", clockwise");
+						//console.log("Returning getNeighboringEdge: Vertex " + this.index + ", startDirection " + edge.direction + ", returnDirection " + this.edges[j].direction + ", clockwise");
 						return this.edges[j];
 					}
 				}
@@ -334,7 +320,7 @@ function VertexNode(index, indices) {
 
 					// Return first neighboring edge
 					if (this.edges[j].direction == (edge.direction + i + 16) % 8) {
-						//debug.log(DEBUG.WORLDGEN, "Returning getNeighboringEdge: Vertex " + this.index + ", startDirection " + edge.direction + ", returnDirection " + this.edges[j].direction + ", counterclockwise");
+						//console.log("Returning getNeighboringEdge: Vertex " + this.index + ", startDirection " + edge.direction + ", returnDirection " + this.edges[j].direction + ", counterclockwise");
 						return this.edges[j];
 					}
 				}
@@ -343,7 +329,7 @@ function VertexNode(index, indices) {
 	}
 
 	this.calculateNeighborDirection = function(leftbound, rightbound, distance) {
-		//debug.log(DEBUG.WORLDGEN, "Entering calculateNeighborDirection: Vertex " + this.index + ", left " + leftbound + ", right " + rightbound + ", distance " + distance);
+		//console.log("Entering calculateNeighborDirection: Vertex " + this.index + ", left " + leftbound + ", right " + rightbound + ", distance " + distance);
 		if (distance == 2) {
 			return (leftbound + 1) % 8;
 		} else if (distance == 3) {
