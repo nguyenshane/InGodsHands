@@ -9,6 +9,7 @@ pc.script.create('Camera', function (context) {
         this.height = 0;
         this.orbitAngle = 0;
         this.rotationSpeed = 0;
+        this.lastRotationSpeed = 0;
         
     };
 
@@ -31,24 +32,45 @@ pc.script.create('Camera', function (context) {
         
         move_W: function(position, distance, speed) {
             console.log('move_W', position, distance, speed);
-			if(position>0) {
-			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
-                //this.orbitAngle++;
-                //shaderSun.rotateLocal(0, -2, 0);
-                //sun.rotate(0, .01, 0);
-                this.rotationSpeed+=0.15;
-			}
-			else {
-                //context.root.findByName("Camera").script.camera.orbitAngle-=15;
-                //this.orbitAngle--;
-                //shaderSun.rotateLocal(0, 2, 0);
-                //sun.rotate(0, -.01, 0);
-                this.rotationSpeed-=0.15;
-            }
+            
+    			if(position>0) {
+    			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
+                    //this.orbitAngle++;
+                    //shaderSun.rotateLocal(0, -2, 0);
+                    //sun.rotate(0, .01, 0);
+                    this.rotationSpeed+=0.15;
+                    this.lastRotationSpeed = this.rotationSpeed;
+    			}
+    			else {
+                    //context.root.findByName("Camera").script.camera.orbitAngle-=15;
+                    //this.orbitAngle--;
+                    //shaderSun.rotateLocal(0, 2, 0);
+                    //sun.rotate(0, -.01, 0);
+                    this.rotationSpeed-=0.15;
+                    this.lastRotationSpeed = this.rotationSpeed;
+                }
+
 		},
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+
+            var app = pc.fw.Application.getApplication('application-canvas').context;
+
+            //checks if the game has stopped
+            if(app.timeScale == 0){
+            hasStopped = true;
+            }
+            else{
+                hasStopped = false;
+            } 
+            //if paused it stops the earth from rotating
+             if(hasStopped){
+                this.rotationSpeed = 0;
+            }
+            else{
+                this.rotationSpeed = this.lastRotationSpeed;
+            }
 
             this.orbitAngle += this.rotationSpeed;
             shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
