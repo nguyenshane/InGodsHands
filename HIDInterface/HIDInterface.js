@@ -24,6 +24,9 @@ pc.script.create('HIDInterface', function (context) {
 	var storm;
 	var camera;
 
+    var UI;
+    var hasStopped;
+
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
@@ -40,7 +43,9 @@ pc.script.create('HIDInterface', function (context) {
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
-			
+
+			UI = context.root.findByName("Rv1-stable").script.developer;
+
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
 			this.stringP.on("moved", this.moved_P, this.direction, this.distance, this.speed);
@@ -57,7 +62,18 @@ pc.script.create('HIDInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-        	if(temperatureChange == true){
+        	var app = pc.fw.Application.getApplication('application-canvas').context;
+
+        	if(app.timeScale == 0){
+        		hasStopped = true;
+        	}
+        	else{
+        		hasStopped = false
+        	}
+
+        	//console.log("isPaused value: " + UI.isPaused);
+
+        	if(temperatureChange == true  && !hasStopped){
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
@@ -165,9 +181,10 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moving_W: function(position, distance, speed) {
+			if(!hasStopped){
 			console.log("String W moving: ", position, distance, speed);
 			camera.script.Camera.move_W(position,distance,speed);
-			
+			}
 		},
 
     };
