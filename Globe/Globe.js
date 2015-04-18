@@ -70,8 +70,11 @@ pc.script.create('Globe', function (context) {
                     "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
+                    // Mountain
+                    "    if (dist > radius + 1.0) {",
+                    "       color = intensity * sunIntensity * vec4(170.0/256.0, 80.0/256.0, 50.0/256.0, 1.0);",
                     // Land
-                    "    if (dist > radius + 0.01) {",
+                    "    } else if (dist > radius + 0.01) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     // Beaches
                     "    } else if (dist > radius) {",
@@ -80,6 +83,10 @@ pc.script.create('Globe', function (context) {
                     "    } else {",
                     "       color = intensity * sunIntensity * vec4(54.0/256.0, 152.0/256.0, 167.0/256.0, 1.0);",
                     "    }",
+                    // Snow
+                    //"    if ((temperature * abs(fPosition.y) / maxTemp) > 0.7) {",
+                    //"       color = intensity * sunIntensity * vec4(230.0/256.0, 230.0/256.0, 230.0/256.0, 1.0);",
+                    //"    }",
                     "    gl_FragColor = color;",
                     "}"
                 ].join("\n")

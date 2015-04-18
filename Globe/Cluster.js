@@ -19,11 +19,12 @@ function Cluster(centerVertex, radius) {
 		debug.obj(DEBUG.WORLDGEN, visited);
 
 		for (var i = 0; i < visited.length; ++i) {
-			this.vertices.push(ico.vertexGraph[visited[i]]);
+			//this.vertices.push(ico.vertexGraph[visited[i]]);
 		}
 
 		for (var i = 0; i < this.vertices.length; ++i) {
 			this.vertices[i].setHeight(1.7);
+			this.vertices[i].updateHeight();
 		}
 	}
 
@@ -63,10 +64,11 @@ function Cluster(centerVertex, radius) {
 
 			// Change the height of neighbor to this previous height
 			ico.vertexGraph[this.vertices[i].getNeighbor(direction)].setHeight(this.vertices[i].oldHeight);
-		//}
+
+		}
 
 		// For each vertex
-		//for (var i = 0; i < this.vertices.length; ++i) {
+		for (var i = 0; i < this.vertices.length; ++i) {
 			
 			// Update previous height
 			this.vertices[i].updateHeight();
