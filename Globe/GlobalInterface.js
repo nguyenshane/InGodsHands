@@ -126,10 +126,6 @@ pc.script.create('globalInterface', function (context) {
 			
             // Eroder agent update. Comment to not have erosion on continents
             //this.eroder.update();
-            for (var i = 0; i < ico.clusters.length; ++i) {
-                ico.clusters[i].move((i % 2) * 4 + 2) ;
-                //ico.clusters[i].move(DIRECTION.EAST) ;
-            }
 			
 			
             sun.setPosition(0, 0, 0);

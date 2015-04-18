@@ -21,8 +21,6 @@ function IcoSphere(device, radius, subdivisions) {
 	this.graphRows = [];
     
     this.tiles = [];
-
-    this.clusters = [];
 	
     this.currentVerts = 12;
     this.currentFaces = 20;
@@ -238,7 +236,6 @@ function IcoSphere(device, radius, subdivisions) {
     for (var i = 0; i < this.vertexGraph.length; i++) {
     	this.vertexGraph[i].stagger(0.075);
     	this.vertexGraph[i].setHeight(ico.radius);
-    	this.vertexGraph[i].updateHeight();
     }
 	
 	
@@ -276,16 +273,6 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	generateTerrain(this, initialContinentLocation, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
-	//this.clusters[0] = new Cluster(6, 1);
-	//this.clusters[1] = new Cluster(5, 1);
-	//this.clusters[2] = new Cluster(19, 1);
-	//this.clusters[3] = new Cluster(12, 1);
-	//this.clusters[4] = new Cluster(2, 1);
-
-	for (var i = 0; i < this.clusters.length; ++i) {
-		this.clusters[i].extrude();
-	}
-
 
 	var t3 = new Date();
 	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));

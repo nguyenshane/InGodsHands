@@ -37,7 +37,13 @@ function VertexNode(index, indices) {
 
 	this.edges = [];
 
-	this.oldHeight = ico.radius;// = this.getHeight();
+	// Can be below ico.radius, but the mesh won't display if it is
+	// Used when terrain is underwater
+	this.height;
+
+	this.isOcean = true;
+
+	this.isFault = false;
 
 	this.addIndex = function(index) {
 		this.group.push(index);
@@ -57,19 +63,24 @@ function VertexNode(index, indices) {
 	}
 
 	this.setHeight = function(height) {
+		this.height = height;
+
+		// Check if terrain is below water level
+		if (height <= ico.radius) {
+			height = ico.radius;
+			this.isOcean = true;
+		} else {
+			this.isOcean = false;
+		}
 		var vertex = this.getVertex();
 		vertex.normalize();
-		vertex.scale(height)
+		vertex.scale(height);
 		for (var i = 0; i < this.group.length; ++i) {
 			ico.vertices[this.group[i] * 3] = vertex.x;
 			ico.vertices[this.group[i] * 3 + 1] = vertex.y;
 			ico.vertices[this.group[i] * 3 + 2] = vertex.z;
 		}
 		ico.updateFlag = true;
-	}
-
-	this.updateHeight = function() {
-		this.oldHeight = this.getHeight();
 	}
 
 	this.addEdge = function(direction, index) {
