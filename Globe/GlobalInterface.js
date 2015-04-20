@@ -10,9 +10,11 @@ pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
         this.entity = entity;
-        isPaused = false;
+        //isPaused = false;
 
-        this.isPaused = isPaused;
+        this.isPaused = false;
+
+        isPaused = this.isPaused;
     };
 	
     var camera;
@@ -174,10 +176,12 @@ pc.script.create('globalInterface', function (context) {
             if(!this.isPaused){
                 context.timeScale = 0;
                 this.isPaused = true;
+                isPaused = this.isPaused;
             }
             else{ 
                 context.timeScale = 1;
                 this.isPaused = false;
+                isPaused = this.isPaused;
             }
          }
     };

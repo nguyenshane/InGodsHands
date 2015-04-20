@@ -28,7 +28,12 @@ pc.script.create('AudioController', function (context) {
 			this.stringE.on("moved", this.sound_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moved", this.sound_W, this.direction, this.distance, this.speed);
 
-			for (var id in this.musicAsset) {
+			console.log("this.musicAsset", this.musicAsset);
+
+			for (var id=0; id<this.musicAsset.length; id++) {
+				console.log('id', id);
+				console.log("this.musicAsset[id]", this.musicAsset[id]);
+				console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
 				this.musicBuffer.push(context.assets.getAssetById(this.musicAsset[id]).resource.buffer);
 			}
 			console.log("this.musicBuffer", this.musicBuffer);

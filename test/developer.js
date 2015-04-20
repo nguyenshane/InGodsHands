@@ -16,8 +16,6 @@ pc.script.create('developer', function (context) {
         this.positionE = 1;
         this.positionW = 1;
 
-        this.isPaused = false;
-
         this.time = 0;
 
         this.context = pc.fw.Application.getApplication('application-canvas').context;
@@ -760,7 +758,7 @@ pc.script.create('developer', function (context) {
                         }
         },
 
-         sendToMove_P: function(){
+        sendToMove_P: function(){
              if (hasMovedP){
                             var distance = this.sliderPDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeP;
@@ -778,7 +776,7 @@ pc.script.create('developer', function (context) {
                         }
         },
 
-         sendToMove_E: function(){
+        sendToMove_E: function(){
              if (hasMovedE){
                             var distance = this.sliderEDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeE;
@@ -796,7 +794,7 @@ pc.script.create('developer', function (context) {
                         }
         },
 
-         sendToMove_W: function(){
+        sendToMove_W: function(){
              if (hasMovedW){
                             var distance = this.sliderWDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeW;
@@ -839,7 +837,7 @@ pc.script.create('developer', function (context) {
         },
 
         createPausePlane: function () {
-            if(this.isPaused){
+            if(isPaused){
             var entity = new pc.Entity();
             var isCreated = true;
 
