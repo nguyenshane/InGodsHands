@@ -7,7 +7,19 @@ DIRECTION = {
 	SOUTH     : 4,
 	SOUTHWEST : 5,
 	WEST      : 6,
-	NORTHWEST : 7
+	NORTHWEST : 7,
+
+	// For printing direction (Mostly debugging)
+	string : function(direction) {
+		if (direction == 0) return "North";
+		if (direction == 1) return "Northeast";
+		if (direction == 2) return "East";
+		if (direction == 3) return "Southeast";
+		if (direction == 4) return "South";
+		if (direction == 5) return "Southwest";
+		if (direction == 6) return "West";
+		if (direction == 7) return "Northwest";
+	}
 };
 
 CLOCK = {
@@ -81,6 +93,10 @@ function VertexNode(index, indices) {
 			ico.vertices[this.group[i] * 3 + 2] = vertex.z;
 		}
 		ico.updateFlag = true;
+	}
+
+	this.addHeight = function(height) {
+		this.setHeight(this.height + height);
 	}
 
 	this.addEdge = function(direction, index) {

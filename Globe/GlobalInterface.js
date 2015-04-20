@@ -66,6 +66,14 @@ pc.script.create('globalInterface', function (context) {
             this.eroder = new Eroder(0, 150);
 			
 			this.init = false;
+
+            // Test faultlines
+            this.fault;
+            this.faultIndex = 0;
+            this.faultMoveCount = 0;
+            this.faultMoveMax = 20;
+            this.faultIncrement = 0.01;
+            this.faultDir = -1;
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -126,6 +134,19 @@ pc.script.create('globalInterface', function (context) {
 			
             // Eroder agent update. Comment to not have erosion on continents
             //this.eroder.update();
+
+            // Test faults
+            this.fault = ico.faults[this.faultIndex];
+            for (var i = 0; i < this.fault.length; ++i) {
+                this.fault[i].addHeight(this.faultIncrement * this.faultDir);
+            }
+            if (++this.faultMoveCount >= this.faultMoveMax) {
+                if (++this.faultIndex >= ico.faults.length) {
+                    this.faultIndex = 0;
+                    this.faultDir *= -1;
+                }
+                this.faultMoveCount = 0;
+            }
 			
 			
             sun.setPosition(0, 0, 0);
