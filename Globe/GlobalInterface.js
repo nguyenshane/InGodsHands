@@ -147,8 +147,14 @@ pc.script.create('globalInterface', function (context) {
                 }
                 this.faultMoveCount = 0;
             }
-			
-			
+            
+            
+            //Reposition tile-attached objects (might be faster to do it in vertexnode's setheight function but w/e)
+            for (var i = 0; i < ico.tiles.length; i++) {
+                ico.tiles[i].reposition();
+            }
+            
+            
             sun.setPosition(0, 0, 0);
         },
 

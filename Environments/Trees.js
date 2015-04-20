@@ -67,7 +67,6 @@ pc.script.create('Trees', function (context) {
 				
 				this.entity.getParent().addChild(e); // Add it as a sibling to the original
 				
-				//var treetype = Math.floor((Math.random() * 2) + 0);
 				var tree;
 				switch (type) {
 					case 0:

@@ -500,6 +500,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Adds a tree to this tile
 	this.createTree = function(temperature, size) {
+        //position/angle now overridden in the reposition() function below
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		normal.normalize();
 		var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
@@ -601,6 +602,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Adds an animal to this tile
 	this.createAnimal = function(temperature, size) {
+        //position/angle now overridden in the reposition() function below
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
 		var angle = m.getEulerAngles();
@@ -799,6 +801,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         this.center = center;
         return center;
     };
+    
     this.equals = function(other){
 		/*
         return (this.center.x === (other.center.x) &&
@@ -947,6 +950,33 @@ function Tile(index, vertexa, vertexb, vertexc){
 
         if (index != -1) {
             array.splice(index, 1);
+        }
+    }
+    
+    this.reposition = function() {
+        this.calculateCenter2();
+        this.calculateNormal();
+        
+        //should use the entity array now I guess?
+        if (this.hasTree) {
+            var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+            normal.normalize();
+            var center = new pc.Vec3(this.center.x, this.center.y, this.center.z);
+            center.normalize();
+            multScalar(center, 2);
+            normal.add(center);
+            var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+            var angle = m.getEulerAngles();
+            this.tree.treeObj.setPosition(this.center); //should have the tree/animal object handle this itself instead so we can do more fancy positioning than just placing everything on the center
+            this.tree.treeObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
+        }
+        
+        if (this.hasAnimal) {
+            var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+            var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+            var angle = m.getEulerAngles();
+            this.animal.animalObj.setPosition(this.center);
+            this.animal.animalObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
     }
 }
