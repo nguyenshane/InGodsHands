@@ -22,7 +22,7 @@ function IcoSphere(device, radius, subdivisions) {
     
     this.tiles = [];
 
-    this.clusters = [];
+    this.faults = [];
 	
     this.currentVerts = 12;
     this.currentFaces = 20;
@@ -238,7 +238,6 @@ function IcoSphere(device, radius, subdivisions) {
     for (var i = 0; i < this.vertexGraph.length; i++) {
     	this.vertexGraph[i].stagger(0.075);
     	this.vertexGraph[i].setHeight(ico.radius);
-    	this.vertexGraph[i].updateHeight();
     }
 	
 	
@@ -256,8 +255,8 @@ function IcoSphere(device, radius, subdivisions) {
 	var continentBufferDistance = 1.4, repellerCountMultiplier = 0.05,
 		repellerSizeMin = 1, repellerSizeMax = 4,
 		repellerHeightMin = 0.05, repellerHeightMax = 0.15,
-		continentCountMin = 3, continentCountMax = 6,
-		continentSizeMin = 5, continentSizeMax = 16,
+		continentCountMin = 1, continentCountMax = 1,
+		continentSizeMin = 20, continentSizeMax = 20,
 		mountainCountMin = 5, mountainCountMax = 8,
 		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
@@ -276,16 +275,12 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	generateTerrain(this, initialContinentLocation, continentBufferDistance, repellerCountMultiplier, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
-	//this.clusters[0] = new Cluster(6, 1);
-	//this.clusters[1] = new Cluster(5, 1);
-	//this.clusters[2] = new Cluster(19, 1);
-	//this.clusters[3] = new Cluster(12, 1);
-	//this.clusters[4] = new Cluster(2, 1);
 
-	for (var i = 0; i < this.clusters.length; ++i) {
-		this.clusters[i].extrude();
-	}
-
+	this.generateFault(219, 1, 10);
+	this.generateFault(100, 2, 15);
+	this.generateFault(382, 3, 10);
+	this.generateFault(90, 2, 8);
+	this.generateFault(225, 1, 10);
 
 	var t3 = new Date();
 	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));
@@ -446,6 +441,50 @@ IcoSphere.prototype.unshareVertices = function() {
 	for (var size = vertices.length-1; size >= 0; size--) this.indices[size] = size;
 	
 	this.tiles = tiles;
+};
+
+IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
+
+	var currVert;
+
+	var direction = Math.floor(pc.math.random(0, 8));
+
+	var index = startingIndex;
+	var prevInd = index;
+
+	var fault = [];
+
+	for (var i = 0; i < offshoots; ++i) {
+		index = startingIndex;
+		currVert = this.vertexGraph[index];
+
+		if (!currVert.isFault) {
+			currVert.isFault = true;
+			fault.push(currVert);
+		}
+
+
+		for (var j = 0; j < reach; ++j) {
+			prevInd = index;
+			index = currVert.getNeighbor(direction, (direction + (j % 1) * 2 - 1) % 8);
+			//debug.log(DEBUG.WORLDGEN, index);
+			if (index == -1) {
+				debug.log(DEBUG.WORLDGEN, "Breaking fault gen at " + prevInd + " with direction " + direction); //DIRECTION.string(direction));
+				break;
+			}
+			currVert = this.vertexGraph[index];
+			if (!currVert.isFault) {
+				currVert.isFault = true;
+				fault.push(currVert);
+			}
+		}
+
+		direction = (direction + Math.floor(8 / offshoots)) % 8;
+	}
+
+	this.faults.push(fault);
+
+	debug.obj(DEBUG.WORLDGEN, fault);
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices

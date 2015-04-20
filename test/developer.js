@@ -1,5 +1,5 @@
-pc.script.create('ui', function (context) {
-    var UI = function (entity) {
+pc.script.create('developer', function (context) {
+    var developer = function (entity) {
         this.entity = entity;
 
         //slider distances
@@ -15,6 +15,8 @@ pc.script.create('ui', function (context) {
         this.positionP = 1;
         this.positionE = 1;
         this.positionW = 1;
+
+        this.isPaused = false;
 
         this.time = 0;
 
@@ -47,15 +49,13 @@ pc.script.create('ui', function (context) {
     var pullStartedE = false;
     var pullStartedW = false;
 
-    var isPaused = false;
-
     var needToStartTimeT = true;
     var needToStartTimeA = true;
     var needToStartTimeP = true;
     var needToStartTimeE = true;
     var needToStartTimeW = true;
 
-    UI.prototype = {
+    developer.prototype = {
         initialize: function () {
             // Create a button to subtract
             var buttonSub = document.createElement('BUTTON');
@@ -227,6 +227,35 @@ pc.script.create('ui', function (context) {
             StringsliderW.style.left = '7%';
             StringsliderW.mouseIsOver = false;
 
+            //create a Slider string pull
+            var musicSlider = document.createElement("INPUT");
+            musicSlider.setAttribute("type", "range");
+
+            //fields for the slider
+             musicSlider.max = 100.0;
+             musicSlider.min = 0.0;
+             musicSlider.step = 1.0;
+             musicSlider.defaultValue = 50.0;
+
+             //positions it
+             musicSlider.style.position = 'absolute';
+             musicSlider.style.top = '40%';
+             musicSlider.style.left = '74%';
+             musicSlider.mouseIsOver = false;
+
+             //text for the global temperature
+            var musicText = document.createElement('div');
+            musicText.style.position = 'absolute';
+            musicText.style.width = '32px';
+            musicText.style.top = '40%';
+            musicText.style.left = '70%';
+            musicText.style.marginLeft = '0px';            
+            musicText.style.textAlign = 'center';
+            musicText.style.color = 'white';
+            musicText.style.fontSize = '16';
+
+
+
             //attaches a touch listener to it
             // StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
             // StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
@@ -375,6 +404,7 @@ pc.script.create('ui', function (context) {
             document.body.appendChild(divPString);
             document.body.appendChild(divEString);
             document.body.appendChild(divWString);
+            document.body.appendChild(musicText);
 
             document.body.appendChild(tribePop);
             document.body.appendChild(tribeFood);
@@ -390,6 +420,7 @@ pc.script.create('ui', function (context) {
             document.body.appendChild(StringsliderP);
             document.body.appendChild(StringsliderE);
             document.body.appendChild(StringsliderW);
+            document.body.appendChild(musicSlider);
 
 
             //this.sliderT = sliderT;
@@ -417,10 +448,13 @@ pc.script.create('ui', function (context) {
             this.StringsliderE = StringsliderE;
             this.StringsliderW = StringsliderW;
 
+            this.musicSlider = musicSlider;
+            this.musicText = musicText;
+
             //timer = 2.0;
 
             // Set some default state on the UI element
-             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'));
+             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
              
              var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
 
@@ -435,18 +469,17 @@ pc.script.create('ui', function (context) {
              var app = pc.fw.Application.getApplication('application-canvas').context;
              var tribeInfo = app.root.findByName('BaseTribe').script.tribe;
 
-            this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'));
+            this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
 
             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
                ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
 
              this.time += dt;
 
-             
-
              // var cast = this.sliderT.value * 1.0;
              //  globalTemperature =  cast;    
 
+              this.createPausePlane();
               this.stringPull();
               this.setPosition();
               this.mouseCheck();
@@ -495,6 +528,15 @@ pc.script.create('ui', function (context) {
                 //console.log("overW");
               }
               this.StringsliderW.onmouseout = function(){
+                this.mouseIsOver = false;
+              }
+
+
+              this.musicSlider.onmouseover = function(){
+                this.mouseIsOver = true;
+                //console.log("overW");
+              }
+              this.musicSlider.onmouseout = function(){
                 this.mouseIsOver = false;
               }
         },
@@ -777,13 +819,14 @@ pc.script.create('ui', function (context) {
              //console.log("clicked");
         },
 
-        setText: function (message, message2, message3, message4, message5, message6) {
+        setText: function (message, message2, message3, message4, message5, message6, message7) {
             this.div.innerHTML = message;
             this.divTString.innerHTML = message2;
             this.divAString.innerHTML = message3;
             this.divPString.innerHTML = message4;
             this.divEString.innerHTML = message5;
             this.divWString.innerHTML = message6;
+            this.musicText.innerHTML = message7;
         },
 
 
@@ -795,7 +838,35 @@ pc.script.create('ui', function (context) {
         this.tribeFear.innerHTML = message5;
         },
 
+        createPausePlane: function () {
+            if(this.isPaused){
+            var entity = new pc.Entity();
+            var isCreated = true;
+
+            //makes a plane to but in front of the world when paused
+            entity.addComponent("model", {
+                type: 'box'
+            });
+
+            // var black =  app.assets.getAssetByResourceId(this.materials[0]).resource;
+            // entity.model.model.meshInstances[0].material = black;
+
+            entity.setLocalPosition(0,0,0);
+            entity.setLocalScale(30,1,30);
+
+            var app = pc.fw.Application.getApplication('application-canvas').context;
+
+            //add to the Hierarchy
+            context.root.addChild(entity);
+
+            }
+            else if(isCreated){
+                entity.destroy();
+                isCreated = false;
+            }
+        },
+
     };
 
-    return UI;
+    return developer;
 });
