@@ -145,7 +145,10 @@ pc.script.create('HIDInterface', function (context) {
 			
 			for(var i = 0; i < tribes.length; i++){
 				if (tribes[i].enabled){
-					if(tribes[i].script.tribe.tile.isStormy) tribes[i].startCowering();
+					if(tribes[i].script.tribe.tile.isStormy){
+						console.log("i for tribes: " + tribes[i]);
+						tribes[i].script.tribe.startCowering();
+					}
 				}
 			}
 
