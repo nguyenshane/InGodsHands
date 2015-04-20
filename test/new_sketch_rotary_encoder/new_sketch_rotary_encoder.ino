@@ -15,20 +15,21 @@
 
 // usually the rotary encoders three pins have the ground pin in the middle
 enum PinAssignments {
-  encoderPinA_T = 2,
-  encoderPinB_T = 3,
+
+  encoderPinA_T = 9,
+  encoderPinB_T = 12,
   
-  encoderPinA_A = 5,
-  encoderPinB_A = 4,
+  encoderPinA_A = 10,
+  encoderPinB_A = 11,
   
   encoderPinA_P = 6,
   encoderPinB_P = 7,
   
-  encoderPinA_E = 10,
-  encoderPinB_E = 11,
+  encoderPinA_E = 5,
+  encoderPinB_E = 4,
   
-  encoderPinA_W = 9,
-  encoderPinB_W = 12,
+  encoderPinA_W = 2,
+  encoderPinB_W = 3,
   
   //clearButton = 14
 };
@@ -38,7 +39,7 @@ int led = 13;
 volatile unsigned int encoderPos_T = 100;  // a counter for T
 volatile unsigned int encoderPos_A = 100;  // a counter for A
 volatile unsigned int encoderPos_P = 100;  // a counter for P
-volatile unsigned int encoderPos_E = 100;  // a counter for Evv
+volatile unsigned int encoderPos_E = 100;  // a counter for E
 volatile unsigned int encoderPos_W = 100;  // a counter for W
 
 unsigned int lastReportedPos_T = 101;   // change management for T

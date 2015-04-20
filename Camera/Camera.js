@@ -49,10 +49,13 @@ pc.script.create('Camera', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-
-            this.orbitAngle += this.rotationSpeed;
-            shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
-            sun.rotate(0, .01*this.rotationSpeed, 0);
+            // Rotate the camera
+            if(!context.root._children[0].script.globalInterface.isPaused) {
+                console.log('isPaused', context.root._children[0].script.globalInterface.isPaused);
+                this.orbitAngle += this.rotationSpeed;
+                shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
+                sun.rotate(0, .01*this.rotationSpeed, 0);
+            }
 
 	
 			// Rotate plane background

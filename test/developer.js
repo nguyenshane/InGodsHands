@@ -95,6 +95,8 @@ pc.script.create('ui', function (context) {
             buttonPause.style.top = '3%';
             buttonPause.style.left = '93%';
 
+            buttonPause.addEventListener('click', this.context.root._children[0].script.globalInterface.pauseGame);
+
 
             // //create a Slider for the Global Temperature
             // var sliderT = document.createElement("INPUT");
@@ -440,16 +442,7 @@ pc.script.create('ui', function (context) {
 
              this.time += dt;
 
-             this.buttonPause.onclick = function pauseGame(){
-                if(!isPaused){
-                    app.timeScale = 0;
-                    isPaused = true;
-                }
-                else{ 
-                    app.timeScale = 1;
-                    isPaused = false;
-                }
-             }
+             
 
              // var cast = this.sliderT.value * 1.0;
              //  globalTemperature =  cast;    

@@ -10,6 +10,9 @@ pc.script.create('globalInterface', function (context) {
     // Creates a new GlobalVariables instance
     var GlobalVariables = function (entity) {
         this.entity = entity;
+        isPaused = false;
+
+        this.isPaused = isPaused;
     };
 	
     var camera;
@@ -141,7 +144,19 @@ pc.script.create('globalInterface', function (context) {
             		this.testVerts[vertex] = ico.vertexGraph[this.testVerts[vertex]].getNeighbor(direction, backup);
             	}
             	ico.vertexGraph[this.testVerts[vertex]].setHeight(2);
-        }
+        },
+
+        pauseGame: function(){
+        	console.log('onclick is calling');
+            if(!this.isPaused){
+                context.timeScale = 0;
+                this.isPaused = true;
+            }
+            else{ 
+                context.timeScale = 1;
+                this.isPaused = false;
+            }
+         }
     };
 
     return GlobalVariables;
