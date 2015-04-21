@@ -152,15 +152,15 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
 	Tile.humidityBaseMax = 100;
 	this.maxHumidity = Tile.humidityBaseMax;
-	Tile.humiditySpreadRate = 5.0; //Spreading of humidity to nearby tiles with less relative humidity
-	Tile.humidityRegenerationRate = 2.0; //Base constant regeneration (for an ocean tile), modified by tile temperature
+	Tile.humiditySpreadRate = 3.0; //Spreading of humidity to nearby tiles with less relative humidity
+	Tile.humidityRegenerationRate = 0.5; //Base constant regeneration (for an ocean tile), modified by tile temperature
 	Tile.landHumidityRegenerationMultiplier = 0.25; //Multiplier of above for land tiles
-	Tile.humidityDegenerationRate = 15.0; //Loss while raining on tile
+	Tile.humidityDegenerationRate = 30.0; //Loss while raining on tile
 	
 	this.groundwater = 50.0 * pc.math.random(0.7, 1.3); //Current groundwater rating
 	Tile.groundwaterMax = 100;
 	Tile.groundwaterSpreadRate = 1.0; //Spreading of water to nearby tiles with less over time
-	Tile.groundwaterRegenerationRate = 15.0; //Regeneration when raining on tile
+	Tile.groundwaterRegenerationRate = 30.0; //Regeneration when raining on tile
 	Tile.groundwaterDegenerationRate = 1.0; //Groundwater loss from trees etc on tile
 	
 	Tile.atmoHeight = 0.4;
@@ -185,14 +185,16 @@ function Tile(index, vertexa, vertexb, vertexc){
     this.entities = [];
 	
 	this.update = function(dt) {
-		var tempHumidityMultiplier = this.getTemperature() / 100 + 0.5;
+		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
-		
+        
 		this.maxHumidity = Tile.humidityBaseMax * tempHumidityMultiplier;
 		
 		//Regenerate humidity
-		if (!this.isOcean) this.humidity += Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
-		else this.humidity += Tile.landHumidityRegenerationMultiplier * Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+        if (this.humidity < this.maxHumidity) {
+            if (!this.isOcean) this.humidity += Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+            else this.humidity += Tile.landHumidityRegenerationMultiplier * Tile.humidityRegenerationRate * tempHumidityMultiplier * dt;
+        }
 		
 		this.checkResourceLimits();
 		
@@ -204,7 +206,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 			} else {
 				this.humidity -= Tile.humidityDegenerationRate * dt;
 			}
-			
+            
 			if (this.rain === undefined) this.rain = scripts.Atmosphere.makeRain(this.localRotCenter);
 			
 			this.rainTimer -= dt;
@@ -295,13 +297,15 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
-		
-		if (Math.random() < rainChance + (rh * rainHumidityChance)) {
-			this.startRain();
-			this.startFog();
-		} else if (Math.random() < fogChance + (rh * fogHumidityChance)) {
-			this.startFog();
-		}
+        
+        if (this.humidity > 0.0) {
+            if (Math.random() < rainChance + (rh * rainHumidityChance)) {
+                this.startRain();
+                this.startFog();
+            } else if (Math.random() < fogChance + (rh * fogHumidityChance)) {
+                this.startFog();
+            }
+        }
 		
 		/*
 		if (temp < 0) temp = 0;
@@ -317,8 +321,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	};
 	
 	this.checkResourceLimits = function() {
-		if (this.humidity < 0) this.humidity = 0;
-		if (this.humidity > this.maxHumidity) this.humidity = this.maxHumidity;
+		//if (this.humidity < 0) this.humidity = 0;
+		//if (this.humidity > this.maxHumidity) this.humidity = this.maxHumidity;
 		
 		if (this.groundwater < 0) this.groundwater = 0;
 		if (this.groundwater > Tile.groundwaterMax) this.groundwater = Tile.groundwaterMax;
