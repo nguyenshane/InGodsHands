@@ -14,7 +14,7 @@ debugstyles = [];
 
 debugstyles[DEBUG.WORLDGEN] = {
 	name : "[WORLD GENERATION] ",
-	on : true,
+	on : false,
 	color : "#000099", //Blue
 };
 

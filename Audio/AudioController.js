@@ -28,19 +28,19 @@ pc.script.create('AudioController', function (context) {
 			this.stringE.on("moved", this.sound_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moved", this.sound_W, this.direction, this.distance, this.speed);
 
-			console.log("this.musicAsset", this.musicAsset);
+			//console.log("this.musicAsset", this.musicAsset);
 
 			for (var id=0; id<this.musicAsset.length; id++) {
-				console.log('id', id);
-				console.log("this.musicAsset[id]", this.musicAsset[id]);
-				console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
+				//console.log('id', id);
+				//console.log("this.musicAsset[id]", this.musicAsset[id]);
+				//console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
 				this.musicBuffer.push(context.assets.getAssetById(this.musicAsset[id]).resource.buffer);
 			}
-			console.log("this.musicBuffer", this.musicBuffer);
+			//console.log("this.musicBuffer", this.musicBuffer);
 
 			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new AudioContext());
 
-			console.log("this.backgroundmusic", this.backgroundmusic);
+			//console.log("this.backgroundmusic", this.backgroundmusic);
 
 			this.backgroundmusic.playPause.call(this.backgroundmusic);
 
@@ -49,13 +49,13 @@ pc.script.create('AudioController', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
         	if (context.keyboard.isPressed(62)) {
-        		console.log('this.musicLayer',this.musicLayer);
+        		//console.log('this.musicLayer',this.musicLayer);
         		this.musicLayer+=0.05;
         		if (this.musicLayer>=1) this.musicLayer = 1;
                 this.backgroundmusic.setIntensity(this.musicLayer);
             }
             if (context.keyboard.isPressed(60)) {
-            	console.log('this.musicLayer',this.musicLayer);
+            	//console.log('this.musicLayer',this.musicLayer);
                 this.musicLayer-=0.05;
                 if (this.musicLayer<=0) this.musicLayer = 0;
                 this.backgroundmusic.setIntensity(this.musicLayer);
