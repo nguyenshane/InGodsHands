@@ -84,6 +84,9 @@ pc.script.create('globalInterface', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
         	// Update globalTime, do not update anywhere else
+
+        if(!isPaused){
+
         	globalTime += dt;
         	inactiveTimer += dt;
 		
@@ -161,6 +164,7 @@ pc.script.create('globalInterface', function (context) {
             
             
             sun.setPosition(0, 0, 0);
+          }
         },
 
         vertexMovementTest: function(vertex, direction, backup) {
