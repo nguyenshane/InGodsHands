@@ -172,7 +172,6 @@ pc.script.create('globalInterface', function (context) {
         },
 
         pauseGame: function(){
-        	console.log('onclick is calling');
             if(!this.isPaused){
                 context.timeScale = 0;
                 this.isPaused = true;
