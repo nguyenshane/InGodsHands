@@ -85,6 +85,7 @@ pc.script.create('globalInterface', function (context) {
         update: function (dt) {
          if(!isPaused){
         	// Update globalTime, do not update anywhere else
+
         	globalTime += dt;
         	inactiveTimer += dt;
 		
@@ -162,7 +163,7 @@ pc.script.create('globalInterface', function (context) {
             
             
             sun.setPosition(0, 0, 0);
-         }
+          }
         },
 
         vertexMovementTest: function(vertex, direction, backup) {

@@ -48,13 +48,13 @@ pc.script.create('AudioController', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-        	if (context.keyboard.isPressed(62)) {
+        	if (context.keyboard.isPressed(56)) {
         		//console.log('this.musicLayer',this.musicLayer);
         		this.musicLayer+=0.05;
         		if (this.musicLayer>=1) this.musicLayer = 1;
                 this.backgroundmusic.setIntensity(this.musicLayer);
             }
-            if (context.keyboard.isPressed(60)) {
+            if (context.keyboard.isPressed(57)) {
             	//console.log('this.musicLayer',this.musicLayer);
                 this.musicLayer-=0.05;
                 if (this.musicLayer<=0) this.musicLayer = 0;
@@ -169,6 +169,8 @@ pc.script.create('AudioController', function (context) {
 			
 			this.audio.audiosource.play("IGH Rain Loop");
 		},
+
+		
 
 
 
