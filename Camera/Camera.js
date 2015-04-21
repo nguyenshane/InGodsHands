@@ -55,8 +55,8 @@ pc.script.create('Camera', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             // Rotate the camera
-            if(!isPaused) {
-                console.log('isPaused', isPaused);
+            if (!isPaused) {
+                //console.log('isPaused', isPaused);
                 this.orbitAngle += this.rotationSpeed;
                 shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
                 sun.rotate(0, .01*this.rotationSpeed, 0);

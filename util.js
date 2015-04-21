@@ -957,7 +957,7 @@ function BackgroundIntensity(buffers, context) {
 }
 
 BackgroundIntensity.prototype.playPause = function() {
-    console.log("this.context", this.context);
+    //console.log("this.context", this.context);
   if (this.playing) {
     // Stop all sources.
     for (var i = 0, length = this.sources.length; i < length; i++) {
