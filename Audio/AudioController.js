@@ -48,18 +48,18 @@ pc.script.create('AudioController', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-        	// if (context.keyboard.isPressed(62)) {
-        	// 	//console.log('this.musicLayer',this.musicLayer);
-        	// 	this.musicLayer+=0.05;
-        	// 	if (this.musicLayer>=1) this.musicLayer = 1;
-         //        this.backgroundmusic.setIntensity(this.musicLayer);
-         //    }
-         //    if (context.keyboard.isPressed(60)) {
-         //    	//console.log('this.musicLayer',this.musicLayer);
-         //        this.musicLayer-=0.05;
-         //        if (this.musicLayer<=0) this.musicLayer = 0;
-         //        this.backgroundmusic.setIntensity(this.musicLayer);
-         //    }
+        	if (context.keyboard.isPressed(62)) {
+        		//console.log('this.musicLayer',this.musicLayer);
+        		this.musicLayer+=0.05;
+        		if (this.musicLayer>=1) this.musicLayer = 1;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+            }
+            if (context.keyboard.isPressed(60)) {
+            	//console.log('this.musicLayer',this.musicLayer);
+                this.musicLayer-=0.05;
+                if (this.musicLayer<=0) this.musicLayer = 0;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+            }
         },
 		
 		sound_T: function(position, distance, speed) {
