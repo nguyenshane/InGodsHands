@@ -77,6 +77,14 @@ pc.script.create('Trees', function (context) {
 						tree = e.findByName("tree2");
 						e.stats = Tile.treeStats.tree2;
 						break;
+					case 2:
+						tree = e.findByName("tree3");
+						e.stats = Tile.treeStats.tree2;
+						break;
+					case 3:
+						tree = e.findByName("tree4");
+						e.stats = Tile.treeStats.tree2;
+						break;
 					default:
 						tree = e.findByName("tree1");
 						e.stats = Tile.treeStats.tree1;
