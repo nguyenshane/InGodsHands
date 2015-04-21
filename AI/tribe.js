@@ -111,6 +111,7 @@ pc.script.create('tribe', function (context) {
 
             //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
 
+        if(!isPaused){
             if(!this.isBusy){
                 this.runRuleList();
                 this.foodAndPopTimer(dt);
@@ -145,6 +146,7 @@ pc.script.create('tribe', function (context) {
 					else this.preyInInfluence.push(tile);
 				}
 			}
+          }
         },
 
         //////////////////////////////////
