@@ -162,6 +162,8 @@ pc.script.create('globalInterface', function (context) {
                 ico.tiles[i].reposition();
             }
             
+            // Update prevTotalBelief for all tribes
+            prevTotalBelief = totalBelief;
             
             sun.setPosition(0, 0, 0);
           }
