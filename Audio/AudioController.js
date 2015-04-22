@@ -9,7 +9,8 @@ pc.script.create('AudioController', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 		this.musicBuffer = [];
-		this.musicLayer = 0;
+		this.musicLayer = 0.66;
+		this.targetMusicLayer = 0.66;
 		this.direction, this.distance, this.speed = 0;
     };
 
@@ -50,16 +51,39 @@ pc.script.create('AudioController', function (context) {
         update: function (dt) {
         	if (context.keyboard.isPressed(56)) {
         		//console.log('this.musicLayer',this.musicLayer);
-        		this.musicLayer+=0.05;
+        		this.musicLayer+=0.02;
         		if (this.musicLayer>=1) this.musicLayer = 1;
                 this.backgroundmusic.setIntensity(this.musicLayer);
             }
             if (context.keyboard.isPressed(57)) {
             	//console.log('this.musicLayer',this.musicLayer);
-                this.musicLayer-=0.05;
+                this.musicLayer-=0.02;
                 if (this.musicLayer<=0) this.musicLayer = 0;
                 this.backgroundmusic.setIntensity(this.musicLayer);
             }
+
+            // set the target music layer based on belief change.
+            if (totalBelief > prevTotalBelief){
+                this.targetMusicLayer = 1;
+            } else if (totalBelief < prevTotalBelief){
+            	this.targetMusicLayer = .33;
+            } else if (this.targetMusicLayer === this.musicLayer){
+            	this.targetMusicLayer = .66;
+            }
+
+			// start shifting towards correct music layer
+            if ((this.targetMusicLayer < this.musicLayer) && (this.musicLayer > 0.33)){
+            	this.musicLayer -= 0.005;
+            	if (this.musicLayer < 0.33) this.musicLayer = 0.33;
+            } else if ((this.targetMusicLayer > this.musicLayer) && (this.musicLayer < 1)){
+            	this.musicLayer += 0.005;
+            	if (this.musicLayer > 1) this.musicLayer = 1;
+            }
+
+            console.log("totalBelief: ", totalBelief);
+            console.log("prevTotalBelief: ", totalBelief);
+            // have music layer shift towards targetMusicLayer
+            this.backgroundmusic.setIntensity(this.musicLayer);
         },
 		
 		sound_T: function(position, distance, speed) {
@@ -169,9 +193,6 @@ pc.script.create('AudioController', function (context) {
 			
 			this.audio.audiosource.play("IGH Rain Loop");
 		},
-
-		
-
 
 
     };
