@@ -29,7 +29,7 @@ pc.script.create('Animals', function (context) {
 			
 			for (var i = 0; i < randomTiles.length && this.animal_stack.length < this.stackBuffer; i++) {
 				var tile = ico.tiles[randomTiles[i]];
-				tile.spawnAnimal(tile.getTemperature(), 1.0);
+				tile.spawnAnimal(tile.getTemperature(), 3.0);
 			}
 			
 			var t2 = new Date();
@@ -73,6 +73,7 @@ pc.script.create('Animals', function (context) {
 			
 			e.animalObj = animal;
 			
+            e.setLocalScale(size, size, size);
 			//animal.setLocalScale(size, size, size);
             animal.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
             animal.setPosition(position);

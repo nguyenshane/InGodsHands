@@ -230,10 +230,11 @@ pc.script.create('developer', function (context) {
             musicSlider.setAttribute("type", "range");
 
             //fields for the slider
-             musicSlider.max = 100.0;
+             musicSlider.max = 1.0;
              musicSlider.min = 0.0;
-             musicSlider.step = 1.0;
-             musicSlider.defaultValue = 50.0;
+             musicSlider.step = 0.05;
+             musicSlider.defaultValue = 0.0;
+             musicSlider.value = musicSlider.min;
 
              //positions it
              musicSlider.style.position = 'absolute';
@@ -481,6 +482,7 @@ pc.script.create('developer', function (context) {
               this.stringPull();
               this.setPosition();
               this.mouseCheck();
+              this.checkMusic();
         },
 
         mouseCheck: function(){
@@ -537,6 +539,21 @@ pc.script.create('developer', function (context) {
               this.musicSlider.onmouseout = function(){
                 this.mouseIsOver = false;
               }
+        },
+
+        checkMusic: function(){
+            //just adding a comment
+            var audio = this.context.root._children[0].script.AudioController;
+
+            if(!isPaused){
+            audio.musicLayer = this.musicSlider.value;
+            audio.backgroundmusic.setIntensity(audio.musicLayer);
+            }
+            else{
+                audio.musicLayer = 1.0;
+                audio.backgroundmusic.setIntensity(audio.musicLayer);
+            }
+           // console.log(audio.musicLayer);
         },
 
         setPosition: function(){

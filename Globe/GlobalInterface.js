@@ -83,9 +83,8 @@ pc.script.create('globalInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+         if(!isPaused){
         	// Update globalTime, do not update anywhere else
-
-        if(!isPaused){
 
         	globalTime += dt;
         	inactiveTimer += dt;
