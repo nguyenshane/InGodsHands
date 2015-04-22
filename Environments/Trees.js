@@ -29,7 +29,7 @@ pc.script.create('Trees', function (context) {
 			
 			for (var i = 0; i < randomTiles.length; i++) {
 				var tile = ico.tiles[randomTiles[i]];
-				tile.spawnTree(tile.getTemperature(), Math.floor((Math.random() * 2) + 1.3)/8);
+				tile.spawnTree(tile.getTemperature(), (Math.random() * 2) + 1.3);
 			}
 			
 			var t2 = new Date();
@@ -79,11 +79,11 @@ pc.script.create('Trees', function (context) {
 						break;
 					case 2:
 						tree = e.findByName("tree3");
-						e.stats = Tile.treeStats.tree2;
+						e.stats = Tile.treeStats.tree3;
 						break;
 					case 3:
 						tree = e.findByName("tree4");
-						e.stats = Tile.treeStats.tree2;
+						e.stats = Tile.treeStats.tree4;
 						break;
 					default:
 						tree = e.findByName("tree1");
@@ -92,7 +92,8 @@ pc.script.create('Trees', function (context) {
 				
 				e.treeObj = tree;
 				
-				tree.setLocalScale(size, size, size);
+                e.setLocalScale(size, size, size);
+				//tree.setLocalScale(size, size, size);
 				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
 				tree.setPosition(position);
 				

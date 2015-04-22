@@ -69,6 +69,32 @@ Tile.treeStats = {
         waterUsage: 0.6,
         growRate: 1.0,
         foodContribution: 1.2
+    },
+    
+    tree3: {
+        type: "tree3",
+        minTemp: 60,
+        maxTemp: 140,
+        idealTemp: 100,
+        minWater: 30,
+        maxWater: 100,
+        idealWater: 70,
+        waterUsage: 0.8,
+        growRate: 1.0,
+        foodContribution: 1.2
+    },
+    
+    tree4: {
+        type: "tree4",
+        minTemp: 60,
+        maxTemp: 150,
+        idealTemp: 100,
+        minWater: 20,
+        maxWater: 100,
+        idealWater: 40,
+        waterUsage: 0.65,
+        growRate: 1.0,
+        foodContribution: 1.4
     }
 };
 
@@ -518,16 +544,22 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var angle = m.getEulerAngles();
 		
 		//Determine ideal tree type given this tile's current properties
-		var t1dist = this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater);
-		var t2dist = this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater);
+        var dists = [
+            {type: 0, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater)},
+            {type: 1, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater)},
+            {type: 2, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)},
+            {type: 3, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)}
+        ];
 		
 		//Randomize slightly to provide some variability
-		t1dist *= pc.math.random(0.8, 1.2);
-		t2dist *= pc.math.random(0.8, 1.2);
-		
-		var type = 0;
-		if (t2dist < t1dist) type = 1;
-		
+        for (var i = 0; i < dists.length; i++) {
+            dists[i].dist *= pc.math.random(0.8, 1.2);
+        }
+        
+        //Sort by dist to find the ideal type
+        dists.sort(function(a,b) {return a.dist - b.dist});
+		var type = dists[0].type;
+        
 		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
 		this.calculateFood();
@@ -614,20 +646,22 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
 		var angle = m.getEulerAngles();
 		
-		//Determine ideal animal type given this tile's current properties
-		var t1dist = this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater);
-		var t2dist = this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater);
-		var t3dist = this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater);
+        //Determine ideal tree type given this tile's current properties
+        var dists = [
+            {type: 0, dist: this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater)},
+            {type: 1, dist: this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater)},
+            {type: 2, dist: this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater)}
+        ];
 		
 		//Randomize slightly to provide some variability
-		t1dist *= pc.math.random(0.8, 1.2);
-		t2dist *= pc.math.random(0.8, 1.2);
-		t3dist *= pc.math.random(0.8, 1.2);
-		
-		var type = 0;
-		if (t2dist < t1dist && t2dist < t3dist) type = 1; //most inelegant way of doing this...
-		else if (t3dist < t2dist && t3dist < t1dist) type = 2;
-		
+        for (var i = 0; i < dists.length; i++) {
+            dists[i].dist *= pc.math.random(0.8, 1.2);
+        }
+        
+        //Sort by dist to find the ideal type
+        dists.sort(function(a,b) {return a.dist - b.dist});
+		var type = dists[0].type;
+        
 		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
 		this.hasAnimal = true;
 		this.calculateFood();
