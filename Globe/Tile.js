@@ -553,7 +553,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		//Randomize slightly to provide some variability
         for (var i = 0; i < dists.length; i++) {
-            dists[i].dist *= pc.math.random(0.8, 1.2);
+            dists[i].dist *= pc.math.random(0.75, 1.3);
         }
         
         //Sort by dist to find the ideal type
@@ -655,7 +655,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		//Randomize slightly to provide some variability
         for (var i = 0; i < dists.length; i++) {
-            dists[i].dist *= pc.math.random(0.8, 1.2);
+            dists[i].dist *= pc.math.random(0.75, 1.3);
         }
         
         //Sort by dist to find the ideal type
