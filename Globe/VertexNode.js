@@ -95,6 +95,11 @@ function VertexNode(index, indices) {
 			ico.vertices[this.group[i] * 3 + 2] = vertex.z;
 		}
 		ico.updateFlag = true;
+
+		for (var i = 0; i < this.tiles.length; ++i) {
+			this.tiles[i].recalculateGeometry();
+			this.tiles[i].reposition();
+		}
 	}
 
 	this.addHeight = function(height) {
