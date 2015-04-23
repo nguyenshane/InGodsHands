@@ -27,11 +27,11 @@ pc.script.create('Human', function (context) {
 
             this.tile = ico.tiles[1034]; // list of tiles
 
-            this.entity.setPosition(this.tile.center);
+            //this.entity.setPosition(this.tile.center);
 
-            this.rotation = this.tile.getRotationAlignedWithNormal();
+            //this.rotation = this.tile.getRotationAlignedWithNormal();
             
-            this.setDestination = this.tile.neighbora;
+            //this.setDestination = this.tile;//.neighbora;
 
             //this.entity.setLocalScale(.1, .1, .1);
             //console.log('localscale',this.rotation, this);
@@ -39,11 +39,6 @@ pc.script.create('Human', function (context) {
             // get current tile's temperature that the tribe is on
             //this.currTileTemperature = this.tile.getTemperature();
             
-            //this.createRuleList();
-
-            //this.calculateInfluence();
-
-           // console.log("The influenced tiles length: " + this.influencedTiles.length);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -53,8 +48,8 @@ pc.script.create('Human', function (context) {
             if(this.currentAction != null) this.currentAction();
 
             // Set lighting in shader
-            this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+            //this.rotation = this.tile.getRotationAlignedWithNormal();
+            //this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
         },
 
         //////////////////////////////////

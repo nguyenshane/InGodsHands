@@ -80,8 +80,8 @@ pc.script.create('AudioController', function (context) {
             	if (this.musicLayer > 1) this.musicLayer = 1;
             }
 
-            console.log("totalBelief: ", totalBelief);
-            console.log("prevTotalBelief: ", totalBelief);
+            //console.log("totalBelief: ", totalBelief);
+            //console.log("prevTotalBelief: ", totalBelief);
             // have music layer shift towards targetMusicLayer
             this.backgroundmusic.setIntensity(this.musicLayer);
         },
