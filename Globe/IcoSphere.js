@@ -23,6 +23,13 @@ function IcoSphere(device, radius, subdivisions) {
     this.tiles = [];
 
     this.faults = [];
+    this.currFault;
+    this.currFaultIndex = 9;
+    this.faultMoveCount = 0;
+    this.faultMoveMax = 10;
+    this.faultIncrement = -0.02;
+    this.faultNumMove = 50;
+    this.faultMovePercent = 0;
 	
     this.currentVerts = 12;
     this.currentFaces = 20;
@@ -233,6 +240,8 @@ function IcoSphere(device, radius, subdivisions) {
     for (var i = 1; i < subdivisions; ++i) {
     	this.subdivideGraph();
     }
+
+    this.linkTilesToNodes();
     
 
     for (var i = 0; i < this.vertexGraph.length; i++) {
@@ -281,6 +290,12 @@ function IcoSphere(device, radius, subdivisions) {
 	this.generateFault(382, 3, 10);
 	this.generateFault(90, 2, 8);
 	this.generateFault(225, 1, 10);
+
+	this.generateFault(10, 1, 10);
+	this.generateFault(83, 4, 16);
+	this.generateFault(59, 3, 12);
+	this.generateFault(325, 2, 8);
+	this.generateFault(298, 2, 9);
 
 	var t3 = new Date();
 	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));
@@ -402,7 +417,13 @@ IcoSphere.prototype.subdivideGraph = function() {
 		this.tiles[i].divided = false;
 		this.tiles[i].updateNeighbors();
 	}
-}
+};
+
+IcoSphere.prototype.linkTilesToNodes = function() {
+	for (var i = 0; i < this.tiles.length; ++i) {
+		this.tiles[i].linkNodes();
+	}
+};
 
 //Rebuilds the sphere with distinct vertices for each triangle to allow flat shading
 IcoSphere.prototype.unshareVertices = function() {
@@ -485,6 +506,42 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 	this.faults.push(fault);
 
 	debug.obj(DEBUG.WORLDGEN, fault);
+};
+
+IcoSphere.prototype.moveFaults = function(increment) {
+	/*for (; distance <= 0; --distance) {
+		this.currFault = this.faults[this.faultIndex];
+    	for (var i = 0; i < this.currFault.length; ++i) {
+        	this.currFault[i].addHeight(this.faultIncrement * dir);
+	    }
+    	if (++this.faultMoveCount >= this.faultMoveMax) {
+        	if (++this.currFaultIndex >= this.faults.length) {
+            	this.currFaultIndex = 0;
+            	this.faultDir *= -1;
+        	}
+        	this.faultMoveCount = 0;
+    	}
+    }*/
+
+    //this.currFaultIndex = this.currFaultPosition / this.faults.length;
+
+    //this.faultMovePercent = this.currFaultcurrFaultIndex
+
+    this.currFault = this.faults[this.currFaultIndex];
+    for (var i = 0; i < this.currFault.length; ++i) {
+    	this.currFault[i].addHeight(increment);
+	}
+	if (++this.faultMoveCount >= this.faultMoveMax) {
+    	this.faultMoveCount = 0;
+    	if (increment < 0 && this.currFaultIndex > 0) {
+    		--this.currFaultIndex;
+    	} else if (increment > 0 && this.currFaultIndex < this.faults.length-1 ) {
+    		++this.currFaultIndex;
+    	}
+    }
+
+    --this.faultNumMove;
+  	debug.log(DEBUG.WORLDGEN, this.faultNumMove);
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices

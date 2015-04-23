@@ -1020,4 +1020,10 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.animal.animalObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
     }
+
+    this.linkNodes = function() {
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            ico.vertexGraph[this.vertexIndices[i]].addTile(this);
+        }
+    }
 }
