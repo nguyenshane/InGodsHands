@@ -127,6 +127,11 @@ pc.script.create('HIDInterface', function (context) {
 				}
 			}
 
+			// Convert distance relative to 0-100
+			// Get increment and distance based on speed
+			ico.faultNumMove = Math.abs(distance);
+			ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+
 			inactiveTimer = 0;
 		},
 		

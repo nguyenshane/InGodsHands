@@ -142,7 +142,7 @@ pc.script.create('globalInterface', function (context) {
             // Eroder agent update. Comment to not have erosion on continents
             //this.eroder.update();
 
-            // Test faults
+            /* Test faults
             this.fault = ico.faults[this.faultIndex];
             for (var i = 0; i < this.fault.length; ++i) {
                 this.fault[i].addHeight(this.faultIncrement * this.faultDir);
@@ -153,7 +153,8 @@ pc.script.create('globalInterface', function (context) {
                     this.faultDir *= -1;
                 }
                 this.faultMoveCount = 0;
-            }
+            }*/
+            //ico.moveFaults(1, -1);
             
             
             //Reposition tile-attached objects (might be faster to do it in vertexnode's setheight function but w/e)

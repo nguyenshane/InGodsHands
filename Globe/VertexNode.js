@@ -57,6 +57,8 @@ function VertexNode(index, indices) {
 
 	this.isFault = false;
 
+	this.tiles = [];
+
 	this.addIndex = function(index) {
 		this.group.push(index);
 	}
@@ -97,6 +99,10 @@ function VertexNode(index, indices) {
 
 	this.addHeight = function(height) {
 		this.setHeight(this.height + height);
+	}
+
+	this.addTile = function(tile) {
+		this.tiles.push(tile);
 	}
 
 	this.addEdge = function(direction, index) {
