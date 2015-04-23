@@ -23,13 +23,12 @@ pc.script.create('Human', function (context) {
     Human.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.tribeParent = this.entity.getParent().script.tribe;
+            //this.tribeParent = this.entity.getParent().script.tribe;
 
             this.tile = ico.tiles[1034]; // list of tiles
 
-            //this.entity.setPosition(this.tile.center);
-
-            //this.rotation = this.tile.getRotationAlignedWithNormal();
+            this.entity.setPosition(this.tile.center);
+            this.rotation = this.tile.getRotationAlignedWithNormal();
             
             //this.setDestination = this.tile;//.neighbora;
 
@@ -49,6 +48,7 @@ pc.script.create('Human', function (context) {
 
             // Set lighting in shader
             //this.rotation = this.tile.getRotationAlignedWithNormal();
+            //console.log("Rotation : " + this.rotation);
             //this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
         },
 
