@@ -1026,4 +1026,16 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.vertexGraph[this.vertexIndices[i]].addTile(this);
         }
     }
+
+    this.recalculateGeometry = function() {
+        this.calculateCenter2();
+        this.calculateNormal();
+        this.calculateRotationVectors();
+
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            ico.normals[(this.index * 9) + (i * 3) + 0] = this.normal.x;
+            ico.normals[(this.index * 9) + (i * 3) + 1] = this.normal.y;
+            ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
+        }
+    }
 }

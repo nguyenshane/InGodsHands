@@ -355,6 +355,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 		tile.calculateNormal();
 		tile.calculateRotationVectors();
 		tile.isOcean = false;
+		tile.index = i;
 
 		//debug.obj(DEBUG.WORLDGEN, tile);
 		
