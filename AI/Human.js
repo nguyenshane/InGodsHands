@@ -3,9 +3,9 @@ pc.script.create('Human', function (context) {
     var Human = function (entity) {
         this.entity = entity;
         
-        this.tribeParent;
+        this.tribeParent = null;
 
-        this.tile;
+        this.tile = null;
         this.destinationTile;
         this.startPosition;
         this.influencedTiles = [];
@@ -16,40 +16,37 @@ pc.script.create('Human', function (context) {
         this.travelTime = 3000;
         this.travelStartTime;
 
-        this.currentAction;
+        this.currentAction = null;
 
     };
 
     Human.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            //this.tribeParent = this.entity.getParent().script.tribe;
-
-            this.tile = ico.tiles[1034]; // list of tiles
-
-            this.entity.setPosition(this.tile.center);
-            this.rotation = this.tile.getRotationAlignedWithNormal();
-            
-            //this.setDestination = this.tile;//.neighbora;
-
-            //this.entity.setLocalScale(.1, .1, .1);
-            //console.log('localscale',this.rotation, this);
-
-            // get current tile's temperature that the tribe is on
-            //this.currTileTemperature = this.tile.getTemperature();
-            
+            //this.entity.setLocalScale(.005, .005, .005); 
         },
+
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-
-
             if(this.currentAction != null) this.currentAction();
 
-            // Set lighting in shader
-            //this.rotation = this.tile.getRotationAlignedWithNormal();
-            //console.log("Rotation : " + this.rotation);
-            //this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+            if(this.tile != null){
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                //console.log("Rotation : " + this.rotation);
+                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+            }
+        },
+
+        start: function() {
+            if(this.tribeParent != null){
+                this.tile = this.tribeParent.tile.neighbora; 
+
+                this.entity.setPosition(this.tile.center);
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+
+                //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
+            }
         },
 
         //////////////////////////////////
@@ -82,12 +79,12 @@ pc.script.create('Human', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasTribe = true;
-                this.setCurrentAction()
+                this.setCurrentAction(null);
             }
         },
 
         setDestination: function(destination) {
-            this.isBusy = true;
+            console.log("Hey we're here");
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
             this.setCurrentAction(this.move);   

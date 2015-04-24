@@ -3,6 +3,8 @@ pc.script.create('tribe', function (context) {
     var Tribe = function (entity) {
         this.entity = entity;
         
+        this.humanParent;
+
         this.population = 1;
         this.stockpile = 0;
         this.incomingFood = 0;
@@ -38,7 +40,6 @@ pc.script.create('tribe', function (context) {
         this.cowerTimer = 0;
         this.denounceTimer = 0;
         this.praiseTimer = 0;
-        //this.godInactionTimer = 0;
         this.noSunTimer = 0;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
@@ -52,18 +53,16 @@ pc.script.create('tribe', function (context) {
 
     };
 
-
-
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+
+            this.humanParent = context.root.findByName("Humans");
 			var t1 = new Date();
 			
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
-            console.log("I'm on this tile!: " + this.tile.index);
-
 			this.calculateFood();
 
             totalBelief = 300;
@@ -94,8 +93,8 @@ pc.script.create('tribe', function (context) {
 			
             this.audio = context.root._children[0].script.AudioController;
 			
-			//tribes.push(this);
-			
+            this.addHuman();
+
 			var t2 = new Date();
 			console.log("tribe initialization: " + (t2-t1));
         },
@@ -491,8 +490,14 @@ pc.script.create('tribe', function (context) {
             this.calculateFood();
         },
 		
-		addTribe: function() { 
-            this.entity.clone();
+        addHuman: function() {
+            var e = this.humanParent.clone();
+            this.entity.getParent().addChild(e);
+            var newHuman = e.findByName("human1");
+            newHuman.enabled = true;
+            console.log("New human "  + newHuman);
+            newHuman.script.Human.tribeParent = this;
+            newHuman.script.Human.start();
         },
 
         // Constructs the NPC's list of rules

@@ -12,6 +12,7 @@ pc.extend(pc, function(){
         this.stringName = stringName;
         this.leftKey = _pairKeys[stringName.toString()][0];
         this.rightKey = _pairKeys[stringName.toString()][1];
+        this.middleKey = _pairKeys[stringName.toString()][2];
         
         this.rotating = false;
         this.direction = 0;
@@ -21,17 +22,20 @@ pc.extend(pc, function(){
         this.count, this.countfn; //count interval reference for time
         this.pressing = false;
         this.countClear, this.countClearfn; //count interval reference for clearInterval
+        this.isMiddle = false;
+        this.middlecountdown, this.middlecountdownfn;
+
         this.context.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
         this.context.keyboard.on(pc.EVENT_KEYUP, this.onKeyUp, this);
     };
     
     
     var _pairKeys = {
-        'T': [pc.KEY_A,pc.KEY_D],
-        'A': [pc.KEY_W,pc.KEY_S],
-        'P': [pc.KEY_J,pc.KEY_L],
-        'E': [pc.KEY_I,pc.KEY_K],
-        'W': [pc.KEY_V,pc.KEY_N]
+        'T': [pc.KEY_A,pc.KEY_D,pc.KEY_1],
+        'A': [pc.KEY_W,pc.KEY_S,pc.KEY_2],
+        'P': [pc.KEY_J,pc.KEY_L,pc.KEY_3],
+        'E': [pc.KEY_I,pc.KEY_K,pc.KEY_4],
+        'W': [pc.KEY_V,pc.KEY_N,pc.KEY_5]
     };
     
     StringTAPEW.prototype = {
@@ -40,12 +44,16 @@ pc.extend(pc, function(){
         },
         
         onKeyDown: function (event) {
+            if (event.key === this.middleKey) {
+                //this.rotating = true;
+                this.isMiddle = true;
+                this.checkMiddle();
+            }
             if (event.key === this.leftKey) {
                 //this.rotating = true;
                 this.pressing = true;
                 this.direction--;
-                this.doCount();
-                
+                this.doCount();                
             }
             if (event.key === this.rightKey) {
                 //this.rotating = true;
@@ -55,9 +63,17 @@ pc.extend(pc, function(){
                 //console.log(this.direction);
             }
             
-            // When the space bar is pressed this scrolls the window.
             // Calling preventDefault() on the original browser event stops this.
             event.event.preventDefault();
+        },
+
+        checkMiddle: function(){
+            this.middleResetfn = function(o) {
+                if(o.isMiddle){o.isMiddle = false;}
+                //console.log("isMiddle reset to false");
+            }
+            clearTimeout(this.middlecountdownClear);
+            this.middlecountdownClear = setTimeout(this.middleResetfn, 2000, this);
         },
         
         doCount: function() {
