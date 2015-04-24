@@ -53,6 +53,8 @@ pc.script.create('developer', function (context) {
     var needToStartTimeE = true;
     var needToStartTimeW = true;
 
+    var switchUIOn = false;
+
     developer.prototype = {
         initialize: function () {
             // Create a button to subtract
@@ -65,6 +67,7 @@ pc.script.create('developer', function (context) {
             buttonSub.style.position = 'absolute';
             buttonSub.style.top = '30%';
             buttonSub.style.left = '10%';
+            buttonSub.style.visibility = 'hidden';
 
             //onCLick sends to function
             buttonSub.onClick = this.subTemperature();
@@ -78,12 +81,13 @@ pc.script.create('developer', function (context) {
             buttonPlus.style.position = 'absolute';
             buttonPlus.style.top = '30%';
             buttonPlus.style.left = '12%';
+            buttonPlus.style.visibility = 'hidden';
 
             //onCLick sends to function
             buttonPlus.onClick = this.addTemperature();
 
 
-            // Create a button to add
+            // Create a button to pause
             var buttonPause = document.createElement('BUTTON');
             var p = document.createTextNode("Pause");
             buttonPause.appendChild(p);
@@ -92,25 +96,23 @@ pc.script.create('developer', function (context) {
             buttonPause.style.position = 'absolute';
             buttonPause.style.top = '3%';
             buttonPause.style.left = '93%';
+            //buttonPause.style.visibility = 'hidden';
 
             buttonPause.addEventListener('click', this.context.root._children[0].script.globalInterface.pauseGame);
 
 
-            // //create a Slider for the Global Temperature
-            // var sliderT = document.createElement("INPUT");
-            // sliderT.setAttribute("type", "range");
+            // Create a button to toggle UI
+            var buttonUI = document.createElement('BUTTON');
+            var toggle = document.createTextNode("UI");
+            buttonUI.appendChild(toggle);
 
-            // //fields for the slider
-            // sliderT.max = 100.0;
-            // sliderT.min = 0.0;
-            // sliderT.step = 1.0;
-            // sliderT.defaultValue = globalTemperature;
+            //positions it
+            buttonUI.style.position = 'absolute';
+            buttonUI.style.top = '3%';
+            buttonUI.style.left = '90%';
+            //buttonUI.style.visibility = 'hidden';
 
-
-            //  //positions it
-            // sliderT.style.position = 'absolute';
-            // sliderT.style.top = '40%';
-            // sliderT.style.left = '7%';
+            //buttonUI.addEventListener('click', this.UIButtonClicked());
 
 
             //Touch stuff
@@ -137,6 +139,7 @@ pc.script.create('developer', function (context) {
             StringsliderT.style.position = 'absolute';
             StringsliderT.style.top = '50%';
             StringsliderT.style.left = '7%';
+            StringsliderT.style.visibility = 'hidden';
             StringsliderT.mouseIsOver = false;
 
             //attaches a touch listener to it
@@ -159,6 +162,7 @@ pc.script.create('developer', function (context) {
             StringsliderA.style.position = 'absolute';
             StringsliderA.style.top = '60%';
             StringsliderA.style.left = '7%';
+            StringsliderA.style.visibility = 'hidden';
             StringsliderA.mouseIsOver = false;
 
             //attaches a touch listener to it
@@ -180,6 +184,7 @@ pc.script.create('developer', function (context) {
             StringsliderP.style.position = 'absolute';
             StringsliderP.style.top = '70%';
             StringsliderP.style.left = '7%';
+            StringsliderP.style.visibility = 'hidden';
             StringsliderP.mouseIsOver = false;
 
             //attaches a touch listener to it
@@ -201,6 +206,7 @@ pc.script.create('developer', function (context) {
             StringsliderE.style.position = 'absolute';
             StringsliderE.style.top = '80%';
             StringsliderE.style.left = '7%';
+            StringsliderE.style.visibility = 'hidden';
             StringsliderE.mouseIsOver = false;
 
 
@@ -223,6 +229,7 @@ pc.script.create('developer', function (context) {
             StringsliderW.style.position = 'absolute';
             StringsliderW.style.top = '90%';
             StringsliderW.style.left = '7%';
+            StringsliderW.style.visibility = 'hidden';
             StringsliderW.mouseIsOver = false;
 
             //create a Slider string pull
@@ -240,6 +247,7 @@ pc.script.create('developer', function (context) {
              musicSlider.style.position = 'absolute';
              musicSlider.style.top = '40%';
              musicSlider.style.left = '74%';
+             musicSlider.style.visibility = 'hidden';
              musicSlider.mouseIsOver = false;
 
              //text for the global temperature
@@ -252,6 +260,7 @@ pc.script.create('developer', function (context) {
             musicText.style.textAlign = 'center';
             musicText.style.color = 'white';
             musicText.style.fontSize = '16';
+            musicText.style.visibility = 'hidden';
 
 
 
@@ -269,6 +278,7 @@ pc.script.create('developer', function (context) {
             div.style.textAlign = 'center';
             div.style.color = 'white';
             div.style.fontSize = 'xx-large';
+            div.style.visibility = 'hidden';
 
             //text for the Tribe Population read out
             var tribePop = document.createElement('div');
@@ -280,6 +290,7 @@ pc.script.create('developer', function (context) {
             tribePop.style.textAlign = 'center';
             tribePop.style.color = 'white';
             tribePop.style.fontSize = '16';
+            tribePop.style.visibility = 'hidden';
 
 
             //text for the Tribe food read out
@@ -292,6 +303,7 @@ pc.script.create('developer', function (context) {
             tribeFood.style.textAlign = 'center';
             tribeFood.style.color = 'white';
             tribeFood.style.fontSize = '16';
+            tribeFood.style.visibility = 'hidden';
 
             //text for the Tribe food read out
             var tribeStockpile= document.createElement('div');
@@ -303,6 +315,7 @@ pc.script.create('developer', function (context) {
             tribeStockpile.style.textAlign = 'center';
             tribeStockpile.style.color = 'white';
             tribeStockpile.style.fontSize = '16';
+            tribeStockpile.style.visibility = 'hidden';
 
 
             //text for the Tribe Prayer read out
@@ -315,6 +328,7 @@ pc.script.create('developer', function (context) {
             tribeBelief.style.textAlign = 'center';
             tribeBelief.style.color = 'white';
             tribeBelief.style.fontSize = '16';
+            tribeBelief.style.visibility = 'hidden';
 
 
             //text for the Tribe Prayer read out
@@ -327,6 +341,7 @@ pc.script.create('developer', function (context) {
             tribeFear.style.textAlign = 'center';
             tribeFear.style.color = 'white';
             tribeFear.style.fontSize = '16';
+            tribeFear.style.visibility = 'hidden';
 
 
             //text for the Temperature slider
@@ -339,6 +354,7 @@ pc.script.create('developer', function (context) {
             divTString.style.textAlign = 'center';
             divTString.style.color = 'white';
             divTString.style.fontSize = '14';
+            divTString.style.visibility = 'hidden';
 
              //text for the A slider
             var divAString = document.createElement('div');
@@ -350,6 +366,7 @@ pc.script.create('developer', function (context) {
             divAString.style.textAlign = 'center';
             divAString.style.color = 'white';
             divAString.style.fontSize = '14';
+            divAString.style.visibility = 'hidden';
 
 
              //text for the P slider
@@ -362,6 +379,7 @@ pc.script.create('developer', function (context) {
             divPString.style.textAlign = 'center';
             divPString.style.color = 'white';
             divPString.style.fontSize = '14';
+            divPString.style.visibility = 'hidden';
 
 
              //text for the E slider
@@ -374,6 +392,7 @@ pc.script.create('developer', function (context) {
             divEString.style.textAlign = 'center';
             divEString.style.color = 'white';
             divEString.style.fontSize = '14';
+            divEString.style.visibility = 'hidden';
 
              //text for the W slider
             var divWString = document.createElement('div');
@@ -385,17 +404,7 @@ pc.script.create('developer', function (context) {
             divWString.style.textAlign = 'center';
             divWString.style.color = 'white';
             divWString.style.fontSize = '14';
-
-
-
-            //var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe');
-            //var  belief = tribeInfo.script.tribe.Tribe.belief;
-           // var population = tribeInfo.script.tribe.Tribe.population;
-
-            // Grab the div that encloses PlayCanvas' canvas element
-           // var container = document.getElementById('application-container');
-            // container.appendChild(buttonSub);
-            // container.appendChild(buttonPlus);
+            divWString.style.visibility = 'hidden';
 
             document.body.appendChild(div);
             document.body.appendChild(divTString);
@@ -414,6 +423,7 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(buttonSub);
             document.body.appendChild(buttonPlus);
             document.body.appendChild(buttonPause);
+            document.body.appendChild(buttonUI);
             document.body.appendChild(StringsliderT);
             document.body.appendChild(StringsliderA);
             document.body.appendChild(StringsliderP);
@@ -439,6 +449,7 @@ pc.script.create('developer', function (context) {
 
             this.buttonPlus = buttonPlus;
             this.buttonSub = buttonSub;
+            this.buttonUI = buttonUI;
             this.buttonPause = buttonPause;
 
             this.StringsliderT = StringsliderT;
@@ -458,7 +469,7 @@ pc.script.create('developer', function (context) {
              var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
 
              this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
-               ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
+               ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
            
         },
 
@@ -471,7 +482,7 @@ pc.script.create('developer', function (context) {
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
 
             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
-               ('Tribe Belief: ' + tribeInfo.belief), ('Tribe Fear: ' + tribeInfo.fear) );
+               ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
 
              this.time += dt;
 
@@ -483,6 +494,14 @@ pc.script.create('developer', function (context) {
               this.setPosition();
               this.mouseCheck();
               this.checkMusic();
+              this.setVisibilty();
+
+              this.buttonUI.onclick = function UIButtonClicked(){
+                    if(!switchUIOn){
+                        switchUIOn = true;
+                    }
+                    else switchUIOn = false;
+                 }
         },
 
         mouseCheck: function(){
@@ -842,6 +861,64 @@ pc.script.create('developer', function (context) {
             this.divEString.innerHTML = message5;
             this.divWString.innerHTML = message6;
             this.musicText.innerHTML = message7;
+        },
+
+        setVisibilty: function(){
+            if(!switchUIOn){
+
+                    this.div.style.visibility = 'hidden';
+                    this.divTString.style.visibility = 'hidden'; 
+                    this.divAString.style.visibility = 'hidden';
+                    this.divPString.style.visibility = 'hidden';
+                    this.divEString.style.visibility = 'hidden';
+                    this.divWString.style.visibility = 'hidden';
+
+                    this.tribePop.style.visibility = 'hidden';
+                    this.tribeStockpile.style.visibility = 'hidden';
+                    this.tribeFood.style.visibility = 'hidden';
+                    this.tribeBelief.style.visibility = 'hidden';
+                    this.tribeFear.style.visibility = 'hidden';
+
+                    this.buttonPlus.style.visibility = 'hidden';
+                    this.buttonSub.style.visibility = 'hidden';
+
+                    this.StringsliderT.style.visibility = 'hidden';
+                    this.StringsliderA.style.visibility = 'hidden';
+                    this.StringsliderP.style.visibility = 'hidden';
+                    this.StringsliderE.style.visibility = 'hidden';
+                    this.StringsliderW.style.visibility = 'hidden';
+
+                    this.musicSlider.style.visibility = 'hidden';
+                    this.musicText.style.visibility = 'hidden';
+
+                    }
+                    else{
+
+                    this.div.style.visibility = 'visible';
+                    this.divTString.style.visibility = 'visible'; 
+                    this.divAString.style.visibility = 'visible';
+                    this.divPString.style.visibility = 'visible';
+                    this.divEString.style.visibility = 'visible';
+                    this.divWString.style.visibility = 'visible';
+
+                    this.tribePop.style.visibility = 'visible';
+                    this.tribeStockpile.style.visibility = 'visible';
+                    this.tribeFood.style.visibility = 'visible';
+                    this.tribeBelief.style.visibility = 'visible';
+                    this.tribeFear.style.visibility = 'visible';
+
+                    this.buttonPlus.style.visibility = 'visible';
+                    this.buttonSub.style.visibility = 'visible';
+
+                    this.StringsliderT.style.visibility = 'visible';
+                    this.StringsliderA.style.visibility = 'visible';
+                    this.StringsliderP.style.visibility = 'visible';
+                    this.StringsliderE.style.visibility = 'visible';
+                    this.StringsliderW.style.visibility = 'visible';
+
+                    this.musicSlider.style.visibility = 'visible';
+                    this.musicText.style.visibility = 'visible';
+                    }
         },
 
 
