@@ -15,33 +15,45 @@ TILETYPES = {
     },*/
     DESERT: {
         name: "desert",
+        minTemp: 100,
+        maxTemp: 1000,
         foodVal: 0,
         color: colorBrown
     },
     
     DRYPLANE: {
         name: "dry plane",
+        minTemp: 70,
+        maxTemp: 100,
         foodVal: 1,
         color: colorYellow
     },
 
     GRASSPLANE: {
         name: "grass plane",
+        minTemp: 40,
+        maxTemp: 70,
         foodVal: 2,
         color: colorGreen
     },
 
     MOUNTAIN: {
         name: "mountain",
+        minTemp: -1000,
+        maxTemp: 1000,
         foodVal: 1,
         color: colorGray
     },
 
     WATER: {
         name: "water",
+        minTemp: -1000,
+        maxTemp: 1000,
         foodVal: 0,
         color: colorBlue
     },
+    
+    mountainHeight: 0.1
 };
 
 Tile.treeStats = {
@@ -1043,30 +1055,28 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     // This should be called after temperatures and altitudes are ever recalculated
     this.assignType = function() {
-        //this.getTemperature();
-    	//var tileTemperature = this.getTemperature();
     	// if tile has temp 30-70 && altitude not mountain height, grassplane
-    	if (this.temperature <= 70.0 && 
-    		this.temperature >= 40.0 &&
-    		this.getAltitudeOffset() < 0.1
+    	if (this.temperature <= TILETYPES.GRASSPLANE.maxTemp && 
+    		this.temperature > TILETYPES.GRASSPLANE.minTemp &&
+    		this.getAltitudeOffset() < TILETYPES.mountainHeight
     		) {
                 this.type = TILETYPES.GRASSPLANE;
             }
     	// if tile has temp 71-100 && altitude not mountain height, dryplane
-    	else if (this.temperature <= 100.0 && 
-                 this.temperature > 70.0 &&
-                 this.getAltitudeOffset() < 0.1
+    	else if (this.temperature <= TILETYPES.DRYPLANE.maxTemp && 
+                 this.temperature > TILETYPES.DRYPLANE.minTemp &&
+                 this.getAltitudeOffset() < TILETYPES.mountainHeight
     		) {
                 this.type = TILETYPES.DRYPLANE;
             }
     	// if tile is land and temp 101+, desert
-    	else if (this.temperature > 100.0 &&
-                 this.getAltitudeOffset() < 0.1
+    	else if (this.temperature > TILETYPES.DESERT.minTemp &&
+                 this.getAltitudeOffset() < TILETYPES.mountainHeight
     		) {
                 this.type = TILETYPES.DESERT;
             }
     	// if tile has altitude mountain height, mountain
-        else if (this.getAltitudeOffset() >= 0.1) {
+        else if (this.getAltitudeOffset() >= TILETYPES.mountainHeight) {
             this.type = TILETYPES.MOUNTAIN;
         }
     	// if isOcean, water

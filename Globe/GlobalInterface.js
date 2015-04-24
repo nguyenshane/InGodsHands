@@ -103,7 +103,7 @@ pc.script.create('globalInterface', function (context) {
                         break;
                     }
                 }
-
+                
                 console.log (grass + " " + dry + " " + desert);
                 */
 
