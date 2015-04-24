@@ -39,12 +39,21 @@ pc.script.create('Globe', function (context) {
                     "",
                     "varying vec3 fPosition;",
 					"varying vec3 fNormal;",
+                    "uniform float radius;",
+                    "uniform float time;",
                     "",
                     "void main(void)",
                     "{",
-                    "    fPosition = aPosition;",
-					"    fNormal = aNormal;",
-                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+                    // Ocean sway
+                    "    vec3 newPos = aPosition;",
+                    "    float dist = length(newPos);",
+                    "    if (dist <= radius) {",
+                    "       newPos.x = newPos.x - (newPos.x/abs(newPos.x) * abs(sin(time+(radius-abs(newPos.y))+newPos.z)/100.0*(radius-abs(newPos.y))));",
+                    "       newPos.z = newPos.z - (newPos.z/abs(newPos.z) * abs(sin(time+(radius-abs(newPos.y))+newPos.x)/100.0*(radius-abs(newPos.y))));",
+                    "    }",
+                    "    fPosition = newPos;",
+                    "    fNormal = aNormal;",
+                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(newPos, 1.0);",
                     "}"
                 ].join("\n"),
                 fshader: [
@@ -102,6 +111,8 @@ pc.script.create('Globe', function (context) {
             
             this.material.setParameter('radius', ico.radius);
             
+            this.material.setParameter('time', globalTime);
+
             this.material.setParameter('ambient', 0.2);
             this.material.setParameter('sunIntensity', 1.0);
 
@@ -163,6 +174,8 @@ pc.script.create('Globe', function (context) {
             // Set temperature variables in shader
         	this.material.setParameter('temperature', globalTemperature);
             this.material.setParameter('maxTemp', globalTemperatureMax);
+            
+            this.material.setParameter('time', globalTime);
 
             // Set lighting in shader
             this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
