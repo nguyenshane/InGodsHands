@@ -302,7 +302,9 @@ function IcoSphere(device, radius, subdivisions) {
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
-	
+	for (var i = 0; i < this.tiles.length; i++){
+		this.tiles[i].assignType();
+	}
 	
     // Set mesh data
     var options = {

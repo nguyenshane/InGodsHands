@@ -7,7 +7,7 @@ var colorWhite = new pc.Color(234, 232, 227);
 var colorGray = new pc.Color(127, 124, 115);
 
 //Types of tile determine food
-Tile.tileTypes = {
+TILETYPES = {
     /*TUNDRA: { //should only be on northern and southern extremes
         name: "tundra",
         foodVal: 0 //always
@@ -39,7 +39,7 @@ Tile.tileTypes = {
 
     WATER: {
         name: "water",
-        foodVal: 1,
+        foodVal: 0,
         color: colorBlue
     },
 };
@@ -159,7 +159,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.localRotNormal;
 	this.localRotCenter;
     
-    this.type = Tile.tileTypes.GRASSPLANE;
+    this.type = TILETYPES.GRASSPLANE;
     this.temperature;
     this.baseFood = Math.floor(Math.random() * (5 - 1)) + 1;
 	this.food = this.baseFood;
@@ -418,6 +418,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     };
 
     this.getAltitude = function() {
+    	this.assignType();
         return this.center.length;
     };
 
@@ -482,6 +483,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     this.getTemperature = function(){
         this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperatureMax/2 + globalTemperature/2;
+        this.assignType(); // update type of tile when it's temperature changes
         return this.temperature;
     };
 	
@@ -1038,4 +1040,28 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
         }
     }
+
+    // This should be called after temperatures and altitudes are ever recalculated
+    this.assignType = function() {
+    	//var tileTemperature = this.getTemperature();
+    	// if tile has temp 30-70 && altitude not mountain height, grassplane
+    	if (this.temperature <= 70.0 && 
+    		this.temperature >= 40.0 
+    		// this.getAltitude < (ico.radius + 0.1)
+    		)
+    		this.type = TILETYPES.GRASSPLANE;
+    	// if tile has temp 71-100 && altitude not mountain height, dryplane
+    	else if (this.temperature <= 100.0 && 
+    		this.temperature > 70.0 
+    		// this.getAltitude < (ico.radius + 0.1)
+    		)
+    		this.type = TILETYPES.DRYPLANE;
+    	// if tile is land and temp 101+, desert
+    	else if (this.temperature < 100.0 
+    		// this.getAltitude < (ico.radius + 0.1)
+    		)
+    		this.type = TILETYPES.DESERT;
+    	// if tile has altitude mountain height, mountain
+    	// if isOcean, water
+    };
 }
