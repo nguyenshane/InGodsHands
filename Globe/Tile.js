@@ -419,11 +419,11 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     this.getAltitude = function() {
     	this.assignType();
-        return this.center.length;
+        return this.center.length();
     };
 
     this.getAltitudeOffset = function() {
-        return this.center.length - ico.radius;
+        return this.center.length() - ico.radius;
     };
 
     this.determineCost = function() {
@@ -1043,25 +1043,35 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     // This should be called after temperatures and altitudes are ever recalculated
     this.assignType = function() {
+        //this.getTemperature();
     	//var tileTemperature = this.getTemperature();
     	// if tile has temp 30-70 && altitude not mountain height, grassplane
     	if (this.temperature <= 70.0 && 
-    		this.temperature >= 40.0 
-    		// this.getAltitude < (ico.radius + 0.1)
-    		)
-    		this.type = TILETYPES.GRASSPLANE;
+    		this.temperature >= 40.0 &&
+    		this.getAltitudeOffset() < 0.1
+    		) {
+                this.type = TILETYPES.GRASSPLANE;
+            }
     	// if tile has temp 71-100 && altitude not mountain height, dryplane
     	else if (this.temperature <= 100.0 && 
-    		this.temperature > 70.0 
-    		// this.getAltitude < (ico.radius + 0.1)
-    		)
-    		this.type = TILETYPES.DRYPLANE;
+                 this.temperature > 70.0 &&
+                 this.getAltitudeOffset() < 0.1
+    		) {
+                this.type = TILETYPES.DRYPLANE;
+            }
     	// if tile is land and temp 101+, desert
-    	else if (this.temperature < 100.0 
-    		// this.getAltitude < (ico.radius + 0.1)
-    		)
-    		this.type = TILETYPES.DESERT;
+    	else if (this.temperature > 100.0 &&
+                 this.getAltitudeOffset() < 0.1
+    		) {
+                this.type = TILETYPES.DESERT;
+            }
     	// if tile has altitude mountain height, mountain
+        else if (this.getAltitudeOffset() >= 0.1) {
+            this.type = TILETYPES.MOUNTAIN;
+        }
     	// if isOcean, water
+        if (this.isOcean) {
+            this.type = TILETYPES.WATER;
+        }
     };
 }

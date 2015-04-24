@@ -83,69 +83,92 @@ pc.script.create('globalInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-         if(!isPaused){
-        	// Update globalTime, do not update anywhere else
+            if(!isPaused) {
+                /*
+                var grass = 0, desert = 0, dry = 0;
+                for (var i = 0; i < ico.tiles.length; i++) {
+                    ico.tiles[i].assignType();
 
-        	globalTime += dt;
-        	inactiveTimer += dt;
-		
-		
-			//Only called on first update (since ico isn't defined in initialize)
-			if (!this.init) {
-				//Initialize variables for intermittentUpdate
-				this.lastUpdatedTile = 0;
-				this.randomTiles = [];
-				for (var size = ico.tiles.length-1; size >= 0; size--) this.randomTiles[size] = size;
-				shuffleArray(this.randomTiles);
-				
-				this.init = true;
-			}
-			
-			
-			//Update all tiles
-			var tiles = ico.tiles;
-			for (var i = tiles.length-1; i >= 0; i--) {
-				tiles[i].update(dt);
-			}
-			
-			
-			//Call intermittent update on a subset of tiles
-			var tilesToUpdate = ico.tiles.length * dt / this.intermittentUpdateDuration;
-			if (tilesToUpdate > ico.tiles.length) tilesToUpdate = ico.tiles.length;
-			tilesToUpdate = Math.floor(tilesToUpdate);
-			
-			if (ico.tiles.length - this.lastUpdatedTile < tilesToUpdate) {
-				//Do remaining tiles, then continue from the beginning in next block
-				for (var i = this.lastUpdatedTile; i < ico.tiles.length; i++) {
-					ico.tiles[i].intermittentUpdate();
-				}
-				
-				tilesToUpdate -= ico.tiles.length - this.lastUpdatedTile;
-				this.lastUpdatedTile = 0;
-				shuffleArray(this.randomTiles);
-			}
-			
-			for (var i = this.lastUpdatedTile; i < tilesToUpdate + this.lastUpdatedTile; i++) {
-				ico.tiles[i].intermittentUpdate();
-			}
-			this.lastUpdatedTile += tilesToUpdate;
-			
-			
-            // Test vertex neighbors update
-            for (var i = 0; i < this.testVerts.length; ++i) {
-            	//this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
-            	//this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
-            	//this.vertexMovementTest(i, (i + (Math.floor((globalTime/2) % 2) * 4)) % 8, (i + (Math.floor((globalTime/2) % 2) * 4) + 4) % 8);
-            }
-			
-			
-            // Eroder agent update. Comment to not have erosion on continents
-            //this.eroder.update();
+                    switch (ico.tiles[i].type) {
+                        case TILETYPES.GRASSPLANE:
+                        grass++;
+                        break;
 
-            // Update prevTotalBelief for all tribes
-            prevTotalBelief = totalBelief;
-            
-            sun.setPosition(0, 0, 0);
+                        case TILETYPES.DESERT:
+                        desert++;
+                        break;
+
+                        case TILETYPES.DRYPLANE:
+                        dry++;
+                        break;
+                    }
+                }
+
+                console.log (grass + " " + dry + " " + desert);
+                */
+
+                // Update globalTime, do not update anywhere else
+
+                globalTime += dt;
+                inactiveTimer += dt;
+
+
+                //Only called on first update (since ico isn't defined in initialize)
+                if (!this.init) {
+                    //Initialize variables for intermittentUpdate
+                    this.lastUpdatedTile = 0;
+                    this.randomTiles = [];
+                    for (var size = ico.tiles.length-1; size >= 0; size--) this.randomTiles[size] = size;
+                    shuffleArray(this.randomTiles);
+                    
+                    this.init = true;
+                }
+
+
+                //Update all tiles
+                var tiles = ico.tiles;
+                for (var i = tiles.length-1; i >= 0; i--) {
+                    tiles[i].update(dt);
+                }
+
+
+                //Call intermittent update on a subset of tiles
+                var tilesToUpdate = ico.tiles.length * dt / this.intermittentUpdateDuration;
+                if (tilesToUpdate > ico.tiles.length) tilesToUpdate = ico.tiles.length;
+                tilesToUpdate = Math.floor(tilesToUpdate);
+
+                if (ico.tiles.length - this.lastUpdatedTile < tilesToUpdate) {
+                    //Do remaining tiles, then continue from the beginning in next block
+                    for (var i = this.lastUpdatedTile; i < ico.tiles.length; i++) {
+                        ico.tiles[i].intermittentUpdate();
+                    }
+                    
+                    tilesToUpdate -= ico.tiles.length - this.lastUpdatedTile;
+                    this.lastUpdatedTile = 0;
+                    shuffleArray(this.randomTiles);
+                }
+
+                for (var i = this.lastUpdatedTile; i < tilesToUpdate + this.lastUpdatedTile; i++) {
+                    ico.tiles[i].intermittentUpdate();
+                }
+                this.lastUpdatedTile += tilesToUpdate;
+
+
+                // Test vertex neighbors update
+                for (var i = 0; i < this.testVerts.length; ++i) {
+                    //this.vertexMovementTest(i, Math.floor((globalTime/2) % 8), Math.floor((globalTime/2 + 4) % 8));
+                    //this.vertexMovementTest(i, DIRECTION.EAST, DIRECTION.NORTHEAST);
+                    //this.vertexMovementTest(i, (i + (Math.floor((globalTime/2) % 2) * 4)) % 8, (i + (Math.floor((globalTime/2) % 2) * 4) + 4) % 8);
+                }
+
+
+                // Eroder agent update. Comment to not have erosion on continents
+                //this.eroder.update();
+
+                // Update prevTotalBelief for all tribes
+                prevTotalBelief = totalBelief;
+
+                sun.setPosition(0, 0, 0);
           }
         },
 
