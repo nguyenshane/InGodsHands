@@ -1083,5 +1083,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         if (this.isOcean) {
             this.type = TILETYPES.WATER;
         }
+        
+        ico.updateFlag = true;
     };
 }

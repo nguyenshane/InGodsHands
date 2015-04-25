@@ -14,6 +14,7 @@ function IcoSphere(device, radius, subdivisions) {
     this.vertices = [];
 	this.normals = [];
     this.indices = [];
+    this.colors = [];
 	
 	this.vertexGraph = [];
 	this.vertexParents; //?
@@ -307,16 +308,7 @@ function IcoSphere(device, radius, subdivisions) {
 	}
 	
     // Set mesh data
-    var options = {
-        normals: this.normals,
-        indices: this.indices
-    };
-    
-    this.toReturn = {
-        mesh: pc.createMesh(device, this.vertices, options),
-        options: options,
-        positions: this.vertices
-    };
+    this.updateReturnMesh();
     
     return this;
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
@@ -335,7 +327,7 @@ IcoSphere.prototype.updateReturnMesh = function() {
     };
 
     this.updateFlag = false;
-}
+};
 
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	this.vertexHeights[index] = height;
@@ -348,9 +340,11 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 
 //Should only be called once per frame if the mesh has been altered
 IcoSphere.prototype._recalculateMesh = function() {
-	// Calculate the center and normal for each tile
+	// Calculate the center/normal/color for each tile
 	var unbufferedNormals = [];
 	unbufferedNormals[this.tiles.length*3-1] = 0;
+    var unbufferedColors = [];
+	unbufferedColors[this.tiles.length*3-1] = 0;
     for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
@@ -364,20 +358,28 @@ IcoSphere.prototype._recalculateMesh = function() {
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
+            unbufferedColors[i*3+j] = tile.type.color;
 			// Uncomment
 			if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
 		}
     }
-
+    
 	
-	// Buffer normals
+	// Buffer normals and colors
 	this.normals = [];
 	this.normals[this.vertices.length-1] = 0;
     for (var i = 0; i < unbufferedNormals.length; i++) {
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;
-		//console.log("Normal " + i + ": (" + this.normals[i*3] + ", " + this.normals[i*3+1] + ", " + this.normals[i*3+2] + ")");
+    }
+    
+    this.colors = [];
+	this.colors[this.vertices.length-1] = 0;
+    for (var i = 0; i < unbufferedColors.length; i++) {
+		this.colors[i*3] = unbufferedColors[i].r;
+		this.colors[i*3+1] = unbufferedColors[i].g;
+		this.colors[i*3+2] = unbufferedColors[i].b;
     }
 };
 

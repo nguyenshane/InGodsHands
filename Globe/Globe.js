@@ -39,6 +39,7 @@ pc.script.create('Globe', function (context) {
                     "",
                     "varying vec3 fPosition;",
 					"varying vec3 fNormal;",
+                    "",
                     "uniform float radius;",
                     "uniform float time;",
                     "",
@@ -80,7 +81,7 @@ pc.script.create('Globe', function (context) {
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     // Mountain
-                    "    if (dist > radius + 1.0) {",
+                    "    if (dist > radius + 0.1) {",
                     "       color = intensity * sunIntensity * vec4(170.0/256.0, 80.0/256.0, 50.0/256.0, 1.0);",
                     // Land
                     "    } else if (dist > radius + 0.01) {",
