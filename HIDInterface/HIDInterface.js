@@ -120,8 +120,8 @@ pc.script.create('HIDInterface', function (context) {
 			//console.log("String P moved: ", position, distance, speed);
 			
 			//tribes[0].addTribe();
-			for(var i = 0; i < tribes.length; i++){
-				if(!tribes[i].enabled){
+			for (var i = 0; i < tribes.length; i++) {
+				if (!tribes[i].enabled) {
 					tribes[i].enabled = true;
 					break;
 				}
@@ -138,24 +138,8 @@ pc.script.create('HIDInterface', function (context) {
 		moved_E: function(position, distance, speed) {
 			//console.log("String E moved: ", position, distance, speed);
 			
-			/*
-			// Temporarily here, will make it a function call to tile eventually
-			if (speed > 30 && Math.abs(distance) > 5) {
-				tribe.startCowering();
-				console.log("Sufficient string pull for storm");
-			}
-			*/
+			scripts.Atmosphere.makeStorm(distance, speed);
 			
-			//scripts.Atmosphere.makeStorm(distance, speed);
-			
-			for(var i = 0; i < tribes.length; i++){
-				if (tribes[i].enabled){
-					if(tribes[i].script.tribe.tile.isStormy){
-						tribes[i].script.tribe.startCowering();
-					}
-				}
-			}
-
 			inactiveTimer = 0;
 		},
 		

@@ -176,9 +176,10 @@ function Tile(index, vertexa, vertexb, vertexc){
     this.baseFood = Math.floor(Math.random() * (5 - 1)) + 1;
 	this.food = this.baseFood;
 	
+    this.entities = [];
 	this.tree, this.animal, this.rain, this.fog;
-
-    this.isOcean = true;
+    
+    this.hasTribe = false;
 	this.hasTree = false;
 	this.hasAnimal = false;
 	this.isRaining = false;
@@ -187,7 +188,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	Tile.tempInfluenceMultiplier = 2.0;
 	
-	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
+	this.humidity = 75.0 * pc.math.random(0.75, 1.3); //Current absolute humidity rating
 	Tile.humidityBaseMax = 100;
 	this.maxHumidity = Tile.humidityBaseMax;
 	Tile.humiditySpreadRate = 3.0; //Spreading of humidity to nearby tiles with less relative humidity
@@ -205,22 +206,22 @@ function Tile(index, vertexa, vertexb, vertexc){
 	Tile.rainDuration = 3.0;
 	Tile.fogDuration = 4.0;
 	Tile.stormDuration = 2.5;
+    Tile.stormDelay = 0.5;
 	this.rainTimer = 0, this.fogTimer = 0, this.stormTimer = 0;
+    this.stormDelayTimer = 0;
 	
-    handle = ico;
-
     this.divided = false;
-    this.hasTribe = false;
+    this.isOcean = true;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
     this.vertexIndices[2] = vertexc;
     
+    handle = ico;
     ico.indices.push(vertexa);
     ico.indices.push(vertexb);
     ico.indices.push(vertexc);
-
-    this.entities = [];
+    
 	
 	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
@@ -265,6 +266,11 @@ function Tile(index, vertexa, vertexb, vertexc){
 		this.checkResourceLimits();
 		
 		//Handle fog(clouds) and storm
+        if (this.stormDelayTimer > 0) {
+            this.stormDelayTimer -= dt;
+			if (this.stormTimer <= 0) this.beginStorm();
+        }
+        
 		if (this.isFoggy) {
 			if (this.fog === undefined) this.fog = scripts.Atmosphere.makeFog(this.localRotCenter);
 			
@@ -480,8 +486,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.calculateFood = function() {
 		//this.food = this.baseFood;
         this.food = this.type.foodVal;
-		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.animalObj.getLocalScale().x * 50.0;
-		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.treeObj.getLocalScale().x * 4.0;
+		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.getLocalScale().x * 50.0;
+		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.getLocalScale().x * 4.0;
 	}
 	
 	this.setBaseFood = function(newFood) {
@@ -705,10 +711,14 @@ function Tile(index, vertexa, vertexb, vertexc){
 		this.isFoggy = false;
 	};
 	
-	this.startStorm = function() {
-		this.isStormy = true;
-		this.stormTimer = Tile.stormDuration;
-		
+    this.startStorm = function() {
+        this.stormDelayTimer = Tile.stormDelay * Math.random();
+    };
+    
+	this.beginStorm = function() { //really nailing the unique and descriptive identifiers...
+        this.isStormy = true;
+		this.stormTimer = Tile.stormDuration * pc.math.random(0.75, 1.0);
+        
 		this.isFoggy = true;
 		this.fogTimer = this.stormTimer;
 	};
@@ -1022,16 +1032,16 @@ function Tile(index, vertexa, vertexb, vertexc){
             normal.add(center);
             var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
             var angle = m.getEulerAngles();
-            this.tree.treeObj.setPosition(this.center); //should have the tree/animal object handle this itself instead so we can do more fancy positioning than just placing everything on the center
-            this.tree.treeObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
+            this.tree.setPosition(this.center); //should have the tree/animal object handle this itself instead so we can do more fancy positioning than just placing everything on the center
+            this.tree.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
         
         if (this.hasAnimal) {
             var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
             var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
             var angle = m.getEulerAngles();
-            this.animal.animalObj.setPosition(this.center);
-            this.animal.animalObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
+            this.animal.setPosition(this.center);
+            this.animal.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
     }
 

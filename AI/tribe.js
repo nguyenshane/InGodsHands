@@ -110,42 +110,47 @@ pc.script.create('tribe', function (context) {
 
             //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
 
-        if(!isPaused){
-            if(!this.isBusy){
-                this.runRuleList();
-                this.foodAndPopTimer(dt);
-            } else {
-                this.currentAction(dt);
-            }
+            if (!isPaused) {
+                if (!this.isBusy) {
+                    this.runRuleList();
+                    this.foodAndPopTimer(dt);
+                } else {
+                    this.currentAction(dt);
+                }
 
-            // Set temperature of tile
-            this.currTileTemperature = this.tile.getTemperature();
+                // Set temperature of tile
+                this.currTileTemperature = this.tile.getTemperature();
 
-            // Set lighting in shader
-            this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                // Set lighting in shader
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
-            // God inaction timer goes up so long as God doesn't act (Duh)
-            //this.godInactionTimer += dt;
+                // God inaction timer goes up so long as God doesn't act (Duh)
+                //this.godInactionTimer += dt;
 
-            // Increase no sun timer whenever tribe doesn't have sun
-            if(!this.inSun){
-                this.noSunTimer += dt;
-            } else {
-                this.noSunTimer = 0;
-            }
-			
-			//Check influenced tiles for predators or prey
-			this.predatorsInInfluence = [];
-			this.preyInInfluence = [];
-			for (var i = this.influencedTiles.length-1; i >= 0; i--) {
-				var tile = this.influencedTiles[i];
-				if (tile.hasAnimal) {
-					if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
-					else this.preyInInfluence.push(tile);
-				}
+                // Increase no sun timer whenever tribe doesn't have sun
+                if(!this.inSun){
+                    this.noSunTimer += dt;
+                } else {
+                    this.noSunTimer = 0;
+                }
+
+                //Check influenced tiles for predators or prey
+                this.predatorsInInfluence = [];
+                this.preyInInfluence = [];
+                for (var i = this.influencedTiles.length-1; i >= 0; i--) {
+                    var tile = this.influencedTiles[i];
+                    if (tile.hasAnimal) {
+                        if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
+                        else this.preyInInfluence.push(tile);
+                    }
+                }
+                
+                //Cower if in storm
+                if (this.tile.isStormy) {
+                    this.startCowering();
+                }
 			}
-          }
         },
 
         //////////////////////////////////
