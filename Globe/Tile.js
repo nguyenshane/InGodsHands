@@ -327,7 +327,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		//Grow tree
 		if (this.hasTree) {
 			///handle tree growing, killing etc here
-			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
+			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.size * dt;
 		}
 		
 		this.checkResourceLimits();
@@ -487,8 +487,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.calculateFood = function() {
 		//this.food = this.baseFood;
         this.food = this.type.foodVal;
-		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.getLocalScale().x * 50.0;
-		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.getLocalScale().x * 4.0;
+		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.size * 12.0;
+		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.size * 1.5;
 	}
 	
 	this.setBaseFood = function(newFood) {
