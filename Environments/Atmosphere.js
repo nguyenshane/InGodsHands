@@ -119,11 +119,15 @@ pc.script.create('Atmosphere', function (context) {
 			var v = new pc.Vec3(cameraDir.x, cameraDir.y + latitude/50, cameraDir.z);
 			v = v.normalize();
 			var centerTile = ico.tiles[0];
-			var centerDot = v.dot(centerTile.center.normalize());
+            var c = new pc.Vec3(centerTile.center.x, centerTile.center.y, centerTile.center.z);
+            c = c.normalize();
+			var centerDot = v.dot(c);
 			
 			for (var i = 1; i < ico.tiles.length; i++) {
 				var tile = ico.tiles[i];
-				var tileDot = v.dot(tile.center.normalize());
+                c = new pc.Vec3(tile.center.x, tile.center.y, tile.center.z);
+                c = c.normalize();
+				var tileDot = v.dot(c);
 				
 				if (tileDot > centerDot) {
 					centerTile = tile;
