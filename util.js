@@ -880,7 +880,38 @@ function lerp(low, high, value) {
 	var v = value - low;
 	
 	return (pc.math.clamp(v, 0, h) / h);
-}
+};
+
+//Returns index of minimum value in the array (key being a function that finds the desired comparison value from whatever's stored in the array, and a is any additional data that might be used by key)
+function min(array, key, a) {
+    var min = 0;
+    var value = key(array[0], a);
+    
+    for (var i = 0; i < array.length; i++) {
+        var v = key(array[i], a);
+        if (v < value) {
+            min = i;
+            value = v;
+        }
+    }
+    
+    return min;
+};
+
+function max(array, key, a) {
+    var max = 0;
+    var value = key(array[0], a);
+    
+    for (var i = 0; i < array.length; i++) {
+        var v = key(array[i], a);
+        if (v > value) {
+            max = i;
+            value = v;
+        }
+    }
+    
+    return max;
+};
 
 // BufferLoader for Music
 function BufferLoader(context, urlList, callback) {

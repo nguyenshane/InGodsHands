@@ -338,7 +338,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
-		this.spawnAnimal(temp, 1.0);
+		this.spawnAnimal(temp, 3.0);
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -566,20 +566,19 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		//Determine ideal tree type given this tile's current properties
         var dists = [
-            {type: 0, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater)},
-            {type: 1, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater)},
-            {type: 2, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)},
-            {type: 3, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)}
+            this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
         for (var i = 0; i < dists.length; i++) {
-            dists[i].dist *= pc.math.random(0.75, 1.3);
+            dists[i] *= pc.math.random(0.75, 1.3);
         }
         
         //Sort by dist to find the ideal type
-        dists.sort(function(a,b) {return a.dist - b.dist});
-		var type = dists[0].type;
+        var type = min(dists, function(v, a) {return v}, null);
         
 		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
@@ -669,9 +668,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
         //Determine ideal tree type given this tile's current properties
         var dists = [
-            {type: 0, dist: this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater)},
-            {type: 1, dist: this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater)},
-            {type: 2, dist: this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater)}
+            this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
@@ -680,8 +679,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         }
         
         //Sort by dist to find the ideal type
-        dists.sort(function(a,b) {return a.dist - b.dist});
-		var type = dists[0].type;
+        var type = min(dists, function(v, a) {return v}, null);
         
 		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
 		this.hasAnimal = true;

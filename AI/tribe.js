@@ -201,7 +201,7 @@ pc.script.create('tribe', function (context) {
             if(!(this.currTileTemperature > (this.idealTemperature - 5) &&
                  this.currTileTemperature < (this.idealTemperature + 5))){
 
-                var possibleTiles = [];
+                var possibleTiles = [this.tile];
 
                 if (!this.tile.neighbora.isOcean && !this.tile.neighbora.hasTribe){
                     possibleTiles.push(this.tile.neighbora);
@@ -213,13 +213,16 @@ pc.script.create('tribe', function (context) {
                     possibleTiles.push(this.tile.neighborc);
                 }
 
-                var bestTile = this.tile;
+                var bestTile = possibleTiles[min(possibleTiles, function(v, a) {return Math.abs(a - v.getTemperature())}, this.idealTemperature)];
+                /*
+                bestTile = this.tile;
                 for (var i = 0; i < possibleTiles.length; i++){
                     if (Math.abs(this.idealTemperature - bestTile.getTemperature()) > 
                         Math.abs(this.idealTemperature - possibleTiles[i].getTemperature())){
                         bestTile = possibleTiles[i];
                     }
                 }
+                */
 
                 if (bestTile.equals(this.tile)){
                     this.isBusy = false;
