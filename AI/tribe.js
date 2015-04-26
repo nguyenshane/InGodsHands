@@ -96,7 +96,7 @@ pc.script.create('tribe', function (context) {
             this.addHuman();
 
 			var t2 = new Date();
-			console.log("tribe initialization: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -495,7 +495,7 @@ pc.script.create('tribe', function (context) {
             this.entity.getParent().addChild(e);
             var newHuman = e.findByName("human1");
             newHuman.enabled = true;
-            console.log("New human "  + newHuman);
+            debug.log(DEBUG.AI, "New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
             newHuman.script.Human.start();
         },

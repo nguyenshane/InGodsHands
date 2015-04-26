@@ -752,7 +752,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		    
 			this.isOcean = false;
 			
-			console.log("Extruding");
+			debug.log(DEBUG.WORDGEN, "Extruding");
 			
 			if (!this.neighborb.isOcean && !this.neighborc.isOcean) {
 				ico.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + ico.radius));

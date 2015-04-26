@@ -121,7 +121,7 @@ pc.script.create('developer', function (context) {
                    this.context.touch.on("touchmove", this.onTouchMove, this);
                 this.context.touch.on("touchend", this.onTouchEnd, this);
             } else {
-                console.log("No touch input available");
+                debug.log(DEBUG.HARDWARE, "No touch input available");
             }
 
              //create a Slider string pull
@@ -742,7 +742,7 @@ pc.script.create('developer', function (context) {
         onTouchMove: function (touches) {
             // If the touches move update the position of the cube
             touches.changedTouches.forEach(function (touch) {
-                console.log("touched here" + touch.x +" " + touch.y)
+                debug.log(DEBUG.HARDWARE, "touched here" + touch.x + " " + touch.y)
             }.bind(this));
         },
 

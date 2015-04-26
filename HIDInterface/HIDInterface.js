@@ -82,9 +82,9 @@ pc.script.create('HIDInterface', function (context) {
 				//console.log("time since started lerp: " + timeSinceStartedLerp + " velocity: " + velocity);
 				//console.log("Temp subtract: " + (globalTemperature - temperatureDest));
 
-				if((globalTemperature - temperatureDest) == 0.0) {
+				if ((globalTemperature - temperatureDest) == 0.0) {
 					temperatureChange = false;
-					console.log("Done temp change");
+					debug.log(DEBUG.HARDWARE, "Done temp change");
 				}
         	}
         },
@@ -99,7 +99,7 @@ pc.script.create('HIDInterface', function (context) {
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 			
-			console.log("Global Temp: " + globalTemperature);
+			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
 				//console.log(ico.tiles[i].getTemperature());
 			}
@@ -168,29 +168,29 @@ pc.script.create('HIDInterface', function (context) {
 
 
 		moving_T: function(position, distance, speed) {
-			console.log("String T moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String T moving: ", position, distance, speed);
 
 		},
 		
 		moving_A: function(position, distance, speed) {
-			console.log("String A moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String A moving: ", position, distance, speed);
 
 		},
 		
 		moving_P: function(position, distance, speed) {
-			console.log("String P moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String P moving: ", position, distance, speed);
 
 		},
 		
 		moving_E: function(position, distance, speed) {
-			console.log("String E moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String E moving: ", position, distance, speed);
 
 		},
 		
 		moving_W: function(position, distance, speed) {
-			if(!hasStopped){
-			console.log("String W moving: ", position, distance, speed);
-			camera.script.Camera.move_W(position,distance,speed);
+			if (!hasStopped) {
+                debug.log(DEBUG.HARDWARE, "String W moving: ", position, distance, speed);
+                camera.script.Camera.move_W(position,distance,speed);
 			}
 		},
 

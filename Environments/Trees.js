@@ -33,7 +33,7 @@ pc.script.create('Trees', function (context) {
 			}
 			
 			var t2 = new Date();
-			console.log("tree init time: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tree init time: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update

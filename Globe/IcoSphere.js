@@ -256,7 +256,7 @@ function IcoSphere(device, radius, subdivisions) {
 	
 	
 	var t2 = new Date();
-	debug.log(DEBUG.WORLDGEN, "icosphere initialization: " + (t2-t1));
+	debug.log(DEBUG.INIT, "icosphere initialization: " + (t2-t1));
 	
 	//Generate terrain
 	this.vertexHeights = [];
@@ -299,7 +299,7 @@ function IcoSphere(device, radius, subdivisions) {
 	this.generateFault(298, 2, 9);
 
 	var t3 = new Date();
-	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));
+	debug.log(DEBUG.INIT, "terrain generation: " + (t3-t2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
@@ -495,7 +495,7 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 			index = currVert.getNeighbor(direction, (direction + (j % 1) * 2 - 1) % 8);
 			//debug.log(DEBUG.WORLDGEN, index);
 			if (index == -1) {
-				debug.log(DEBUG.WORLDGEN, "Breaking fault gen at " + prevInd + " with direction " + direction); //DIRECTION.string(direction));
+				//debug.log(DEBUG.WORLDGEN, "Breaking fault gen at " + prevInd + " with direction " + direction); //DIRECTION.string(direction));
 				break;
 			}
 			currVert = this.vertexGraph[index];
@@ -510,7 +510,7 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 
 	this.faults.push(fault);
 
-	debug.obj(DEBUG.WORLDGEN, fault);
+	//debug.obj(DEBUG.WORLDGEN, fault);
 };
 
 IcoSphere.prototype.moveFaults = function(increment) {
@@ -546,7 +546,7 @@ IcoSphere.prototype.moveFaults = function(increment) {
     }
 
     --this.faultNumMove;
-  	debug.log(DEBUG.WORLDGEN, this.faultNumMove);
+  	//debug.log(DEBUG.WORLDGEN, this.faultNumMove);
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices
@@ -556,7 +556,7 @@ function generateTerrain(icosphere, initialContinentLocation, continentBufferDis
 	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
-	console.log("cc: " + contCount);
+    debug.log(DEBUG.WORLDGEN, "cc: " + contCount);
 	
 	//Create first continent at the equator facing the camera: 607, 698, 908, 923, 1151, 1166
 	var contSize = pc.math.random(continentSizeMin, continentSizeMax);
@@ -592,7 +592,7 @@ function generateTerrain(icosphere, initialContinentLocation, continentBufferDis
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
 function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
-	console.log("--c - " + repellerCount);
+	debug.log(DEBUG.WORLDGEN, "--c - " + repellerCount);
 	
 	var initialRepellerCount = repellerCount;
 	
@@ -629,9 +629,9 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 		}
 		
 		if (!done) {
-			console.log(repellerCount);
+			debug.log(DEBUG.WORLDGEN, repellerCount);
 			repellerCount = 0;
-			console.log("n");
+			debug.log(DEBUG.WORLDGEN, "n");
 		}
 	}
 
@@ -640,7 +640,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 
 //Helper function of cluster, raises a portion of land around the center tile
 function repeller(icosphere, centerTile, radius, centerHeight) {
-	console.log("r - " + radius);
+	debug.log(DEBUG.WORLDGEN, "r - " + radius);
 	
 	var queue = new Queue();
 	var visitedIndices = [];

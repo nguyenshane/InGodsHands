@@ -33,7 +33,7 @@ pc.script.create('Animals', function (context) {
 			}
 			
 			var t2 = new Date();
-			console.log("animal init time: " + (t2-t1));
+			debug.log(DEBUG.INIT, "animal init time: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update
