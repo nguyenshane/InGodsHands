@@ -138,7 +138,7 @@ pc.script.create('Atmosphere', function (context) {
 			var tiles = getTilesInArea(ico, centerTile.index, s);
 			
 			for (var i = 0; i < tiles.length; i++) {
-				ico.tiles[tiles[i]].startStorm();
+				ico.tiles[tiles[i]].startStorm(s);
 			}
             
             this.audio.sound_MakeThunder();

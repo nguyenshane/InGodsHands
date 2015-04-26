@@ -205,8 +205,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 	Tile.atmoHeight = 0.4;
 	Tile.rainDuration = 3.0;
 	Tile.fogDuration = 4.0;
-	Tile.stormDuration = 2.5;
-    Tile.stormDelay = 0.5;
+	Tile.stormDuration = 4.0;
+    Tile.stormDelay = 2.5;
+    this.stormSize;
 	this.rainTimer = 0, this.fogTimer = 0, this.stormTimer = 0;
     this.stormDelayTimer = 0;
 	
@@ -711,13 +712,14 @@ function Tile(index, vertexa, vertexb, vertexc){
 		this.isFoggy = false;
 	};
 	
-    this.startStorm = function() {
-        this.stormDelayTimer = Tile.stormDelay * Math.random();
+    this.startStorm = function(s) {
+        this.stormDelayTimer = Tile.stormDelay * (s / 3) * Math.random();
+        this.stormSize = s;
     };
     
 	this.beginStorm = function() { //really nailing the unique and descriptive identifiers...
         this.isStormy = true;
-		this.stormTimer = Tile.stormDuration * pc.math.random(0.75, 1.0);
+		this.stormTimer = Tile.stormDuration * (this.stormSize / 3) * pc.math.random(0.5, 1.0);
         
 		this.isFoggy = true;
 		this.fogTimer = this.stormTimer;
