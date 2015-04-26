@@ -88,9 +88,11 @@ pc.script.create('Trees', function (context) {
                 
                 var tree = treeOrig.clone();
                 this.entity.getParent().addChild(tree);
-                tree.stats = stats;
-                tree.baseScale = tree.getLocalScale().x;
                 
+                tree.stats = stats;
+                
+                tree.size = size;
+                tree.baseScale = tree.getLocalScale().x;
                 var s = size * tree.baseScale;
                 tree.setLocalScale(s, s, s);
                 tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
