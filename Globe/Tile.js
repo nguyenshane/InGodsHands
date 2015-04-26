@@ -568,8 +568,8 @@ function Tile(index, vertexa, vertexb, vertexc){
         var dists = [
             this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater),
             this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater),
-            this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater),
             this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)
+            //this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
