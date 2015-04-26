@@ -859,9 +859,18 @@ function multScalar(vector, scalar) {
 	vector.z *= scalar;
 };
 
-function scale(obj, scale) {
-	var s = obj.getLocalScale.x + scale;
+//Additive object model scaling
+function scaleA(obj, scale) {
+	var s = obj.getLocalScale().x + (scale * obj.baseScale);
 	obj.setLocalScale(s, s, s);
+    obj.size += scale;
+};
+
+//Multiplicative scaling
+function scaleM(obj, scale) {
+	var s = obj.getLocalScale().x * scale;
+	obj.setLocalScale(s, s, s);
+    obj.size *= scale;
 };
 
 //Not actually a lerp, this one is just more useful to me

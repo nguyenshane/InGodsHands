@@ -69,14 +69,16 @@ pc.script.create('Animals', function (context) {
             
             var animal = animalOrig.clone();
             this.entity.getParent().addChild(animal);
-            animal.stats = stats;
-            animal.baseScale = animal.getLocalScale().x;
             
+            animal.stats = stats;
+            
+            animal.size = size;
+            animal.baseScale = animal.getLocalScale().x;
             var s = size * animal.baseScale;
             animal.setLocalScale(s, s, s);
             animal.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
             animal.setPosition(position);
-			
+            
             animal.enabled = true;
 			animal.destroyFlag = false;
             this.animal_stack.push(animal);
