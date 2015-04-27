@@ -429,7 +429,7 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(StringsliderP);
             document.body.appendChild(StringsliderE);
             document.body.appendChild(StringsliderW);
-            document.body.appendChild(musicSlider);
+            //document.body.appendChild(musicSlider);
 
 
             //this.sliderT = sliderT;
