@@ -74,12 +74,12 @@ pc.script.create('Trees', function (context) {
 						stats = Tile.treeStats.tree2;
 						break;
 					case 2:
-						treeOrig = this.trees.findByName("tree3");
-						stats = Tile.treeStats.tree3;
-						break;
-					case 3:
 						treeOrig = this.trees.findByName("tree4");
 						stats = Tile.treeStats.tree4;
+						break;
+					case 3:
+						treeOrig = this.trees.findByName("tree3");
+						stats = Tile.treeStats.tree3;
 						break;
 					default:
 						treeOrig = this.trees.findByName("tree1");

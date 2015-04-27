@@ -25,11 +25,14 @@ pc.script.create('HIDInterface', function (context) {
 	var camera;
 
     var UI;
+    var app; 
     var hasStopped;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
 			this.stringP = new pc.StringTAPEW('P');
@@ -47,7 +50,8 @@ pc.script.create('HIDInterface', function (context) {
 			temperatureDest = 0.0;
 			velocity = 0.0;
 
-			UI = context.root.findByName("Rv1-stable").script.developer;
+			app = pc.fw.Application.getApplication('application-canvas').context;
+			UI = context.root._children[0].script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -60,6 +64,9 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringP.on("moving", this.moving_P, this.direction, this.distance, this.speed);
 			this.stringE.on("moving", this.moving_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moving", this.moving_W, this.direction, this.distance, this.speed);
+
+			var t2 = new Date();
+			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
 
         },
 
@@ -101,6 +108,12 @@ pc.script.create('HIDInterface', function (context) {
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
+
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+
+			if (!UI.StringsliderT.mouseIsOver){
+                UI.StringsliderT.value = newStringTvalue;
+            }
 			
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
@@ -116,6 +129,12 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity += (distance * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+			
+			if (!UI.StringsliderA.mouseIsOver){
+                UI.StringsliderA.value = newStringAvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
@@ -129,6 +148,12 @@ pc.script.create('HIDInterface', function (context) {
 			// 		break;
 			// 	}
 			// }
+
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			
+			if (!UI.StringsliderP.mouseIsOver){
+                UI.StringsliderP.value = newStringPvalue;
+            }
 
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
@@ -144,13 +169,24 @@ pc.script.create('HIDInterface', function (context) {
 			scripts.Atmosphere.makeStorm(distance, speed);
 			this.stormTriggerBox.scareTribes();
 
-
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+			
+			if (!UI.StringsliderE.mouseIsOver){
+                UI.StringsliderE.value = newStringEvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			
+			if (!UI.StringsliderW.mouseIsOver){
+                UI.StringsliderW.value = newStringWvalue;
+            }
+            
 			inactiveTimer = 0;
 		},
 

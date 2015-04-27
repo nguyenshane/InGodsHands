@@ -13,6 +13,8 @@ pc.script.create('Atmosphere', function (context) {
     Atmosphere.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+
             this.atm = context.root.findByName("Atmosphere");
 			this.cam = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 			
@@ -20,6 +22,9 @@ pc.script.create('Atmosphere', function (context) {
 			this.rainstack = [];
 
 			this.audio = context.root._children[0].script.AudioController;
+
+			var t2 = new Date();
+			debug.log(DEBUG.INIT, "atmosphere initialization: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update

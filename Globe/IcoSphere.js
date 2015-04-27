@@ -1,6 +1,11 @@
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
 
+
+	var time1 = new Date();
+	//debug.on(DEBUG.WORLDGEN);
+    debug.log(DEBUG.WORLDGEN, "Icosphere Init Starting");
+
     this.device = device;
 
     ico = this;
@@ -26,7 +31,7 @@ function IcoSphere(device, radius, subdivisions) {
     this.faults = [];
     this.currFault;
     this.currFaultIndex = 9;
-    this.faultMoveCount = 0;
+    this.faultMoveCount = 10;
     this.faultMoveMax = 10;
     this.faultIncrement = -0.02;
     this.faultNumMove = 50;
@@ -255,8 +260,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.unshareVertices();
 	
 	
-	var t2 = new Date();
-	debug.log(DEBUG.INIT, "icosphere initialization: " + (t2-t1));
+	var time2 = new Date();
+	debug.log(DEBUG.INIT, "icosphere init time: " + (time2-time1));
 	
 	//Generate terrain
 	this.vertexHeights = [];
@@ -298,8 +303,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.generateFault(325, 2, 8);
 	this.generateFault(298, 2, 9);
 
-	var t3 = new Date();
-	debug.log(DEBUG.INIT, "terrain generation: " + (t3-t2));
+	var time3 = new Date();
+	debug.log(DEBUG.INIT, "terrain generation time: " + (time3-time2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
@@ -309,6 +314,9 @@ function IcoSphere(device, radius, subdivisions) {
 	
     // Set mesh data
     this.updateReturnMesh();
+
+
+    debug.log(DEBUG.WORLDGEN, "Icosphere Init Ending");
     
     return this;
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
@@ -514,39 +522,47 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 };
 
 IcoSphere.prototype.moveFaults = function(increment) {
-	/*for (; distance <= 0; --distance) {
-		this.currFault = this.faults[this.faultIndex];
-    	for (var i = 0; i < this.currFault.length; ++i) {
-        	this.currFault[i].addHeight(this.faultIncrement * dir);
-	    }
-    	if (++this.faultMoveCount >= this.faultMoveMax) {
-        	if (++this.currFaultIndex >= this.faults.length) {
-            	this.currFaultIndex = 0;
-            	this.faultDir *= -1;
-        	}
-        	this.faultMoveCount = 0;
-    	}
-    }*/
+  	// bool for max/min edge to prevent moving
+  	var edge = false;
 
-    //this.currFaultIndex = this.currFaultPosition / this.faults.length;
+  	// Get direction string is moving (-1 or 1)
+  	var direction = increment/Math.abs(increment);
 
-    //this.faultMovePercent = this.currFaultcurrFaultIndex
+  	// Update fault counter position
+  	this.faultMoveCount += direction;
 
-    this.currFault = this.faults[this.currFaultIndex];
-    for (var i = 0; i < this.currFault.length; ++i) {
-    	this.currFault[i].addHeight(increment);
-	}
-	if (++this.faultMoveCount >= this.faultMoveMax) {
-    	this.faultMoveCount = 0;
-    	if (increment < 0 && this.currFaultIndex > 0) {
-    		--this.currFaultIndex;
-    	} else if (increment > 0 && this.currFaultIndex < this.faults.length-1 ) {
-    		++this.currFaultIndex;
-    	}
-    }
+  	if (this.faultMoveCount >= this.faultMoveMax || this.faultMoveCount < 0) {
 
-    --this.faultNumMove;
-  	//debug.log(DEBUG.WORLDGEN, this.faultNumMove);
+  		// Update fault index
+  		this.currFaultIndex += direction;
+  		if (this.currFaultIndex >= this.faults.length || this.currFaultIndex < 0) {
+
+  			this.currFaultIndex -= direction;
+  			this.faultMoveCount -= direction;
+  			edge = true;
+  		} else {
+
+  			// Reset position
+   			this.faultMoveCount -= this.faultMoveMax * direction;
+  		}
+  	}
+
+  	// Move if not at edge
+  	if (!edge) {
+
+  		// Get current fault
+  		var currFault = this.faults[this.currFaultIndex];
+
+  		// Change height of each
+    	for (var i = 0; i < currFault.length; ++i) {
+    		currFault[i].addHeight(increment);
+		}
+
+		var mess = this.currFaultIndex * 10 + this.faultMoveCount;
+		debug.log(DEBUG.WORLDGEN, "Faults at: " + mess);
+  	}
+
+  	--this.faultNumMove;
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices

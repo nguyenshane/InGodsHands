@@ -11,8 +11,10 @@ pc.script.create('Human', function (context) {
         this.influencedTiles = [];
 
         // Variables for lerp, in milliseconds
-
         this.foodPopTimer = 0;
+        this.maxDistFromHQ = 0.5;
+        this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
+        this.turnSpeed = 1.0;
         this.travelTime = 3000;
         this.travelStartTime;
 
@@ -24,14 +26,26 @@ pc.script.create('Human', function (context) {
 
     Human.prototype = {
 
+        // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            this.chooseState();
-            if(this.currentAction != null) this.currentAction();
+            if (!isPaused) {
+                this.chooseState();
+                if (this.currentAction != null) this.currentAction();
 
-            if(this.tile != null){
-                this.rotation = this.tile.getRotationAlignedWithNormal();
-                //console.log("Rotation : " + this.rotation);
-                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                if (this.tile != null) {
+                    if (this.destinationTile != null) {
+                        var position = this.entity.getPosition();
+                        var target = this.destinationTile.center;
+                        if (distSq(position, target) > 0.001) {
+                            var up = this.tile.normal;
+                            var m = new pc.Mat4().setLookAt(position, target, up);
+                            this.rotation = m.getEulerAngles();
+                        }
+                    }
+                    
+                    this.entity.setEulerAngles(this.rotation);
+                    //this.entity.setEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                }
             }
         },
 
@@ -41,6 +55,7 @@ pc.script.create('Human', function (context) {
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
+                this.setCurrentAction(this.wander);
                 //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
             }
         },
@@ -81,7 +96,7 @@ pc.script.create('Human', function (context) {
         },
 
         setDestination: function(destination) {
-            console.log("Hey we're here");
+            debug.log(DEBUG.AI, "Hey we're here");
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
             this.setCurrentAction(this.move);   
@@ -91,7 +106,20 @@ pc.script.create('Human', function (context) {
         },
 
         wander: function() { 
-            this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
+            //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
+            var pos = this.entity.getPosition();
+            var hqpos = this.tribeParent.entity.getPosition();
+            var dist = distSq(pos, hqpos);
+            
+            debug.log(DEBUG.AI, dist);
+            
+            if (dist > this.maxDistSq) {
+                //Move towards the HQ
+                this.setDestination(this.tile.getClosestNeighbor(hqpos));
+            } else {
+                //Wander around randomly
+                this.setDestination(this.tile.getRandomNeighbor());
+            }
         },
 
         setCurrentAction: function(newAction) {

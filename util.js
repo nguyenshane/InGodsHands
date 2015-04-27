@@ -845,6 +845,14 @@ function Queue() {
 	this.peek=function(){return 0<a.length?a[b]:void 0};
 };
 
+//Distance between two vectors squared (cuz performance)
+function distSq(v1, v2) {
+    var x = v1.x - v2.x;
+    var y = v1.y - v2.y;
+    var z = v1.z - v2.z;
+    return x*x + y*y + z*z;
+};
+
 function extendVector(vector, dist) {
 	var v = new pc.Vec3(vector.x, vector.y, vector.z);
 	v.normalize();

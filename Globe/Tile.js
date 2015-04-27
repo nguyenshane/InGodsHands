@@ -213,6 +213,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
     this.divided = false;
     this.isOcean = true;
+    this.isFault = false;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
@@ -447,7 +448,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     this.determineCost = function() {
         if (!this.isOcean) return -1;
-        return this.center.length;
+        return this.center.length();
     };
 	
 	//Called in _recalculateMesh, use the variables instead of the below functions when accessing
@@ -568,8 +569,8 @@ function Tile(index, vertexa, vertexb, vertexc){
         var dists = [
             this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater),
             this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater),
-            this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater),
             this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)
+            //this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
@@ -811,10 +812,50 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.getNeighborIndices = function() {
 		return [this.neighbora.index, this.neighborb.index, this.neighborc.index];
 	};
+    
+    //Returns the land neighbor whose center is closest to the vector, or this if all neighbors are water
+    this.getClosestNeighbor = function(vector) {
+        var neighbors = this.getNeighbors();
+        var neighbor = this;
+        var i;
+        for (i = 0; i < neighbors.length; i++) {
+            if (!neighbors[i].isOcean) {
+                neighbor = neighbors[i];
+                break;
+            }
+        }
+        if (neighbor === this) return neighbor;
+        
+        var ndist = distSq(neighbor.center, vector);
+        var closestNeighbor = neighbor;
+        var closestDistance = ndist;
+        
+        for (var j = i+1; j < neighbors.length; j++) {
+            neighbor = neighbors[j];
+            if (!neighbor.isOcean) {
+                ndist = distSq(neighbor.center, vector);
+                if (ndist < closestDistance) {
+                    closestNeighbor = neighbor;
+                    closestDistance = ndist;
+                }
+            }
+        }
+        
+        return closestNeighbor;
+    };
+    
+    //Returns a random land neighbor, or this if no neighbors are land
+    this.getRandomNeighbor = function() {
+        var r = Math.random();
+        if (r < 0.333333 && !this.neighbora.isOcean) return this.neighbora;
+        if (r < 0.666666 && !this.neighborb.isOcean) return this.neighborb;
+        if (!this.neighborc.isOcean) return this.neighborc;
+        return this;
+    };
 	
 	this.getVertex = function(vertexIndex) {
 		return ico.vertexGraph[this.vertexIndices[vertexIndex]].getVertex();
-	}
+	};
     
     this.getVertexIndex = function(vertex){        
         if (vertex.x == ico.vertices[this.vertexIndices[0] * 3] 
@@ -999,7 +1040,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 
             object.tile = this;
 
-            object.altitude = this.center.length;
+            object.altitude = this.center.length();
 
             object.longitude;
 
