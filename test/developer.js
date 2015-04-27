@@ -497,11 +497,9 @@ pc.script.create('developer', function (context) {
               this.setVisibilty();
 
               this.buttonUI.onclick = function UIButtonClicked(){
-                    if(!switchUIOn){
-                        switchUIOn = true;
-                    }
-                    else switchUIOn = false;
-                 }
+                  switchUIOn++;
+                  if(switchUIOn > 2) switchUIOn = 0;
+              }
         },
 
         mouseCheck: function(){
@@ -864,8 +862,8 @@ pc.script.create('developer', function (context) {
         },
 
         setVisibilty: function(){
-            if(!switchUIOn){
-
+            switch(switchUIOn){
+                    case 0:
                     this.div.style.visibility = 'hidden';
                     this.divTString.style.visibility = 'hidden'; 
                     this.divAString.style.visibility = 'hidden';
@@ -890,10 +888,37 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'hidden';
                     this.musicText.style.visibility = 'hidden';
+                    break;
 
-                    }
-                    else{
+                    case 1:
 
+                    this.div.style.visibility = 'hidden';
+                    this.divTString.style.visibility = 'visible'; 
+                    this.divAString.style.visibility = 'visible';
+                    this.divPString.style.visibility = 'visible';
+                    this.divEString.style.visibility = 'visible';
+                    this.divWString.style.visibility = 'visible';
+
+                    this.tribePop.style.visibility = 'hidden';
+                    this.tribeStockpile.style.visibility = 'hidden';
+                    this.tribeFood.style.visibility = 'hidden';
+                    this.tribeBelief.style.visibility = 'hidden';
+                    this.tribeFear.style.visibility = 'hidden';
+
+                    this.buttonPlus.style.visibility = 'hidden';
+                    this.buttonSub.style.visibility = 'hidden';
+
+                    this.StringsliderT.style.visibility = 'visible';
+                    this.StringsliderA.style.visibility = 'visible';
+                    this.StringsliderP.style.visibility = 'visible';
+                    this.StringsliderE.style.visibility = 'visible';
+                    this.StringsliderW.style.visibility = 'visible';
+
+                    this.musicSlider.style.visibility = 'hidden';
+                    this.musicText.style.visibility = 'hidden';
+                    break;
+
+                    case 2:
                     this.div.style.visibility = 'visible';
                     this.divTString.style.visibility = 'visible'; 
                     this.divAString.style.visibility = 'visible';
@@ -918,6 +943,8 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'visible';
                     this.musicText.style.visibility = 'visible';
+                    break;
+
                     }
         },
 
