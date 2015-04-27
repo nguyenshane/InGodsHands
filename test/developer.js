@@ -412,7 +412,7 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(divPString);
             document.body.appendChild(divEString);
             document.body.appendChild(divWString);
-            document.body.appendChild(musicText);
+            //document.body.appendChild(musicText);
 
             document.body.appendChild(tribePop);
             document.body.appendChild(tribeFood);
