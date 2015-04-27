@@ -28,15 +28,25 @@ pc.script.create('Human', function (context) {
             //this.entity.setLocalScale(.005, .005, .005); 
         },
 
-
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if (this.currentAction != null) this.currentAction();
+            if (!isPaused) {
+                if (this.currentAction != null) this.currentAction();
 
-            if (this.tile != null) {
-                this.rotation = this.tile.getRotationAlignedWithNormal();
-                //console.log("Rotation : " + this.rotation);
-                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                if (this.tile != null) {
+                    if (this.destinationTile != null) {
+                        var position = this.entity.getPosition();
+                        var target = this.destinationTile.center;
+                        if (distSq(position, target) > 0.001) {
+                            var up = this.tile.normal;
+                            var m = new pc.Mat4().setLookAt(position, target, up);
+                            this.rotation = m.getEulerAngles();
+                        }
+                    }
+                    
+                    this.entity.setEulerAngles(this.rotation);
+                    //this.entity.setEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                }
             }
         },
 
