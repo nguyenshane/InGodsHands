@@ -213,6 +213,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
     this.divided = false;
     this.isOcean = true;
+    this.isFault = false;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;

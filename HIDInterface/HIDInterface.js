@@ -30,6 +30,8 @@ pc.script.create('HIDInterface', function (context) {
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
 			this.stringP = new pc.StringTAPEW('P');
@@ -57,6 +59,9 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringP.on("moving", this.moving_P, this.direction, this.distance, this.speed);
 			this.stringE.on("moving", this.moving_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moving", this.moving_W, this.direction, this.distance, this.speed);
+
+			var t2 = new Date();
+			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
 
         },
 
