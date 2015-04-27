@@ -53,7 +53,7 @@ pc.script.create('developer', function (context) {
     var needToStartTimeE = true;
     var needToStartTimeW = true;
 
-    var switchUIOn = false;
+    var switchUIOn = 0;
 
     developer.prototype = {
         initialize: function () {
@@ -284,7 +284,7 @@ pc.script.create('developer', function (context) {
             var tribePop = document.createElement('div');
             tribePop.style.position = 'absolute';
             tribePop.style.width = '32x';
-            tribePop.style.top = '5%';
+            tribePop.style.top = '8%';
             tribePop.style.left = '70%';
             tribePop.style.marginLeft = '0px';
             tribePop.style.textAlign = 'center';
@@ -477,7 +477,9 @@ pc.script.create('developer', function (context) {
         update: function (dt) {
              //updates the global temperature
              var app = pc.fw.Application.getApplication('application-canvas').context;
+             var tribes = app.root.findByName("TribeParent").getChildren();
              var tribeInfo = app.root.findByName('BaseTribe').script.tribe;
+             var HIDvar = app.root.findByName('Rv1-stable').script.HIDInterface;
 
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
 
@@ -496,12 +498,24 @@ pc.script.create('developer', function (context) {
               this.checkMusic();
               this.setVisibilty();
 
+              this.updateSliderValues(HIDvar);
+
+               //console.log(HIDvar.movedSliders);
+
               this.buttonUI.onclick = function UIButtonClicked(){
-                    if(!switchUIOn){
-                        switchUIOn = true;
-                    }
-                    else switchUIOn = false;
-                 }
+                  switchUIOn++;
+                  if(switchUIOn > 2) switchUIOn = 0;
+              }
+        },
+
+        updateSliderValues: function(HIDvar){
+            // console.log("distance T: " + HIDvar.distanceT);
+            // console.log("distance A: " + HIDvar.distanceA);
+            // console.log("distance P: " + HIDvar.distanceP);
+            // console.log("distance E: " + HIDvar.distanceE);
+            // console.log("distance W: " + HIDvar.distanceW);
+
+            
         },
 
         mouseCheck: function(){
@@ -864,8 +878,8 @@ pc.script.create('developer', function (context) {
         },
 
         setVisibilty: function(){
-            if(!switchUIOn){
-
+            switch(switchUIOn){
+                    case 0:
                     this.div.style.visibility = 'hidden';
                     this.divTString.style.visibility = 'hidden'; 
                     this.divAString.style.visibility = 'hidden';
@@ -890,10 +904,37 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'hidden';
                     this.musicText.style.visibility = 'hidden';
+                    break;
 
-                    }
-                    else{
+                    case 1:
 
+                    this.div.style.visibility = 'hidden';
+                    this.divTString.style.visibility = 'visible'; 
+                    this.divAString.style.visibility = 'visible';
+                    this.divPString.style.visibility = 'visible';
+                    this.divEString.style.visibility = 'visible';
+                    this.divWString.style.visibility = 'visible';
+
+                    this.tribePop.style.visibility = 'hidden';
+                    this.tribeStockpile.style.visibility = 'hidden';
+                    this.tribeFood.style.visibility = 'hidden';
+                    this.tribeBelief.style.visibility = 'hidden';
+                    this.tribeFear.style.visibility = 'hidden';
+
+                    this.buttonPlus.style.visibility = 'hidden';
+                    this.buttonSub.style.visibility = 'hidden';
+
+                    this.StringsliderT.style.visibility = 'visible';
+                    this.StringsliderA.style.visibility = 'visible';
+                    this.StringsliderP.style.visibility = 'visible';
+                    this.StringsliderE.style.visibility = 'visible';
+                    this.StringsliderW.style.visibility = 'visible';
+
+                    this.musicSlider.style.visibility = 'hidden';
+                    this.musicText.style.visibility = 'hidden';
+                    break;
+
+                    case 2:
                     this.div.style.visibility = 'visible';
                     this.divTString.style.visibility = 'visible'; 
                     this.divAString.style.visibility = 'visible';
@@ -918,6 +959,8 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'visible';
                     this.musicText.style.visibility = 'visible';
+                    break;
+
                     }
         },
 

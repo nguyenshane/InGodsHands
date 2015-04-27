@@ -10,9 +10,15 @@ pc.script.create('HIDInterface', function (context) {
 		pc.events.attach(this);
 		
 		this.direction, this.distance, this.speed = 0;
-        
-    };
 
+		this.distanceT = 0;
+		this.distanceA = 0; 
+		this.distanceP = 0;
+		this.distanceE = 0;
+		this.distanceW = 0;
+
+        this.movedSliders = false;
+    };
 
     var timer = new Date();
 	var temperatureChange;
@@ -25,6 +31,7 @@ pc.script.create('HIDInterface', function (context) {
 	var camera;
 
     var UI;
+    var app;
     var hasStopped;
 
     HIDInterface.prototype = {
@@ -39,12 +46,12 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
+			app = pc.fw.Application.getApplication('application-canvas').context;
+			UI = context.root._children[0].script.developer;
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
-
-			UI = context.root.findByName("Rv1-stable").script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -78,7 +85,6 @@ pc.script.create('HIDInterface', function (context) {
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
         		globalTemperature = pc.math.lerp( temperatureStart, temperatureDest, percentLerped );
-
 				//console.log("time since started lerp: " + timeSinceStartedLerp + " velocity: " + velocity);
 				//console.log("Temp subtract: " + (globalTemperature - temperatureDest));
 
@@ -90,7 +96,7 @@ pc.script.create('HIDInterface', function (context) {
         },
 		
 		moved_T: function(position, distance, speed) {
-			//console.log("String T moved: ", position, distance, speed);
+			console.log("String T moved: ", position, distance, speed);
 			
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
@@ -98,7 +104,17 @@ pc.script.create('HIDInterface', function (context) {
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
+
 			
+			//console.log("distance: " + distance + " newStringTvalue " + newStringTvalue + " UI.StringsliderT.mouseIsOver " + UI.StringsliderT.mouseIsOver);
+			//this.movedSliders = true;
+
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+
+			if (!UI.StringsliderT.mouseIsOver){
+                UI.StringsliderT.value = newStringTvalue;
+            }
+
 			console.log("Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
 				//console.log(ico.tiles[i].getTemperature());
@@ -112,6 +128,12 @@ pc.script.create('HIDInterface', function (context) {
 			
 			animalDensity += (distance * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
+
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+			
+			if (!UI.StringsliderA.mouseIsOver){
+                UI.StringsliderA.value = newStringAvalue;
+            }
 			
 			inactiveTimer = 0;
 		},
@@ -131,6 +153,12 @@ pc.script.create('HIDInterface', function (context) {
 			// Get increment and distance based on speed
 			ico.faultNumMove = Math.abs(distance);
 			ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			
+			if (!UI.StringsliderP.mouseIsOver){
+                UI.StringsliderP.value = newStringPvalue;
+            }
 
 			inactiveTimer = 0;
 		},
@@ -156,13 +184,29 @@ pc.script.create('HIDInterface', function (context) {
 				}
 			}
 
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+			
+			if (!UI.StringsliderE.mouseIsOver){
+                UI.StringsliderE.value = newStringEvalue;
+            }
+			
 			inactiveTimer = 0;
+
+			//this.UI.StringsliderE.value = this.UI.StringsliderE.value + distance;
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
 			inactiveTimer = 0;
+			
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			
+			if (!UI.StringsliderW.mouseIsOver){
+                UI.StringsliderW.value = newStringWvalue;
+            }
+
+			//this.UI.StringsliderW.value = this.UI.StringsliderW.value + distance;
 		},
 
 
