@@ -78,11 +78,11 @@ debug = new debug();
 function debug() {
 
 	this.on = function(type) {
-		this.debugstyles[type].on = true;
+		debugstyles[type].on = true;
 	}
 
 	this.off = function(type) {
-		this.debugstyles[type].on = false;
+		debugstyles[type].on = false;
 	}
 
 	this.log = function(type, text) {

@@ -50,7 +50,7 @@ pc.script.create('Globe', function (context) {
                     "    float dist = length(newPos);",
                     "    if (dist <= radius) {",
                     "       newPos.x = newPos.x - (newPos.x/abs(newPos.x) * abs(sin(time+(radius-abs(newPos.y))+newPos.z)/100.0*(radius-abs(newPos.y))));",
-                    "       newPos.z = newPos.z - (newPos.z/abs(newPos.z) * abs(sin(time+(radius-abs(newPos.y))+newPos.x)/100.0*(radius-abs(newPos.y))));",
+                    "       newPos.z = newPos.z - (newPos.z/abs(newPos.z) * abs(sin(time*0.13+(radius-abs(newPos.y))+newPos.x)/100.0*(radius-abs(newPos.y))));",
                     "    }",
                     "    fPosition = newPos;",
                     "    fNormal = aNormal;",
@@ -84,7 +84,7 @@ pc.script.create('Globe', function (context) {
                     "    if (dist > radius + 0.1) {",
                     "       color = intensity * sunIntensity * vec4(170.0/256.0, 80.0/256.0, 50.0/256.0, 1.0);",
                     // Land
-                    "    } else if (dist > radius + 0.01) {",
+                    "    } else if (dist > radius + 0.02) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     // Beaches
                     "    } else if (dist > radius) {",
@@ -163,31 +163,33 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if (ico.updateFlag == true) {
-                this.updateMesh();
+            if (!isPaused) {
+                if (ico.updateFlag == true) {
+                    this.updateMesh();
+                }
+                //ico.toReturn.mesh;
+
+                if (ico.faultNumMove > 0) {
+                    ico.moveFaults(ico.faultIncrement);
+                }
+
+                // Set temperature variables in shader
+            	this.material.setParameter('temperature', globalTemperature);
+                this.material.setParameter('maxTemp', globalTemperatureMax);
+                
+                this.material.setParameter('time', globalTime);
+
+                // Set lighting in shader
+                this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
+                //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
+                //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
+                //var angle = sun.rotation.getEulerAngles();
+
+                //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
+                //console.log(angle.x, angle.y, angle.z);
+                //console.log(sun.rotation);
+                //this.model.meshInstances[0].
             }
-            //ico.toReturn.mesh;
-
-            if (ico.faultNumMove > 0) {
-                ico.moveFaults(ico.faultIncrement);
-            }
-
-            // Set temperature variables in shader
-        	this.material.setParameter('temperature', globalTemperature);
-            this.material.setParameter('maxTemp', globalTemperatureMax);
-            
-            this.material.setParameter('time', globalTime);
-
-            // Set lighting in shader
-            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
-            //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
-            //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
-            //var angle = sun.rotation.getEulerAngles();
-
-            //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
-            //console.log(angle.x, angle.y, angle.z);
-            //console.log(sun.rotation);
-            //this.model.meshInstances[0].
         },
 
         updateMesh: function () {
