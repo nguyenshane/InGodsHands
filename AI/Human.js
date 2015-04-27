@@ -13,6 +13,7 @@ pc.script.create('Human', function (context) {
         // Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
         this.maxDistFromHQ = 0.5;
+        this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
         this.turnSpeed = 1.0;
         this.travelTime = 3000;
         this.travelStartTime;
@@ -87,7 +88,7 @@ pc.script.create('Human', function (context) {
         },
 
         setDestination: function(destination) {
-            console.log("Hey we're here");
+            debug.log(DEBUG.AI, "Hey we're here");
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
             this.setCurrentAction(this.move);   
@@ -99,7 +100,11 @@ pc.script.create('Human', function (context) {
         wander: function() { 
             var pos = this.entity.getPosition();
             var hqpos = this.tribeParent.entity.getPosition();
-            if (new pc.Vec3().sub2(pos, hqpos).length() > this.maxDistFromHQ) {
+            var dist = distSq(pos, hqpos);
+            
+            debug.log(DEBUG.AI, dist);
+            
+            if (dist > this.maxDistSq) {
                 //Move towards the HQ
                 this.setDestination(this.tile.getClosestNeighbor(hqpos));
             } else {

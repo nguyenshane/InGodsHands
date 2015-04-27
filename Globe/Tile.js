@@ -826,14 +826,14 @@ function Tile(index, vertexa, vertexb, vertexc){
         }
         if (neighbor === this) return neighbor;
         
-        var ndist = new pc.Vec3().sub2(neighbor.center, vector).length();
+        var ndist = distSq(neighbor.center, vector);
         var closestNeighbor = neighbor;
         var closestDistance = ndist;
         
         for (var j = i+1; j < neighbors.length; j++) {
             neighbor = neighbors[j];
             if (!neighbor.isOcean) {
-                ndist = new pc.Vec3().sub2(neighbor.center, vector).length();
+                ndist = distSq(neighbor.center, vector);
                 if (ndist < closestDistance) {
                     closestNeighbor = neighbor;
                     closestDistance = ndist;
