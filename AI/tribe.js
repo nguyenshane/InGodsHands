@@ -4,13 +4,14 @@ pc.script.create('tribe', function (context) {
         this.entity = entity;
         
         this.humanParent;
+        this.humans = [];
 
         this.population = 1;
         this.stockpile = 0;
         this.incomingFood = 0;
         this.stockpileChange = 0;
         
-        this.idealTemperature = 65;
+        this.idealTemperature = Math.floor((Math.random() * 20) + 55);
         this.currTileTemperature;
 
         //totalBelief = 25;
@@ -147,9 +148,9 @@ pc.script.create('tribe', function (context) {
                 }
                 
                 //Cower if in storm
-                if (this.tile.isStormy) {
-                    this.startCowering();
-                }
+                //if (this.tile.isStormy) {
+                //    this.startCowering();
+                //}
 			}
         },
 
@@ -505,7 +506,9 @@ pc.script.create('tribe', function (context) {
             newHuman.enabled = true;
             debug.log(DEBUG.AI, "New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
+            this.humans.push(newHuman);
             newHuman.script.Human.start();
+            newHuman.script.Human.chooseState();
         },
 
         // Constructs the NPC's list of rules

@@ -17,18 +17,15 @@ pc.script.create('Human', function (context) {
         this.travelStartTime;
 
         this.currentAction = null;
+        this.currentState = null;
+        this.prevState = null;
 
     };
 
     Human.prototype = {
-        // Called once after all resources are loaded and before the first update
-        initialize: function () {
-            //this.entity.setLocalScale(.005, .005, .005); 
-        },
 
-
-        // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+            this.chooseState();
             if(this.currentAction != null) this.currentAction();
 
             if(this.tile != null){
@@ -44,7 +41,6 @@ pc.script.create('Human', function (context) {
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
-
                 //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
             }
         },
@@ -80,6 +76,7 @@ pc.script.create('Human', function (context) {
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasTribe = true;
                 this.setCurrentAction(null);
+                this.chooseState();
             }
         },
 
@@ -94,12 +91,19 @@ pc.script.create('Human', function (context) {
         },
 
         wander: function() { 
-
+            this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
         },
 
         setCurrentAction: function(newAction) {
             this.previousAction = this.currentAction;
             this.currentAction = newAction;
+        },
+
+        chooseState: function(){
+            // choose which starter function to call
+            if (!this.tribeParent.isBusy && this.currentAction != this.move){
+                this.wander();
+            }
         }
 
         

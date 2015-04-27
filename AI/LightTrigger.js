@@ -4,6 +4,8 @@ pc.script.create("trigger", function (app) {
 
     var Trigger = function (entity) {
         this.entity = entity;
+
+        this.tribesInTrigger = [];
     };
 
     Trigger.prototype = {
@@ -16,6 +18,7 @@ pc.script.create("trigger", function (app) {
             // Tribe knows it is lit by sun            
             
             entity.script.tribe.inSun = true;
+            this.tribesInTrigger.push(entity);
             //console.log("We've entered the trigger!!!! Tribe lit: " + entity.script.tribe.inSun);
         },
 
@@ -23,7 +26,17 @@ pc.script.create("trigger", function (app) {
             // Tribe knows it isn't lit by sun
 
             entity.script.tribe.inSun = false;
+            var removedIndex = this.tribesInTrigger.indexOf(entity);
+            if(this.tribesInTrigger.indexOf(entity) != -1){
+                this.tribesInTrigger.splice(removedIndex);
+            }
             //console.log("\nWe've exited the trigger!!!!\n Tribe lit: " + entity.script.tribe.inSun);
+        },
+
+        scareTribes: function () {
+            for(var i = 0; i < this.tribesInTrigger.length; i++){
+                this.tribesInTrigger[i].script.tribe.startCowering();
+            }
         }
     };
 

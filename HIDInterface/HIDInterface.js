@@ -39,6 +39,9 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
+			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
+
+			console.log("THe box: " + this.stormTriggerBox.tribesInTrigger.length);
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
@@ -120,12 +123,12 @@ pc.script.create('HIDInterface', function (context) {
 			//console.log("String P moved: ", position, distance, speed);
 			
 			//tribes[0].addTribe();
-			for (var i = 0; i < tribes.length; i++) {
-				if (!tribes[i].enabled) {
-					tribes[i].enabled = true;
-					break;
-				}
-			}
+			// for (var i = 0; i < tribes.length; i++) {
+			// 	if (!tribes[i].enabled) {
+			// 		tribes[i].enabled = true;
+			// 		break;
+			// 	}
+			// }
 
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
@@ -139,7 +142,9 @@ pc.script.create('HIDInterface', function (context) {
 			//console.log("String E moved: ", position, distance, speed);
 			
 			scripts.Atmosphere.makeStorm(distance, speed);
-			
+			this.stormTriggerBox.scareTribes();
+
+
 			inactiveTimer = 0;
 		},
 		
