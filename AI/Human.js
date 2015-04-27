@@ -11,8 +11,9 @@ pc.script.create('Human', function (context) {
         this.influencedTiles = [];
 
         // Variables for lerp, in milliseconds
-
         this.foodPopTimer = 0;
+        this.maxDistFromHQ = 0.5;
+        this.turnSpeed = 1.0;
         this.travelTime = 3000;
         this.travelStartTime;
 
@@ -29,9 +30,9 @@ pc.script.create('Human', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if(this.currentAction != null) this.currentAction();
+            if (this.currentAction != null) this.currentAction();
 
-            if(this.tile != null){
+            if (this.tile != null) {
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 //console.log("Rotation : " + this.rotation);
                 this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
@@ -44,6 +45,8 @@ pc.script.create('Human', function (context) {
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
+                
+                this.setCurrentAction(this.wander);
 
                 //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
             }
@@ -79,7 +82,7 @@ pc.script.create('Human', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasTribe = true;
-                this.setCurrentAction(null);
+                this.setCurrentAction(this.wander);
             }
         },
 
@@ -94,7 +97,15 @@ pc.script.create('Human', function (context) {
         },
 
         wander: function() { 
-
+            var pos = this.entity.getPosition();
+            var hqpos = this.tribeParent.entity.getPosition();
+            if (new pc.Vec3().sub2(pos, hqpos).length() > this.maxDistFromHQ) {
+                //Move towards the HQ
+                this.setDestination(this.tile.getClosestNeighbor(hqpos));
+            } else {
+                //Wander around randomly
+                this.setDestination(this.tile.getRandomNeighbor());
+            }
         },
 
         setCurrentAction: function(newAction) {
