@@ -260,8 +260,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.unshareVertices();
 	
 	
-	var t2 = new Date();
-	debug.log(DEBUG.INIT, "icosphere initialization: " + (t2-time1));
+	var time2 = new Date();
+	debug.log(DEBUG.INIT, "icosphere init time: " + (time2-time1));
 	
 	//Generate terrain
 	this.vertexHeights = [];
@@ -303,8 +303,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.generateFault(325, 2, 8);
 	this.generateFault(298, 2, 9);
 
-	var t3 = new Date();
-	debug.log(DEBUG.INIT, "terrain generation: " + (t3-t2));
+	var time3 = new Date();
+	debug.log(DEBUG.INIT, "terrain generation time: " + (time3-time2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
