@@ -25,6 +25,7 @@ pc.script.create('HIDInterface', function (context) {
 	var camera;
 
     var UI;
+    var app; 
     var hasStopped;
 
     HIDInterface.prototype = {
@@ -46,7 +47,8 @@ pc.script.create('HIDInterface', function (context) {
 			temperatureDest = 0.0;
 			velocity = 0.0;
 
-			UI = context.root.findByName("Rv1-stable").script.developer;
+			app = pc.fw.Application.getApplication('application-canvas').context;
+			UI = context.root._children[0].script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -103,6 +105,12 @@ pc.script.create('HIDInterface', function (context) {
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
+
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+
+			if (!UI.StringsliderT.mouseIsOver){
+                UI.StringsliderT.value = newStringTvalue;
+            }
 			
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
@@ -118,6 +126,12 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity += (distance * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+			
+			if (!UI.StringsliderA.mouseIsOver){
+                UI.StringsliderA.value = newStringAvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
@@ -132,6 +146,12 @@ pc.script.create('HIDInterface', function (context) {
 				}
 			}
 
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			
+			if (!UI.StringsliderP.mouseIsOver){
+                UI.StringsliderP.value = newStringPvalue;
+            }
+
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
 			ico.faultNumMove = Math.abs(distance);
@@ -145,12 +165,24 @@ pc.script.create('HIDInterface', function (context) {
 			
 			scripts.Atmosphere.makeStorm(distance, speed);
 			
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+			
+			if (!UI.StringsliderE.mouseIsOver){
+                UI.StringsliderE.value = newStringEvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			
+			if (!UI.StringsliderW.mouseIsOver){
+                UI.StringsliderW.value = newStringWvalue;
+            }
+            
 			inactiveTimer = 0;
 		},
 
