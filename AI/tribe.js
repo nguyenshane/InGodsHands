@@ -18,16 +18,12 @@ pc.script.create('tribe', function (context) {
         this.population = 1;
         this.MAXPOPULATION = 5;
         this.MINPOPULATION = 1;
-        //this.stockpile = 0;
-        //this.incomingFood = 0;
-        //this.stockpileChange = 0;
         
         this.increasePopulationTimer = 0;
 
         this.idealTemperature = Math.floor((Math.random() * 20) + 55);
         this.currTileTemperature;
 
-        //totalBelief = 25;
         this.fear = 0;
 
         this.tile;
@@ -77,7 +73,6 @@ pc.script.create('tribe', function (context) {
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
-			//this.calculateFood();
 
             totalBelief = 300;
             prevTotalBelief = totalBelief;
@@ -86,8 +81,6 @@ pc.script.create('tribe', function (context) {
             this.tile.hasTribe = true;
 
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            //this.entity.setLocalScale(.1, .1, .1);
-            //console.log('localscale',this.rotation, this);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -102,9 +95,7 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
-            //console.log(this.stormEffect.darkness);
-            //console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
-			
+	
             this.audio = context.root._children[0].script.AudioController;
 			
             this.addHuman();
@@ -126,8 +117,8 @@ pc.script.create('tribe', function (context) {
 
             if (!isPaused) {
                 if (!this.isBusy) {
+                    this.increasePopulationTimer += dt;
                     this.runRuleList();
-                    //this.foodAndPopTimer(dt);
                 } else {
                     this.currentAction(dt);
                 }
@@ -149,7 +140,6 @@ pc.script.create('tribe', function (context) {
                     this.noSunTimer = 0;
                 }
 
-                // TEMPORARY: increase population every 20ish seconds, won't be creating new tribe yet
                 this.increasePopulationTimer += dt;
 
                 if (this.increasePopulationTimer >= 50){
@@ -167,11 +157,6 @@ pc.script.create('tribe', function (context) {
                         else this.preyInInfluence.push(tile);
                     }
                 }
-                
-                //Cower if in storm
-                //if (this.tile.isStormy) {
-                //    this.startCowering();
-                //}
 			}
         },
 

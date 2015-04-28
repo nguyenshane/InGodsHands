@@ -15,7 +15,7 @@ pc.script.create('Human', function (context) {
         this.maxDistFromHQ = 0.5;
         this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
         this.turnSpeed = 1.0;
-        this.travelTime = 3000;
+        this.travelTime = 1;
         this.travelStartTime;
 
         this.currentAction = null;
