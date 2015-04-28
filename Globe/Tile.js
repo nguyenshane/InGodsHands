@@ -230,7 +230,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     ico.indices.push(vertexc);
     
 	
-	this.update = function(dt) {
+/*	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
         
@@ -338,7 +338,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.checkResourceLimits();
 	};
-	
+*/	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
 		var temp = this.getTemperature();
@@ -555,7 +555,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var localTreeDensity = localTreeCount / visitedTileCount;
 		
-		if (localTreeDensity < treeDensity) this.createTree(temperature, size);
+		//if (localTreeDensity < treeDensity) this.createTree(temperature, size);
 	};
 	
 	//Adds a tree to this tile

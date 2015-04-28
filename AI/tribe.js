@@ -1,3 +1,12 @@
+function addTribe () {
+    for (var i = 0; i < tribes.length; i++) {
+        if (!tribes[i].enabled) {
+            tribes[i].enabled = true;
+            break;
+        }
+    }
+}
+
 pc.script.create('tribe', function (context) {
     // Creates a new Tribe instance
     var Tribe = function (entity) {
@@ -7,10 +16,14 @@ pc.script.create('tribe', function (context) {
         this.humans = [];
 
         this.population = 1;
-        this.stockpile = 0;
-        this.incomingFood = 0;
-        this.stockpileChange = 0;
+        this.MAXPOPULATION = 5;
+        this.MINPOPULATION = 1;
+        //this.stockpile = 0;
+        //this.incomingFood = 0;
+        //this.stockpileChange = 0;
         
+        this.increasePopulationTimer = 0;
+
         this.idealTemperature = Math.floor((Math.random() * 20) + 55);
         this.currTileTemperature;
 
@@ -48,7 +61,7 @@ pc.script.create('tribe', function (context) {
     
         // Variables for lerp, in milliseconds
 
-        this.foodPopTimer = 0;
+        //this.foodPopTimer = 0;
         this.travelTime = 3000;
         this.travelStartTime;
 
@@ -64,7 +77,7 @@ pc.script.create('tribe', function (context) {
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
-			this.calculateFood();
+			//this.calculateFood();
 
             totalBelief = 300;
             prevTotalBelief = totalBelief;
@@ -114,7 +127,7 @@ pc.script.create('tribe', function (context) {
             if (!isPaused) {
                 if (!this.isBusy) {
                     this.runRuleList();
-                    this.foodAndPopTimer(dt);
+                    //this.foodAndPopTimer(dt);
                 } else {
                     this.currentAction(dt);
                 }
@@ -134,6 +147,14 @@ pc.script.create('tribe', function (context) {
                     this.noSunTimer += dt;
                 } else {
                     this.noSunTimer = 0;
+                }
+
+                // TEMPORARY: increase population every 20ish seconds, won't be creating new tribe yet
+                this.increasePopulationTimer += dt;
+
+                if (this.increasePopulationTimer >= 50){
+                    this.increasePopulation();
+                    this.increasePopulationTimer = 0;
                 }
 
                 //Check influenced tiles for predators or prey
@@ -233,7 +254,7 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                this.calculatePopulation();
+                //this.calculatePopulation();
                 this.calculateInfluence();
                 this.isBusy = false;
                 this.isSpiteful = false;
@@ -399,6 +420,10 @@ pc.script.create('tribe', function (context) {
             return this.population;
         },
 
+        setPopulation: function(population) {
+            this.population = population;
+        },
+
         getIdealTemperature: function() {
             return this.idealTemperature;
         },
@@ -430,46 +455,19 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon.enabled = false;
         },
 
-        foodAndPopTimer: function(dt) {
-            this.foodPopTimer += dt
-            if(this.foodPopTimer >= 8){
-                this.foodPopTimer = 0;
-                this.calculateFood();
-                this.calculatePopulation();
+        increasePopulation: function() {
+            ++this.population;
+            if (this.population > this.MAXPOPULATION){
+                addTribe();
+                this.setPopulation(2);
             }
-            //console.log("Timer: " this.foodPopTimer);
         },
 
-        calculateFood: function() {
-            var tilesForFood = [];
-            this.incomingFood = 0;
-
-            // Take the food from the highest foodcount tiles in the sphere of influence
-            // depending on how much population you have. (ex. 2 pop = 2 highest tiles food)
-            this.influencedTiles.sort(function(a, b){return b.getFood() - a.getFood()});
-            for (var i = 0; i < this.population + 1 && i < this.influencedTiles.length; i++){
-                this.incomingFood += this.influencedTiles[i].getFood();
+        decreasePopulation: function() {
+            --this.population;
+            if (this.population < MINPOPULATION){
+                // call kill tribe
             }
-
-            //this.incomingFood = this.tile.getFood();
-            //console.log(this.population);
-            //console.log(this.incomingFood);
-        },
-
-        calculatePopulation: function() {
-            this.stockpileChange = (this.incomingFood - this.population)/100; 
-            this.stockpile += this.stockpileChange
-            //console.log("Stockpile Change: " + this.stockpileChange);
-
-            // Increase population when stockpile is at 100% of required food
-            // Take any additional food beyond 100 and add it back to the stock
-            if(this.stockpile >= 1){
-                ++this.population;
-                --this.stockpile;
-            } else if(this.stockpile <= -1){
-                --this.population;
-                ++this.stockpile;
-            } 
         },
 
         calculateInfluence: function() {
@@ -496,7 +494,6 @@ pc.script.create('tribe', function (context) {
                     counter--;
                 }
             }
-            this.calculateFood();
         },
 		
         addHuman: function() {
