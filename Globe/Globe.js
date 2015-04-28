@@ -80,9 +80,12 @@ pc.script.create('Globe', function (context) {
                     "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
+                    // Snow Tops
+                    "    if (dist > radius + 0.20) {",
+                    "       color = intensity * sunIntensity * vec4(255.0/256.0, 253.0/256.0, 247.0/256.0, 1.0);",
                     // Mountain
-                    "    if (dist > radius + 0.1) {",
-                    "       color = intensity * sunIntensity * vec4(170.0/256.0, 80.0/256.0, 50.0/256.0, 1.0);",
+                    "    } else if (dist > radius + 0.15) {",
+                    "       color = intensity * sunIntensity * vec4(64.0/256.0, 46.0/256.0, 10.0/256.0, 1.0);",
                     // Land
                     "    } else if (dist > radius + 0.02) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",

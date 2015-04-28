@@ -122,6 +122,17 @@ pc.script.create('globalInterface', function (context) {
                     shuffleArray(this.randomTiles);
                     
                     this.init = true;
+					
+					/*
+					var s = ico.tiles[0];
+					for (var i = 1; s.type.movementCost >= 0 && i < ico.tiles.length; i++) {
+						s = ico.tiles[i]
+					}
+					var d = s.neighbora.neighbora.neighbora.neighborb.neighborc.neighborc;
+					d = ico.tiles[500];
+					var path = dijkstras(s, d);
+					console.log(path);
+					*/
                 }
 
 
