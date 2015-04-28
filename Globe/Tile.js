@@ -550,7 +550,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var localTreeDensity = localTreeCount / visitedTileCount;
 		
-		if (localTreeDensity < treeDensity) this.createTree(temperature, size);
+		//if (localTreeDensity < treeDensity) this.createTree(temperature, size);
 	};
 	
 	//Adds a tree to this tile
