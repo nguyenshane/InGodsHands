@@ -845,6 +845,218 @@ function Queue() {
 	this.peek=function(){return 0<a.length?a[b]:void 0};
 };
 
+/*
+//And again
+function Node (data, priority) {
+    this.data = data;
+    this.priority = priority;
+}
+Node.prototype.toString = function(){return this.priority}
+
+// takes an array of objects with {data, priority}
+function PriorityQueue (arr) {
+    this.heap = [null];
+    if (arr) for (i=0; i< arr.length; i++)
+        this.push(arr[i].data, arr[i].priority);
+}
+
+PriorityQueue.prototype = {
+    push: function(data, priority) {
+        var node = new Node(data, priority);
+		console.log(this.heap)
+        this.bubble(this.heap.push(node) -1);
+    },
+    
+    // removes and returns the data of highest priority
+    pop: function() {
+		console.log(this.heap);
+		
+		if (this.heap.length <= 1) return null;
+		if (this.heap.length === 2) return this.heap.pop().data;
+		
+        var topVal = this.heap[1].data;
+        this.heap[1] = this.heap.pop();
+		for (var i = 1; i < this.heap.length; i++) {
+			console.log(this.heap[i])
+		}
+        this.sink(1);
+		
+		console.log(this.heap);
+		return topVal;
+    },
+    
+    // bubbles node i up the binary tree based on
+    // priority until heap conditions are restored
+    bubble: function(i) {
+        while (i > 1) { 
+            var parentIndex = i >> 1; // <=> floor(i/2)
+            
+            // if equal, no bubble (maintains insertion order)
+            if (!this.isHigherPriority(i, parentIndex)) break;
+            
+            this.swap(i, parentIndex);
+            i = parentIndex;
+		}
+	},
+        
+    // does the opposite of the bubble() function
+    sink: function(i) {
+		console.log("sink" + this.heap.length)
+        while (i*2 < this.heap.length) {
+            // if equal, left bubbles (maintains insertion order)
+            var leftHigher = !this.isHigherPriority(i*2 +1, i*2);
+            var childIndex = leftHigher? i*2 : i*2 +1;
+            
+            // if equal, sink happens (maintains insertion order)
+            if (this.isHigherPriority(i,childIndex)) break;
+            
+            this.swap(i, childIndex);
+            i = childIndex;
+		}
+	},
+        
+    // swaps the addresses of 2 nodes
+    swap: function(i,j) {
+        var temp = this.heap[i];
+        this.heap[i] = this.heap[j];
+        this.heap[j] = temp;
+    },
+        
+    // returns true if node i is higher priority than j
+    isHigherPriority: function(i,j) {
+		console.log(i + " " + j)
+		console.log(this.heap[i] + " " + this.heap[j])
+        return this.heap[i].priority < this.heap[j].priority;
+    }
+}
+*/
+
+function BinaryHeap(scoreFunction, idFunction, valueProp) {
+    this.content = [];
+    this.scoreFunction = scoreFunction;
+    this.idFunction = idFunction;
+    this.valueProp = valueProp;
+    this.map = {};
+}
+
+BinaryHeap.prototype = {
+    size: function() {
+        return this.content.length;
+    },
+
+    push: function(elt) {
+        if(this.map[this.idFunction(elt)] !== undefined) {
+            throw 'Error: id "' + this.idFunction(elt) + '" already present in heap';
+            return;
+        }
+
+        this.content.push(elt);
+        var index = this.bubbleUp(this.content.length - 1);
+        //this.map[this.idFunction(elt)] = index;
+        //console.log(this.map);
+    },
+
+    pop: function() {
+        var result = this.content[0];
+        var end = this.content.pop();
+
+        delete this.map[this.idFunction(result)];
+
+        if(this.content.length > 0) {
+            this.content[0] = end;
+            this.map[this.idFunction(end)] = 0;
+            var index = this.sinkDown(0);
+            //this.map[this.idFunction(end)] = index;
+            //console.log(this.map);
+        }
+
+        return result;
+    },
+
+    bubbleUp: function(n) {
+        var element = this.content[n];
+        var score = this.scoreFunction(element);
+
+        while( n > 0 ) {
+            var parentN = Math.floor((n-1)/2);
+            var parent = this.content[parentN];
+            //console.log('Element index: ' + n);
+            //console.log('Parent index: ' + parentN + ', Parent element: ' + parent);
+
+            if( this.scoreFunction(parent) < score )
+                break;
+
+            //console.log('Element score ', score, ' < Parent score ', this.scoreFunction(parent), ' => swap');
+            this.map[this.idFunction(element)] = parentN;
+            this.map[this.idFunction(parent)] = n;
+
+            this.content[parentN] = element;
+            this.content[n] = parent;
+            n = parentN;
+        }
+
+        this.map[this.idFunction(element)] = n;
+
+        return n;
+    },
+
+    sinkDown: function(n) {
+        var element = this.content[n];
+        var score = this.scoreFunction(element);
+
+        while ( true ) {
+            var child2N = (n + 1) * 2;
+            var child1N = child2N - 1;
+            var swap = null;
+/*
+            console.log('element: ' + element, ', score: ' + score, ', position: ', n);
+            console.log('child1: ' + child1N, ',', this.content[child1N]);
+            console.log('child2: ' + child2N, ',', this.content[child2N]);
+*/
+            if(child1N < this.content.length) {
+                var child1 = this.content[child1N];
+                child1score = this.scoreFunction(child1);
+                if( score > child1score ) {
+                    //console.log('child1 score < elemscore');
+                    swap = child1N;
+                }
+            }
+
+            if(child2N < this.content.length) {
+                var child2 = this.content[child2N];
+                var child2score = this.scoreFunction(child2);
+                //console.log((swap == null ? score : child1score), ' >= ', child2score, ' => ', (swap == null ? score : child1score) >= child2score);
+                if( (swap == null ? score : child1score) > child2score) {
+                    //console.log('child2 score < elemscore');
+                    swap = child2N;
+                }
+            }
+
+            if(swap == null) break;
+
+
+            //console.log('swap ', n, ' with ', swap);
+            this.map[this.idFunction(this.content[swap])] = n;
+            this.map[this.idFunction(element)] = swap;
+            
+            this.content[n] = this.content[swap];
+            this.content[swap] = element;
+            n = swap;
+        }
+
+        this.map[this.idFunction(element)] = n;
+
+        return n;
+    },
+
+    decreaseKey: function(id, value) {
+        var n = this.map[id];
+        //console.log('Decreasing key for element ' + id + ' from value ' + this.content[n][this.valueProp] + ' to ' + value);
+        this.content[n][this.valueProp] = value;
+        this.bubbleUp(n);
+    }
+};
+
 //Distance between two vectors squared (cuz performance)
 function distSq(v1, v2) {
     var x = v1.x - v2.x;
@@ -1060,4 +1272,64 @@ BackgroundIntensity.prototype.setIntensity = function(normVal) {
     // If there is, adjust its gain.
     this.gains[leftNode + 1].gain.value = gain2;
   }
+}
+
+dijkstras = function(startTile, destTile) {
+    var dist = [];
+    var prev = [];
+	for (var i = ico.tiles.length-1; i >= 0; i--) {
+		dist[i] = -1;
+		prev[i] = -1;
+	}
+	
+	var queue = new BinaryHeap(
+		function(element) { return element.dist; },
+		function(element) { return element.tile.index; },
+		'dist'
+	);
+	
+    //var queue = new PriorityQueue();
+	queue.push({tile: startTile, dist: 0});
+    dist[startTile.index] = 0;
+    prev[startTile.index] = -2;
+	
+	var tile;
+	var p = 0;
+    while (p < 1500 && queue.size() > 0) {
+		p++;
+        tile = queue.pop().tile;
+		
+		if (tile === null) break; //path not found
+		console.log(tile.index);
+        if (tile.equals(destTile)) break; //path found
+
+        var neighbors = tile.getNeighbors();
+        for (var n = 0; n < neighbors.length; n++) {
+			var next = neighbors[n];
+			//console.log(next.index);
+			if (next.type.movementCost >= 0) { //ignore impassable terrain (negative cost)
+				var nextDist = (next.type.movementCost + tile.type.movementCost) / 2; //might be a good idea to precompute this and update it whenever tile type is changed
+				var newCost = dist[tile.index] + nextDist;
+
+				if (prev[next.index] === -1 || newCost < dist[next.index]) {
+					prev[next.index] = tile;
+					dist[next.index] = newCost;
+					queue.push({tile: next, dist: dist[next.index]});
+				}
+			}
+		}
+	}
+
+    if (tile !== null && tile.equals(destTile)) {
+        path = [];
+        while (prev[tile.index] !== -1) {
+            path.push(tile);
+            tile = prev[tile.index];
+		}
+		path.push(tile);
+        //path.reverse(); //just read the array backwards instead
+        return path;
+    } else {
+        return null; //no path found
+	}
 }

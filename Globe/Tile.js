@@ -18,6 +18,7 @@ TILETYPES = {
         minTemp: 100,
         maxTemp: 1000,
         foodVal: 0,
+		movementCost: 1,
         color: colorBrown
     },
     
@@ -26,6 +27,7 @@ TILETYPES = {
         minTemp: 70,
         maxTemp: 100,
         foodVal: 1,
+		movementCost: 1,
         color: colorYellow
     },
 
@@ -34,6 +36,7 @@ TILETYPES = {
         minTemp: 40,
         maxTemp: 70,
         foodVal: 2,
+		movementCost: 1,
         color: colorGreen
     },
 
@@ -42,6 +45,7 @@ TILETYPES = {
         minTemp: -1000,
         maxTemp: 1000,
         foodVal: 1,
+		movementCost: -1,
         color: colorGray
     },
 
@@ -50,6 +54,7 @@ TILETYPES = {
         minTemp: -1000,
         maxTemp: 1000,
         foodVal: 0,
+		movementCost: -1,
         color: colorBlue
     },
     
