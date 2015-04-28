@@ -180,7 +180,7 @@ pc.script.create('globalInterface', function (context) {
             	ico.vertexGraph[this.testVerts[vertex]].setHeight(2);
         },
 
-        pauseGame: function(){
+        pauseGame: function() {
             if(!this.isPaused){
                 context.timeScale = 0;
                 this.isPaused = true;
@@ -191,7 +191,7 @@ pc.script.create('globalInterface', function (context) {
                 this.isPaused = false;
                 isPaused = this.isPaused;
             }
-         }
+        },
     };
 
     return GlobalVariables;
