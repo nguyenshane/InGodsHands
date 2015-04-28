@@ -254,7 +254,7 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                this.calculatePopulation();
+                //this.calculatePopulation();
                 this.calculateInfluence();
                 this.isBusy = false;
                 this.isSpiteful = false;
