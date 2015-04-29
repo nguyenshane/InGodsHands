@@ -1,4 +1,5 @@
 #include <PinChangeInt.h>
+#include <ProTrinketKeyboard.h>
 
 /* interrupt routine for Rotary Encoders
    tested with Noble RE0124PVB 17.7FINB-24 http://www.nobleusa.com/pdf/xre.pdf - available at pollin.de
@@ -16,22 +17,26 @@
 // usually the rotary encoders three pins have the ground pin in the middle
 enum PinAssignments {
 
-  encoderPinA_T = 9,
-  encoderPinB_T = 12,
+  encoderPinA_T = 8,
+  encoderPinB_T = 14, //A0
   
-  encoderPinA_A = 10,
+  encoderPinA_A = 12,
   encoderPinB_A = 11,
   
-  encoderPinA_P = 6,
-  encoderPinB_P = 7,
+  encoderPinA_P = 9,
+  encoderPinB_P = 10,
   
   encoderPinA_E = 5,
-  encoderPinB_E = 4,
+  encoderPinB_E = 6,
   
-  encoderPinA_W = 2,
+  encoderPinA_W = 4,
   encoderPinB_W = 3,
   
-  buttonW = 8
+  buttonT = 19, //A1
+  buttonA = 18, //A2
+  buttonP = 17, //A3
+  buttonE = 16, //A4
+  buttonW = 15, //A5
   
   //clearButton = 14
 };
@@ -69,49 +74,33 @@ boolean B_set_E = false;
 boolean A_set_W = false;              
 boolean B_set_W = false;
 
-// KeyCommand
-void keyCommand(uint8_t modifiers, uint8_t keycode1, uint8_t keycode2 = 0, uint8_t keycode3 = 0, 
-                uint8_t keycode4 = 0, uint8_t keycode5 = 0, uint8_t keycode6 = 0) {
-  Serial.write(0xFD);       // Adafruit command
-  Serial.write(modifiers);  // modifier!
-  Serial.write((byte)0x00); // 0x00  
-  Serial.write(keycode1);   // key code #1
-  Serial.write(keycode2); // key code #2
-  Serial.write(keycode3); // key code #3
-  Serial.write(keycode4); // key code #4
-  Serial.write(keycode5); // key code #5
-  Serial.write(keycode6); // key code #6
-  
-}
-
 void setup() {
 
-  pinMode(encoderPinA_T, INPUT); 
-  pinMode(encoderPinB_T, INPUT); 
-  pinMode(encoderPinA_A, INPUT); 
-  pinMode(encoderPinB_A, INPUT); 
-  pinMode(encoderPinA_P, INPUT); 
-  pinMode(encoderPinB_P, INPUT); 
-  pinMode(encoderPinA_W, INPUT); 
-  pinMode(encoderPinB_W, INPUT); 
+  pinMode(encoderPinA_T, INPUT); pinMode(encoderPinB_T, INPUT); 
+  pinMode(encoderPinA_A, INPUT); pinMode(encoderPinB_A, INPUT); 
+  pinMode(encoderPinA_P, INPUT); pinMode(encoderPinB_P, INPUT); 
+  pinMode(encoderPinA_W, INPUT); pinMode(encoderPinB_W, INPUT); 
   
+  pinMode(buttonT, INPUT); 
+  pinMode(buttonA, INPUT); 
+  pinMode(buttonP, INPUT); 
+  pinMode(buttonE, INPUT); 
   pinMode(buttonW, INPUT); 
   
   //pinMode(clearButton, INPUT);
   pinMode(led, OUTPUT);
   
  // turn on pullup resistors
-  digitalWrite(encoderPinA_T, HIGH);
-  digitalWrite(encoderPinB_T, HIGH);
-  digitalWrite(encoderPinA_A, HIGH);
-  digitalWrite(encoderPinB_A, HIGH);
-  digitalWrite(encoderPinA_P, HIGH);
-  digitalWrite(encoderPinB_P, HIGH);
-  digitalWrite(encoderPinA_E, HIGH);
-  digitalWrite(encoderPinB_E, HIGH);
-  digitalWrite(encoderPinA_W, HIGH);
-  digitalWrite(encoderPinB_W, HIGH);
+  digitalWrite(encoderPinA_T, HIGH); digitalWrite(encoderPinB_T, HIGH);
+  digitalWrite(encoderPinA_A, HIGH); digitalWrite(encoderPinB_A, HIGH);
+  digitalWrite(encoderPinA_P, HIGH); digitalWrite(encoderPinB_P, HIGH);
+  digitalWrite(encoderPinA_E, HIGH); digitalWrite(encoderPinB_E, HIGH);
+  digitalWrite(encoderPinA_W, HIGH); digitalWrite(encoderPinB_W, HIGH);
   
+  digitalWrite(buttonT, HIGH);
+  digitalWrite(buttonA, HIGH);
+  digitalWrite(buttonP, HIGH);
+  digitalWrite(buttonE, HIGH);
   digitalWrite(buttonW, HIGH);
   
   //digitalWrite(clearButton, LOW);
@@ -132,68 +121,93 @@ void setup() {
   attachPinChangeInterrupt(encoderPinA_W, doEncoderA_W, CHANGE);
   attachPinChangeInterrupt(encoderPinB_W, doEncoderB_W, CHANGE);
   //Keyboard.begin();
+  
+  // start USB stuff
+  TrinketKeyboard.begin();
 
-  Serial.begin(9600);  // output
+  //Serial.begin(9600);  // output
 }
-
 
 void blinkled() {
   digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(300);               // wait for 300ms
+  //delay(400);               // wait for 300ms
   digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
 }
 
 // main loop, work is done by interrupt service routines, this one only prints stuff
 void loop() { 
+  TrinketKeyboard.poll();
+  
   rotating_T = true;  // reset the debouncer
   rotating_A = true;  // reset the debouncer
   rotating_P = true;  // reset the debouncer
-  rotating_E = true;  // reset the debouncer
+  //arotating_E = true;  // reset the debouncer
   rotating_W = true;  // reset the debouncer
 
   if (lastReportedPos_T != encoderPos_T) {
     //Serial.print("T_Index:");
     //Serial.println(encoderPos_T, DEC);
-    if(lastReportedPos_T > encoderPos_T) { /*Serial.print("a"); }//*/keyCommand(0,4); delay(50); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_T < encoderPos_T) { /*Serial.print("d"); }//*/keyCommand(0,7); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_T > encoderPos_T) { /*Serial.print("a"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_A); TrinketKeyboard.pressKey(0,0); blinkled();}
+    if(lastReportedPos_T < encoderPos_T) { /*Serial.print("d"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_D); TrinketKeyboard.pressKey(0,0); blinkled();}
     lastReportedPos_T = encoderPos_T;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_A != encoderPos_A) {
     //Serial.print("A_Index:");
     //Serial.println(encoderPos_A, DEC);
-    if(lastReportedPos_A > encoderPos_A) { /*Serial.print("w"); }//*/keyCommand(0,26); delay(50); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_A < encoderPos_A) { /*Serial.print("s"); }//*/keyCommand(0,22); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_A > encoderPos_A) { /*Serial.print("w"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_W); TrinketKeyboard.pressKey(0,0); blinkled();}
+    if(lastReportedPos_A < encoderPos_A) { /*Serial.print("s"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_S); TrinketKeyboard.pressKey(0,0); blinkled();}
     lastReportedPos_A = encoderPos_A;
   }//else keyCommand(0,0); 
 
   if (lastReportedPos_P != encoderPos_P) {
     //Serial.print("P_Index:");
     //Serial.println(encoderPos_P, DEC);
-    if(lastReportedPos_P > encoderPos_P) { /*Serial.print("j"); }//*/keyCommand(0,13); delay(50); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_P < encoderPos_P) { /*Serial.print("l"); }//*/keyCommand(0,15); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_P > encoderPos_P) { /*Serial.print("j"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_J); TrinketKeyboard.pressKey(0,0); blinkled();}
+    if(lastReportedPos_P < encoderPos_P) { /*Serial.print("l"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_L); TrinketKeyboard.pressKey(0,0); blinkled();}
     lastReportedPos_P = encoderPos_P;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_E != encoderPos_E) {
     //Serial.print("E_Index:");
     //Serial.println(encoderPos_E, DEC);
-    if(lastReportedPos_E > encoderPos_E) { /*Serial.print("i"); }//*/keyCommand(0,12); delay(50); keyCommand(0,0); blinkled();}
-    if(lastReportedPos_E < encoderPos_E) { /*Serial.print("k"); }//*/keyCommand(0,14); delay(50); keyCommand(0,0); blinkled();}
+    if(lastReportedPos_E > encoderPos_E) { /*Serial.print("i"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_I); TrinketKeyboard.pressKey(0,0); blinkled();}
+    if(lastReportedPos_E < encoderPos_E) { /*Serial.print("k"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_K); TrinketKeyboard.pressKey(0,0); blinkled();}
     lastReportedPos_E = encoderPos_E;
   }//else keyCommand(0,0); 
   
   if (lastReportedPos_W != encoderPos_W) {
     //Serial.print("W_Index:");
     //Serial.println(encoderPos_W, DEC);
-    if(lastReportedPos_W > encoderPos_W) { blinkled();}
-    if(lastReportedPos_W < encoderPos_W) { blinkled();}
+    if(lastReportedPos_W > encoderPos_W) { /*Serial.print("v"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_V); TrinketKeyboard.pressKey(0,0); blinkled();}
+    if(lastReportedPos_W < encoderPos_W) { /*Serial.print("n"); }//*/TrinketKeyboard.pressKey(0, KEYCODE_N); TrinketKeyboard.pressKey(0,0); blinkled();}
     lastReportedPos_W = encoderPos_W;
   }//else keyCommand(0,0); 
   
-  blinkled();
-  if (digitalRead(buttonW) == LOW )  {
+  if (analogRead(buttonT) < 500 )  {
    blinkled();
+   TrinketKeyboard.pressKey(0, KEYCODE_1);
+   TrinketKeyboard.pressKey(0, 0);
+  }
+  if (analogRead(buttonA) < 500 )  {
+   blinkled();
+   TrinketKeyboard.pressKey(0, KEYCODE_2);
+   TrinketKeyboard.pressKey(0, 0);
+  }
+  if (analogRead(buttonP) < 500 )  {
+   blinkled();
+   TrinketKeyboard.pressKey(0, KEYCODE_3);
+   TrinketKeyboard.pressKey(0, 0);
+  }
+  if (analogRead(buttonE) < 500 )  {
+   blinkled();
+   TrinketKeyboard.pressKey(0, KEYCODE_4);
+   TrinketKeyboard.pressKey(0, 0);
+  }
+  if (analogRead(buttonW) < 500 )  {
+   blinkled();
+   TrinketKeyboard.pressKey(0, KEYCODE_5);
+   TrinketKeyboard.pressKey(0, 0);
   }
   
 
@@ -294,7 +308,7 @@ void doEncoderB_P(){
 // Interrupt on A changing state
 void doEncoderA_E(){
   // debounce
-  if ( rotating_E ) delay (1);  // wait a little until the bouncing is done
+  //if ( rotating_E ) delay (1);  // wait a little until the bouncing is done
 
   // Test transition, did things really change? 
   if( digitalRead(encoderPinA_E) != A_set_E ) {  // debounce once more
@@ -310,7 +324,7 @@ void doEncoderA_E(){
 
 // Interrupt on B changing state, same as A above
 void doEncoderB_E(){
-  if ( rotating_E ) delay (1);
+  //if ( rotating_E ) delay (1);
   if( digitalRead(encoderPinB_E) != B_set_E ) {
     B_set_E = !B_set_E;
     //  adjust counter - 1 if B leads A
@@ -341,7 +355,7 @@ void doEncoderA_W(){
 
 // Interrupt on B changing state, same as A above
 void doEncoderB_W(){
-  if ( rotating_W ) delay (1);
+  if ( rotating_W ) delay (1);awjiv
   if( digitalRead(encoderPinB_W) != B_set_W ) {
     B_set_W = !B_set_W;
     //  adjust counter - 1 if B leads A

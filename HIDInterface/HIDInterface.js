@@ -35,6 +35,11 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringP = new pc.StringTAPEW('P');
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
+			this.middleT = false;
+			this.middleA = false;
+			this.middleP = false;
+			this.middleE = false;
+			this.middleW = false;
 			
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
@@ -57,6 +62,12 @@ pc.script.create('HIDInterface', function (context) {
 			this.stringP.on("moving", this.moving_P, this.direction, this.distance, this.speed);
 			this.stringE.on("moving", this.moving_E, this.direction, this.distance, this.speed);
 			this.stringW.on("moving", this.moving_W, this.direction, this.distance, this.speed);
+
+			this.middleT = this.stringT.isMiddle;
+        	this.middleA = this.stringA.isMiddle;
+        	this.middleP = this.stringP.isMiddle;
+        	this.middleE = this.stringE.isMiddle;
+        	this.middleW = this.stringW.isMiddle;
 
         },
 
@@ -87,6 +98,16 @@ pc.script.create('HIDInterface', function (context) {
 					console.log("Done temp change");
 				}
         	}
+
+
+        	// update middle status
+        	// this.middleT = this.stringT.isMiddle;
+        	// this.middleA = this.stringA.isMiddle;
+        	// this.middleP = this.stringP.isMiddle;
+        	// this.middleE = this.stringE.isMiddle;
+        	// this.middleW = this.stringW.isMiddle;
+
+        	console.log("middle status" + this.middleT+this.middleA+this.middleP+this.middleE+this.middleW);
         },
 		
 		moved_T: function(position, distance, speed) {
