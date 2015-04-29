@@ -121,7 +121,7 @@ pc.script.create('developer', function (context) {
                    this.context.touch.on("touchmove", this.onTouchMove, this);
                 this.context.touch.on("touchend", this.onTouchEnd, this);
             } else {
-                console.log("No touch input available");
+                debug.log(DEBUG.HARDWARE, "No touch input available");
             }
 
              //create a Slider string pull
@@ -412,7 +412,7 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(divPString);
             document.body.appendChild(divEString);
             document.body.appendChild(divWString);
-            document.body.appendChild(musicText);
+            //document.body.appendChild(musicText);
 
             document.body.appendChild(tribePop);
             document.body.appendChild(tribeFood);
@@ -429,7 +429,7 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(StringsliderP);
             document.body.appendChild(StringsliderE);
             document.body.appendChild(StringsliderW);
-            document.body.appendChild(musicSlider);
+            //document.body.appendChild(musicSlider);
 
 
             //this.sliderT = sliderT;
@@ -497,11 +497,9 @@ pc.script.create('developer', function (context) {
               this.setVisibilty();
 
               this.buttonUI.onclick = function UIButtonClicked(){
-                    if(!switchUIOn){
-                        switchUIOn = true;
-                    }
-                    else switchUIOn = false;
-                 }
+                  switchUIOn++;
+                  if(switchUIOn > 2) switchUIOn = 0;
+              }
         },
 
         mouseCheck: function(){
@@ -742,7 +740,7 @@ pc.script.create('developer', function (context) {
         onTouchMove: function (touches) {
             // If the touches move update the position of the cube
             touches.changedTouches.forEach(function (touch) {
-                console.log("touched here" + touch.x +" " + touch.y)
+                debug.log(DEBUG.HARDWARE, "touched here" + touch.x + " " + touch.y)
             }.bind(this));
         },
 
@@ -864,8 +862,8 @@ pc.script.create('developer', function (context) {
         },
 
         setVisibilty: function(){
-            if(!switchUIOn){
-
+            switch(switchUIOn){
+                    case 0:
                     this.div.style.visibility = 'hidden';
                     this.divTString.style.visibility = 'hidden'; 
                     this.divAString.style.visibility = 'hidden';
@@ -890,10 +888,37 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'hidden';
                     this.musicText.style.visibility = 'hidden';
+                    break;
 
-                    }
-                    else{
+                    case 1:
 
+                    this.div.style.visibility = 'hidden';
+                    this.divTString.style.visibility = 'visible'; 
+                    this.divAString.style.visibility = 'visible';
+                    this.divPString.style.visibility = 'visible';
+                    this.divEString.style.visibility = 'visible';
+                    this.divWString.style.visibility = 'visible';
+
+                    this.tribePop.style.visibility = 'hidden';
+                    this.tribeStockpile.style.visibility = 'hidden';
+                    this.tribeFood.style.visibility = 'hidden';
+                    this.tribeBelief.style.visibility = 'hidden';
+                    this.tribeFear.style.visibility = 'hidden';
+
+                    this.buttonPlus.style.visibility = 'hidden';
+                    this.buttonSub.style.visibility = 'hidden';
+
+                    this.StringsliderT.style.visibility = 'visible';
+                    this.StringsliderA.style.visibility = 'visible';
+                    this.StringsliderP.style.visibility = 'visible';
+                    this.StringsliderE.style.visibility = 'visible';
+                    this.StringsliderW.style.visibility = 'visible';
+
+                    this.musicSlider.style.visibility = 'hidden';
+                    this.musicText.style.visibility = 'hidden';
+                    break;
+
+                    case 2:
                     this.div.style.visibility = 'visible';
                     this.divTString.style.visibility = 'visible'; 
                     this.divAString.style.visibility = 'visible';
@@ -918,6 +943,8 @@ pc.script.create('developer', function (context) {
 
                     this.musicSlider.style.visibility = 'visible';
                     this.musicText.style.visibility = 'visible';
+                    break;
+
                     }
         },
 

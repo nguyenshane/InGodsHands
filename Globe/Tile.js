@@ -7,7 +7,7 @@ var colorWhite = new pc.Color(234, 232, 227);
 var colorGray = new pc.Color(127, 124, 115);
 
 //Types of tile determine food
-Tile.tileTypes = {
+TILETYPES = {
     /*TUNDRA: { //should only be on northern and southern extremes
         name: "tundra",
         foodVal: 0 //always
@@ -15,33 +15,50 @@ Tile.tileTypes = {
     },*/
     DESERT: {
         name: "desert",
+        minTemp: 100,
+        maxTemp: 1000,
         foodVal: 0,
+		movementCost: 1,
         color: colorBrown
     },
     
     DRYPLANE: {
         name: "dry plane",
+        minTemp: 70,
+        maxTemp: 100,
         foodVal: 1,
+		movementCost: 1,
         color: colorYellow
     },
 
     GRASSPLANE: {
         name: "grass plane",
+        minTemp: 40,
+        maxTemp: 70,
         foodVal: 2,
+		movementCost: 1,
         color: colorGreen
     },
 
     MOUNTAIN: {
         name: "mountain",
+        minTemp: -1000,
+        maxTemp: 1000,
         foodVal: 1,
+		movementCost: -1,
         color: colorGray
     },
 
     WATER: {
         name: "water",
-        foodVal: 1,
+        minTemp: -1000,
+        maxTemp: 1000,
+        foodVal: 0,
+		movementCost: -1,
         color: colorBlue
     },
+    
+    mountainHeight: 0.1
 };
 
 Tile.treeStats = {
@@ -159,14 +176,15 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.localRotNormal;
 	this.localRotCenter;
     
-    this.type = Tile.tileTypes.GRASSPLANE;
+    this.type = TILETYPES.GRASSPLANE;
     this.temperature;
     this.baseFood = Math.floor(Math.random() * (5 - 1)) + 1;
 	this.food = this.baseFood;
 	
+    this.entities = [];
 	this.tree, this.animal, this.rain, this.fog;
-
-    this.isOcean = true;
+    
+    this.hasTribe = false;
 	this.hasTree = false;
 	this.hasAnimal = false;
 	this.isRaining = false;
@@ -175,7 +193,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	Tile.tempInfluenceMultiplier = 2.0;
 	
-	this.humidity = 50.0 * pc.math.random(0.75, 1.25); //Current absolute humidity rating
+	this.humidity = 75.0 * pc.math.random(0.75, 1.3); //Current absolute humidity rating
 	Tile.humidityBaseMax = 100;
 	this.maxHumidity = Tile.humidityBaseMax;
 	Tile.humiditySpreadRate = 3.0; //Spreading of humidity to nearby tiles with less relative humidity
@@ -192,25 +210,27 @@ function Tile(index, vertexa, vertexb, vertexc){
 	Tile.atmoHeight = 0.4;
 	Tile.rainDuration = 3.0;
 	Tile.fogDuration = 4.0;
-	Tile.stormDuration = 2.5;
+	Tile.stormDuration = 4.0;
+    Tile.stormDelay = 2.5;
+    this.stormSize;
 	this.rainTimer = 0, this.fogTimer = 0, this.stormTimer = 0;
+    this.stormDelayTimer = 0;
 	
-    handle = ico;
-
     this.divided = false;
-    this.hasTribe = false;
+    this.isOcean = true;
+    this.isFault = false;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
     this.vertexIndices[2] = vertexc;
     
+    handle = ico;
     ico.indices.push(vertexa);
     ico.indices.push(vertexb);
     ico.indices.push(vertexc);
-
-    this.entities = [];
+    
 	
-	this.update = function(dt) {
+/*	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
         
@@ -253,6 +273,11 @@ function Tile(index, vertexa, vertexb, vertexc){
 		this.checkResourceLimits();
 		
 		//Handle fog(clouds) and storm
+        if (this.stormDelayTimer > 0) {
+            this.stormDelayTimer -= dt;
+			if (this.stormTimer <= 0) this.beginStorm();
+        }
+        
 		if (this.isFoggy) {
 			if (this.fog === undefined) this.fog = scripts.Atmosphere.makeFog(this.localRotCenter);
 			
@@ -308,18 +333,18 @@ function Tile(index, vertexa, vertexb, vertexc){
 		//Grow tree
 		if (this.hasTree) {
 			///handle tree growing, killing etc here
-			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.getLocalScale().x * dt;
+			this.groundwater -= Tile.groundwaterDegenerationRate * this.tree.stats.waterUsage * this.tree.size * dt;
 		}
 		
 		this.checkResourceLimits();
 	};
-	
+*/	
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
 		var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
-		this.spawnAnimal(temp, 1.0);
+		this.spawnAnimal(temp, 3.0);
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -418,16 +443,17 @@ function Tile(index, vertexa, vertexb, vertexc){
     };
 
     this.getAltitude = function() {
-        return this.center.length;
+    	this.assignType();
+        return this.center.length();
     };
 
     this.getAltitudeOffset = function() {
-        return this.center.length - ico.radius;
+        return this.center.length() - ico.radius;
     };
 
     this.determineCost = function() {
         if (!this.isOcean) return -1;
-        return this.center.length;
+        return this.center.length();
     };
 	
 	//Called in _recalculateMesh, use the variables instead of the below functions when accessing
@@ -467,8 +493,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.calculateFood = function() {
 		//this.food = this.baseFood;
         this.food = this.type.foodVal;
-		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.animalObj.getLocalScale().x * 50.0;
-		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.treeObj.getLocalScale().x * 4.0;
+		if (this.hasAnimal) this.food += this.animal.stats.foodContribution * this.animal.size * 12.0;
+		if (this.hasTree) this.food += this.tree.stats.foodContribution * this.tree.size * 1.5;
 	}
 	
 	this.setBaseFood = function(newFood) {
@@ -482,6 +508,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     this.getTemperature = function(){
         this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperatureMax/2 + globalTemperature/2;
+        this.assignType(); // update type of tile when it's temperature changes
         return this.temperature;
     };
 	
@@ -545,22 +572,21 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		//Determine ideal tree type given this tile's current properties
         var dists = [
-            {type: 0, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater)},
-            {type: 1, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater)},
-            {type: 2, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)},
-            {type: 3, dist: this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)}
+            this.determineDistanceFromIdeal(Tile.treeStats.tree1, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.treeStats.tree2, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.treeStats.tree4, temperature, this.groundwater)
+            //this.determineDistanceFromIdeal(Tile.treeStats.tree3, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
         for (var i = 0; i < dists.length; i++) {
-            dists[i].dist *= pc.math.random(0.75, 1.3);
+            dists[i] *= pc.math.random(0.75, 1.3);
         }
         
         //Sort by dist to find the ideal type
-        dists.sort(function(a,b) {return a.dist - b.dist});
-		var type = dists[0].type;
+        var type = min(dists, function(v, a) {return v}, null);
         
-		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
+		this.tree = scripts.Trees.makeTree(this.center, angle, 0, size);
 		this.hasTree = true;
 		this.calculateFood();
 	};
@@ -648,9 +674,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
         //Determine ideal tree type given this tile's current properties
         var dists = [
-            {type: 0, dist: this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater)},
-            {type: 1, dist: this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater)},
-            {type: 2, dist: this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater)}
+            this.determineDistanceFromIdeal(Tile.animalStats.fox, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.animalStats.pig, temperature, this.groundwater),
+            this.determineDistanceFromIdeal(Tile.animalStats.cow, temperature, this.groundwater)
         ];
 		
 		//Randomize slightly to provide some variability
@@ -659,8 +685,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         }
         
         //Sort by dist to find the ideal type
-        dists.sort(function(a,b) {return a.dist - b.dist});
-		var type = dists[0].type;
+        var type = min(dists, function(v, a) {return v}, null);
         
 		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
 		this.hasAnimal = true;
@@ -691,10 +716,15 @@ function Tile(index, vertexa, vertexb, vertexc){
 		this.isFoggy = false;
 	};
 	
-	this.startStorm = function() {
-		this.isStormy = true;
-		this.stormTimer = Tile.stormDuration;
-		
+    this.startStorm = function(s) {
+        this.stormDelayTimer = Tile.stormDelay * (s / 3) * Math.random();
+        this.stormSize = s;
+    };
+    
+	this.beginStorm = function() { //really nailing the unique and descriptive identifiers...
+        this.isStormy = true;
+		this.stormTimer = Tile.stormDuration * (this.stormSize / 3) * pc.math.random(0.5, 1.0);
+        
 		this.isFoggy = true;
 		this.fogTimer = this.stormTimer;
 	};
@@ -738,7 +768,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		    
 			this.isOcean = false;
 			
-			console.log("Extruding");
+			debug.log(DEBUG.WORDGEN, "Extruding");
 			
 			if (!this.neighborb.isOcean && !this.neighborc.isOcean) {
 				ico.setVertexMagnitude(this.vertexIndices[0], parseFloat(Math.random()/10 + ico.radius));
@@ -787,10 +817,50 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.getNeighborIndices = function() {
 		return [this.neighbora.index, this.neighborb.index, this.neighborc.index];
 	};
+    
+    //Returns the land neighbor whose center is closest to the vector, or this if all neighbors are water
+    this.getClosestNeighbor = function(vector) {
+        var neighbors = this.getNeighbors();
+        var neighbor = this;
+        var i;
+        for (i = 0; i < neighbors.length; i++) {
+            if (!neighbors[i].isOcean) {
+                neighbor = neighbors[i];
+                break;
+            }
+        }
+        if (neighbor === this) return neighbor;
+        
+        var ndist = distSq(neighbor.center, vector);
+        var closestNeighbor = neighbor;
+        var closestDistance = ndist;
+        
+        for (var j = i+1; j < neighbors.length; j++) {
+            neighbor = neighbors[j];
+            if (!neighbor.isOcean) {
+                ndist = distSq(neighbor.center, vector);
+                if (ndist < closestDistance) {
+                    closestNeighbor = neighbor;
+                    closestDistance = ndist;
+                }
+            }
+        }
+        
+        return closestNeighbor;
+    };
+    
+    //Returns a random land neighbor, or this if no neighbors are land
+    this.getRandomNeighbor = function() {
+        var r = Math.random();
+        if (r < 0.333333 && !this.neighbora.isOcean) return this.neighbora;
+        if (r < 0.666666 && !this.neighborb.isOcean) return this.neighborb;
+        if (!this.neighborc.isOcean) return this.neighborc;
+        return this;
+    };
 	
 	this.getVertex = function(vertexIndex) {
 		return ico.vertexGraph[this.vertexIndices[vertexIndex]].getVertex();
-	}
+	};
     
     this.getVertexIndex = function(vertex){        
         if (vertex.x == ico.vertices[this.vertexIndices[0] * 3] 
@@ -975,7 +1045,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 
             object.tile = this;
 
-            object.altitude = this.center.length;
+            object.altitude = this.center.length();
 
             object.longitude;
 
@@ -1008,16 +1078,16 @@ function Tile(index, vertexa, vertexb, vertexc){
             normal.add(center);
             var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
             var angle = m.getEulerAngles();
-            this.tree.treeObj.setPosition(this.center); //should have the tree/animal object handle this itself instead so we can do more fancy positioning than just placing everything on the center
-            this.tree.treeObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
+            this.tree.setPosition(this.center); //should have the tree/animal object handle this itself instead so we can do more fancy positioning than just placing everything on the center
+            this.tree.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
         
         if (this.hasAnimal) {
             var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
             var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
             var angle = m.getEulerAngles();
-            this.animal.animalObj.setPosition(this.center);
-            this.animal.animalObj.setEulerAngles(angle.x - 90, angle.y, angle.z);
+            this.animal.setPosition(this.center);
+            this.animal.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
     }
 
@@ -1038,4 +1108,38 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
         }
     }
+
+    // This should be called after temperatures and altitudes are ever recalculated
+    this.assignType = function() {
+    	// if tile has temp 30-70 && altitude not mountain height, grassplane
+    	if (this.temperature <= TILETYPES.GRASSPLANE.maxTemp && 
+    		this.temperature > TILETYPES.GRASSPLANE.minTemp &&
+    		this.getAltitudeOffset() < TILETYPES.mountainHeight
+    		) {
+                this.type = TILETYPES.GRASSPLANE;
+            }
+    	// if tile has temp 71-100 && altitude not mountain height, dryplane
+    	else if (this.temperature <= TILETYPES.DRYPLANE.maxTemp && 
+                 this.temperature > TILETYPES.DRYPLANE.minTemp &&
+                 this.getAltitudeOffset() < TILETYPES.mountainHeight
+    		) {
+                this.type = TILETYPES.DRYPLANE;
+            }
+    	// if tile is land and temp 101+, desert
+    	else if (this.temperature > TILETYPES.DESERT.minTemp &&
+                 this.getAltitudeOffset() < TILETYPES.mountainHeight
+    		) {
+                this.type = TILETYPES.DESERT;
+            }
+    	// if tile has altitude mountain height, mountain
+        else if (this.getAltitudeOffset() >= TILETYPES.mountainHeight) {
+            this.type = TILETYPES.MOUNTAIN;
+        }
+    	// if isOcean, water
+        if (this.isOcean) {
+            this.type = TILETYPES.WATER;
+        }
+        
+        ico.updateFlag = true;
+    };
 }

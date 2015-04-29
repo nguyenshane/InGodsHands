@@ -33,7 +33,7 @@ pc.script.create('Trees', function (context) {
 			}
 			
 			var t2 = new Date();
-			console.log("tree init time: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tree init time: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -63,44 +63,45 @@ pc.script.create('Trees', function (context) {
         
         makeTree: function(position, rotation, type, size) {
 			if (this.trees_stack.length < this.stackBuffer) {
-				var e = this.trees.clone(); // Clone Trees
-				
-				this.entity.getParent().addChild(e); // Add it as a sibling to the original
-				
-				var tree;
-				switch (type) {
-					case 0:
-						tree = e.findByName("tree1");
-						e.stats = Tile.treeStats.tree1;
+                var treeOrig, stats;
+                switch (type) {
+                    case 0:
+						treeOrig = this.trees.findByName("tree1");
+						stats = Tile.treeStats.tree1;
 						break;
 					case 1:
-						tree = e.findByName("tree2");
-						e.stats = Tile.treeStats.tree2;
+						treeOrig = this.trees.findByName("tree2");
+						stats = Tile.treeStats.tree2;
 						break;
 					case 2:
-						tree = e.findByName("tree3");
-						e.stats = Tile.treeStats.tree3;
+						treeOrig = this.trees.findByName("tree4");
+						stats = Tile.treeStats.tree4;
 						break;
 					case 3:
-						tree = e.findByName("tree4");
-						e.stats = Tile.treeStats.tree4;
+						treeOrig = this.trees.findByName("tree3");
+						stats = Tile.treeStats.tree3;
 						break;
 					default:
-						tree = e.findByName("tree1");
-						e.stats = Tile.treeStats.tree1;
-				}
-				
-				e.treeObj = tree;
-				
-                e.setLocalScale(size, size, size);
-				//tree.setLocalScale(size, size, size);
-				tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
-				tree.setPosition(position);
-				
-				tree.enabled = true;
-				e.destroyFlag = false;
-				this.trees_stack.push(e);
-				return e;
+						treeOrig = this.trees.findByName("tree1");
+						stats = Tile.treeStats.tree1;
+                }
+                
+                var tree = treeOrig.clone();
+                this.entity.getParent().addChild(tree);
+                
+                tree.stats = stats;
+                
+                tree.size = size;
+                tree.baseScale = tree.getLocalScale().x;
+                var s = size * tree.baseScale;
+                tree.setLocalScale(s, s, s);
+                tree.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
+                tree.setPosition(position);
+                
+                tree.enabled = true;
+                tree.destroyFlag = false;
+                this.trees_stack.push(tree);
+                return tree;
 			}
         },
         

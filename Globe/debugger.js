@@ -7,7 +7,8 @@ DEBUG = {
 	HARDWARE : 5,
 	AUDIO : 6,
 	ART : 7,
-	TESTING : 8
+	TESTING : 8,
+    INIT : 9
 };
 
 debugstyles = [];
@@ -20,7 +21,7 @@ debugstyles[DEBUG.WORLDGEN] = {
 
 debugstyles[DEBUG.AI] = {
 	name : "[AI] ",
-	on : true,
+	on : false,
 	color : "#990000", //Red
 };
 
@@ -44,7 +45,7 @@ debugstyles[DEBUG.ANIMALS] = {
 
 debugstyles[DEBUG.HARDWARE] = {
 	name : "[HARDWARE INTERFACE] ",
-	on : true,
+	on : false,
 	color : "#009999", //Cyan
 };
 
@@ -66,16 +67,22 @@ debugstyles[DEBUG.TESTING] = {
 	color : "#333333", //Gray
 };
 
+debugstyles[DEBUG.INIT] = {
+	name : "[INITIALIZATION] ",
+	on : true,
+	color : "#000000", //Black, because I'm not creative
+};
+
 debug = new debug();
 
 function debug() {
 
 	this.on = function(type) {
-		this.debugstyles[type].on = true;
+		debugstyles[type].on = true;
 	}
 
 	this.off = function(type) {
-		this.debugstyles[type].on = false;
+		debugstyles[type].on = false;
 	}
 
 	this.log = function(type, text) {

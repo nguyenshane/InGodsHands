@@ -1,17 +1,29 @@
+function addTribe () {
+    for (var i = 0; i < tribes.length; i++) {
+        if (!tribes[i].enabled) {
+            tribes[i].enabled = true;
+            break;
+        }
+    }
+}
+
 pc.script.create('tribe', function (context) {
     // Creates a new Tribe instance
     var Tribe = function (entity) {
         this.entity = entity;
         
+        this.humanParent;
+        this.humans = [];
+
         this.population = 1;
-        this.stockpile = 0;
-        this.incomingFood = 0;
-        this.stockpileChange = 0;
+        this.MAXPOPULATION = 5;
+        this.MINPOPULATION = 1;
         
-        this.idealTemperature = 65;
+        this.increasePopulationTimer = 0;
+
+        this.idealTemperature = Math.floor((Math.random() * 20) + 55);
         this.currTileTemperature;
 
-        //totalBelief = 25;
         this.fear = 0;
 
         this.tile;
@@ -38,7 +50,6 @@ pc.script.create('tribe', function (context) {
         this.cowerTimer = 0;
         this.denounceTimer = 0;
         this.praiseTimer = 0;
-        //this.godInactionTimer = 0;
         this.noSunTimer = 0;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
@@ -46,25 +57,22 @@ pc.script.create('tribe', function (context) {
     
         // Variables for lerp, in milliseconds
 
-        this.foodPopTimer = 0;
+        //this.foodPopTimer = 0;
         this.travelTime = 3000;
         this.travelStartTime;
 
     };
 
-
-
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+
+            this.humanParent = context.root.findByName("Humans");
 			var t1 = new Date();
 			
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
-            console.log("I'm on this tile!: " + this.tile.index);
-
-			this.calculateFood();
 
             totalBelief = 300;
             prevTotalBelief = totalBelief;
@@ -73,8 +81,6 @@ pc.script.create('tribe', function (context) {
             this.tile.hasTribe = true;
 
             this.rotation = this.tile.getRotationAlignedWithNormal();
-            //this.entity.setLocalScale(.1, .1, .1);
-            //console.log('localscale',this.rotation, this);
 
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -89,15 +95,13 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
-            //console.log(this.stormEffect.darkness);
-            //console.log("Rain: " + this.rainIcon.getName() + "\nSun: " + this.sunIcon.getName() + "\nStorm: " + this.stormIcon.getName() + "\nPraise: " + this.praiseIcon.getName());
-			
+	
             this.audio = context.root._children[0].script.AudioController;
 			
-			//tribes.push(this);
-			
+            this.addHuman();
+
 			var t2 = new Date();
-			console.log("tribe initialization: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -111,42 +115,49 @@ pc.script.create('tribe', function (context) {
 
             //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
 
-        if(!isPaused){
-            if(!this.isBusy){
-                this.runRuleList();
-                this.foodAndPopTimer(dt);
-            } else {
-                this.currentAction(dt);
-            }
+            if (!isPaused) {
+                if (!this.isBusy) {
+                    this.increasePopulationTimer += dt;
+                    this.runRuleList();
+                } else {
+                    this.currentAction(dt);
+                }
 
-            // Set temperature of tile
-            this.currTileTemperature = this.tile.getTemperature();
+                // Set temperature of tile
+                this.currTileTemperature = this.tile.getTemperature();
 
-            // Set lighting in shader
-            this.rotation = this.tile.getRotationAlignedWithNormal();
-            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                // Set lighting in shader
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
-            // God inaction timer goes up so long as God doesn't act (Duh)
-            //this.godInactionTimer += dt;
+                // God inaction timer goes up so long as God doesn't act (Duh)
+                //this.godInactionTimer += dt;
 
-            // Increase no sun timer whenever tribe doesn't have sun
-            if(!this.inSun){
-                this.noSunTimer += dt;
-            } else {
-                this.noSunTimer = 0;
-            }
-			
-			//Check influenced tiles for predators or prey
-			this.predatorsInInfluence = [];
-			this.preyInInfluence = [];
-			for (var i = this.influencedTiles.length-1; i >= 0; i--) {
-				var tile = this.influencedTiles[i];
-				if (tile.hasAnimal) {
-					if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
-					else this.preyInInfluence.push(tile);
-				}
+                // Increase no sun timer whenever tribe doesn't have sun
+                if(!this.inSun){
+                    this.noSunTimer += dt;
+                } else {
+                    this.noSunTimer = 0;
+                }
+
+                this.increasePopulationTimer += dt;
+
+                if (this.increasePopulationTimer >= 50){
+                    this.increasePopulation();
+                    this.increasePopulationTimer = 0;
+                }
+
+                //Check influenced tiles for predators or prey
+                this.predatorsInInfluence = [];
+                this.preyInInfluence = [];
+                for (var i = this.influencedTiles.length-1; i >= 0; i--) {
+                    var tile = this.influencedTiles[i];
+                    if (tile.hasAnimal) {
+                        if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
+                        else this.preyInInfluence.push(tile);
+                    }
+                }
 			}
-          }
         },
 
         //////////////////////////////////
@@ -197,7 +208,7 @@ pc.script.create('tribe', function (context) {
             if(!(this.currTileTemperature > (this.idealTemperature - 5) &&
                  this.currTileTemperature < (this.idealTemperature + 5))){
 
-                var possibleTiles = [];
+                var possibleTiles = [this.tile];
 
                 if (!this.tile.neighbora.isOcean && !this.tile.neighbora.hasTribe){
                     possibleTiles.push(this.tile.neighbora);
@@ -209,13 +220,16 @@ pc.script.create('tribe', function (context) {
                     possibleTiles.push(this.tile.neighborc);
                 }
 
-                var bestTile = this.tile;
+                var bestTile = possibleTiles[min(possibleTiles, function(v, a) {return Math.abs(a - v.getTemperature())}, this.idealTemperature)];
+                /*
+                bestTile = this.tile;
                 for (var i = 0; i < possibleTiles.length; i++){
                     if (Math.abs(this.idealTemperature - bestTile.getTemperature()) > 
                         Math.abs(this.idealTemperature - possibleTiles[i].getTemperature())){
                         bestTile = possibleTiles[i];
                     }
                 }
+                */
 
                 if (bestTile.equals(this.tile)){
                     this.isBusy = false;
@@ -225,7 +239,7 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                this.calculatePopulation();
+                //this.calculatePopulation();
                 this.calculateInfluence();
                 this.isBusy = false;
                 this.isSpiteful = false;
@@ -391,6 +405,10 @@ pc.script.create('tribe', function (context) {
             return this.population;
         },
 
+        setPopulation: function(population) {
+            this.population = population;
+        },
+
         getIdealTemperature: function() {
             return this.idealTemperature;
         },
@@ -422,46 +440,19 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon.enabled = false;
         },
 
-        foodAndPopTimer: function(dt) {
-            this.foodPopTimer += dt
-            if(this.foodPopTimer >= 8){
-                this.foodPopTimer = 0;
-                this.calculateFood();
-                this.calculatePopulation();
+        increasePopulation: function() {
+            ++this.population;
+            if (this.population > this.MAXPOPULATION){
+                addTribe();
+                this.setPopulation(2);
             }
-            //console.log("Timer: " this.foodPopTimer);
         },
 
-        calculateFood: function() {
-            var tilesForFood = [];
-            this.incomingFood = 0;
-
-            // Take the food from the highest foodcount tiles in the sphere of influence
-            // depending on how much population you have. (ex. 2 pop = 2 highest tiles food)
-            this.influencedTiles.sort(function(a, b){return b.getFood() - a.getFood()});
-            for (var i = 0; i < this.population + 1 && i < this.influencedTiles.length; i++){
-                this.incomingFood += this.influencedTiles[i].getFood();
+        decreasePopulation: function() {
+            --this.population;
+            if (this.population < MINPOPULATION){
+                // call kill tribe
             }
-
-            //this.incomingFood = this.tile.getFood();
-            //console.log(this.population);
-            //console.log(this.incomingFood);
-        },
-
-        calculatePopulation: function() {
-            this.stockpileChange = (this.incomingFood - this.population)/100; 
-            this.stockpile += this.stockpileChange
-            //console.log("Stockpile Change: " + this.stockpileChange);
-
-            // Increase population when stockpile is at 100% of required food
-            // Take any additional food beyond 100 and add it back to the stock
-            if(this.stockpile >= 1){
-                ++this.population;
-                --this.stockpile;
-            } else if(this.stockpile <= -1){
-                --this.population;
-                ++this.stockpile;
-            } 
         },
 
         calculateInfluence: function() {
@@ -488,11 +479,18 @@ pc.script.create('tribe', function (context) {
                     counter--;
                 }
             }
-            this.calculateFood();
         },
 		
-		addTribe: function() { 
-            this.entity.clone();
+        addHuman: function() {
+            var e = this.humanParent.clone();
+            this.entity.getParent().addChild(e);
+            var newHuman = e.findByName("human1");
+            newHuman.enabled = true;
+            debug.log(DEBUG.AI, "New human "  + newHuman);
+            newHuman.script.Human.tribeParent = this;
+            this.humans.push(newHuman);
+            newHuman.script.Human.start();
+            newHuman.script.Human.chooseState();
         },
 
         // Constructs the NPC's list of rules

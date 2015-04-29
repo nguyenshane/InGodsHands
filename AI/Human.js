@@ -3,53 +3,61 @@ pc.script.create('Human', function (context) {
     var Human = function (entity) {
         this.entity = entity;
         
-        this.tribeParent;
+        this.tribeParent = null;
 
-        this.tile;
+        this.tile = null;
         this.destinationTile;
         this.startPosition;
         this.influencedTiles = [];
 
         // Variables for lerp, in milliseconds
-
         this.foodPopTimer = 0;
-        this.travelTime = 3000;
+        this.maxDistFromHQ = 0.5;
+        this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
+        this.turnSpeed = 1.0;
+        this.travelTime = 1;
         this.travelStartTime;
 
-        this.currentAction;
+        this.currentAction = null;
+        this.currentState = null;
+        this.prevState = null;
 
     };
 
     Human.prototype = {
-        // Called once after all resources are loaded and before the first update
-        initialize: function () {
-            //this.tribeParent = this.entity.getParent().script.tribe;
-
-            this.tile = ico.tiles[1034]; // list of tiles
-
-            this.entity.setPosition(this.tile.center);
-            this.rotation = this.tile.getRotationAlignedWithNormal();
-            
-            //this.setDestination = this.tile;//.neighbora;
-
-            //this.entity.setLocalScale(.1, .1, .1);
-            //console.log('localscale',this.rotation, this);
-
-            // get current tile's temperature that the tribe is on
-            //this.currTileTemperature = this.tile.getTemperature();
-            
-        },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+            if (!isPaused) {
+                this.chooseState();
+                if (this.currentAction != null) this.currentAction();
 
+                if (this.tile != null) {
+                    if (this.destinationTile != null) {
+                        var position = this.entity.getPosition();
+                        var target = this.destinationTile.center;
+                        if (distSq(position, target) > 0.001) {
+                            var up = this.tile.normal;
+                            var m = new pc.Mat4().setLookAt(position, target, up);
+                            this.rotation = m.getEulerAngles();
+                        }
+                    }
+                    
+                    this.entity.setEulerAngles(this.rotation);
+                    //this.entity.setEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                }
+            }
+        },
 
-            if(this.currentAction != null) this.currentAction();
+        start: function() {
+            if(this.tribeParent != null){
+                this.tile = this.tribeParent.tile.neighbora; 
 
-            // Set lighting in shader
-            //this.rotation = this.tile.getRotationAlignedWithNormal();
-            //console.log("Rotation : " + this.rotation);
-            //this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                this.entity.setPosition(this.tile.center);
+                this.rotation = this.tile.getRotationAlignedWithNormal();
+                this.chooseState();
+                //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
+            }
         },
 
         //////////////////////////////////
@@ -82,12 +90,13 @@ pc.script.create('Human', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasTribe = true;
-                this.setCurrentAction()
+                this.setCurrentAction(null);
+                this.chooseState();
             }
         },
 
         setDestination: function(destination) {
-            this.isBusy = true;
+            debug.log(DEBUG.AI, "Hey we're here");
             this.destinationTile = destination;
             this.startPosition = this.entity.getPosition();
             this.setCurrentAction(this.move);   
@@ -97,12 +106,32 @@ pc.script.create('Human', function (context) {
         },
 
         wander: function() { 
-
+            //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
+            var pos = this.entity.getPosition();
+            var hqpos = this.tribeParent.entity.getPosition();
+            var dist = distSq(pos, hqpos);
+            
+            debug.log(DEBUG.AI, dist);
+            
+            if (dist > this.maxDistSq) {
+                //Move towards the HQ
+                this.setDestination(this.tile.getClosestNeighbor(hqpos));
+            } else {
+                //Wander around randomly
+                this.setDestination(this.tile.getRandomNeighbor());
+            }
         },
 
         setCurrentAction: function(newAction) {
             this.previousAction = this.currentAction;
             this.currentAction = newAction;
+        },
+
+        chooseState: function(){
+            // choose which starter function to call
+            if (!this.tribeParent.isBusy && this.currentAction != this.move){
+                this.wander();
+            }
         }
 
         

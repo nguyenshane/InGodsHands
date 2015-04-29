@@ -33,7 +33,7 @@ pc.script.create('Animals', function (context) {
 			}
 			
 			var t2 = new Date();
-			console.log("animal init time: " + (t2-t1));
+			debug.log(DEBUG.INIT, "animal init time: " + (t2-t1));
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -48,40 +48,41 @@ pc.script.create('Animals', function (context) {
         },
         
         makeAnimal: function(position, rotation, type, size) {
-            var e = this.animals.clone(); // Clone Animal
-			
-            this.entity.getParent().addChild(e); // Add it as a sibling to the original
-			
-            var animal;
+            var animalOrig, stats;
             switch (type) {
                 case 0:
-                    animal = e.findByName("fox");
-					e.stats = Tile.animalStats.fox;
+                    animalOrig = this.animals.findByName("fox");
+					stats = Tile.animalStats.fox;
                     break;
                 case 1:
-                    animal = e.findByName("pig");
-					e.stats = Tile.animalStats.pig;
+                    animalOrig = this.animals.findByName("pig");
+					stats = Tile.animalStats.pig;
                     break;
                 case 2:
-                    animal = e.findByName("cow");
-					e.stats = Tile.animalStats.cow;
+                    animalOrig = this.animals.findByName("cow");
+					stats = Tile.animalStats.cow;
                     break;
                 default:
-                    animal = e.findByName("fox");
-					e.stats = Tile.animalStats.fox;
+                    animalOrig = this.animals.findByName("fox");
+					stats = Tile.animalStats.fox;
             }
-			
-			e.animalObj = animal;
-			
-            e.setLocalScale(size, size, size);
-			//animal.setLocalScale(size, size, size);
+            
+            var animal = animalOrig.clone();
+            this.entity.getParent().addChild(animal);
+            
+            animal.stats = stats;
+            
+            animal.size = size;
+            animal.baseScale = animal.getLocalScale().x;
+            var s = size * animal.baseScale;
+            animal.setLocalScale(s, s, s);
             animal.setEulerAngles(rotation.x - 90, rotation.y, rotation.z);
             animal.setPosition(position);
-			
+            
             animal.enabled = true;
-			e.destroyFlag = false;
-            this.animal_stack.push(e);
-			return e;
+			animal.destroyFlag = false;
+            this.animal_stack.push(animal);
+			return animal;
         },
         
         checkDestroyable: function(e) {            

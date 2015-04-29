@@ -1,6 +1,11 @@
 function IcoSphere(device, radius, subdivisions) {
     'use strict;'
 
+
+	var time1 = new Date();
+	//debug.on(DEBUG.WORLDGEN);
+    debug.log(DEBUG.WORLDGEN, "Icosphere Init Starting");
+
     this.device = device;
 
     ico = this;
@@ -14,6 +19,7 @@ function IcoSphere(device, radius, subdivisions) {
     this.vertices = [];
 	this.normals = [];
     this.indices = [];
+    this.colors = [];
 	
 	this.vertexGraph = [];
 	this.vertexParents; //?
@@ -25,7 +31,7 @@ function IcoSphere(device, radius, subdivisions) {
     this.faults = [];
     this.currFault;
     this.currFaultIndex = 9;
-    this.faultMoveCount = 0;
+    this.faultMoveCount = 10;
     this.faultMoveMax = 10;
     this.faultIncrement = -0.02;
     this.faultNumMove = 50;
@@ -254,8 +260,8 @@ function IcoSphere(device, radius, subdivisions) {
 	this.unshareVertices();
 	
 	
-	var t2 = new Date();
-	debug.log(DEBUG.WORLDGEN, "icosphere initialization: " + (t2-t1));
+	var time2 = new Date();
+	debug.log(DEBUG.INIT, "icosphere init time: " + (time2-time1));
 	
 	//Generate terrain
 	this.vertexHeights = [];
@@ -297,24 +303,20 @@ function IcoSphere(device, radius, subdivisions) {
 	this.generateFault(325, 2, 8);
 	this.generateFault(298, 2, 9);
 
-	var t3 = new Date();
-	debug.log(DEBUG.WORLDGEN, "terrain generation: " + (t3-t2));
+	var time3 = new Date();
+	debug.log(DEBUG.INIT, "terrain generation time: " + (time3-time2));
 	
     // Calculate the center and normal for each tile and build the vertex buffer
 	this._recalculateMesh();
-	
+	for (var i = 0; i < this.tiles.length; i++){
+		this.tiles[i].assignType();
+	}
 	
     // Set mesh data
-    var options = {
-        normals: this.normals,
-        indices: this.indices
-    };
-    
-    this.toReturn = {
-        mesh: pc.createMesh(device, this.vertices, options),
-        options: options,
-        positions: this.vertices
-    };
+    this.updateReturnMesh();
+
+
+    debug.log(DEBUG.WORLDGEN, "Icosphere Init Ending");
     
     return this;
     //this.renderer = new RenderGroup(ctx, new Geometry(ctx, vertices, normals), indices);
@@ -333,7 +335,7 @@ IcoSphere.prototype.updateReturnMesh = function() {
     };
 
     this.updateFlag = false;
-}
+};
 
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	this.vertexHeights[index] = height;
@@ -346,9 +348,11 @@ IcoSphere.prototype.setVertexMagnitude = function(index, magnitude) {
 
 //Should only be called once per frame if the mesh has been altered
 IcoSphere.prototype._recalculateMesh = function() {
-	// Calculate the center and normal for each tile
+	// Calculate the center/normal/color for each tile
 	var unbufferedNormals = [];
 	unbufferedNormals[this.tiles.length*3-1] = 0;
+    var unbufferedColors = [];
+	unbufferedColors[this.tiles.length*3-1] = 0;
     for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
 		tile.calculateCenter2();
@@ -362,20 +366,28 @@ IcoSphere.prototype._recalculateMesh = function() {
 		var verts = tile.vertexIndices;
 		for (var j = 0; j < verts.length; j++) {
 			unbufferedNormals[i*3+j] = tile.normal;
+            unbufferedColors[i*3+j] = tile.type.color;
 			// Uncomment
 			if (this.vertexHeights[verts[j]] == 0) tile.isOcean = true;
 		}
     }
-
+    
 	
-	// Buffer normals
+	// Buffer normals and colors
 	this.normals = [];
 	this.normals[this.vertices.length-1] = 0;
     for (var i = 0; i < unbufferedNormals.length; i++) {
 		this.normals[i*3] = unbufferedNormals[i].x;
 		this.normals[i*3+1] = unbufferedNormals[i].y;
 		this.normals[i*3+2] = unbufferedNormals[i].z;
-		//console.log("Normal " + i + ": (" + this.normals[i*3] + ", " + this.normals[i*3+1] + ", " + this.normals[i*3+2] + ")");
+    }
+    
+    this.colors = [];
+	this.colors[this.vertices.length-1] = 0;
+    for (var i = 0; i < unbufferedColors.length; i++) {
+		this.colors[i*3] = unbufferedColors[i].r;
+		this.colors[i*3+1] = unbufferedColors[i].g;
+		this.colors[i*3+2] = unbufferedColors[i].b;
     }
 };
 
@@ -491,7 +503,7 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 			index = currVert.getNeighbor(direction, (direction + (j % 1) * 2 - 1) % 8);
 			//debug.log(DEBUG.WORLDGEN, index);
 			if (index == -1) {
-				debug.log(DEBUG.WORLDGEN, "Breaking fault gen at " + prevInd + " with direction " + direction); //DIRECTION.string(direction));
+				//debug.log(DEBUG.WORLDGEN, "Breaking fault gen at " + prevInd + " with direction " + direction); //DIRECTION.string(direction));
 				break;
 			}
 			currVert = this.vertexGraph[index];
@@ -506,43 +518,51 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 
 	this.faults.push(fault);
 
-	debug.obj(DEBUG.WORLDGEN, fault);
+	//debug.obj(DEBUG.WORLDGEN, fault);
 };
 
 IcoSphere.prototype.moveFaults = function(increment) {
-	/*for (; distance <= 0; --distance) {
-		this.currFault = this.faults[this.faultIndex];
-    	for (var i = 0; i < this.currFault.length; ++i) {
-        	this.currFault[i].addHeight(this.faultIncrement * dir);
-	    }
-    	if (++this.faultMoveCount >= this.faultMoveMax) {
-        	if (++this.currFaultIndex >= this.faults.length) {
-            	this.currFaultIndex = 0;
-            	this.faultDir *= -1;
-        	}
-        	this.faultMoveCount = 0;
-    	}
-    }*/
+  	// bool for max/min edge to prevent moving
+  	var edge = false;
 
-    //this.currFaultIndex = this.currFaultPosition / this.faults.length;
+  	// Get direction string is moving (-1 or 1)
+  	var direction = increment/Math.abs(increment);
 
-    //this.faultMovePercent = this.currFaultcurrFaultIndex
+  	// Update fault counter position
+  	this.faultMoveCount += direction;
 
-    this.currFault = this.faults[this.currFaultIndex];
-    for (var i = 0; i < this.currFault.length; ++i) {
-    	this.currFault[i].addHeight(increment);
-	}
-	if (++this.faultMoveCount >= this.faultMoveMax) {
-    	this.faultMoveCount = 0;
-    	if (increment < 0 && this.currFaultIndex > 0) {
-    		--this.currFaultIndex;
-    	} else if (increment > 0 && this.currFaultIndex < this.faults.length-1 ) {
-    		++this.currFaultIndex;
-    	}
-    }
+  	if (this.faultMoveCount >= this.faultMoveMax || this.faultMoveCount < 0) {
 
-    --this.faultNumMove;
-  	debug.log(DEBUG.WORLDGEN, this.faultNumMove);
+  		// Update fault index
+  		this.currFaultIndex += direction;
+  		if (this.currFaultIndex >= this.faults.length || this.currFaultIndex < 0) {
+
+  			this.currFaultIndex -= direction;
+  			this.faultMoveCount -= direction;
+  			edge = true;
+  		} else {
+
+  			// Reset position
+   			this.faultMoveCount -= this.faultMoveMax * direction;
+  		}
+  	}
+
+  	// Move if not at edge
+  	if (!edge) {
+
+  		// Get current fault
+  		var currFault = this.faults[this.currFaultIndex];
+
+  		// Change height of each
+    	for (var i = 0; i < currFault.length; ++i) {
+    		currFault[i].addHeight(increment);
+		}
+
+		var mess = this.currFaultIndex * 10 + this.faultMoveCount;
+		debug.log(DEBUG.WORLDGEN, "Faults at: " + mess);
+  	}
+
+  	--this.faultNumMove;
 };
 
 //Generates a heightmap and applies it to the icosphere's vertices
@@ -552,7 +572,7 @@ function generateTerrain(icosphere, initialContinentLocation, continentBufferDis
 	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
 	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
 	
-	console.log("cc: " + contCount);
+    debug.log(DEBUG.WORLDGEN, "cc: " + contCount);
 	
 	//Create first continent at the equator facing the camera: 607, 698, 908, 923, 1151, 1166
 	var contSize = pc.math.random(continentSizeMin, continentSizeMax);
@@ -588,7 +608,7 @@ function generateTerrain(icosphere, initialContinentLocation, continentBufferDis
 
 //Helper function of generateTerrain, creates a continent in the heightmap using repeller
 function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountainCount, mountainHeightMin, mountainHeightMax) {
-	console.log("--c - " + repellerCount);
+	debug.log(DEBUG.WORLDGEN, "--c - " + repellerCount);
 	
 	var initialRepellerCount = repellerCount;
 	
@@ -625,9 +645,9 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 		}
 		
 		if (!done) {
-			console.log(repellerCount);
+			debug.log(DEBUG.WORLDGEN, repellerCount);
 			repellerCount = 0;
-			console.log("n");
+			debug.log(DEBUG.WORLDGEN, "n");
 		}
 	}
 
@@ -636,7 +656,7 @@ function cluster(icosphere, centerTile, radius, repellerCount, repellerSizeMin, 
 
 //Helper function of cluster, raises a portion of land around the center tile
 function repeller(icosphere, centerTile, radius, centerHeight) {
-	console.log("r - " + radius);
+	debug.log(DEBUG.WORLDGEN, "r - " + radius);
 	
 	var queue = new Queue();
 	var visitedIndices = [];

@@ -25,11 +25,14 @@ pc.script.create('HIDInterface', function (context) {
 	var camera;
 
     var UI;
+    var app; 
     var hasStopped;
 
     HIDInterface.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+			var t1 = new Date();
+
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
 			this.stringP = new pc.StringTAPEW('P');
@@ -44,12 +47,16 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
+			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
+
+			console.log("THe box: " + this.stormTriggerBox.tribesInTrigger.length);
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
 
-			UI = context.root.findByName("Rv1-stable").script.developer;
+			app = pc.fw.Application.getApplication('application-canvas').context;
+			UI = context.root._children[0].script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -68,6 +75,9 @@ pc.script.create('HIDInterface', function (context) {
         	this.middleP = this.stringP.isMiddle;
         	this.middleE = this.stringE.isMiddle;
         	this.middleW = this.stringW.isMiddle;
+        	
+			var t2 = new Date();
+			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
 
         },
 
@@ -93,9 +103,9 @@ pc.script.create('HIDInterface', function (context) {
 				//console.log("time since started lerp: " + timeSinceStartedLerp + " velocity: " + velocity);
 				//console.log("Temp subtract: " + (globalTemperature - temperatureDest));
 
-				if((globalTemperature - temperatureDest) == 0.0) {
+				if ((globalTemperature - temperatureDest) == 0.0) {
 					temperatureChange = false;
-					console.log("Done temp change");
+					debug.log(DEBUG.HARDWARE, "Done temp change");
 				}
         	}
 
@@ -119,8 +129,14 @@ pc.script.create('HIDInterface', function (context) {
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
+
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+
+			if (!UI.StringsliderT.mouseIsOver){
+                UI.StringsliderT.value = newStringTvalue;
+            }
 			
-			console.log("Global Temp: " + globalTemperature);
+			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			for (var i = 0; i < 20; ++i) {
 				//console.log(ico.tiles[i].getTemperature());
 			}
@@ -134,6 +150,12 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity += (distance * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+			
+			if (!UI.StringsliderA.mouseIsOver){
+                UI.StringsliderA.value = newStringAvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
@@ -141,12 +163,18 @@ pc.script.create('HIDInterface', function (context) {
 			//console.log("String P moved: ", position, distance, speed);
 			
 			//tribes[0].addTribe();
-			for(var i = 0; i < tribes.length; i++){
-				if(!tribes[i].enabled){
-					tribes[i].enabled = true;
-					break;
-				}
-			}
+			// for (var i = 0; i < tribes.length; i++) {
+			// 	if (!tribes[i].enabled) {
+			// 		tribes[i].enabled = true;
+			// 		break;
+			// 	}
+			// }
+
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			
+			if (!UI.StringsliderP.mouseIsOver){
+                UI.StringsliderP.value = newStringPvalue;
+            }
 
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
@@ -159,59 +187,56 @@ pc.script.create('HIDInterface', function (context) {
 		moved_E: function(position, distance, speed) {
 			//console.log("String E moved: ", position, distance, speed);
 			
-			/*
-			// Temporarily here, will make it a function call to tile eventually
-			if (speed > 30 && Math.abs(distance) > 5) {
-				tribe.startCowering();
-				console.log("Sufficient string pull for storm");
-			}
-			*/
-			
-			//scripts.Atmosphere.makeStorm(distance, speed);
-			
-			for(var i = 0; i < tribes.length; i++){
-				if (tribes[i].enabled){
-					if(tribes[i].script.tribe.tile.isStormy){
-						tribes[i].script.tribe.startCowering();
-					}
-				}
-			}
+			scripts.Atmosphere.makeStorm(distance, speed);
+			this.stormTriggerBox.scareTribes();
 
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+			
+			if (!UI.StringsliderE.mouseIsOver){
+                UI.StringsliderE.value = newStringEvalue;
+            }
+			
 			inactiveTimer = 0;
 		},
 		
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			
+			if (!UI.StringsliderW.mouseIsOver){
+                UI.StringsliderW.value = newStringWvalue;
+            }
+            
 			inactiveTimer = 0;
 		},
 
 
 
 		moving_T: function(position, distance, speed) {
-			console.log("String T moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String T moving: ", position, distance, speed);
 
 		},
 		
 		moving_A: function(position, distance, speed) {
-			console.log("String A moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String A moving: ", position, distance, speed);
 
 		},
 		
 		moving_P: function(position, distance, speed) {
-			console.log("String P moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String P moving: ", position, distance, speed);
 
 		},
 		
 		moving_E: function(position, distance, speed) {
-			console.log("String E moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String E moving: ", position, distance, speed);
 
 		},
 		
 		moving_W: function(position, distance, speed) {
-			if(!hasStopped){
-			console.log("String W moving: ", position, distance, speed);
-			camera.script.Camera.move_W(position,distance,speed);
+			if (!hasStopped) {
+                debug.log(DEBUG.HARDWARE, "String W moving: ", position, distance, speed);
+                camera.script.Camera.move_W(position,distance,speed);
 			}
 		},
 

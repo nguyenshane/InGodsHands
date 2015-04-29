@@ -197,7 +197,7 @@ needTemperatureChange.prototype = {
     },
     
     consequence: function(tribe){
-        console.log("Need temperature change fired");
+        debug.log(DEBUG.AI, "Need temperature change fired");
         tribe.startPrayForTemperature(10);
     }    
 };
@@ -227,7 +227,7 @@ wantToDenounceInactive.prototype = {
     },
     
     consequence: function(tribe){
-        console.log("Does God truly exist?!");
+        debug.log(DEBUG.AI, "Does God truly exist?!");
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
@@ -258,7 +258,7 @@ wantToDenounceNoSun.prototype = {
     },
     
     consequence: function(tribe){
-        console.log("Where is the god damned sun?!?!");
+        debug.log(DEBUG.AI, "Where is the god damned sun?!?!");
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    

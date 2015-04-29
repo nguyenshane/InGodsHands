@@ -40,11 +40,21 @@ pc.script.create('Globe', function (context) {
                     "varying vec3 fPosition;",
 					"varying vec3 fNormal;",
                     "",
+                    "uniform float radius;",
+                    "uniform float time;",
+                    "",
                     "void main(void)",
                     "{",
-                    "    fPosition = aPosition;",
-					"    fNormal = aNormal;",
-                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);",
+                    // Ocean sway
+                    "    vec3 newPos = aPosition;",
+                    "    float dist = length(newPos);",
+                    "    if (dist <= radius) {",
+                    "       newPos.x = newPos.x - (newPos.x/abs(newPos.x) * abs(sin(time+(radius-abs(newPos.y))+newPos.z)/100.0*(radius-abs(newPos.y))));",
+                    "       newPos.z = newPos.z - (newPos.z/abs(newPos.z) * abs(sin(time*0.13+(radius-abs(newPos.y))+newPos.x)/100.0*(radius-abs(newPos.y))));",
+                    "    }",
+                    "    fPosition = newPos;",
+                    "    fNormal = aNormal;",
+                    "    gl_Position = matrix_viewProjection * matrix_model * vec4(newPos, 1.0);",
                     "}"
                 ].join("\n"),
                 fshader: [
@@ -70,11 +80,14 @@ pc.script.create('Globe', function (context) {
                     "    float g = dist - radius*2.0/3.0;",
                     "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
+                    // Snow Tops
+                    "    if (dist > radius + 0.20) {",
+                    "       color = intensity * sunIntensity * vec4(255.0/256.0, 253.0/256.0, 247.0/256.0, 1.0);",
                     // Mountain
-                    "    if (dist > radius + 1.0) {",
-                    "       color = intensity * sunIntensity * vec4(170.0/256.0, 80.0/256.0, 50.0/256.0, 1.0);",
+                    "    } else if (dist > radius + 0.15) {",
+                    "       color = intensity * sunIntensity * vec4(64.0/256.0, 46.0/256.0, 10.0/256.0, 1.0);",
                     // Land
-                    "    } else if (dist > radius + 0.01) {",
+                    "    } else if (dist > radius + 0.02) {",
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     // Beaches
                     "    } else if (dist > radius) {",
@@ -102,6 +115,8 @@ pc.script.create('Globe', function (context) {
             
             this.material.setParameter('radius', ico.radius);
             
+            this.material.setParameter('time', globalTime);
+
             this.material.setParameter('ambient', 0.2);
             this.material.setParameter('sunIntensity', 1.0);
 
@@ -151,29 +166,33 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if (ico.updateFlag == true) {
-                this.updateMesh();
+            if (!isPaused) {
+                if (ico.updateFlag == true) {
+                    this.updateMesh();
+                }
+                //ico.toReturn.mesh;
+
+                if (ico.faultNumMove > 0) {
+                    ico.moveFaults(ico.faultIncrement);
+                }
+
+                // Set temperature variables in shader
+            	this.material.setParameter('temperature', globalTemperature);
+                this.material.setParameter('maxTemp', globalTemperatureMax);
+                
+                this.material.setParameter('time', globalTime);
+
+                // Set lighting in shader
+                this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
+                //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
+                //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
+                //var angle = sun.rotation.getEulerAngles();
+
+                //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
+                //console.log(angle.x, angle.y, angle.z);
+                //console.log(sun.rotation);
+                //this.model.meshInstances[0].
             }
-            //ico.toReturn.mesh;
-
-            if (ico.faultNumMove > 0) {
-                ico.moveFaults(ico.faultIncrement);
-            }
-
-            // Set temperature variables in shader
-        	this.material.setParameter('temperature', globalTemperature);
-            this.material.setParameter('maxTemp', globalTemperatureMax);
-
-            // Set lighting in shader
-            this.material.setParameter('sunDir', [shaderSun.localRotation.x, shaderSun.localRotation.y, shaderSun.localRotation.z]);
-            //this.material.setParameter('sunDir', [sun.rotation.x, sun.rotation.y, sun.rotation.z]);
-            //this.material.setParameter('sunDir', [(sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2, (sun.rotation.x + 1)/2]);
-            //var angle = sun.rotation.getEulerAngles();
-
-            //this.material.setParameter('sunDir', [angle.x/180, angle.y/180, angle.z/180]);
-            //console.log(angle.x, angle.y, angle.z);
-            //console.log(sun.rotation);
-            //this.model.meshInstances[0].
         },
 
         updateMesh: function () {
