@@ -15,7 +15,7 @@ pc.script.create('Human', function (context) {
         this.maxDistFromHQ = 0.5;
         this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
         this.turnSpeed = 1.0;
-        this.travelTime = 1;
+        this.travelTime = 2000.0;
         this.travelStartTime;
 
         this.currentAction = null;
@@ -66,7 +66,7 @@ pc.script.create('Human', function (context) {
 
         // Called every movement frame, lerps from one tile center to the next
         move: function(deltaTime) {
-
+            
             // Find change in time since the start, and divide by the desired total travel time
             // This will give you the percentage of the travel time covered. Send this for the lerp
             // rather than changing lerp's start position each frame.
@@ -76,20 +76,21 @@ pc.script.create('Human', function (context) {
             var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
             var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
-            var deltaVec = new pc.Vec3;
-
-            deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
-            this.entity.setPosition(deltaVec);   
+            var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
+            //var deltaVec = new pc.Vec3;
+            //deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
+            this.entity.setPosition(deltaVec);
             //console.log("Start tile: " + this.startPosition);
             //console.log("Destination tile: " + this.destinationTile.center);
+            //console.log("Current location: " + this.entity.getPosition());
             //console.log("Current percent: " + percentTravelled);
 
             // Once tribe is at next tile's center, movement is done.
-            if(percentTravelled >= 1){
+            if (percentTravelled >= 1) {
                 this.tile.hasTribe = false;
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
-                this.tile.hasTribe = true;
+                this.tile.hasHuman = true;
                 this.setCurrentAction(null);
                 this.chooseState();
             }
@@ -98,7 +99,7 @@ pc.script.create('Human', function (context) {
         setDestination: function(destination) {
             debug.log(DEBUG.AI, "Hey we're here");
             this.destinationTile = destination;
-            this.startPosition = this.entity.getPosition();
+            this.startPosition = this.entity.getPosition().clone();
             this.setCurrentAction(this.move);   
 
             var timer = new Date();

@@ -1093,6 +1093,10 @@ function scaleM(obj, scale) {
     obj.size *= scale;
 };
 
+function actualLerp(v1, v2, alpha) {
+    return new pc.Vec3(v1.x * alpha + v2.x * (1-alpha), v1.y * alpha + v2.y * (1-alpha), v1.z * alpha + v2.z * (1-alpha));
+};
+
 //Not actually a lerp, this one is just more useful to me
 //Returns the distance between low and high that value is as [0, 1]
 function lerp(low, high, value) {

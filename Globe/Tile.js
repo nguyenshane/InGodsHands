@@ -586,7 +586,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         //Sort by dist to find the ideal type
         var type = min(dists, function(v, a) {return v}, null);
         
-		this.tree = scripts.Trees.makeTree(this.center, angle, 0, size);
+		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
 		this.calculateFood();
 	};

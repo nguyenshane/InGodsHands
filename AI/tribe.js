@@ -197,7 +197,7 @@ pc.script.create('tribe', function (context) {
         setDestination: function(destination) {
             this.isBusy = true;
             this.destinationTile = destination;
-            this.startPosition = this.entity.getPosition();
+            this.startPosition = this.entity.getPosition().clone();
             this.setCurrentAction(this.move);   
 
             var timer = new Date();
