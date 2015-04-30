@@ -116,7 +116,7 @@ pc.script.create('globalInterface', function (context) {
                 if (ico.tiles.length - this.lastUpdatedTile < tilesToUpdate) {
                     //Do remaining tiles, then continue from the beginning in next block
                     for (var i = this.lastUpdatedTile; i < ico.tiles.length; i++) {
-                        ico.tiles[i].intermittentUpdate();
+                        //ico.tiles[i].intermittentUpdate();
                     }
                     
                     tilesToUpdate -= ico.tiles.length - this.lastUpdatedTile;
@@ -125,7 +125,7 @@ pc.script.create('globalInterface', function (context) {
                 }
 
                 for (var i = this.lastUpdatedTile; i < tilesToUpdate + this.lastUpdatedTile; i++) {
-                    ico.tiles[i].intermittentUpdate();
+                    //ico.tiles[i].intermittentUpdate();
                 }
                 this.lastUpdatedTile += tilesToUpdate;
 
