@@ -10,8 +10,10 @@ pc.script.create('AudioController', function (context) {
 		pc.events.attach(this);
 		this.musicBuffer = [];
 		this.musicLayer = 0.66;
+		this.prevMusicLayer = this.musicLayer;
 		this.targetMusicLayer = 0.66;
 		this.direction, this.distance, this.speed = 0;
+		this.recentlyPaused = false;
     };
 
     AudioController.prototype = {
@@ -49,6 +51,17 @@ pc.script.create('AudioController', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        
+
+        if(!isPaused){
+
+        	if(this.recentlyPaused){
+		            this.musicLayer = this.prevMusicLayer;
+		            this.backgroundmusic.setIntensity(this.musicLayer);
+		            this.recentlyPaused = false;
+		        }
+
+
         	if (context.keyboard.isPressed(56)) {
         		//console.log('this.musicLayer',this.musicLayer);
         		this.musicLayer+=0.02;
@@ -80,10 +93,19 @@ pc.script.create('AudioController', function (context) {
             	if (this.musicLayer > 1) this.musicLayer = 1;
             }
 
-            //console.log("totalBelief: ", totalBelief);
-            //console.log("prevTotalBelief: ", totalBelief);
-            // have music layer shift towards targetMusicLayer
+             console.log("totalBelief: ", totalBelief);
+            console.log("prevTotalBelief: ", prevTotalBelief);
+            // // have music layer shift towards targetMusicLayer
             this.backgroundmusic.setIntensity(this.musicLayer);
+
+            }
+
+            else{
+                this.prevMusicLayer = this.musicLayer;
+                this.musicLayer = .66;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+                this.recentlyPaused = true;
+            }
         },
 		
 		sound_T: function(position, distance, speed) {

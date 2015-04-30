@@ -21,6 +21,8 @@ pc.script.create('developer', function (context) {
         this.context = pc.fw.Application.getApplication('application-canvas').context;
         this.context.mouse.on(pc.EVENT_MOUSEUP, this.onMouseUp, this);
         this.context.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+    
+
     };
 
     var hasMovedT  = false;
@@ -40,6 +42,8 @@ pc.script.create('developer', function (context) {
     var sliderPLastPos;
     var sliderELastPos;
     var sliderWLastPos;
+    var audio;
+    //var prevMusicLayer;
 
     var pullStartedT = false;
     var pullStartedA = false;
@@ -461,6 +465,10 @@ pc.script.create('developer', function (context) {
             this.musicSlider = musicSlider;
             this.musicText = musicText;
 
+
+            audio = this.context.root._children[0].script.AudioController;
+            //prevMusicLayer = audio.musicLayer;
+
             //timer = 2.0;
 
             // Set some default state on the UI element
@@ -471,6 +479,28 @@ pc.script.create('developer', function (context) {
              this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
                ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
            
+
+            //attaches a touch listener to it
+                        // StringsliderT.addEventListener("touchstart", this.onTouchStart, false);
+                        // StringsliderT.addEventListener("touchend", this.onTouchEnd, false);
+
+
+            //attaches a touch listener to it
+                        // StringsliderA.addEventListener("touchstart", this.onTouchStart, false);
+                        // StringsliderA.addEventListener("touchend", this.onTouchEnd, false);
+
+            //attaches a touch listener to it
+                        // StringsliderP.addEventListener("touchstart", this.onTouchStart, false);
+                        // StringsliderP.addEventListener("touchend", this.onTouchEnd, false);
+
+            // //attaches a touch listener to it
+                        // StringsliderE.addEventListener("touchstart", this.onTouchStart, false);
+                        // StringsliderE.addEventListener("touchend", this.onTouchEnd, false);
+
+            //attaches a touch listener to it
+                        // StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
+                        // StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
+
         },
 
          // Called every frame, dt is time in seconds since last update
@@ -493,7 +523,7 @@ pc.script.create('developer', function (context) {
               this.stringPull();
               this.setPosition();
               this.mouseCheck();
-              this.checkMusic();
+              //this.checkMusic();
               this.setVisibilty();
 
               this.buttonUI.onclick = function UIButtonClicked(){
@@ -560,16 +590,8 @@ pc.script.create('developer', function (context) {
 
         checkMusic: function(){
             //just adding a comment
-            var audio = this.context.root._children[0].script.AudioController;
 
-            if(!isPaused){
-            audio.musicLayer = this.musicSlider.value;
-            audio.backgroundmusic.setIntensity(audio.musicLayer);
-            }
-            else{
-                audio.musicLayer = 1.0;
-                audio.backgroundmusic.setIntensity(audio.musicLayer);
-            }
+
            // console.log(audio.musicLayer);
         },
 
@@ -747,11 +769,87 @@ pc.script.create('developer', function (context) {
         onTouchEnd: function (touches) {
             // When the touches end, send to string pull functions
             touches.changedTouches.forEach(function (touch) {
-              this.sendToMove_T();
-              this.sendToMove_A();
-              this.sendToMove_P();
-              this.sendToMove_E();
-              this.sendToMove_W();
+             // When the touches end, send to string pull functions
+              if (hasMovedT){
+                            var distance = this.sliderTDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeT;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionT;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_T', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeT);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderTLastPos = this.StringsliderT.value;
+                             this.sliderTDistance = 0.0;
+                             needToStartTimeT = true;
+                        }
+
+                if (hasMovedA){
+                            var distance = this.sliderADistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeA;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionA;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_A', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeA);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderALastPos = this.StringsliderA.value;
+                             this.sliderADistance = 0.0;
+                             needToStartTimeA = true;
+                        }
+
+                    if (hasMovedP){
+                            var distance = this.sliderPDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeP;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionP;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_P', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeP);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderPLastPos = this.StringsliderP.value;
+                             this.sliderPDistance = 0.0;
+                             needToStartTimeP = true;
+                        }
+
+                if (hasMovedE){
+                            var distance = this.sliderEDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeE;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionE;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_E', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeE);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderELastPos = this.StringsliderE.value;
+                             this.sliderEDistance = 0.0;
+                             needToStartTimeE = true;
+                        }
+                        
+                if (hasMovedW){
+                            var distance = this.sliderWDistance;
+                            var timeSinceStartedPull =  this.time - pullStartTimeW;
+                            var speed = Math.abs(distance)/timeSinceStartedPull;
+                            var position = this.positionW;
+                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                             stringPullLerp.script.send('HIDInterface', 'move_W', position, distance, speed);
+
+                            console.log("pullStartTime " + pullStartTimeW);
+                            console.log("Time " + this.time);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                             sliderWLastPos = this.StringsliderW.value;
+                             this.sliderWDistance = 0.0;
+                             needToStartTimeW = true;
+                        }
+
           
             }.bind(this));
        }, 
