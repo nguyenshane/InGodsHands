@@ -166,7 +166,7 @@ pc.script.create('globalInterface', function (context) {
                 //this.eroder.update();
 
                 // Update prevTotalBelief for all tribes
-                prevTotalBelief = totalBelief;
+                //prevTotalBelief = totalBelief;
 
                 sun.setPosition(0, 0, 0);
           }
