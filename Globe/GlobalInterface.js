@@ -83,32 +83,8 @@ pc.script.create('globalInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if(!isPaused) {
-                /*
-                var grass = 0, desert = 0, dry = 0;
-                for (var i = 0; i < ico.tiles.length; i++) {
-                    ico.tiles[i].assignType();
-
-                    switch (ico.tiles[i].type) {
-                        case TILETYPES.GRASSPLANE:
-                        grass++;
-                        break;
-
-                        case TILETYPES.DESERT:
-                        desert++;
-                        break;
-
-                        case TILETYPES.DRYPLANE:
-                        dry++;
-                        break;
-                    }
-                }
-                
-                console.log (grass + " " + dry + " " + desert);
-                */
-
+            if (!isPaused) {
                 // Update globalTime, do not update anywhere else
-
                 globalTime += dt;
                 inactiveTimer += dt;
 
@@ -122,24 +98,13 @@ pc.script.create('globalInterface', function (context) {
                     shuffleArray(this.randomTiles);
                     
                     this.init = true;
-					
-					/*
-					var s = ico.tiles[0];
-					for (var i = 1; s.type.movementCost >= 0 && i < ico.tiles.length; i++) {
-						s = ico.tiles[i]
-					}
-					var d = s.neighbora.neighbora.neighbora.neighborb.neighborc.neighborc;
-					d = ico.tiles[500];
-					var path = dijkstras(s, d);
-					console.log(path);
-					*/
                 }
 
 
                 //Update all tiles
                 var tiles = ico.tiles;
                 for (var i = tiles.length-1; i >= 0; i--) {
-                    //tiles[i].update(dt);
+                    tiles[i].update(dt);
                 }
 
 
@@ -151,7 +116,7 @@ pc.script.create('globalInterface', function (context) {
                 if (ico.tiles.length - this.lastUpdatedTile < tilesToUpdate) {
                     //Do remaining tiles, then continue from the beginning in next block
                     for (var i = this.lastUpdatedTile; i < ico.tiles.length; i++) {
-                        //ico.tiles[i].intermittentUpdate();
+                        ico.tiles[i].intermittentUpdate();
                     }
                     
                     tilesToUpdate -= ico.tiles.length - this.lastUpdatedTile;
@@ -160,7 +125,7 @@ pc.script.create('globalInterface', function (context) {
                 }
 
                 for (var i = this.lastUpdatedTile; i < tilesToUpdate + this.lastUpdatedTile; i++) {
-                    //ico.tiles[i].intermittentUpdate();
+                    ico.tiles[i].intermittentUpdate();
                 }
                 this.lastUpdatedTile += tilesToUpdate;
 

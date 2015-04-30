@@ -18,7 +18,7 @@ TILETYPES = {
         minTemp: 100,
         maxTemp: 1000,
         foodVal: 0,
-		movementCost: 1,
+		movementCost: 1.5,
         color: colorBrown
     },
     
@@ -27,7 +27,7 @@ TILETYPES = {
         minTemp: 70,
         maxTemp: 100,
         foodVal: 1,
-		movementCost: 1,
+		movementCost: 1.2,
         color: colorYellow
     },
 
@@ -36,7 +36,7 @@ TILETYPES = {
         minTemp: 40,
         maxTemp: 70,
         foodVal: 2,
-		movementCost: 1,
+		movementCost: 1.0,
         color: colorGreen
     },
 
@@ -58,7 +58,7 @@ TILETYPES = {
         color: colorBlue
     },
     
-    mountainHeight: 0.1
+    mountainHeight: 0.15
 };
 
 Tile.treeStats = {
@@ -230,7 +230,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     ico.indices.push(vertexc);
     
 	
-/*	this.update = function(dt) {
+	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
         
@@ -338,7 +338,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.checkResourceLimits();
 	};
-*/	
+    
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
 		var temp = this.getTemperature();
