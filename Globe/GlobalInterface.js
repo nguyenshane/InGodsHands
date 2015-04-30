@@ -31,7 +31,7 @@ pc.script.create('globalInterface', function (context) {
 			
 			animalDensity = 0.02;
 			
-			treeDensity = 0.3; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
+			treeDensity = 0.1; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
 			
 			this.fogChance = 0.002;
 			this.rainChance = 0.0004;
