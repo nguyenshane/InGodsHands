@@ -104,7 +104,7 @@ pc.script.create('globalInterface', function (context) {
                 //Update all tiles
                 var tiles = ico.tiles;
                 for (var i = tiles.length-1; i >= 0; i--) {
-                    tiles[i].update(dt);
+                    //tiles[i].update(dt);
                 }
 
 
