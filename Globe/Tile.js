@@ -341,7 +341,8 @@ function Tile(index, vertexa, vertexb, vertexc){
     
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
-		var temp = this.getTemperature();
+		console.log("In intermittentUpdate");
+        var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
 		this.spawnAnimal(temp, 3.0);
@@ -549,7 +550,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Creates a new tree on this tile if the tree density in the area is too low
 	this.spawnTree = function(temperature, size) {
-		if (this.hasTree || this.isOcean) return;
+        if (this.hasTree || this.isOcean) return;
 		
 		var maxDist = 8;
 		var localTreeCount = 0.0;
@@ -595,6 +596,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Adds a tree to this tile
 	this.createTree = function(temperature, size) {
+        
+        console.log("Making a tree");
         //position/angle now overridden in the reposition() function below
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		normal.normalize();
@@ -621,7 +624,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         //Sort by dist to find the ideal type
         var type = min(dists, function(v, a) {return v}, null);
         
-		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
+		this.tree = scripts.Trees.makeTree(this.center, angle, 0, size);
 		this.hasTree = true;
 		this.calculateFood();
 	};
