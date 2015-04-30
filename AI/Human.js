@@ -4,24 +4,25 @@ pc.script.create('Human', function (context) {
         this.entity = entity;
         
         this.tribeParent = null;
-
         this.tile = null;
-        this.destinationTile;
-        this.startPosition;
         this.influencedTiles = [];
-
+        
+        this.startPosition;
+        this.destinationTile;
+        this.path;
+        this.pathIndex;
+        
         // Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
         this.maxDistFromHQ = 0.5;
         this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
         this.turnSpeed = 1.0;
-        this.travelTime = 1;
+        this.travelTime = 2000.0;
         this.travelStartTime;
-
+        
         this.currentAction = null;
         this.currentState = null;
         this.prevState = null;
-
     };
 
     Human.prototype = {
@@ -66,7 +67,7 @@ pc.script.create('Human', function (context) {
 
         // Called every movement frame, lerps from one tile center to the next
         move: function(deltaTime) {
-
+            
             // Find change in time since the start, and divide by the desired total travel time
             // This will give you the percentage of the travel time covered. Send this for the lerp
             // rather than changing lerp's start position each frame.
@@ -76,42 +77,36 @@ pc.script.create('Human', function (context) {
             var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
             var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
-            var deltaVec = new pc.Vec3;
-
-            deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
-            this.entity.setPosition(deltaVec);   
-            //console.log("Start tile: " + this.startPosition);
-            //console.log("Destination tile: " + this.destinationTile.center);
-            //console.log("Current percent: " + percentTravelled);
-
+            var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
+            //var deltaVec = new pc.Vec3;
+            //deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
+            this.entity.setPosition(deltaVec);
+            
             // Once tribe is at next tile's center, movement is done.
-            if(percentTravelled >= 1){
-                this.tile.hasTribe = false;
+            if (percentTravelled >= 1) {
+                this.tile.hasHuman = false;
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
-                this.tile.hasTribe = true;
+                this.tile.hasHuman = true;
                 this.setCurrentAction(null);
                 this.chooseState();
             }
         },
 
-        setDestination: function(destination) {
-            debug.log(DEBUG.AI, "Hey we're here");
-            this.destinationTile = destination;
-            this.startPosition = this.entity.getPosition();
-            this.setCurrentAction(this.move);   
-
-            var timer = new Date();
-            this.travelStartTime = timer.getTime();
-        },
-
-        wander: function() { 
+        wander: function() {
+            if (this.tile.type.movementCost >= 0) {
+                this.goToTile(getRandom(this.tribeParent.influencedTiles));
+                //this.goToTile(getRandom(ico.tiles));
+            } else {
+                this.setDestination(this.tile.getRandomNeighbor());
+            }
+            
             //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
+            
+            /*
             var pos = this.entity.getPosition();
             var hqpos = this.tribeParent.entity.getPosition();
             var dist = distSq(pos, hqpos);
-            
-            debug.log(DEBUG.AI, dist);
             
             if (dist > this.maxDistSq) {
                 //Move towards the HQ
@@ -120,6 +115,62 @@ pc.script.create('Human', function (context) {
                 //Wander around randomly
                 this.setDestination(this.tile.getRandomNeighbor());
             }
+            */
+        },
+        
+        goToTile: function(destinationTile) {
+            this.path = dijkstras(this.tile, destinationTile);
+            if (this.path !== null) {
+                this.pathIndex = this.path.length-1; //path array starts from destination
+                
+                this.startPosition = this.entity.getPosition().clone();
+                var timer = new Date();
+                this.travelStartTime = timer.getTime();
+                
+                this.setCurrentAction(this.followPath);
+            } else {
+                this.setCurrentAction(this.wander);
+            }
+        },
+        
+        followPath: function() {
+            this.destinationTile = this.path[this.pathIndex];
+            
+            var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
+            
+            var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
+            this.entity.setPosition(deltaVec);
+            
+            // Once tribe is at next tile's center, movement is done.
+            if (percentTravelled >= 1) {
+                this.tile.hasHuman = false;
+                this.tile = this.destinationTile;
+                this.entity.setPosition(this.destinationTile.center);
+                this.tile.hasHuman = true;
+                
+                this.startPosition = this.entity.getPosition().clone();
+                var timer2 = new Date();
+                this.travelStartTime = timer2.getTime();
+                this.pathIndex--;
+            }
+            
+            if (this.pathIndex < 0) {
+                //Arrived at destination
+                this.setCurrentAction(null);
+                this.chooseState();
+            }
+        },
+        
+        setDestination: function(destination) {
+            this.destinationTile = destination;
+            this.startPosition = this.entity.getPosition().clone();
+            
+            this.setCurrentAction(this.move);   
+
+            var timer = new Date();
+            this.travelStartTime = timer.getTime();
         },
 
         setCurrentAction: function(newAction) {
@@ -129,7 +180,7 @@ pc.script.create('Human', function (context) {
 
         chooseState: function(){
             // choose which starter function to call
-            if (!this.tribeParent.isBusy && this.currentAction != this.move){
+            if (!this.tribeParent.isBusy && this.currentAction != this.move && this.currentAction != this.followPath) {
                 this.wander();
             }
         }

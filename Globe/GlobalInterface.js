@@ -83,32 +83,8 @@ pc.script.create('globalInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if(!isPaused) {
-                /*
-                var grass = 0, desert = 0, dry = 0;
-                for (var i = 0; i < ico.tiles.length; i++) {
-                    ico.tiles[i].assignType();
-
-                    switch (ico.tiles[i].type) {
-                        case TILETYPES.GRASSPLANE:
-                        grass++;
-                        break;
-
-                        case TILETYPES.DESERT:
-                        desert++;
-                        break;
-
-                        case TILETYPES.DRYPLANE:
-                        dry++;
-                        break;
-                    }
-                }
-                
-                console.log (grass + " " + dry + " " + desert);
-                */
-
+            if (!isPaused) {
                 // Update globalTime, do not update anywhere else
-
                 globalTime += dt;
                 inactiveTimer += dt;
 
@@ -122,17 +98,6 @@ pc.script.create('globalInterface', function (context) {
                     shuffleArray(this.randomTiles);
                     
                     this.init = true;
-					
-					/*
-					var s = ico.tiles[0];
-					for (var i = 1; s.type.movementCost >= 0 && i < ico.tiles.length; i++) {
-						s = ico.tiles[i]
-					}
-					var d = s.neighbora.neighbora.neighbora.neighborb.neighborc.neighborc;
-					d = ico.tiles[500];
-					var path = dijkstras(s, d);
-					console.log(path);
-					*/
                 }
 
 

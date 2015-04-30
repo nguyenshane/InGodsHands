@@ -18,7 +18,7 @@ TILETYPES = {
         minTemp: 100,
         maxTemp: 1000,
         foodVal: 0,
-		movementCost: 1,
+		movementCost: 1.5,
         color: colorBrown
     },
     
@@ -27,7 +27,7 @@ TILETYPES = {
         minTemp: 70,
         maxTemp: 100,
         foodVal: 1,
-		movementCost: 1,
+		movementCost: 1.2,
         color: colorYellow
     },
 
@@ -36,7 +36,7 @@ TILETYPES = {
         minTemp: 40,
         maxTemp: 70,
         foodVal: 2,
-		movementCost: 1,
+		movementCost: 1.0,
         color: colorGreen
     },
 
@@ -58,7 +58,7 @@ TILETYPES = {
         color: colorBlue
     },
     
-    mountainHeight: 0.1
+    mountainHeight: 0.15
 };
 
 Tile.treeStats = {
@@ -218,7 +218,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
     this.divided = false;
     this.isOcean = true;
-    this.isFault = false;
+    this.isPathable = true;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
@@ -230,7 +230,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     ico.indices.push(vertexc);
     
 	
-/*	this.update = function(dt) {
+	this.update = function(dt) {
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
         
@@ -338,7 +338,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		this.checkResourceLimits();
 	};
-*/	
+    
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
 		var temp = this.getTemperature();
@@ -432,6 +432,41 @@ function Tile(index, vertexa, vertexb, vertexc){
             return this.neighborc;
         }
     };
+
+    this.canWalkTo = function(neighbor) {
+        var oceanVertCount = 0;
+
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            for (var j = 0; j < neighbor.vertexIndices.length; ++j) {
+                if (this.vertexIndices[i] == neighbor.vertexIndices[j] && ico.vertexGraph[this.vertexIndices[i]].isOcean) {
+                    ++oceanVertCount;
+                }
+            }
+        }
+
+        if (oceanVertCount < 2) {
+            return true;
+        }
+        return false;
+    }
+
+    this.pathable = function() {
+        var volitileCount = 0;
+
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            if (ico.vertexGraph[this.vertexIndices[i]].isOcean || ico.vertexGraph[this.vertexIndices[i]].isFault) {
+                ++volitileCount;
+            }
+        }
+
+        if (volitileCount < this.vertexIndices.length) {
+            this.isPathable = true;
+        } else {
+            this.isPathable = false;
+        }
+
+        return this.isPathable;
+    }
 
     this.getLatitude = function() {
 		return pc.math.RAD_TO_DEG * (Math.atan2(this.center.y, this.center.z));
@@ -586,7 +621,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         //Sort by dist to find the ideal type
         var type = min(dists, function(v, a) {return v}, null);
         
-		this.tree = scripts.Trees.makeTree(this.center, angle, 0, size);
+		this.tree = scripts.Trees.makeTree(this.center, angle, type, size);
 		this.hasTree = true;
 		this.calculateFood();
 	};
@@ -1107,6 +1142,8 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.normals[(this.index * 9) + (i * 3) + 1] = this.normal.y;
             ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
         }
+
+
     }
 
     // This should be called after temperatures and altitudes are ever recalculated

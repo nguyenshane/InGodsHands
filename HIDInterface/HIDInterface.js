@@ -49,7 +49,7 @@ pc.script.create('HIDInterface', function (context) {
 			camera = context.root.findByName("Camera");
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 
-			console.log("THe box: " + this.stormTriggerBox.tribesInTrigger.length);
+			//console.log("The box: " + this.stormTriggerBox.tribesInTrigger.length);
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
@@ -117,7 +117,7 @@ pc.script.create('HIDInterface', function (context) {
         	// this.middleE = this.stringE.isMiddle;
         	// this.middleW = this.stringW.isMiddle;
 
-        	console.log("middle status" + this.middleT+this.middleA+this.middleP+this.middleE+this.middleW);
+        	//console.log("middle status" + this.middleT+this.middleA+this.middleP+this.middleE+this.middleW);
         },
 		
 		moved_T: function(position, distance, speed) {
