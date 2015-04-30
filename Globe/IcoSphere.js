@@ -314,6 +314,7 @@ function IcoSphere(device, radius, subdivisions) {
 	this._recalculateMesh();
 	for (var i = 0; i < this.tiles.length; i++){
 		this.tiles[i].assignType();
+		this.tiles[i].pathable();
 	}
 	
     // Set mesh data

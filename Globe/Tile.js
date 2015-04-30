@@ -218,7 +218,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
     this.divided = false;
     this.isOcean = true;
-    this.isFault = false;
+    this.isPathable = true;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
@@ -432,6 +432,41 @@ function Tile(index, vertexa, vertexb, vertexc){
             return this.neighborc;
         }
     };
+
+    this.canWalkTo = function(neighbor) {
+        var oceanVertCount = 0;
+
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            for (var j = 0; j < neighbor.vertexIndices.length; ++j) {
+                if (this.vertexIndices[i] == neighbor.vertexIndices[j] && ico.vertexGraph[this.vertexIndices[i]].isOcean) {
+                    ++oceanVertCount;
+                }
+            }
+        }
+
+        if (oceanVertCount < 2) {
+            return true;
+        }
+        return false;
+    }
+
+    this.pathable = function() {
+        var volitileCount = 0;
+
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            if (ico.vertexGraph[this.vertexIndices[i]].isOcean || ico.vertexGraph[this.vertexIndices[i]].isFault) {
+                ++volitileCount;
+            }
+        }
+
+        if (volitileCount < this.vertexIndices.length) {
+            this.isPathable = true;
+        } else {
+            this.isPathable = false;
+        }
+
+        return this.isPathable;
+    }
 
     this.getLatitude = function() {
 		return pc.math.RAD_TO_DEG * (Math.atan2(this.center.y, this.center.z));
@@ -1107,6 +1142,8 @@ function Tile(index, vertexa, vertexb, vertexc){
             ico.normals[(this.index * 9) + (i * 3) + 1] = this.normal.y;
             ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
         }
+
+
     }
 
     // This should be called after temperatures and altitudes are ever recalculated
