@@ -590,7 +590,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var localTreeDensity = localTreeCount / visitedTileCount;
 		
-		if (localTreeDensity < treeDensity) this.createTree(temperature, size);
+		//if (localTreeDensity < treeDensity) this.createTree(temperature, size);
 	};
 	
 	//Adds a tree to this tile
@@ -697,7 +697,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var localAnimalDensity = localAnimalCount / visitedTileCount;
 		
-		if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
+		//if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
 	};
 	
 	//Adds an animal to this tile
