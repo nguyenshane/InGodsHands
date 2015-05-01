@@ -2,10 +2,10 @@
 // Description: This is the Intro screen script that controls the string calibration
 ///
 
-pc.script.attribute('from_L', 'vector');
-pc.script.attribute('to_L', 'vector');
-pc.script.attribute('from_R', 'vector');
-pc.script.attribute('to_R', 'vector');
+pc.script.attribute('from_L', 'number', -0.4);
+pc.script.attribute('to_L', 'number', -0.13);
+pc.script.attribute('from_R', 'number', 0.4);
+pc.script.attribute('to_R', 'number', 0.13);
 pc.script.attribute('duration', 'number', 0.5);
 pc.script.attribute('easeIn', 'string', 'Linear');
 pc.script.attribute('easeOut', 'string', 'None');
@@ -22,9 +22,7 @@ pc.script.create('Intro', function (app) {
 		this.stringP = new pc.StringTAPEW('P');
 		this.stringE = new pc.StringTAPEW('E');
 		this.stringW = new pc.StringTAPEW('W');
-
-		this.left = {};
-		
+		this.currentPos_L, this.currentPos_R;
         
     };
 
@@ -41,25 +39,26 @@ pc.script.create('Intro', function (app) {
         	var E_R = app.root.findByName("E_R");
         	var W_L = app.root.findByName("W_L");
         	var W_R = app.root.findByName("W_R");
-            
 
-            var T_L_Tween = new startTween(this.from_L, this.to_L, this.duration, this.T_L, this.easeIn, this.easeOut, this.reverseAfter);
-            var T_R_Tween = new startTween(this.from_R, this.to_R, this.duration, this.T_R, this.easeIn, this.easeOut, this.reverseAfter);
-            var A_L_Tween = new startTween(this.from_L, this.to_L, this.duration, this.A_L, this.easeIn, this.easeOut, this.reverseAfter);
-            var A_R_Tween = new startTween(this.from_R, this.to_R, this.duration, this.A_R, this.easeIn, this.easeOut, this.reverseAfter);
-            var P_L_Tween = new startTween(this.from_L, this.to_L, this.duration, this.P_L, this.easeIn, this.easeOut, this.reverseAfter);
-            var P_R_Tween = new startTween(this.from_R, this.to_R, this.duration, this.P_R, this.easeIn, this.easeOut, this.reverseAfter);
-            var E_L_Tween = new startTween(this.from_L, this.to_L, this.duration, this.E_L, this.easeIn, this.easeOut, this.reverseAfter);
-            var E_R_Tween = new startTween(this.from_R, this.to_R, this.duration, this.E_R, this.easeIn, this.easeOut, this.reverseAfter);
-            var P_L_Tween = new startTween(this.from_L, this.to_L, this.duration, this.W_L, this.easeIn, this.easeOut, this.reverseAfter);
-            var P_R_Tween = new startTween(this.from_R, this.to_R, this.duration, this.W_R, this.easeIn, this.easeOut, this.reverseAfter);
-            
+        	startTween(this.from_L, this.to_L, this.duration, this.currentPos_L, this.reverseAfter);
+        	startTween(this.from_R, this.to_R, this.duration, this.currentPos_R, this.reverseAfter);
         },
 
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	TWEEN.update();
         	
+        	T_L.setLocalPosition(this.currentPos_L,0,0);
+			T_R.setLocalPosition(this.currentPos_R,0,0);
+			A_L.setLocalPosition(this.currentPos_L,0,0);
+			A_R.setLocalPosition(this.currentPos_R,0,0);
+			P_L.setLocalPosition(this.currentPos_L,0,0);
+			P_R.setLocalPosition(this.currentPos_R,0,0);
+			E_L.setLocalPosition(this.currentPos_L,0,0);
+			E_R.setLocalPosition(this.currentPos_R,0,0);
+			W_L.setLocalPosition(this.currentPos_L,0,0);
+			W_R.setLocalPosition(this.currentPos_R,0,0);
         },
 		
 

@@ -1232,32 +1232,25 @@ dijkstras = function(startTile, destTile) {
 	}
 }
 
-startTween = function (from, to, duration, entity, easeIn, easeOut, reverseAfter, delay) {
+startTween = function (from, to, duration, currentPos, reverseAfter) {
     var self = this;
-    var easing = TWEEN.Easing[easeIn][easeOut];
+    var easing = TWEEN.Easing.Elastic.InOut;
 
-    this.tween = new TWEEN.Tween({
+    var tween = new TWEEN.Tween({
         x: from.x,
-        y: from.y,
-        z: from.z
     })
     .to({
         x: to.x,
-        y: to.y,
-        z: to.z
-    }, self.duration * 1000)
+    }, duration * 1000)
     .easing(easing)
-    .delay(delay === undefined ? 0 : delay)
     .onUpdate(function () {
-        self.entity.setLocalPosition(this.x, this.y, this.z);
+        //console.log("entity", entity);
+        currentPos = this.x;
     })
     .onComplete(function () {
-        self.tween = null;
-        if (self.reverseAfter > 0 && !self.playingReverse) {
-            self.playingReverse = true;
-            startTween(to, from, duration, entity, easeIn, easeOut, reverseAfter, delay)
+        tween = null;
+        if (reverseAfter > 0) {
+            startTween(to, from, duration, currentPos, reverseAfter)
         } 
     }).start();
-
-    return this.tween;
 };
