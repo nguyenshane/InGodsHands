@@ -1058,6 +1058,7 @@ function max(array, key, a) {
 };
 
 // BufferLoader for Music
+/*
 function BufferLoader(context, urlList, callback) {
   this.context = context;
   this.urlList = urlList;
@@ -1065,6 +1066,7 @@ function BufferLoader(context, urlList, callback) {
   this.bufferList = new Array();
   this.loadCount = 0;
 }
+
 
 BufferLoader.prototype.loadBuffer = function(url, index) {
   // Load buffer asynchronously
@@ -1104,36 +1106,12 @@ BufferLoader.prototype.load = function() {
   for (var i = 0; i < this.urlList.length; ++i)
   this.loadBuffer(this.urlList[i], i);
 }
-
+*/
 
 // BackgroundIntensify
 
 function BackgroundIntensity(buffers, context) {
   var ctx = this;
-
-  /*buttonElement.addEventListener('click', function() {
-    ctx.playPause.call(ctx);
-  });*/
-
-  /*rangeElement.addEventListener('change', function(e) {
-    var value = parseInt(e.target.value);
-    var max = parseInt(e.target.max);
-    ctx.setIntensity(value / max);
-  });*/
-
-  //var sources = ['1-atmos.mp3', '2-swell.mp3', '3-pierce.mp3', '4-boss.mp3'];
-
-  // Load all sources.
-  /*loader = new BufferLoader(context, sources, onLoaded);
-  loader.load();
-
-  function onLoaded(buffers) {
-      // Store the buffers.
-      ctx.buffers = buffers;
-      console.log("ctx",ctx);
-    }
-   */
-
   this.context = context;
   this.buffers = buffers;
   this.sources = new Array(buffers.length);
@@ -1188,7 +1166,6 @@ BackgroundIntensity.prototype.setIntensity = function(normVal) {
   var x = value - leftNode;
   var gain1 = Math.cos(x * 0.5*Math.PI);
   var gain2 = Math.cos((1.0 - x) * 0.5*Math.PI);
-  //console.log(gain1, gain2);
   // Set the two gains accordingly.
   this.gains[leftNode].gain.value = gain1;
   // Check to make sure that there's a right node.
@@ -1254,3 +1231,33 @@ dijkstras = function(startTile, destTile) {
         return null; //no path found
 	}
 }
+
+startTween = function (from, to, duration, entity, easeIn, easeOut, reverseAfter, delay) {
+    var self = this;
+    var easing = TWEEN.Easing[easeIn][easeOut];
+
+    this.tween = new TWEEN.Tween({
+        x: from.x,
+        y: from.y,
+        z: from.z
+    })
+    .to({
+        x: to.x,
+        y: to.y,
+        z: to.z
+    }, self.duration * 1000)
+    .easing(easing)
+    .delay(delay === undefined ? 0 : delay)
+    .onUpdate(function () {
+        self.entity.setLocalPosition(this.x, this.y, this.z);
+    })
+    .onComplete(function () {
+        self.tween = null;
+        if (self.reverseAfter > 0 && !self.playingReverse) {
+            self.playingReverse = true;
+            startTween(to, from, duration, entity, easeIn, easeOut, reverseAfter, delay)
+        } 
+    }).start();
+
+    return this.tween;
+};
