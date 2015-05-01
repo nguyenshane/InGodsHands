@@ -1205,7 +1205,7 @@ dijkstras = function(startTile, destTile) {
         var neighbors = tile.getNeighbors();
         for (var n = 0; n < neighbors.length; n++) {
 			var next = neighbors[n];
-			if (next.type.movementCost >= 0) { //ignore impassable terrain (negative cost)
+			if (next.type.movementCost >= 0/*next.isPathable <-- playcanvas crashes when I use this instead...*/) { //ignore impassable terrain (negative cost)
 				var nextDist = (next.type.movementCost + tile.type.movementCost) / 2; //might be a good idea to precompute this and update it whenever tile type is changed
 				var newCost = dist[tile.index] + nextDist;
 
