@@ -1237,15 +1237,19 @@ startTween = function (from, to, duration, currentPos, reverseAfter) {
     var easing = TWEEN.Easing.Elastic.InOut;
 
     var tween = new TWEEN.Tween({
-        x: from.x,
+        L: from,
+        R: -from
+
     })
     .to({
-        x: to.x,
+        L: to,
+        R: -to
     }, duration * 1000)
     .easing(easing)
     .onUpdate(function () {
-        //console.log("entity", entity);
-        currentPos = this.x;
+        currentPos.L = this.L;
+        currentPos.R = this.R;
+        //console.log("currentPos", currentPos);
     })
     .onComplete(function () {
         tween = null;
