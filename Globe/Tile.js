@@ -176,6 +176,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.localRotNormal;
 	this.localRotCenter;
     
+    this.isOcean = true;
+    this.isPathable = true;
+    
     this.type = TILETYPES.GRASSPLANE;
     this.temperature;
     this.baseFood = Math.floor(Math.random() * (5 - 1)) + 1;
@@ -217,8 +220,6 @@ function Tile(index, vertexa, vertexb, vertexc){
     this.stormDelayTimer = 0;
 	
     this.divided = false;
-    this.isOcean = true;
-    this.isPathable = true;
     
     this.vertexIndices[0] = vertexa;
     this.vertexIndices[1] = vertexb;
@@ -345,7 +346,7 @@ function Tile(index, vertexa, vertexb, vertexc){
         var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
-		this.spawnAnimal(temp, 3.0);
+		this.spawnAnimal(temp, 2.0);
 		
 		var rh = (this.humidity / this.maxHumidity) / (lerp(0, 150, temp) * Tile.tempInfluenceMultiplier + 1.0);
 		if (this.humidity < 10.0) rh = this.humidity / this.maxHumidity;
@@ -700,7 +701,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 		
 		var localAnimalDensity = localAnimalCount / visitedTileCount;
 		
-		//if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
+		if (localAnimalDensity < animalDensity) this.createAnimal(temperature, size);
 	};
 	
 	//Adds an animal to this tile
@@ -726,7 +727,9 @@ function Tile(index, vertexa, vertexb, vertexc){
         var type = min(dists, function(v, a) {return v}, null);
         
 		this.animal = scripts.Animals.makeAnimal(this.center, angle, type, size);
+        this.animal.tile = this;
 		this.hasAnimal = true;
+        this.animal.script.Animal.start();
 		this.calculateFood();
 	};
 	
