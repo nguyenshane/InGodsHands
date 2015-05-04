@@ -49,7 +49,8 @@ pc.script.create('Animals', function (context) {
         
         makeAnimal: function(position, rotation, type, size) {
             var animalOrig, stats;
-            switch (type) {
+            // Temporarily only doing the first type, cause Nick is making new optimized models
+            switch (0) {
                 case 0:
                     animalOrig = this.animals.findByName("fox");
 					stats = Tile.animalStats.fox;
