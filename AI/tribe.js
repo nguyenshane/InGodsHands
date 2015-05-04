@@ -113,11 +113,11 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
-            //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
+            //console.log(" " + dt);
 
             if (!isPaused) {
                 if (!this.isBusy) {
-                    this.increasePopulationTimer += dt;
+                    //this.increasePopulationTimer += dt;
                     this.runRuleList();
                 } else {
                     this.currentAction(dt);
@@ -142,7 +142,7 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                if (this.increasePopulationTimer >= 50){
+                if (this.increasePopulationTimer >= 5){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -441,6 +441,7 @@ pc.script.create('tribe', function (context) {
         },
 
         increasePopulation: function() {
+            console.log("increase Population");
             ++this.population;
             if (this.population > this.MAXPOPULATION){
                 addTribe();
