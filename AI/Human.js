@@ -94,11 +94,14 @@ pc.script.create('Human', function (context) {
         },
 
         wander: function() {
+            var randomInfluencedTile = getRandom(this.tribeParent.influencedTiles);
+            var randomNeighbor = this.tile.getRandomNeighbor();
+
             if (this.tile.type.movementCost >= 0) {
-                this.goToTile(getRandom(this.tribeParent.influencedTiles));
+                this.goToTile(randomInfluencedTile);
                 //this.goToTile(getRandom(ico.tiles));
             } else {
-                this.setDestination(this.tile.getRandomNeighbor());
+                this.setDestination(randomNeighbor);
             }
             
             //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
