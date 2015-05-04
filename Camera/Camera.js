@@ -19,7 +19,9 @@ pc.script.create('Camera', function (context) {
             //this.stringW = context.root._children[0].script.HIDInterface.stringW;
             //this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
 
-			this.bgplane = this.entity.findByName("Plane");
+            console.log("I'm PRINTING");
+
+			//this.bgplane = this.entity.findByName("Plane");
             this.aura1 = this.entity.findByName("Aura1");
             this.aura2 = this.entity.findByName("Aura2");
             this.aura3 = this.entity.findByName("Aura3");
@@ -87,7 +89,7 @@ pc.script.create('Camera', function (context) {
 
 	
 			// Rotate plane background
-			this.bgplane.rotateLocal(0, dt*-2, 0);
+			//this.bgplane.rotateLocal(0, dt*-2, 0);
             // Rotate belief auras
             this.aura1.rotateLocal(0, dt*4, 0);
             this.aura2.rotateLocal(0, dt*8, 0);

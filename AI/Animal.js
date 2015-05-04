@@ -15,7 +15,7 @@ pc.script.create('Animal', function (context) {
         // Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
         this.turnSpeed = 1.0;
-        this.travelTime = 1200.0;
+        this.travelTime = 2000.0;
         this.travelStartTime;
         
         this.currentAction = null;
