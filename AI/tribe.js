@@ -524,6 +524,7 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new needTemperatureChange());
             this.rules.push(new wantToDenounceInactive());
             this.rules.push(new wantToDenounceNoSun());
+            this.rules.push(new needToAdapt());
         },
 
         runRuleList: function() { 
