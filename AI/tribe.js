@@ -140,7 +140,7 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                if (this.increasePopulationTimer >= 5){
+                if (this.increasePopulationTimer >= 30){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -466,7 +466,6 @@ pc.script.create('tribe', function (context) {
         },
 
         increasePopulation: function() {
-            console.log("increase Population");
             ++this.population;
             if (this.population > this.MAXPOPULATION){
                 addTribe();
