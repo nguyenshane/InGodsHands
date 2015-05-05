@@ -169,6 +169,43 @@ wantToMigrate.prototype = {
             //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    
 };
+/* 
+ *  needToAdapt determines whether the tribe wants to move south
+ *  above equator. This is a spiteful rule
+ *    
+ */
+
+var needToAdapt = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 5;
+    this.conditions = [allConditions.isTileTemperatureNotIdeal,
+                       allConditions.isSpiteful];
+};
+
+needToAdapt.prototype = {
+    testConditions: function(tribe){
+        console.log("WE're in needToAdapt");
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        //console.log("Tribe's tile: " + tribe.destinationTile);
+
+        this.weight--;
+        tribe.startAdapting();
+
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+            moveS.script.AudioController.sound_TribeMov();
+            //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
+    }    
+};
 
 /* 
  *  needTemperatureChange means the tribe will pray to the player for rain or sun
