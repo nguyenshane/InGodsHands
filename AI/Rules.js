@@ -186,7 +186,6 @@ var needToAdapt = function() {
 
 needToAdapt.prototype = {
     testConditions: function(tribe){
-        console.log("WE're in needToAdapt");
         for(var i = 0; i < this.conditions.length; i++){
             if(!this.conditions[i](tribe)){
                 return false;
@@ -196,7 +195,7 @@ needToAdapt.prototype = {
     },
     
     consequence: function(tribe){
-        //console.log("Tribe's tile: " + tribe.destinationTile);
+        console.log("We shall just adapt to the temperature!");
 
         this.weight--;
         tribe.startAdapting();
@@ -235,7 +234,7 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Need temperature change fired");
-        tribe.startPrayForTemperature(10);
+        tribe.startPrayForTemperature(15);
     }    
 };
 
