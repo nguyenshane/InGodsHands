@@ -23,10 +23,14 @@ pc.script.create('Human', function (context) {
         this.currentAction = null;
         this.currentState = null;
         this.prevState = null;
+
+        // this.entity.model.model.meshInstances[0].material.diffuse = this.tribeParent.tribeColor;//new pc.Color(0, 234, 255);
+        // this.entity.model.model.meshInstances[0].material.emissive = this.tribeParent.tribeColor;//new pc.Color(0, 234, 255);
+        // this.entity.model.model.meshInstances[0].material.update();
+        // console.log(this.entity.model.model.meshInstances[0].material.emissive);
     };
 
     Human.prototype = {
-
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if (!isPaused) {
@@ -47,17 +51,20 @@ pc.script.create('Human', function (context) {
                     this.entity.setEulerAngles(this.rotation);
                     //this.entity.setEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
                 }
-            }
+            } 
         },
 
         start: function() {
             if(this.tribeParent != null){
+                this.entity.model.model.meshInstances[0].material.diffuse = this.tribeParent.tribeColor;//new pc.Color(0, 234, 255);
+                this.entity.model.model.meshInstances[0].material.emissive = this.tribeParent.tribeColor;//new pc.Color(0, 234, 255);
+                this.entity.model.model.meshInstances[0].material.update();
                 this.tile = this.tribeParent.tile.neighbora; 
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.chooseState();
-                //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
+                //this.setDestination(this.tile.neighbora.neighborb.neighbora);
             }
         },
 

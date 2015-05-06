@@ -2,6 +2,7 @@ function addTribe () {
     for (var i = 0; i < tribes.length; i++) {
         if (!tribes[i].enabled) {
             tribes[i].enabled = true;
+            //tribes[i].script.tribe.setTribeColor(i);
             break;
         }
     }
@@ -58,7 +59,8 @@ pc.script.create('tribe', function (context) {
     
         // Variables for lerp, in milliseconds
 
-        //this.foodPopTimer = 0;
+        //this.tribeColor = new pc.Color();
+
         this.travelTime = 3000;
         this.travelStartTime;
 
@@ -99,6 +101,11 @@ pc.script.create('tribe', function (context) {
 	
             this.audio = context.root._children[0].script.AudioController;
 			
+            //this.tribeColor = new pc.Color(255, 0, 0);
+            //this.setTribeColor(tribes);
+            for (var i = 0; i < tribes.length; i++){
+                if (tribes[i].enabled) tribes[i].script.tribe.setTribeColor(i);
+            }
             this.addHuman();
 
 			var t2 = new Date();
@@ -140,7 +147,7 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                if (this.increasePopulationTimer >= 30){
+                if (this.increasePopulationTimer >= 5){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -516,6 +523,16 @@ pc.script.create('tribe', function (context) {
             this.humans.push(newHuman);
             newHuman.script.Human.start();
             newHuman.script.Human.chooseState();
+        },
+
+        setTribeColor: function(tribesIndex) {
+            // 255.0, 100.0, 9.0
+            if (tribesIndex === 0){
+                this.tribeColor = new pc.Color(0, 234, 255);
+            } else {
+                this.tribeColor = new pc.Color(0, 100, 100);
+            }
+            //if (tribeNum > 1) this.tribeColor = new pc.Color(0, 234, 255);
         },
 
         // Constructs the NPC's list of rules
