@@ -17,16 +17,12 @@ pc.script.create('Intro', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 
-		this.stringT = context.root._children[0].script.HIDInterface.stringT;
-		this.stringA = context.root._children[0].script.HIDInterface.stringA;
-		this.stringP = context.root._children[0].script.HIDInterface.stringP;
-		this.stringE = context.root._children[0].script.HIDInterface.stringE;
-		this.stringW = context.root._children[0].script.HIDInterface.stringW;
+		
 		
 		this.currentPos = {L:0, R:0};
 
 		this.T_L,this.T_R,this.A_L,this.A_R,this.P_L,this.P_R,this.E_L,this.E_R,this.W_L,this.W_R;
-        this.game = context.root.findByName("Shell");
+        //this.game = context.root.findByName("Shell");
     };
 
     Intro.prototype = {
@@ -36,6 +32,13 @@ pc.script.create('Intro', function (context) {
                 365042, // intro
                 350057 // Rv1-stable
             ];
+
+            console.log('context', context);
+			this.stringT = context.root._children[0].script.HIDInterface.stringT;
+			this.stringA = context.root._children[0].script.HIDInterface.stringA;
+			this.stringP = context.root._children[0].script.HIDInterface.stringP;
+			this.stringE = context.root._children[0].script.HIDInterface.stringE;
+			this.stringW = context.root._children[0].script.HIDInterface.stringW;
 
         	this.T_L = context.root.findByName("T_L");
         	this.T_R = context.root.findByName("T_R");

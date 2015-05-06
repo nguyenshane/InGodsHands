@@ -137,10 +137,10 @@ pc.script.create('AudioController', function (context) {
 		lerpMusic: function(){
 				timer = new Date();
             	var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
-            	console.log("timeSinceStartedLerp " + timeSinceStartedLerp + " lerpStartTime " + lerpStartTime);
+            	//console.log("timeSinceStartedLerp " + timeSinceStartedLerp + " lerpStartTime " + lerpStartTime);
         		var percentLerped = timeSinceStartedLerp / 10000;
         		this.musicLayer = pc.math.lerp( this.musicLayerStart, this.targetMusicLayer, percentLerped );
-        		console.log("musicLayer: " + this.musicLayer + " targetMusicLayer: " + this.targetMusicLayer);
+        		//console.log("musicLayer: " + this.musicLayer + " targetMusicLayer: " + this.targetMusicLayer);
 		},
 
 		sound_T: function(position, distance, speed) {
