@@ -12,12 +12,14 @@ pc.script.create('Human', function (context) {
         this.path;
         this.pathIndex;
         
-        // Variables for lerp, in milliseconds
+		this.strength = 1.0;
+		
+		this.turnSpeed = 1.0;
+		this.moveSpeed = 1.0;
+		
+		// Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
-        this.maxDistFromHQ = 0.5;
-        this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
-        this.turnSpeed = 1.0;
-        this.travelTime = 2000.0;
+		this.travelTime = 2000.0 / this.moveSpeed;
         this.travelStartTime;
         
         this.currentAction = null;
@@ -103,22 +105,6 @@ pc.script.create('Human', function (context) {
             } else {
                 this.setDestination(randomNeighbor);
             }
-            
-            //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
-            
-            /*
-            var pos = this.entity.getPosition();
-            var hqpos = this.tribeParent.entity.getPosition();
-            var dist = distSq(pos, hqpos);
-            
-            if (dist > this.maxDistSq) {
-                //Move towards the HQ
-                this.setDestination(this.tile.getClosestNeighbor(hqpos));
-            } else {
-                //Wander around randomly
-                this.setDestination(this.tile.getRandomNeighbor());
-            }
-            */
         },
         
         goToTile: function(destinationTile) {

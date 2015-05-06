@@ -434,6 +434,13 @@ function Tile(index, vertexa, vertexb, vertexc){
             return this.neighborc;
         }
     };
+	
+	this.isAdjacent = function(tile) {
+		if (this.neighbora.equals(tile)) return true;
+		if (this.neighborb.equals(tile)) return true;
+		if (this.neighborc.equals(tile)) return true;
+		return false;
+	};
 
     this.canWalkTo = function(neighbor) {
         var oceanVertCount = 0;
