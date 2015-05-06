@@ -17,11 +17,11 @@ pc.script.create('Intro', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 
-		this.stringT = new pc.StringTAPEW('T');
-		this.stringA = new pc.StringTAPEW('A');
-		this.stringP = new pc.StringTAPEW('P');
-		this.stringE = new pc.StringTAPEW('E');
-		this.stringW = new pc.StringTAPEW('W');
+		this.stringT = context.root._children[0].script.HIDInterface.stringT;
+		this.stringA = context.root._children[0].script.HIDInterface.stringA;
+		this.stringP = context.root._children[0].script.HIDInterface.stringP;
+		this.stringE = context.root._children[0].script.HIDInterface.stringE;
+		this.stringW = context.root._children[0].script.HIDInterface.stringW;
 		
 		this.currentPos = {L:0, R:0};
 
@@ -52,6 +52,15 @@ pc.script.create('Intro', function (context) {
         	//startTween(this.from_R, this.to_R, this.duration, this.currentPos, this.reverseAfter);
         },
 
+        onActivate: function() {
+        	this.entity.enabled = true;
+        },
+
+        onDeactivate: function() {
+        	this.entity.enabled = false;
+
+        },
+
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
         	TWEEN.update();
@@ -64,7 +73,8 @@ pc.script.create('Intro', function (context) {
 
         	if(this.middleT && this.middleA	&& this.middleP	&& this.middleE	&& this.middleW) {
         		console.log("This will send to new scene");
-        		this.game.script.game.completeLevel(0);
+        		//this.game.script.game.completeLevel(0);
+        		this.onDeactivate();
         	}
 
         	var T_currentPos = this.T_L.getLocalPosition();
