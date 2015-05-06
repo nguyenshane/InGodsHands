@@ -11,10 +11,16 @@ pc.script.create('AudioController', function (context) {
 		this.musicBuffer = [];
 		this.musicLayer = 0.66;
 		this.prevMusicLayer = this.musicLayer;
+		this.musicLayerStart = this.musicLayer;
 		this.targetMusicLayer = 0.66;
 		this.direction, this.distance, this.speed = 0;
 		this.recentlyPaused = false;
     };
+
+  		var lerpStartTime = 0.0;
+  		var timer = 0.0;
+  		var timerTwo = 0.0;
+  		var changeMusic = false;
 
     AudioController.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -51,9 +57,21 @@ pc.script.create('AudioController', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-        
 
         if(!isPaused){
+        		this.dynamicMusic();
+            }
+
+            else{
+                this.prevMusicLayer = this.musicLayer;
+                this.musicLayer = .66;
+                this.backgroundmusic.setIntensity(this.musicLayer);
+                this.recentlyPaused = true;
+            }
+        },
+		
+
+		dynamicMusic: function(){
 
         	if(this.recentlyPaused){
 		            this.musicLayer = this.prevMusicLayer;
@@ -76,38 +94,55 @@ pc.script.create('AudioController', function (context) {
             }
 
             // set the target music layer based on belief change.
-            if (totalBelief > prevTotalBelief){
-                this.targetMusicLayer = 1;
-            } else if (totalBelief < prevTotalBelief){
-            	this.targetMusicLayer = .33;
-            } else if (this.targetMusicLayer === this.musicLayer){
-            	this.targetMusicLayer = .66;
+
+           if(!changeMusic){
+	            if (totalBelief > prevTotalBelief){
+	            	changeMusic = true;
+	            	timerTwo = new Date();
+	            	this.musicLayerStart = this.musicLayer;
+	            	lerpStartTime = timerTwo.getTime();
+	                this.targetMusicLayer = 1;
+	            } else if (totalBelief < prevTotalBelief){
+	            	changeMusic = true;
+	            	timerTwo = new Date();
+	            	this.musicLayerStart = this.musicLayer;
+	            	lerpStartTime = timerTwo.getTime();
+	            	this.targetMusicLayer = .33;
+	            } else if (this.targetMusicLayer === this.musicLayer){
+	            	
+	            	this.targetMusicLayer = .66;
+
+	            }    
+	        }
+
+              if(this.musicLayer == this.targetMusicLayer){
+            	changeMusic = false;
             }
 
 			// start shifting towards correct music layer
             if ((this.targetMusicLayer < this.musicLayer) && (this.musicLayer > 0.33)){
-            	this.musicLayer -= 0.005;
+            	 this.lerpMusic();
             	if (this.musicLayer < 0.33) this.musicLayer = 0.33;
             } else if ((this.targetMusicLayer > this.musicLayer) && (this.musicLayer < 1)){
-            	this.musicLayer += 0.005;
+           		 this.lerpMusic();
             	if (this.musicLayer > 1) this.musicLayer = 1;
-            }
+            } 
 
             //  console.log("totalBelief: ", totalBelief);
             // console.log("prevTotalBelief: ", prevTotalBelief);
             // // have music layer shift towards targetMusicLayer
             this.backgroundmusic.setIntensity(this.musicLayer);
+		},
 
-            }
+		lerpMusic: function(){
+				timer = new Date();
+            	var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
+            	console.log("timeSinceStartedLerp " + timeSinceStartedLerp + " lerpStartTime " + lerpStartTime);
+        		var percentLerped = timeSinceStartedLerp / 10000;
+        		this.musicLayer = pc.math.lerp( this.musicLayerStart, this.targetMusicLayer, percentLerped );
+        		console.log("musicLayer: " + this.musicLayer + " targetMusicLayer: " + this.targetMusicLayer);
+		},
 
-            else{
-                this.prevMusicLayer = this.musicLayer;
-                this.musicLayer = .66;
-                this.backgroundmusic.setIntensity(this.musicLayer);
-                this.recentlyPaused = true;
-            }
-        },
-		
 		sound_T: function(position, distance, speed) {
 			//console.log("Play sound string T");
 			

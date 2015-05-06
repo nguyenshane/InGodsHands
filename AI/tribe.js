@@ -49,6 +49,7 @@ pc.script.create('tribe', function (context) {
         this.prayerTimer = 0;
         this.cowerTimer = 0;
         this.denounceTimer = 0;
+        this.adaptTimer = 0;
         this.praiseTimer = 0;
         this.noSunTimer = 0;
         
@@ -113,11 +114,11 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
-            //console.log("Tribe is busy? " + this.tile.index + " " + this.isBusy);
+            //console.log(" " + dt);
 
             if (!isPaused) {
                 if (!this.isBusy) {
-                    this.increasePopulationTimer += dt;
+                    //this.increasePopulationTimer += dt;
                     this.runRuleList();
                 } else {
                     this.currentAction(dt);
@@ -130,9 +131,6 @@ pc.script.create('tribe', function (context) {
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
 
-                // God inaction timer goes up so long as God doesn't act (Duh)
-                //this.godInactionTimer += dt;
-
                 // Increase no sun timer whenever tribe doesn't have sun
                 if(!this.inSun){
                     this.noSunTimer += dt;
@@ -142,7 +140,7 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                if (this.increasePopulationTimer >= 50){
+                if (this.increasePopulationTimer >= 30){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -376,7 +374,7 @@ pc.script.create('tribe', function (context) {
         },
 
         startDenouncing: function() {
-            this.denounceTimer = 10;
+            this.denounceTimer = 15;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
@@ -391,6 +389,33 @@ pc.script.create('tribe', function (context) {
             }
             
             this.denounceTimer -= deltaTime;
+        },
+
+        // Tribe adapts to new temperature when ignored by god
+        startAdapting: function() {
+            this.adaptTimer = 10;
+            this.setCurrentAction(this.adapt);
+            this.isBusy = true;
+            if(this.currTileTemperature < this.idealTemperature - 5){
+                this.idealTemperature -= 5;
+            } else if(this.currTileTemperature > this.idealTemperature + 5){
+                this.idealTemperature += 5;
+            }
+            this.population--;
+            //CHANGE THIS WHEN WE GET SOUND
+            this.audio.sound_TribeDenounce();
+        },
+
+        adapt: function(deltaTime) {
+            if(this.adaptTimer <= 0){
+                //console.log("ADAPTED TO TEMP");
+                this.idealTemperature 
+                this.decreaseBelief();
+                this.adaptTimer = 0;
+                this.isBusy = false;
+            }
+            
+            this.adaptTimer -= deltaTime;
         },
 
         /////////////////////////////////
@@ -499,6 +524,7 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new needTemperatureChange());
             this.rules.push(new wantToDenounceInactive());
             this.rules.push(new wantToDenounceNoSun());
+            this.rules.push(new needToAdapt());
         },
 
         runRuleList: function() { 
