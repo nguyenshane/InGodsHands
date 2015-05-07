@@ -308,7 +308,7 @@ void doEncoderB_P(){
 // Interrupt on A changing state
 void doEncoderA_E(){
   // debounce
-  //if ( rotating_E ) delay (1);  // wait a little until the bouncing is done
+  if ( rotating_E ) delay (1);  // wait a little until the bouncing is done
 
   // Test transition, did things really change? 
   if( digitalRead(encoderPinA_E) != A_set_E ) {  // debounce once more
@@ -324,7 +324,7 @@ void doEncoderA_E(){
 
 // Interrupt on B changing state, same as A above
 void doEncoderB_E(){
-  //if ( rotating_E ) delay (1);
+  if ( rotating_E ) delay (1);
   if( digitalRead(encoderPinB_E) != B_set_E ) {
     B_set_E = !B_set_E;
     //  adjust counter - 1 if B leads A
@@ -355,7 +355,7 @@ void doEncoderA_W(){
 
 // Interrupt on B changing state, same as A above
 void doEncoderB_W(){
-  if ( rotating_W ) delay (1);awjiv
+  if ( rotating_W ) delay (1);
   if( digitalRead(encoderPinB_W) != B_set_W ) {
     B_set_W = !B_set_W;
     //  adjust counter - 1 if B leads A

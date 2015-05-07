@@ -527,6 +527,7 @@ pc.script.create('tribe', function (context) {
             this.humans.push(newHuman);
             newHuman.script.Human.start();
             newHuman.script.Human.chooseState();
+            //newHuman.script.Human.setAnimState("idle");
         },
 
         setTribeColor: function(tribesIndex) {

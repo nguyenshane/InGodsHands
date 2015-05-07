@@ -3,19 +3,24 @@ pc.script.create('Animal', function (context) {
     var Animal = function (entity) {
         this.entity = entity;
         
-        this.tribeParent = null;
         this.tile = null;
-        this.influencedTiles = [];
         
         this.startPosition;
         this.destinationTile;
         this.path;
         this.pathIndex;
+		
+		this.maxFood = 12.0;
+		this.food = this.maxFood * pc.math.random(0.5, 0.9);
+		this.foodConsumption = 0.1;
+		
+		this.strength = 1.0;
         
-        // Variables for lerp, in milliseconds
-        this.foodPopTimer = 0;
         this.turnSpeed = 1.0;
-        this.travelTime = 2000.0;
+		this.moveSpeed = 1.0;
+		
+		// Variables for lerp, in milliseconds
+        this.travelTime = 2000.0 / this.moveSpeed;
         this.travelStartTime;
         
         this.currentAction = null;
@@ -46,6 +51,8 @@ pc.script.create('Animal', function (context) {
                     this.entity.rotateLocal(0, -90, 0);
                     //this.entity.setEulerAngles(this.rotation.x, this.rotation.y - 90, this.rotation.z);
                 }
+				
+				this.food -= this.foodConsumption * dt;
             }
         },
 
@@ -62,7 +69,7 @@ pc.script.create('Animal', function (context) {
         //////////////////////////////////
 
         // Called every movement frame, lerps from one tile center to the next
-        move: function(deltaTime) {
+        move: function() {
             
             // Find change in time since the start, and divide by the desired total travel time
             // This will give you the percentage of the travel time covered. Send this for the lerp
@@ -89,6 +96,28 @@ pc.script.create('Animal', function (context) {
                 this.chooseState();
             }
         },
+		
+		//Returns to previous state after moving
+		moveOnce: function() {
+			this.destinationTile = this.path[this.pathIndex];
+			
+			var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
+            
+            var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
+            this.entity.setPosition(deltaVec);
+            
+            if (percentTravelled >= 1) {
+                this.tile.hasAnimal = false;
+                this.tile = this.destinationTile;
+                this.entity.setPosition(this.destinationTile.center);
+                this.tile.hasAnimal = true;
+                this.tile.animal = this.entity;
+				this.pathIndex--;
+                this.setCurrentAction(this.previousAction);
+            }
+		},
 
         wander: function() {
             if (this.tile.type.movementCost >= 0) {
@@ -98,25 +127,31 @@ pc.script.create('Animal', function (context) {
             }
         },
         
-        follow: function(entity) {
+        follow: function(object) {
+			this.target = object;
+			this.targetTile = this.target.tile;
+			this.setPath(this.target, this.followTarget);
         },
+		
+		followTarget: function() {
+			if (this.tile.isAdjacent(this.targetTile)) {
+				this.attack(this.target);
+				this.chooseState();
+				return;
+			}
+			
+			if (this.target.tile.index !== this.targetTile.index) {
+				this.setPath(this.target, this.moveOnce); //Target has moved, calculate a new path
+			}
+			
+			this.setCurrentAction(this.moveOnce);
+		},
         
-        attack: function(entity) {
+        attack: function(object) {
         },
         
         goToTile: function(destinationTile) {
-            this.path = dijkstras(this.tile, destinationTile);
-            if (this.path !== null) {
-                this.pathIndex = this.path.length-1; //path array starts from destination
-                
-                this.startPosition = this.entity.getPosition().clone();
-                var timer = new Date();
-                this.travelStartTime = timer.getTime();
-                
-                this.setCurrentAction(this.followPath);
-            } else {
-                //this.setCurrentAction(this.wander);
-            }
+			this.setPath(destinationTile, this.followPath);
         },
         
         followPath: function() {
@@ -159,6 +194,19 @@ pc.script.create('Animal', function (context) {
             var timer = new Date();
             this.travelStartTime = timer.getTime();
         },
+		
+		setPath: function(destination, action) {
+			this.path = dijkstras(this.tile, destination);
+            if (this.path !== null) {
+                this.pathIndex = this.path.length-1; //path array starts from destination
+                
+                this.startPosition = this.entity.getPosition().clone();
+                var timer = new Date();
+                this.travelStartTime = timer.getTime();
+                
+                this.setCurrentAction(action);
+            }
+		},
 
         setCurrentAction: function(newAction) {
             this.previousAction = this.currentAction;

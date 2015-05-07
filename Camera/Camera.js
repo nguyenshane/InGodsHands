@@ -34,7 +34,7 @@ pc.script.create('Camera', function (context) {
         
         move_W: function(position, distance, speed) {
             console.log('move_W', position, distance, speed);
-            
+            if(!isPaused){
     			if(position>0) {
     			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
                     //this.orbitAngle++;
@@ -51,7 +51,7 @@ pc.script.create('Camera', function (context) {
                     this.rotationSpeed-=0.15;
                     this.lastRotationSpeed = this.rotationSpeed;
                 }
-
+            }
 		},
 
         // Called every frame, dt is time in seconds since last update

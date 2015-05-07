@@ -1,8 +1,21 @@
 pc.script.create('Human', function (context) {
+    // Animation states
+    var states = {
+        idle: {
+            animation: 'idle2'
+        },
+        walk: {
+            animation: 'humanwalk'
+        }
+    };
+
     // Creates a new Human instance
     var Human = function (entity) {
         this.entity = entity;
         
+        this.blendTime = 0.2;
+        //this.setAnimState('idle')
+
         this.tribeParent = null;
         this.tile = null;
         this.influencedTiles = [];
@@ -12,12 +25,14 @@ pc.script.create('Human', function (context) {
         this.path;
         this.pathIndex;
         
-        // Variables for lerp, in milliseconds
+		this.strength = 1.0;
+		
+		this.turnSpeed = 1.0;
+		this.moveSpeed = 1.0;
+		
+		// Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
-        this.maxDistFromHQ = 0.5;
-        this.maxDistSq = this.maxDistFromHQ*this.maxDistFromHQ;
-        this.turnSpeed = 1.0;
-        this.travelTime = 2000.0;
+		this.travelTime = 2000.0 / this.moveSpeed;
         this.travelStartTime;
         
         this.currentAction = null;
@@ -110,22 +125,6 @@ pc.script.create('Human', function (context) {
             } else {
                 this.setDestination(randomNeighbor);
             }
-            
-            //this.setDestination(this.tribeParent.influencedTiles[Math.floor(Math.random() * this.tribeParent.influencedTiles.length)]);
-            
-            /*
-            var pos = this.entity.getPosition();
-            var hqpos = this.tribeParent.entity.getPosition();
-            var dist = distSq(pos, hqpos);
-            
-            if (dist > this.maxDistSq) {
-                //Move towards the HQ
-                this.setDestination(this.tile.getClosestNeighbor(hqpos));
-            } else {
-                //Wander around randomly
-                this.setDestination(this.tile.getRandomNeighbor());
-            }
-            */
         },
         
         goToTile: function(destinationTile) {
@@ -193,8 +192,13 @@ pc.script.create('Human', function (context) {
             if (!this.tribeParent.isBusy && this.currentAction != this.move && this.currentAction != this.followPath) {
                 this.wander();
             }
-        }
+        },
 
+        setAnimState: function(state){
+            this.state = state;
+            // Set animation and blend from previous animation over 0.2 seconds
+            this.entity.animation.play(states[state].animation, this.blendTime);
+        }
         
     };
 

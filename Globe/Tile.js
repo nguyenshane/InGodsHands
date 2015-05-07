@@ -434,6 +434,13 @@ function Tile(index, vertexa, vertexb, vertexc){
             return this.neighborc;
         }
     };
+	
+	this.isAdjacent = function(tile) {
+		if (this.neighbora.equals(tile)) return true;
+		if (this.neighborb.equals(tile)) return true;
+		if (this.neighborc.equals(tile)) return true;
+		return false;
+	};
 
     this.canWalkTo = function(neighbor) {
         var oceanVertCount = 0;
@@ -597,8 +604,6 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Adds a tree to this tile
 	this.createTree = function(temperature, size) {
-        
-        console.log("Making a tree");
         //position/angle now overridden in the reposition() function below
 		var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
 		normal.normalize();
@@ -1143,13 +1148,16 @@ function Tile(index, vertexa, vertexb, vertexc){
         this.calculateNormal();
         this.calculateRotationVectors();
 
+		this.isOcean = false;
         for (var i = 0; i < this.vertexIndices.length; ++i) {
             ico.normals[(this.index * 9) + (i * 3) + 0] = this.normal.x;
             ico.normals[(this.index * 9) + (i * 3) + 1] = this.normal.y;
             ico.normals[(this.index * 9) + (i * 3) + 2] = this.normal.z;
+			
+			if (ico.vertexGraph[this.vertexIndices[i]].isOcean) this.isOcean = true;
         }
 
-
+		this.assignType();
     }
 
     // This should be called after temperatures and altitudes are ever recalculated
