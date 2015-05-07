@@ -40,7 +40,7 @@ pc.script.create('game', function (context) {
     
             // Create a request for a Pack, using the Pack GUID as the identifier.
             var request = new pc.resources.PackRequest(pack);
-            
+            console.log('request',request);
             // Make the request through the Resource Loader
             context.loader.request(request).then(function (resources) {
                 // resources[0] is a loaded pc.fw.Pack object

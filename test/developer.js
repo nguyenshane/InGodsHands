@@ -628,6 +628,15 @@ pc.script.create('developer', function (context) {
               else{
                 this.positionE = 1;
               }
+
+
+             //W
+               if(this.sliderWDistance < 0 ){
+                this.positionW = -1;
+              }
+              else{
+                this.positionW = 1;
+              }
         },
 
         addTemperature: function(){
@@ -719,7 +728,7 @@ pc.script.create('developer', function (context) {
               this.sendToMove_A();
               this.sendToMove_P();
               this.sendToMove_E();
-              this.sendToMove_W();
+              this.sendToMoving_W();
             }
         },
 
@@ -840,7 +849,7 @@ pc.script.create('developer', function (context) {
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'move_W', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moving_W', position, distance, speed);
 
                             console.log("pullStartTime " + pullStartTimeW);
                             console.log("Time " + this.time);
@@ -926,18 +935,18 @@ pc.script.create('developer', function (context) {
                         }
         },
 
-        sendToMove_W: function(){
+        sendToMoving_W: function(){
              if (hasMovedW){
                             var distance = this.sliderWDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeW;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
                             var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'moved_W', position, distance, speed);
+                             stringPullLerp.script.send('HIDInterface', 'moving_W', position, distance, speed);
 
                             //console.log("pullStartTime " + pullStartTimeW);
                             //console.log("Time " + this.time);
-                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                            console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
                              sliderWLastPos = this.StringsliderW.value;
                              this.sliderWDistance = 0.0;
                              needToStartTimeW = true;
