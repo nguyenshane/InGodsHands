@@ -103,8 +103,12 @@ pc.script.create('tribe', function (context) {
 			
             //this.tribeColor = new pc.Color(255, 0, 0);
             //this.setTribeColor(tribes);
+            this.tribeColor = null;
             for (var i = 0; i < tribes.length; i++){
-                if (tribes[i].enabled) tribes[i].script.tribe.setTribeColor(i);
+                // if (tribes[i].enabled && tribes[i].script.tribe.tribeColor === null) {
+                //     //tribes[i].script.tribe.setTribeColor(i);
+                //     this.setTribeColor(i);
+                // }
             }
             this.addHuman();
 
@@ -530,7 +534,7 @@ pc.script.create('tribe', function (context) {
             if (tribesIndex === 0){
                 this.tribeColor = new pc.Color(0, 234, 255);
             } else {
-                this.tribeColor = new pc.Color(0, 100, 100);
+                this.tribeColor = new pc.Color(150, 0, 0);
             }
             //if (tribeNum > 1) this.tribeColor = new pc.Color(0, 234, 255);
         },
