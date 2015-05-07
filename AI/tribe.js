@@ -516,6 +516,7 @@ pc.script.create('tribe', function (context) {
             this.humans.push(newHuman);
             newHuman.script.Human.start();
             newHuman.script.Human.chooseState();
+            //newHuman.script.Human.setAnimState("idle");
         },
 
         // Constructs the NPC's list of rules

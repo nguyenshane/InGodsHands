@@ -1,8 +1,21 @@
 pc.script.create('Human', function (context) {
+    // Animation states
+    var states = {
+        idle: {
+            animation: 'idle2'
+        },
+        walk: {
+            animation: 'humanwalk'
+        }
+    };
+
     // Creates a new Human instance
     var Human = function (entity) {
         this.entity = entity;
         
+        this.blendTime = 0.2;
+        //this.setAnimState('idle')
+
         this.tribeParent = null;
         this.tile = null;
         this.influencedTiles = [];
@@ -186,8 +199,13 @@ pc.script.create('Human', function (context) {
             if (!this.tribeParent.isBusy && this.currentAction != this.move && this.currentAction != this.followPath) {
                 this.wander();
             }
-        }
+        },
 
+        setAnimState: function(state){
+            this.state = state;
+            // Set animation and blend from previous animation over 0.2 seconds
+            this.entity.animation.play(states[state].animation, this.blendTime);
+        }
         
     };
 
