@@ -109,7 +109,6 @@ pc.script.create('AudioController', function (context) {
 	            	lerpStartTime = timerTwo.getTime();
 	            	this.targetMusicLayer = .33;
 	            } else if (this.targetMusicLayer === this.musicLayer){
-	            	
 	            	this.targetMusicLayer = .66;
 
 	            }    
@@ -117,6 +116,7 @@ pc.script.create('AudioController', function (context) {
 
               if(this.musicLayer == this.targetMusicLayer){
             	changeMusic = false;
+
             }
 
 			// start shifting towards correct music layer
@@ -128,10 +128,23 @@ pc.script.create('AudioController', function (context) {
             	if (this.musicLayer > 1) this.musicLayer = 1;
             } 
 
+            if(this.musicLayer == 1 || this.musicLayer == .33){
+            	changeMusic = true;
+	            timerTwo = new Date();
+	            this.musicLayerStart = this.musicLayer;
+	            lerpStartTime = timerTwo.getTime();
+            	this.targetMusicLayer = .66;
+            }
+
             //  console.log("totalBelief: ", totalBelief);
             // console.log("prevTotalBelief: ", prevTotalBelief);
             // // have music layer shift towards targetMusicLayer
             this.backgroundmusic.setIntensity(this.musicLayer);
+		},
+
+		backToNormal: function(){
+			//timer = new Date();
+
 		},
 
 		lerpMusic: function(){
