@@ -59,6 +59,13 @@ pc.script.create('globalInterface', function (context) {
 			//tribes = [];
 			tribes = context.root.findByName("TribeParent").getChildren();
 
+            // list of colors for tribes / icons / objects
+            colors = [];
+            colors[0] = new pc.Color(0, 234, 255);
+            colors[1] = new pc.Color(150, 0, 0);
+            colors[2] = new pc.Color(255, 254, 254);
+            colors[3] = new pc.Color(0, 0, 254);
+
 			// Checks how long the player has been inactive
 			inactiveTimer = 0;
 			

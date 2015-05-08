@@ -62,6 +62,8 @@ pc.script.create('tribe', function (context) {
         this.travelTime = 3000;
         this.travelStartTime;
 
+        this.tribeColor = null;
+
     };
 
     Tribe.prototype = {
@@ -99,6 +101,8 @@ pc.script.create('tribe', function (context) {
 	
             this.audio = context.root._children[0].script.AudioController;
 			
+            this.tribeColor = colors[colors.length-1];
+            colors.pop(); // pop, but the first element
             this.addHuman();
 
 			var t2 = new Date();
@@ -118,7 +122,7 @@ pc.script.create('tribe', function (context) {
 
             if (!isPaused) {
                 if (!this.isBusy) {
-                    //this.increasePopulationTimer += dt;
+                    this.increasePopulationTimer += dt;
                     this.runRuleList();
                 } else {
                     this.currentAction(dt);
@@ -140,7 +144,8 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                if (this.increasePopulationTimer >= 30){
+                // use 1 for testing 
+                if (this.increasePopulationTimer >= 1){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
