@@ -145,7 +145,7 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 1){
+                if (this.increasePopulationTimer >= 5){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -515,7 +515,7 @@ pc.script.create('tribe', function (context) {
             var e = this.humanParent.clone();
             this.entity.getParent().addChild(e);
             var newHuman = e.findByName("human1");
-            //newHuman.enabled = true;
+            newHuman.enabled = true;
             console.log("New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
             this.humans.push(newHuman);

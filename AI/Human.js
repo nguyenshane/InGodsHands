@@ -38,7 +38,7 @@ pc.script.create('Human', function (context) {
         this.currentState = null;
         this.prevState = null;
 
-        this.setAnimState('idle');
+        //this.setAnimState('idle');
     };
 
     Human.prototype = {
@@ -67,7 +67,7 @@ pc.script.create('Human', function (context) {
         },
 
         start: function() {
-            if(this.tribeParent != null){
+            if(this.tribeParent != null || this.tribeParent != undefined){
                 this.tile = this.tribeParent.tile.neighbora; 
 
                 this.entity.setPosition(this.tile.center);
