@@ -14,7 +14,6 @@ pc.script.create('Human', function (context) {
         this.entity = entity;
         
         this.blendTime = 0.2;
-        //this.setAnimState('idle')
 
         this.tribeParent = null;
         this.tile = null;
@@ -38,6 +37,8 @@ pc.script.create('Human', function (context) {
         this.currentAction = null;
         this.currentState = null;
         this.prevState = null;
+
+        this.setAnimState('idle');
     };
 
     Human.prototype = {
@@ -72,7 +73,6 @@ pc.script.create('Human', function (context) {
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.chooseState();
-                //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
             }
         },
 
@@ -188,8 +188,9 @@ pc.script.create('Human', function (context) {
         },
 
         setAnimState: function(state){
-            this.state = state;
+            //this.state = state;
             // Set animation and blend from previous animation over 0.2 seconds
+            console.log("this.entity.animation",this.entity.animation);
             this.entity.animation.play(states[state].animation, this.blendTime);
         }
         

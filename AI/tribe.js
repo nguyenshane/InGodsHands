@@ -510,8 +510,8 @@ pc.script.create('tribe', function (context) {
             var e = this.humanParent.clone();
             this.entity.getParent().addChild(e);
             var newHuman = e.findByName("human1");
-            newHuman.enabled = true;
-            debug.log(DEBUG.AI, "New human "  + newHuman);
+            //newHuman.enabled = true;
+            console.log("New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
             this.humans.push(newHuman);
             newHuman.script.Human.start();
