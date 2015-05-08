@@ -72,7 +72,10 @@ pc.script.create('Human', function (context) {
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.chooseState();
-                //this.setDestination(this.tile.neighbora.neighborb.neighbora); 
+                //this.setDestination(this.tile.neighbora.neighborb.neighbora);
+                //this.entity.model.model.meshInstances[0].material.diffuse = this.tribeParent.tribeColor;
+                //this.entity.model.model.meshInstances[0].material.emissive = this.tribeParent.tribeColor;
+                //this.entity.model.model.meshInstances[0].material.update();
             }
         },
 
