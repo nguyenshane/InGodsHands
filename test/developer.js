@@ -288,39 +288,13 @@ pc.script.create('developer', function (context) {
             var tribePop = document.createElement('div');
             tribePop.style.position = 'absolute';
             tribePop.style.width = '32x';
-            tribePop.style.top = '5%';
+            tribePop.style.top = '16%';
             tribePop.style.left = '70%';
             tribePop.style.marginLeft = '0px';
             tribePop.style.textAlign = 'center';
             tribePop.style.color = 'white';
             tribePop.style.fontSize = '16';
             tribePop.style.visibility = 'hidden';
-
-
-            //text for the Tribe food read out
-            var tribeFood = document.createElement('div');
-            tribeFood.style.position = 'absolute';
-            tribeFood.style.width = '32x';
-            tribeFood.style.top = '12%';
-            tribeFood.style.left = '70%';
-            tribeFood.style.marginLeft = '0px';
-            tribeFood.style.textAlign = 'center';
-            tribeFood.style.color = 'white';
-            tribeFood.style.fontSize = '16';
-            tribeFood.style.visibility = 'hidden';
-
-            //text for the Tribe food read out
-            var tribeStockpile= document.createElement('div');
-            tribeStockpile.style.position = 'absolute';
-            tribeStockpile.style.width = '32x';
-            tribeStockpile.style.top = '16%';
-            tribeStockpile.style.left = '70%';
-            tribeStockpile.style.marginLeft = '0px';
-            tribeStockpile.style.textAlign = 'center';
-            tribeStockpile.style.color = 'white';
-            tribeStockpile.style.fontSize = '16';
-            tribeStockpile.style.visibility = 'hidden';
-
 
             //text for the Tribe Prayer read out
             var tribeBelief = document.createElement('div');
@@ -419,8 +393,6 @@ pc.script.create('developer', function (context) {
             //document.body.appendChild(musicText);
 
             document.body.appendChild(tribePop);
-            document.body.appendChild(tribeFood);
-            document.body.appendChild(tribeStockpile);
             document.body.appendChild(tribeBelief);
             document.body.appendChild(tribeFear);
 
@@ -444,10 +416,7 @@ pc.script.create('developer', function (context) {
             this.divEString = divEString;
             this.divWString = divWString;
 
-
             this.tribePop = tribePop;
-            this.tribeStockpile = tribeStockpile;
-            this.tribeFood = tribeFood;
             this.tribeBelief = tribeBelief;
             this.tribeFear = tribeFear;
 
@@ -476,7 +445,7 @@ pc.script.create('developer', function (context) {
              
              var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
 
-             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
+             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), 
                ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
            
 
@@ -511,7 +480,7 @@ pc.script.create('developer', function (context) {
 
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
 
-            this.setTribeText(('Tribe Pop: ' + tribeInfo.population), ('Tribe Food: ' + tribeInfo.incomingFood), ('Tribe Stockpile: ' + tribeInfo.stockpile),
+            this.setTribeText(('Tribe Pop: ' + tribeInfo.population), 
                ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
 
              this.time += dt;
@@ -979,8 +948,6 @@ pc.script.create('developer', function (context) {
                     this.divWString.style.visibility = 'hidden';
 
                     this.tribePop.style.visibility = 'hidden';
-                    this.tribeStockpile.style.visibility = 'hidden';
-                    this.tribeFood.style.visibility = 'hidden';
                     this.tribeBelief.style.visibility = 'hidden';
                     this.tribeFear.style.visibility = 'hidden';
 
@@ -1007,8 +974,6 @@ pc.script.create('developer', function (context) {
                     this.divWString.style.visibility = 'visible';
 
                     this.tribePop.style.visibility = 'hidden';
-                    this.tribeStockpile.style.visibility = 'hidden';
-                    this.tribeFood.style.visibility = 'hidden';
                     this.tribeBelief.style.visibility = 'hidden';
                     this.tribeFear.style.visibility = 'hidden';
 
@@ -1034,8 +999,6 @@ pc.script.create('developer', function (context) {
                     this.divWString.style.visibility = 'visible';
 
                     this.tribePop.style.visibility = 'visible';
-                    this.tribeStockpile.style.visibility = 'visible';
-                    this.tribeFood.style.visibility = 'visible';
                     this.tribeBelief.style.visibility = 'visible';
                     this.tribeFear.style.visibility = 'visible';
 
@@ -1056,12 +1019,10 @@ pc.script.create('developer', function (context) {
         },
 
 
-        setTribeText: function (message, message2, message3, message4, message5) {
+        setTribeText: function (message, message2, message3) {
         this.tribePop.innerHTML = message;
-        this.tribeFood.innerHTML = message2;
-        this.tribeStockpile.innerHTML = message3;
-        this.tribeBelief.innerHTML = message4;
-        this.tribeFear.innerHTML = message5;
+        this.tribeBelief.innerHTML = message2;
+        this.tribeFear.innerHTML = message3;
         },
 
         createPausePlane: function () {
