@@ -195,7 +195,7 @@ needToAdapt.prototype = {
     },
     
     consequence: function(tribe){
-        console.log("We shall just adapt to the temperature!");
+        debug.log(DEBUG.AI, "We shall just adapt to the temperature!");
 
         this.weight--;
         tribe.startAdapting();

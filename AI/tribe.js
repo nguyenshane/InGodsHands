@@ -55,6 +55,12 @@ pc.script.create('tribe', function (context) {
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
+        
+        this.attackImmunityTime = 5.0;
+        this.attackImmunityTimer = this.attackImmunityTime;
+        
+        this.animalDecisionTime = 1.5;
+        this.animalDecisionTimer = this.animalDecisionTime;
     
         // Variables for lerp, in milliseconds
 
@@ -118,8 +124,6 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
-            //console.log(" " + dt);
-
             if (!isPaused) {
                 if (!this.isBusy) {
                     this.increasePopulationTimer += dt;
@@ -145,22 +149,72 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 5){
+                if (this.increasePopulationTimer >= 5) {
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
 
                 //Check influenced tiles for predators or prey
-                this.predatorsInInfluence = [];
+                this.predatorsInInfluence = [[], [], []];
                 this.preyInInfluence = [];
                 for (var i = this.influencedTiles.length-1; i >= 0; i--) {
                     var tile = this.influencedTiles[i];
                     if (tile.hasAnimal) {
-                        if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
-                        else this.preyInInfluence.push(tile);
+                        if (tile.animal.stats.aggressiveness > 0) {
+                            switch (tile.animal.stats.type) {
+                                case "fox":
+                                    this.predatorsInInfluence[0].push(tile.animal);
+                                    break;
+                                    
+                                case "pig":
+                                    this.predatorsInInfluence[1].push(tile.animal);
+                                    break;
+                                    
+                                case "cow":
+                                    this.predatorsInInfluence[2].push(tile.animal);
+                                    break;
+                            }
+                        } else this.preyInInfluence.push(tile.animal);
                     }
                 }
+                
+                this.influencedAnimalAI(dt);
 			}
+        },
+        
+        influencedAnimalAI: function(dt) {
+            this.animalDecisionTimer -= dt;
+            this.attackImmunityTimer -= dt;
+            if (this.attackImmunityTimer < -1) this.attackImmunityTimer = -1;
+            
+            if (this.animalDecisionTimer < 0) {
+                this.animalDecisionTimer = this.animalDecisionTime;
+                
+                for (var i = 0; i < this.predatorsInInfluence.length; i++) {
+                    var predators = this.predatorsInInfluence[i];
+                    var totalAnimalStrength = 0;
+                    
+                    for (var j = 0; j < predators.length; j++) {
+                        totalAnimalStrength += predators[i].script.Animal.strength;
+                    }
+                    
+                    if (totalAnimalStrength > 0) {
+                        if (totalAnimalStrength > (this.population * 0.8)) {
+                            var chanceToAttack = (totalAnimalStrength / this.population) / 2;
+                            
+                            if (Math.random() < chanceToAttack) {
+                                if (this.attackImmunityTimer < 0) {
+                                    for (var j = 0; j < predators.length; j++) {
+                                        predators[i].script.Animal.attackTribe(this);
+                                    }
+                                    
+                                    this.attackImmunityTimer = this.attackImmunityTime;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
 
         //////////////////////////////////
@@ -480,7 +534,7 @@ pc.script.create('tribe', function (context) {
 
         decreasePopulation: function() {
             --this.population;
-            if (this.population < MINPOPULATION){
+            if (this.population < this.MINPOPULATION){
                 // call kill tribe
             }
         },
@@ -516,7 +570,7 @@ pc.script.create('tribe', function (context) {
             this.entity.getParent().addChild(e);
             var newHuman = e.findByName("human1");
             newHuman.enabled = true;
-            console.log("New human "  + newHuman);
+            debug.log(DEBUG.AI, "New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
             this.humans.push(newHuman);
             newHuman.script.Human.start();
