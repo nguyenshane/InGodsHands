@@ -59,6 +59,9 @@ pc.script.create('globalInterface', function (context) {
 			//tribes = [];
 			tribes = context.root.findByName("TribeParent").getChildren();
 
+            // Queue of tribe actions, only want two running at once.
+            tribeActionQ = [];
+
             // list of colors for tribes / icons / objects
             colors = [];
             colors[0] = new pc.Color(0, 234, 255);

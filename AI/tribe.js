@@ -16,7 +16,7 @@ pc.script.create('tribe', function (context) {
         this.humans = [];
 
         this.population = 1;
-        this.MAXPOPULATION = 5;
+        this.MAXPOPULATION = 8;
         this.MINPOPULATION = 1;
         
         this.increasePopulationTimer = 0;
@@ -217,6 +217,28 @@ pc.script.create('tribe', function (context) {
             }
         },
 
+        // Tribe Action Controller functions
+        // Only two actions can be performing at once 
+        // ex. Pray for temp from one tribe and denounce from another
+
+        pushAction: function(action) {
+            tribeActionQ.push(action);
+
+            // If action being pushed is 1st or 2nd, call it
+            if(tribeActionQ.length < 3){
+                tribeActionQ[length - 1]();
+            }
+        },
+
+        shiftAction: function() {
+            tribeActionQ.shift();
+
+            // call whatever element is now second
+            if(tribeActionQ.length >= 2){
+                tribeActionQ[1]();
+            }
+        },
+
         //////////////////////////////////
         //  Tribe move action functions //
         //////////////////////////////////
@@ -278,15 +300,6 @@ pc.script.create('tribe', function (context) {
                 }
 
                 var bestTile = possibleTiles[min(possibleTiles, function(v, a) {return Math.abs(a - v.getTemperature())}, this.idealTemperature)];
-                /*
-                bestTile = this.tile;
-                for (var i = 0; i < possibleTiles.length; i++){
-                    if (Math.abs(this.idealTemperature - bestTile.getTemperature()) > 
-                        Math.abs(this.idealTemperature - possibleTiles[i].getTemperature())){
-                        bestTile = possibleTiles[i];
-                    }
-                }
-                */
 
                 if (bestTile.equals(this.tile)){
                     this.isBusy = false;
@@ -296,8 +309,8 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                //this.calculatePopulation();
                 this.calculateInfluence();
+                this.shiftAction();
                 this.isBusy = false;
                 this.isSpiteful = false;
             }
@@ -320,6 +333,7 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer = 0;
                 this.decreaseBelief();
                 this.isSpiteful = true;
+                this.shiftAction();
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
@@ -331,6 +345,7 @@ pc.script.create('tribe', function (context) {
 
                 //console.log("Prayer fulfilled!");
                 this.prayerTimer = 0;
+                this.shiftAction();
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
@@ -444,6 +459,7 @@ pc.script.create('tribe', function (context) {
                 //console.log("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
+                this.shiftAction();
                 this.isBusy = false;
             }
             
@@ -471,6 +487,7 @@ pc.script.create('tribe', function (context) {
                 this.idealTemperature 
                 this.decreaseBelief();
                 this.adaptTimer = 0;
+                this.shiftAction();
                 this.isBusy = false;
             }
             
@@ -534,8 +551,10 @@ pc.script.create('tribe', function (context) {
 
         decreasePopulation: function() {
             --this.population;
+
             if (this.population < this.MINPOPULATION){
-                // call kill tribe
+                // Kill the tribe
+                this.entity.enabled = false;
             }
         },
 
