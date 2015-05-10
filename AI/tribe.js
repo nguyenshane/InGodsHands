@@ -104,6 +104,7 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            this.praySmoke = this.entity.findByName("TestFogTribe");
 	
             this.audio = context.root._children[0].script.AudioController;
 			
@@ -321,6 +322,11 @@ pc.script.create('tribe', function (context) {
         //  Tribe prayer action functions //
         ////////////////////////////////////
 
+        // Display smoke for prayer notification
+        prayForSomething: function () {
+            this.praySmoke.enabled = !this.praySmoke.enabled;
+        },
+
         prayForTemperature: function (deltaTime) {
             if(this.currTileTemperature > this.idealTemperature){
                 this.rainIcon.enabled = true;
@@ -337,6 +343,7 @@ pc.script.create('tribe', function (context) {
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
+                this.prayForSomething();
             }
 
             if ((this.currTileTemperature > (this.idealTemperature - 5) &&
@@ -350,6 +357,7 @@ pc.script.create('tribe', function (context) {
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
                 this.startPraise();
+                this.prayForSomething();
             }
 
             //console.log(this.currTileTemperature);
@@ -361,6 +369,7 @@ pc.script.create('tribe', function (context) {
             //console.log("TIME TO PRAY");
             this.prayerTimer = time;
             this.setCurrentAction(this.prayForTemperature);
+            this.prayForSomething();
             this.isBusy = true;
 
             this.audio.sound_TribePray();

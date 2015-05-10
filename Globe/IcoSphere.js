@@ -10,6 +10,8 @@ function IcoSphere(device, radius, subdivisions) {
 
     ico = this;
 
+    seed = new seed(Math.floor(pc.math.random(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)));
+
     subdivisions = (subdivisions || 1);
 
     this.updateFlag = false;
@@ -249,11 +251,12 @@ function IcoSphere(device, radius, subdivisions) {
 
     this.linkTilesToNodes();
     
-
+    debug.off(DEBUG.WORLDGEN);
     for (var i = 0; i < this.vertexGraph.length; i++) {
-    	this.vertexGraph[i].stagger(0.075);
+    	//this.vertexGraph[i].stagger(0.075);
     	this.vertexGraph[i].setHeight(ico.radius);
     }
+    debug.on(DEBUG.WORLDGEN);
 	
 	
 	//Create non-shared-vertex sphere
@@ -290,7 +293,7 @@ function IcoSphere(device, radius, subdivisions) {
 	}
 	
 	//var initialContinentLocation = 650;
-	initialContinentLocation = initialLocationTiles[Math.floor(pc.math.random(0, initialLocationTiles.length))].index;
+	initialContinentLocation = initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length))].index;
 	
 	generateTerrain(this, fixedRepellerCount, initialContinentLocation, continentBufferDistance, stringiness, repellerCountMultiplier, repellerCountMin, repellerCountMax, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
@@ -486,7 +489,7 @@ IcoSphere.prototype.generateFault = function(startingIndex, offshoots, reach) {
 
 	var currVert;
 
-	var direction = Math.floor(pc.math.random(0, 8));
+	var direction = Math.floor(seed.step(8191, 0, 8));
 
 	var index = startingIndex;
 	var prevInd = index;
@@ -574,16 +577,16 @@ IcoSphere.prototype.moveFaults = function(increment) {
 //Higher repeller count multipliers will result in more landmass,
 // lower repeller size will result in more hilly terrain (and less landmass)
 function generateTerrain(icosphere, fixedRepellerCount, initialContinentLocation, continentBufferDistance, stringiness, repellerCountMultiplier, repellerCountMin, repellerCountMax, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax) {
-	var contCount = Math.floor(pc.math.random(continentCountMin, continentCountMax + 0.999));
-	var mountainCount = Math.floor(pc.math.random(mountainCountMin, mountainCountMax + 0.999));
+	var contCount = Math.floor(seed.step(8191, continentCountMin, continentCountMax + 0.999));
+	var mountainCount = Math.floor(seed.step(8191, mountainCountMin, mountainCountMax + 0.999));
 	
     debug.log(DEBUG.WORLDGEN, "cc: " + contCount);
 	
 	//Create first continent at the equator facing the camera: 607, 698, 908, 923, 1151, 1166
-	var contSize = pc.math.random(continentSizeMin, continentSizeMax);
+	var contSize = seed.step(8191, continentSizeMin, continentSizeMax);
     if (fixedRepellerCount) contSize = 9999999;
 	var mountains = mountainCount / contCount;
-	if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
+	if (contCount > 0) mountains *= seed.step(8191, 0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 	mountains = Math.floor(mountains);
 	if (!fixedRepellerCount) cluster(icosphere, initialContinentLocation, contSize, stringiness, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
     else cluster(icosphere, initialContinentLocation, contSize, stringiness, repellerCountMin, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax);
@@ -592,7 +595,7 @@ function generateTerrain(icosphere, fixedRepellerCount, initialContinentLocation
 	
 	//Create remaining continents
 	for (; contCount > 0; contCount--) {
-		contSize = pc.math.random(continentSizeMin, continentSizeMax);
+		contSize = seed.step(8191, continentSizeMin, continentSizeMax);
 		if (fixedRepellerCount) contSize = 9999999;
         
 		//Search for an open area of ocean randomly
@@ -604,7 +607,7 @@ function generateTerrain(icosphere, fixedRepellerCount, initialContinentLocation
 			if (checkSurroundingArea(icosphere, center, contSize * continentBufferDistance) === -1) {
 				//Create a new continent
 				mountains = mountainCount / contCount;
-				if (contCount > 0) mountains *= pc.math.random(0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
+				if (contCount > 0) mountains *= seed.step(8191, 0.6, 1.4); //Randomize remaining mountain distribution slightly if not on the last continent
 				mountains = Math.floor(mountains);
 				if (!fixedRepellerCount) cluster(icosphere, center, contSize, stringiness, Math.floor(contSize * contSize * repellerCountMultiplier) + 1, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax); //Actually create the continent
                 else cluster(icosphere, center, contSize, stringiness, repellerCountMin, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, mountains, mountainHeightMin, mountainHeightMax);
@@ -622,18 +625,18 @@ function cluster(icosphere, centerTile, radius, stringiness, repellerCount, repe
 	var initialRepellerCount = repellerCount;
 	
 	//Make first repeller at the center
-	var repellerSize = Math.floor(pc.math.random(repellerSizeMin, repellerSizeMax + 0.999));
+	var repellerSize = Math.floor(seed.step(8191, repellerSizeMin, repellerSizeMax + 0.999));
 	var repellerHeight;
-	if ((mountainCount / repellerCount) * 1.5 > pc.math.random(0, 1)) {
-		repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
+	if ((mountainCount / repellerCount) * 1.5 > seed.step(8191, 0, 1)) {
+		repellerHeight = seed.step(8191, mountainHeightMin, mountainHeightMax);
 		mountainCount--;
-	} else repellerHeight = pc.math.random(repellerHeightMin, repellerHeightMax);
+	} else repellerHeight = seed.step(8191, repellerHeightMin, repellerHeightMax);
 	repeller(icosphere, centerTile, repellerSize, repellerHeight);
 	repellerCount--;
 	
 	//Add remaining repellers
 	while (repellerCount > 0) {
-		repellerSize = Math.floor(pc.math.random(repellerSizeMin, repellerSizeMax + 0.999));
+		repellerSize = Math.floor(seed.step(8191, repellerSizeMin, repellerSizeMax + 0.999));
 		var availTiles = getTilesInArea(icosphere, centerTile, radius - repellerSize); //Get all possible repeller center locations
 		shuffleArray(availTiles);
         
@@ -662,12 +665,12 @@ function cluster(icosphere, centerTile, radius, stringiness, repellerCount, repe
         var loc = locations[max(water, function(v, a) {return v}, null)];
         
         //Add a new repeller at the location
-        if ((mountainCount / repellerCount) * (repellerCount / initialRepellerCount + 0.5) > pc.math.random(0, 1)) { //More likely to create mountains early on
-            repellerHeight = pc.math.random(mountainHeightMin, mountainHeightMax);
-            repellerSize = Math.floor(pc.math.random(repellerSizeMin + 1, repellerSizeMax + 0.999));
+        if ((mountainCount / repellerCount) * (repellerCount / initialRepellerCount + 0.5) > seed.step(8191, 0, 1)) { //More likely to create mountains early on
+            repellerHeight = seed.step(8191, mountainHeightMin, mountainHeightMax);
+            repellerSize = Math.floor(seed.step(8191, repellerSizeMin + 1, repellerSizeMax + 0.999));
             mountainCount--;
         } else {
-            repellerHeight = pc.math.random(repellerHeightMin, repellerHeightMax);
+            repellerHeight = seed.step(8191, repellerHeightMin, repellerHeightMax);
         }
         repeller(icosphere, loc, repellerSize, repellerHeight);
         repellerCount--;
@@ -700,7 +703,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 	visited[centerTile] = true;
 	distances[centerTile] = 0;
 	for (var i = 0; i < tile.vertexIndices.length; i++) {
-		icosphere.setVertexHeight(tile.vertexIndices[i], centerHeight + pc.math.random(-0.5, 0.5) * dropoffRate);
+		icosphere.setVertexHeight(tile.vertexIndices[i], centerHeight + seed.step(8191, -0.5, 0.5) * dropoffRate);
 		visitedIndices[tile.vertexIndices[i]] = true;
 	}
 	for (var i = 0; i < neighbors.length; i++) {
@@ -727,7 +730,7 @@ function repeller(icosphere, centerTile, radius, centerHeight) {
 		var avgPrevHeight = totalPrevHeight / prevHeights.length;
 		
 		//Calculate new vertex's height
-		var newHeight = avgPrevHeight - (dropoffRate * pc.math.random(-0.3, 1.2));
+		var newHeight = avgPrevHeight - (dropoffRate * seed.step(8191, -0.3, 1.2));
 		var linearHeight = centerHeight - (dropoffRate * distances[tileIndex]);
 		if (newHeight < linearHeight - dropoffRate) newHeight += dropoffRate; //Prevent heights from varying too much to keep repeller radius in check
 		else if (newHeight > linearHeight + dropoffRate) newHeight -= dropoffRate;
