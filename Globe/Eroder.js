@@ -14,7 +14,7 @@ function Eroder(startingIndex, numSteps) {
 				this.index = lowestNeighbor;
 			} else {
 				--this.steps;
-				this.index = Math.floor(seed.step(ico.vertexGraph.length, 0, ico.vertexGraph.length));
+				this.index = Math.floor(pc.math.random(0, ico.vertexGraph.length));
 				//console.log("Eroder moving to " + this.index + " with height " + height);
 			}
 		} else if (this.steps == 0) {

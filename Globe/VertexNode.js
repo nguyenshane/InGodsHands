@@ -405,9 +405,9 @@ function VertexNode(index, indices) {
 
 	this.stagger = function(amount) {
 		var vertex = this.getVertex();
-		var newX = vertex.x + seed.step(101, -amount, amount);
-		var newY = vertex.y + seed.step(101, -amount, amount);
-		var newZ = vertex.z + seed.step(101, -amount, amount);
+		var newX = vertex.x + pc.math.random(-amount, amount);
+		var newY = vertex.y + pc.math.random(-amount, amount);
+		var newZ = vertex.z + pc.math.random(-amount, amount);
 		for (var i = 0; i < this.group.length; ++i) {
 			ico.vertices[this.group[i] * 3] = newX;
 			ico.vertices[this.group[i] * 3 + 1] = newY;
