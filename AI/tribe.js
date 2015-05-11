@@ -220,27 +220,6 @@ pc.script.create('tribe', function (context) {
             }
         },
 
-        // Tribe Action Controller functions
-        // Only two actions can be performing at once 
-        // ex. Pray for temp from one tribe and denounce from another
-
-        // pushAction: function(action) {
-        //     tribeActionQ.push(action);
-
-        //     // If action being pushed is 1st or 2nd, call it
-        //     if(tribeActionQ.length < 3){
-        //         tribeActionQ[(tribeActionQ.length - 1)].tribe.fn();
-        //     }
-        // },
-
-        // shiftAction: function() {
-        //     tribeActionQ.shift();
-
-        //     // call whatever element is now second
-        //     if(tribeActionQ.length >= 2){
-        //         tribeActionQ[1]();
-        //     }
-        // },
 
         //////////////////////////////////
         //  Tribe move action functions //
@@ -370,7 +349,6 @@ pc.script.create('tribe', function (context) {
         startPrayForTemperature: function () {
             //console.log("TIME TO PRAY");
             this.prayerTimer = 15;
-            console.log("The entity: " + this);
             this.setCurrentAction(this.prayForTemperature);
             this.prayForSomething();
             this.isBusy = true;
@@ -499,7 +477,7 @@ pc.script.create('tribe', function (context) {
                 this.idealTemperature 
                 this.decreaseBelief();
                 this.adaptTimer = 0;
-                
+                this.isSpiteful = false;
                 this.isBusy = false;
             }
             
@@ -622,6 +600,7 @@ pc.script.create('tribe', function (context) {
             this.rules.sort(function(a, b){return b.weight - a.weight});
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this)){
+                    console.log(this.rules[i].consequence.name);
                     this.rules[i].consequence(this);
                     break;
                 }
