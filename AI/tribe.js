@@ -16,7 +16,7 @@ pc.script.create('tribe', function (context) {
         this.humans = [];
 
         this.population = 1;
-        this.MAXPOPULATION = 8;
+        this.MAXPOPULATION = 5;
         this.MINPOPULATION = 1;
         
         this.increasePopulationTimer = 0;
@@ -53,6 +53,8 @@ pc.script.create('tribe', function (context) {
         this.praiseTimer = 0;
         this.noSunTimer = 0;
         this.ruleCooldownTimer = 0;
+
+        this.praySmokeIsPlaying;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
@@ -111,6 +113,8 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
             this.praySmoke = this.entity.findByName("TestFogTribe");
+
+            this.praySmokeIsPlaying = false;
 	
             this.audio = context.root._children[0].script.AudioController;
 			
@@ -157,7 +161,7 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 5) {
+                if (this.increasePopulationTimer >= 25) {
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -310,7 +314,15 @@ pc.script.create('tribe', function (context) {
 
         // Display smoke for prayer notification
         prayForSomething: function () {
-            this.praySmoke.enabled = !this.praySmoke.enabled;
+            //this.praySmoke.enabled = !this.praySmoke.enabled;
+            //console.log(this.praySmoke);
+            if (!this.praySmokeIsPlaying){
+                this.praySmoke.particlesystem.play();
+                this.praySmokeIsPlaying = true;
+            } else {
+                this.praySmoke.particlesystem.stop();
+                this.praySmokeIsPlaying = false;
+            }
         },
 
         prayForTemperature: function (deltaTime) {
@@ -538,6 +550,7 @@ pc.script.create('tribe', function (context) {
 
         increasePopulation: function() {
             ++this.population;
+            this.addHuman();
             if (this.population > this.MAXPOPULATION){
                 addTribe();
                 this.setPopulation(2);
@@ -609,7 +622,7 @@ pc.script.create('tribe', function (context) {
             this.rules.sort(function(a, b){return b.weight - a.weight});
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this)){
-                    console.log(this.rules[i].consequence.name);
+                    //console.log(this.rules[i].consequence.name);
                     this.rules[i].consequence(this);
                     break;
                 }
