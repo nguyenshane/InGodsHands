@@ -9,130 +9,6 @@
 /////////////////////////////////////////
 
 /* 
- *  wantToMoveNorthColder determines whether the tribe wants to move north
- *  above the equator  
- *
- */
-
-var wantToMoveNorthColder = function() {
-    // All conditions to choose from for making rules
-    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-    
-    this.weight = 1;
-    this.conditions = [allConditions.isTileWarmer,
-                       allConditions.isAboveEquator];
-};
-
-wantToMoveNorthColder.prototype = {
-    testConditions: function(tribe){
-        for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribe)){
-                return false;
-            }
-        }
-        return true;
-    },
-    
-    consequence: function(tribe){
-        tribe.setDestination(tribe.tile.getNorthNeighbor());
-        //console.log("wantToMoveNorthColder has fired: " + tribe.currTileTemperature);
-    }    
-};
-
-/* 
- *  wantToMoveSouthWarmer determines whether the tribe wants to move south
- *  above equator
- *    
- */
-
-var wantToMoveSouthWarmer = function() {
-    // All conditions to choose from for making rules
-    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-    
-    this.weight = 1;
-    this.conditions = [allConditions.isTileColder,
-                       allConditions.isAboveEquator];
-};
-
-wantToMoveSouthWarmer.prototype = {
-    testConditions: function(tribe){
-        for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribe)){
-                return false;
-            }
-        }
-        return true;
-    },
-    
-    consequence: function(tribe){
-        tribe.setDestination(tribe.tile.getSouthNeighbor());
-        //console.log("wantToMoveSouthWarmer() has fired: " + tribe.currTileTemperature);
-    }    
-};
-
-/* 
- *  wantToMoveNorthWarmer determines whether the tribe wants to move south
- *  above equator
- *    
- */
-
-var wantToMoveNorthWarmer = function() {
-    // All conditions to choose from for making rules
-    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-    
-    this.weight = 1;
-    this.conditions = [allConditions.isTileColder,
-                       allConditions.isBelowEquator];
-};
-
-wantToMoveNorthWarmer.prototype = {
-    testConditions: function(tribe){
-        for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribe)){
-                return false;
-            }
-        }
-        return true;
-    },
-    
-    consequence: function(tribe){
-        tribe.setDestination(tribe.tile.getSouthNeighbor());
-        //console.log("wantToMoveNorthWarmer() has fired: " + tribe.currTileTemperature);
-    }    
-};
-
-/* 
- *  wantToMoveSouthColder determines whether the tribe wants to move south
- *  above equator
- *    
- */
-
-var wantToMoveSouthColder = function() {
-    // All conditions to choose from for making rules
-    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
-    
-    this.weight = 1;
-    this.conditions = [allConditions.isTileWarmer,
-                       allConditions.isBelowEquator];
-};
-
-wantToMoveSouthColder.prototype = {
-    testConditions: function(tribe){
-        for(var i = 0; i < this.conditions.length; i++){
-            if(!this.conditions[i](tribe)){
-                return false;
-            }
-        }
-        return true;
-    },
-    
-    consequence: function(tribe){
-        tribe.setDestination(tribe.tile.getSouthNeighbor());
-        //console.log("wantToMoveSouthColder() has fired: " + tribe.currTileTemperature);
-    }    
-};
-
-/* 
  *  wantToMigrate determines whether the tribe wants to move south
  *  above equator. This is a spiteful rule
  *    
@@ -144,8 +20,7 @@ var wantToMigrate = function() {
     
     this.weight = 2;
     this.conditions = [allConditions.isTileTemperatureNotIdeal,
-                       allConditions.isSpiteful];//,
-                       //allConditions.isStockpileDecreasing];
+                       allConditions.isSpiteful];
 };
 
 wantToMigrate.prototype = {
@@ -159,9 +34,7 @@ wantToMigrate.prototype = {
     },
     
     consequence: function(tribe){
-        //console.log("Tribe's tile: " + tribe.destinationTile);
-
-
+        tribe.ruleCooldownTimer = 10;
         tribe.migrate();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -169,6 +42,7 @@ wantToMigrate.prototype = {
             //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    
 };
+
 /* 
  *  needToAdapt determines whether the tribe wants to move south
  *  above equator. This is a spiteful rule
@@ -196,8 +70,9 @@ needToAdapt.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "We shall just adapt to the temperature!");
-
         this.weight--;
+
+        tribe.ruleCooldownTimer = 10;
         tribe.startAdapting();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -217,9 +92,9 @@ var needTemperatureChange = function() {
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
     this.weight = 3;
-    this.conditions = [ allConditions.isTileTemperatureNotIdeal
-                        ,allConditions.isNotSpiteful];
-                        //,allConditions.isStockpileDecreasing];
+    this.conditions = [ allConditions.isTileTemperatureNotIdeal,
+                        allConditions.isNotSpiteful];
+
 };
 
 needTemperatureChange.prototype = {
@@ -234,7 +109,8 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Need temperature change fired");
-        tribe.startPrayForTemperature(15);
+        tribe.ruleCooldownTimer = 10;
+        tribe.startPrayForTemperature();
     }    
 };
 
@@ -264,6 +140,7 @@ wantToDenounceInactive.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Does God truly exist?!");
+        tribe.ruleCooldownTimer = 10;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
@@ -295,6 +172,7 @@ wantToDenounceNoSun.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Where is the god damned sun?!?!");
+        tribe.ruleCooldownTimer = 10;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
