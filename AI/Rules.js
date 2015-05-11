@@ -34,7 +34,8 @@ wantToMigrate.prototype = {
     },
     
     consequence: function(tribe){
-        tribe.pushAction(tribe.migrate());
+        tribe.ruleCooldownTimer = 10;
+        tribe.migrate();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
             moveS.script.AudioController.sound_TribeMov();
@@ -69,9 +70,10 @@ needToAdapt.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "We shall just adapt to the temperature!");
-
         this.weight--;
-        tribe.pushAction(tribe.startAdapting());
+
+        tribe.ruleCooldownTimer = 10;
+        tribe.startAdapting();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
             moveS.script.AudioController.sound_TribeMov();
@@ -107,7 +109,8 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Need temperature change fired");
-        tribe.pushAction(tribe.startPrayForTemperature(15));
+        tribe.ruleCooldownTimer = 10;
+        tribe.startPrayForTemperature();
     }    
 };
 
@@ -137,8 +140,9 @@ wantToDenounceInactive.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Does God truly exist?!");
+        tribe.ruleCooldownTimer = 10;
         tribe.resetInactionTimer();
-        tribe.pushAction(tribe.startDenouncing());
+        tribe.startDenouncing();
     }    
 };
 
@@ -168,7 +172,8 @@ wantToDenounceNoSun.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Where is the god damned sun?!?!");
+        tribe.ruleCooldownTimer = 10;
         tribe.resetInactionTimer();
-        tribe.pushAction(tribe.startDenouncing());
+        tribe.startDenouncing();
     }    
 };

@@ -52,6 +52,7 @@ pc.script.create('tribe', function (context) {
         this.adaptTimer = 0;
         this.praiseTimer = 0;
         this.noSunTimer = 0;
+        this.ruleCooldownTimer = 0;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
@@ -127,8 +128,9 @@ pc.script.create('tribe', function (context) {
 
             if (!isPaused) {
                 if (!this.isBusy) {
-                    this.increasePopulationTimer += dt;
-                    this.runRuleList();
+                    if(this.ruleCooldownTimer < 0){
+                        this.runRuleList();
+                    } else this.ruleCooldownTimer -= dt;
                 } else {
                     this.currentAction(dt);
                 }
@@ -222,23 +224,23 @@ pc.script.create('tribe', function (context) {
         // Only two actions can be performing at once 
         // ex. Pray for temp from one tribe and denounce from another
 
-        pushAction: function(action) {
-            tribeActionQ.push(action);
+        // pushAction: function(action) {
+        //     tribeActionQ.push(action);
 
-            // If action being pushed is 1st or 2nd, call it
-            if(tribeActionQ.length < 3){
-                tribeActionQ[length - 1]();
-            }
-        },
+        //     // If action being pushed is 1st or 2nd, call it
+        //     if(tribeActionQ.length < 3){
+        //         tribeActionQ[(tribeActionQ.length - 1)].tribe.fn();
+        //     }
+        // },
 
-        shiftAction: function() {
-            tribeActionQ.shift();
+        // shiftAction: function() {
+        //     tribeActionQ.shift();
 
-            // call whatever element is now second
-            if(tribeActionQ.length >= 2){
-                tribeActionQ[1]();
-            }
-        },
+        //     // call whatever element is now second
+        //     if(tribeActionQ.length >= 2){
+        //         tribeActionQ[1]();
+        //     }
+        // },
 
         //////////////////////////////////
         //  Tribe move action functions //
@@ -311,7 +313,7 @@ pc.script.create('tribe', function (context) {
 
             } else {
                 this.calculateInfluence();
-                this.shiftAction();
+                
                 this.isBusy = false;
                 this.isSpiteful = false;
             }
@@ -339,7 +341,7 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer = 0;
                 this.decreaseBelief();
                 this.isSpiteful = true;
-                this.shiftAction();
+                
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
@@ -352,7 +354,7 @@ pc.script.create('tribe', function (context) {
 
                 //console.log("Prayer fulfilled!");
                 this.prayerTimer = 0;
-                this.shiftAction();
+                
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
@@ -365,9 +367,10 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer -= deltaTime;
         },
 
-        startPrayForTemperature: function (time) {
+        startPrayForTemperature: function () {
             //console.log("TIME TO PRAY");
-            this.prayerTimer = time;
+            this.prayerTimer = 15;
+            console.log("The entity: " + this);
             this.setCurrentAction(this.prayForTemperature);
             this.prayForSomething();
             this.isBusy = true;
@@ -468,7 +471,7 @@ pc.script.create('tribe', function (context) {
                 //console.log("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
-                this.shiftAction();
+                
                 this.isBusy = false;
             }
             
@@ -496,7 +499,7 @@ pc.script.create('tribe', function (context) {
                 this.idealTemperature 
                 this.decreaseBelief();
                 this.adaptTimer = 0;
-                this.shiftAction();
+                
                 this.isBusy = false;
             }
             
