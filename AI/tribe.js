@@ -68,15 +68,20 @@ pc.script.create('tribe', function (context) {
         this.travelTime = 3000;
         this.travelStartTime;
 
-        this.tribeColor = null;
-
     };
 
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 
-            this.humanParent = context.root.findByName("Humans");
+            console.log("tribes.length = " + tribes.length);
+
+            //this.humanParent = context.root.findByName("Humans1");
+            //console.log(context.root.findByName("Humans"));
+            this.humanParent = context.root.findByName("Humans" + tribes.indexOf(this.entity));
+            
+            console.log(this.humanParent.name);
+
 			var t1 = new Date();
 			
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
@@ -113,7 +118,7 @@ pc.script.create('tribe', function (context) {
             this.addHuman();
 
 			var t2 = new Date();
-			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1)); 
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -585,6 +590,10 @@ pc.script.create('tribe', function (context) {
             newHuman.script.Human.start();
             newHuman.script.Human.chooseState();
             //newHuman.script.Human.setAnimState("idle");
+        },
+
+        chooseHuman: function() {
+            //for (var i = 0)
         },
 
         // Constructs the NPC's list of rules
