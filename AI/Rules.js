@@ -18,7 +18,7 @@ var wantToMigrate = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 2;
+    this.weight = 3;
     this.conditions = [allConditions.isTileTemperatureNotIdeal,
                        allConditions.isSpiteful];
 };
@@ -34,7 +34,7 @@ wantToMigrate.prototype = {
     },
     
     consequence: function(tribe){
-        tribe.ruleCooldownTimer = 10;
+        tribe.ruleCooldownTimer = 4;
         tribe.migrate();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -72,7 +72,7 @@ needToAdapt.prototype = {
         debug.log(DEBUG.AI, "We shall just adapt to the temperature!");
         this.weight--;
 
-        tribe.ruleCooldownTimer = 10;
+        tribe.ruleCooldownTimer = 4;
         tribe.startAdapting();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -91,7 +91,7 @@ var needTemperatureChange = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 3;
+    this.weight = 6;
     this.conditions = [ allConditions.isTileTemperatureNotIdeal,
                         allConditions.isNotSpiteful];
 
@@ -109,7 +109,7 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Need temperature change fired");
-        tribe.ruleCooldownTimer = 10;
+        tribe.ruleCooldownTimer = 4;
         tribe.startPrayForTemperature();
     }    
 };
@@ -140,7 +140,7 @@ wantToDenounceInactive.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Does God truly exist?!");
-        tribe.ruleCooldownTimer = 10;
+        tribe.ruleCooldownTimer = 4;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
@@ -172,7 +172,7 @@ wantToDenounceNoSun.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Where is the god damned sun?!?!");
-        tribe.ruleCooldownTimer = 10;
+        tribe.ruleCooldownTimer = 4;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
