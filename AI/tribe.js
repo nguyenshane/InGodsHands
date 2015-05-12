@@ -144,8 +144,8 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                // use 1 for testing 
-                if (this.increasePopulationTimer >= 1){
+                // use 3-5 for testing 
+                if (this.increasePopulationTimer >= 25){
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
