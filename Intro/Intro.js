@@ -82,7 +82,7 @@ pc.script.create('Intro', function (context) {
 
         	if(this.middleT && this.middleA	&& this.middleP	&& this.middleE	&& this.middleW) {
         		console.log("This will send to new scene");
-        		this.game.script.game.completeLevel(0);
+        		this.game.script.game.completeLevel(1);
         		this.onDeactivate();
         	}
 
