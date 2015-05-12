@@ -9,10 +9,10 @@ pc.script.create('AudioController', function (context) {
         this.entity = entity;
 		pc.events.attach(this);
 		this.musicBuffer = [];
-		this.musicLayer = 0.66;
+		this.musicLayer = 0.5;
 		this.prevMusicLayer = this.musicLayer;
 		this.musicLayerStart = this.musicLayer;
-		this.targetMusicLayer = 0.66;
+		this.targetMusicLayer = 0.5;
 		this.direction, this.distance, this.speed = 0;
 		this.recentlyPaused = false;
     };
@@ -64,7 +64,7 @@ pc.script.create('AudioController', function (context) {
 
             else{
                 this.prevMusicLayer = this.musicLayer;
-                this.musicLayer = .66;
+                this.musicLayer = .5;
                 this.backgroundmusic.setIntensity(this.musicLayer);
                 this.recentlyPaused = true;
             }
@@ -107,9 +107,9 @@ pc.script.create('AudioController', function (context) {
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;
 	            	lerpStartTime = timerTwo.getTime();
-	            	this.targetMusicLayer = .33;
+	            	this.targetMusicLayer = 0;
 	            } else if (this.targetMusicLayer === this.musicLayer){
-	            	this.targetMusicLayer = .66;
+	            	this.targetMusicLayer = .5;
 
 	            }    
 	        }
@@ -122,18 +122,18 @@ pc.script.create('AudioController', function (context) {
 			// start shifting towards correct music layer
             if ((this.targetMusicLayer < this.musicLayer) && (this.musicLayer > 0.33)){
             	 this.lerpMusic();
-            	if (this.musicLayer < 0.33) this.musicLayer = 0.33;
+            	if (this.musicLayer < 0) this.musicLayer = 0;
             } else if ((this.targetMusicLayer > this.musicLayer) && (this.musicLayer < 1)){
            		 this.lerpMusic();
             	if (this.musicLayer > 1) this.musicLayer = 1;
             } 
 
-            if(this.musicLayer == 1 || this.musicLayer == .33){
+            if(this.musicLayer == 1 || this.musicLayer == 0){
             	changeMusic = true;
 	            timerTwo = new Date();
 	            this.musicLayerStart = this.musicLayer;
 	            lerpStartTime = timerTwo.getTime();
-            	this.targetMusicLayer = .66;
+            	this.targetMusicLayer = .5;
             }
 
             //  console.log("totalBelief: ", totalBelief);

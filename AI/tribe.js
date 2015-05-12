@@ -52,9 +52,18 @@ pc.script.create('tribe', function (context) {
         this.adaptTimer = 0;
         this.praiseTimer = 0;
         this.noSunTimer = 0;
+        this.ruleCooldownTimer = 0;
+
+        this.praySmokeIsPlaying;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
+        
+        this.attackImmunityTime = 5.0;
+        this.attackImmunityTimer = this.attackImmunityTime;
+        
+        this.animalDecisionTime = 1.5;
+        this.animalDecisionTimer = this.animalDecisionTime;
     
         // Variables for lerp, in milliseconds
 
@@ -62,15 +71,20 @@ pc.script.create('tribe', function (context) {
         this.travelTime = 3000;
         this.travelStartTime;
 
-        this.tribeColor = null;
-
     };
 
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 
-            this.humanParent = context.root.findByName("Humans");
+            console.log("tribes.length = " + tribes.length);
+
+            //this.humanParent = context.root.findByName("Humans1");
+            //console.log(context.root.findByName("Humans"));
+            this.humanParent = context.root.findByName("Humans" + tribes.indexOf(this.entity));
+            
+            console.log(this.humanParent.name);
+
 			var t1 = new Date();
 			
 			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
@@ -98,6 +112,9 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            this.praySmoke = this.entity.findByName("TestFogTribe");
+
+            this.praySmokeIsPlaying = false;
 	
             this.audio = context.root._children[0].script.AudioController;
 			
@@ -106,7 +123,7 @@ pc.script.create('tribe', function (context) {
             this.addHuman();
 
 			var t2 = new Date();
-			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1));
+			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1)); 
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -118,12 +135,11 @@ pc.script.create('tribe', function (context) {
             // Current Action is a different function depending on which rule has been fired    //
             //////////////////////////////////////////////////////////////////////////////////////
 
-            //console.log(" " + dt);
-
             if (!isPaused) {
                 if (!this.isBusy) {
-                    this.increasePopulationTimer += dt;
-                    this.runRuleList();
+                    if(this.ruleCooldownTimer < 0){
+                        this.runRuleList();
+                    } else this.ruleCooldownTimer -= dt;
                 } else {
                     this.currentAction(dt);
                 }
@@ -144,24 +160,75 @@ pc.script.create('tribe', function (context) {
 
                 this.increasePopulationTimer += dt;
 
-                // use 3-5 for testing 
-                if (this.increasePopulationTimer >= 25){
+                // use 1 for testing 
+                if (this.increasePopulationTimer >= 25) {
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
 
                 //Check influenced tiles for predators or prey
-                this.predatorsInInfluence = [];
+                this.predatorsInInfluence = [[], [], []];
                 this.preyInInfluence = [];
                 for (var i = this.influencedTiles.length-1; i >= 0; i--) {
                     var tile = this.influencedTiles[i];
                     if (tile.hasAnimal) {
-                        if (tile.animal.stats.aggressiveness > 0) this.predatorsInInfluence.push(tile);
-                        else this.preyInInfluence.push(tile);
+                        if (tile.animal.stats.aggressiveness > 0) {
+                            switch (tile.animal.stats.type) {
+                                case "fox":
+                                    this.predatorsInInfluence[0].push(tile.animal);
+                                    break;
+                                    
+                                case "pig":
+                                    this.predatorsInInfluence[1].push(tile.animal);
+                                    break;
+                                    
+                                case "cow":
+                                    this.predatorsInInfluence[2].push(tile.animal);
+                                    break;
+                            }
+                        } else this.preyInInfluence.push(tile.animal);
                     }
                 }
+                
+                this.influencedAnimalAI(dt);
 			}
         },
+        
+        influencedAnimalAI: function(dt) {
+            this.animalDecisionTimer -= dt;
+            this.attackImmunityTimer -= dt;
+            if (this.attackImmunityTimer < -1) this.attackImmunityTimer = -1;
+            
+            if (this.animalDecisionTimer < 0) {
+                this.animalDecisionTimer = this.animalDecisionTime;
+                
+                for (var i = 0; i < this.predatorsInInfluence.length; i++) {
+                    var predators = this.predatorsInInfluence[i];
+                    var totalAnimalStrength = 0;
+                    
+                    for (var j = 0; j < predators.length; j++) {
+                        totalAnimalStrength += predators[i].script.Animal.strength;
+                    }
+                    
+                    if (totalAnimalStrength > 0) {
+                        if (totalAnimalStrength > (this.population * 0.8)) {
+                            var chanceToAttack = (totalAnimalStrength / this.population) / 2;
+                            
+                            if (Math.random() < chanceToAttack) {
+                                if (this.attackImmunityTimer < 0) {
+                                    for (var j = 0; j < predators.length; j++) {
+                                        predators[i].script.Animal.attackTribe(this);
+                                    }
+                                    
+                                    this.attackImmunityTimer = this.attackImmunityTime;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
 
         //////////////////////////////////
         //  Tribe move action functions //
@@ -224,15 +291,6 @@ pc.script.create('tribe', function (context) {
                 }
 
                 var bestTile = possibleTiles[min(possibleTiles, function(v, a) {return Math.abs(a - v.getTemperature())}, this.idealTemperature)];
-                /*
-                bestTile = this.tile;
-                for (var i = 0; i < possibleTiles.length; i++){
-                    if (Math.abs(this.idealTemperature - bestTile.getTemperature()) > 
-                        Math.abs(this.idealTemperature - possibleTiles[i].getTemperature())){
-                        bestTile = possibleTiles[i];
-                    }
-                }
-                */
 
                 if (bestTile.equals(this.tile)){
                     this.isBusy = false;
@@ -242,8 +300,8 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                //this.calculatePopulation();
                 this.calculateInfluence();
+                
                 this.isBusy = false;
                 this.isSpiteful = false;
             }
@@ -253,6 +311,19 @@ pc.script.create('tribe', function (context) {
         ////////////////////////////////////
         //  Tribe prayer action functions //
         ////////////////////////////////////
+
+        // Display smoke for prayer notification
+        prayForSomething: function () {
+            //this.praySmoke.enabled = !this.praySmoke.enabled;
+            //console.log(this.praySmoke);
+            if (!this.praySmokeIsPlaying){
+                this.praySmoke.particlesystem.play();
+                this.praySmokeIsPlaying = true;
+            } else {
+                this.praySmoke.particlesystem.stop();
+                this.praySmokeIsPlaying = false;
+            }
+        },
 
         prayForTemperature: function (deltaTime) {
             if(this.currTileTemperature > this.idealTemperature){
@@ -266,9 +337,11 @@ pc.script.create('tribe', function (context) {
                 this.prayerTimer = 0;
                 this.decreaseBelief();
                 this.isSpiteful = true;
+                
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
+                this.prayForSomething();
             }
 
             if ((this.currTileTemperature > (this.idealTemperature - 5) &&
@@ -277,10 +350,12 @@ pc.script.create('tribe', function (context) {
 
                 //console.log("Prayer fulfilled!");
                 this.prayerTimer = 0;
+                
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
                 this.startPraise();
+                this.prayForSomething();
             }
 
             //console.log(this.currTileTemperature);
@@ -288,10 +363,11 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer -= deltaTime;
         },
 
-        startPrayForTemperature: function (time) {
+        startPrayForTemperature: function () {
             //console.log("TIME TO PRAY");
-            this.prayerTimer = time;
+            this.prayerTimer = 15;
             this.setCurrentAction(this.prayForTemperature);
+            this.prayForSomething();
             this.isBusy = true;
 
             this.audio.sound_TribePray();
@@ -390,6 +466,7 @@ pc.script.create('tribe', function (context) {
                 //console.log("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
+                
                 this.isBusy = false;
             }
             
@@ -417,6 +494,7 @@ pc.script.create('tribe', function (context) {
                 this.idealTemperature 
                 this.decreaseBelief();
                 this.adaptTimer = 0;
+                this.isSpiteful = false;
                 this.isBusy = false;
             }
             
@@ -472,6 +550,7 @@ pc.script.create('tribe', function (context) {
 
         increasePopulation: function() {
             ++this.population;
+            this.addHuman();
             if (this.population > this.MAXPOPULATION){
                 addTribe();
                 this.setPopulation(2);
@@ -480,8 +559,10 @@ pc.script.create('tribe', function (context) {
 
         decreasePopulation: function() {
             --this.population;
-            if (this.population < MINPOPULATION){
-                // call kill tribe
+
+            if (this.population < this.MINPOPULATION){
+                // Kill the tribe
+                this.entity.enabled = false;
             }
         },
 
@@ -515,13 +596,17 @@ pc.script.create('tribe', function (context) {
             var e = this.humanParent.clone();
             this.entity.getParent().addChild(e);
             var newHuman = e.findByName("human1");
-            //newHuman.enabled = true;
-            console.log("New human "  + newHuman);
+            newHuman.enabled = true;
+            debug.log(DEBUG.AI, "New human "  + newHuman);
             newHuman.script.Human.tribeParent = this;
             this.humans.push(newHuman);
             newHuman.script.Human.start();
             newHuman.script.Human.chooseState();
             //newHuman.script.Human.setAnimState("idle");
+        },
+
+        chooseHuman: function() {
+            //for (var i = 0)
         },
 
         // Constructs the NPC's list of rules
@@ -537,6 +622,7 @@ pc.script.create('tribe', function (context) {
             this.rules.sort(function(a, b){return b.weight - a.weight});
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this)){
+                    //console.log(this.rules[i].consequence.name);
                     this.rules[i].consequence(this);
                     break;
                 }

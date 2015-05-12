@@ -23,6 +23,7 @@ pc.script.create('Human', function (context) {
         this.destinationTile;
         this.path;
         this.pathIndex;
+        this.underAttack = false;
         
 		this.strength = 1.0;
 		
@@ -38,7 +39,10 @@ pc.script.create('Human', function (context) {
         this.currentState = null;
         this.prevState = null;
 
-        this.setAnimState('idle');
+        //this.setAnimState('idle');
+        
+        this.rotation;
+        this.facingDirection = Math.random() * 360;
     };
 
     Human.prototype = {
@@ -48,30 +52,42 @@ pc.script.create('Human', function (context) {
             if (!isPaused) {
                 this.chooseState();
                 if (this.currentAction != null) this.currentAction();
-
+                
                 if (this.tile != null) {
                     if (this.destinationTile != null) {
                         var position = this.entity.getPosition();
                         var target = this.destinationTile.center;
+                        
                         if (distSq(position, target) > 0.001) {
                             var up = this.tile.normal;
                             var m = new pc.Mat4().setLookAt(position, target, up);
                             this.rotation = m.getEulerAngles();
+                            this.entity.setEulerAngles(this.rotation);
+                        } else {
+                            /*
+                            this.rotation = this.tile.getRotationAlignedWithNormal();
+                            this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                            this.entity.rotateLocal(0, this.facingDirection, 0);
+                            */
                         }
+                    } else {
+                        this.rotation = this.tile.getRotationAlignedWithNormal();
+                        this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                        this.entity.rotateLocal(0, this.facingDirection, 0);
                     }
-                    
-                    this.entity.setEulerAngles(this.rotation);
-                    //this.entity.setEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
                 }
             }
         },
 
         start: function() {
-            if(this.tribeParent != null){
+            if (this.tribeParent != null || this.tribeParent != undefined) {
                 this.tile = this.tribeParent.tile.neighbora; 
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
+                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                this.entity.rotateLocal(0, this.facingDirection, 0);
+                
                 this.chooseState();
 
                 //this.setDestination(this.tile.neighbora.neighborb.neighbora);
@@ -98,8 +114,6 @@ pc.script.create('Human', function (context) {
             var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
             var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
-            //var deltaVec = new pc.Vec3;
-            //deltaVec.lerp(this.startPosition, this.destinationTile.center, percentTravelled);
             this.entity.setPosition(deltaVec);
             
             // Once tribe is at next tile's center, movement is done.

@@ -232,6 +232,8 @@ function Tile(index, vertexa, vertexb, vertexc){
     
 	
 	this.update = function(dt) {
+        return;
+        
 		var tempHumidityMultiplier = this.getTemperature() / 100 * 2.0 + 0.25;
 		tempHumidityMultiplier = pc.math.clamp(tempHumidityMultiplier, 0.3, 2.0);
         
@@ -342,7 +344,8 @@ function Tile(index, vertexa, vertexb, vertexc){
     
 	//Could also be incorporated into the normal update using dt*chance instead of the respawn timer, but this is slightly more 'efficient' (but potentially lagspike inducing)
 	this.intermittentUpdate = function() {
-		console.log("In intermittentUpdate");
+        return;
+        
         var temp = this.getTemperature();
 		
 		this.spawnTree(temp, 0);
