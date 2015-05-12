@@ -36,6 +36,9 @@ pc.script.create('tribe', function (context) {
         this.rainIcon;
         this.stormIcon;
         this.praiseIcon;
+        this.paganStatue;
+        this.hq;
+        this.hqCounter;
 
         this.stormEffect;
 
@@ -115,6 +118,14 @@ pc.script.create('tribe', function (context) {
             this.praySmoke = this.entity.findByName("TestFogTribe");
 
             this.praySmokeIsPlaying = false;
+
+            this.hq = this.entity.findByName("HQ");
+            this.hq.enabled = true;
+            this.paganStatue = this.entity.findByName("PaganStatue");
+            this.paganStatue.setLocalEulerAngles(this.rotation.x - 180, this.rotation.y, this.rotation.z);
+
+            this.paganStatue.enabled = true;
+            this.hqCounter = 180; // 3 seconds to rotate at 60fps
 	
             this.audio = context.root._children[0].script.AudioController;
 			
@@ -192,6 +203,18 @@ pc.script.create('tribe', function (context) {
                 
                 this.influencedAnimalAI(dt);
 			}
+
+            if (context.keyboard.isPressed(56)){ // press 8
+                if (this.hqCounter > 0){
+                    this.raisePagan(this.hqCounter--);
+                }
+            }
+
+            // if (context.keyboard.isPressed(57)){ // press 9
+            //     if (this.hqCounter > 0){
+            //         this.lowerPagan(this.hqCounter--);
+            //     }
+            // }
         },
         
         influencedAnimalAI: function(dt) {
@@ -471,6 +494,26 @@ pc.script.create('tribe', function (context) {
             }
             
             this.denounceTimer -= deltaTime;
+        },
+
+        raisePagan: function(hqCount) {
+            this.hq.enabled = false;
+            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180-hqCount), this.rotation.y, this.rotation.z);
+            //this.entity.setLocalEulerAngles(this.rotation.x - (270-hqCount), this.rotation.y, this.rotation.z);
+            //if (hqCount === 0) this.hq.enabled = false;
+            console.log("Raising pagan!");
+            if (hqCount === 0){
+               this.hqCounter = 180;
+            }
+        },
+
+        lowerPagan: function(hqCount) {
+            // //this.hq.enabled = true;
+            // this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x - (180-hqCount), this.rotation.y, this.rotation.z);
+            // this.entity.setLocalEulerAngles(this.rotation.x + (180-hqCount), this.rotation.y, this.rotation.z)
+            // //this.hq.enabled = false;
+            // console.log("Lowering pagan!");
+            // if (hqCount === 0) this.hqCounter = 180;
         },
 
         // Tribe adapts to new temperature when ignored by god
