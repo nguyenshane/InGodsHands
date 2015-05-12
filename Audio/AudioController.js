@@ -21,6 +21,7 @@ pc.script.create('AudioController', function (context) {
   		var timer = 0.0;
   		var timerTwo = 0.0;
   		var changeMusic = false;
+  		var backToNormal = false;
 
     AudioController.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -62,8 +63,12 @@ pc.script.create('AudioController', function (context) {
         		this.dynamicMusic();
             }
 
+
             else{
-                this.prevMusicLayer = this.musicLayer;
+
+            	if(!this.recentlyPaused) this.prevMusicLayer = this.musicLayer;
+               
+                //console.log("prevMusicLayer: " + this.prevMusicLayer + " musicLayer: " + this.musicLayer);
                 this.musicLayer = .5;
                 this.backgroundmusic.setIntensity(this.musicLayer);
                 this.recentlyPaused = true;
@@ -79,25 +84,11 @@ pc.script.create('AudioController', function (context) {
 		            this.recentlyPaused = false;
 		        }
 
-
-        	if (context.keyboard.isPressed(56)) {
-        		//console.log('this.musicLayer',this.musicLayer);
-        		this.musicLayer+=0.02;
-        		if (this.musicLayer>=1) this.musicLayer = 1;
-                this.backgroundmusic.setIntensity(this.musicLayer);
-            }
-            if (context.keyboard.isPressed(57)) {
-            	//console.log('this.musicLayer',this.musicLayer);
-                this.musicLayer-=0.02;
-                if (this.musicLayer<=0) this.musicLayer = 0;
-                this.backgroundmusic.setIntensity(this.musicLayer);
-            }
-
             // set the target music layer based on belief change.
 
-           if(!changeMusic){
+           if(!changeMusic && backToNormal){
 	            if (totalBelief > prevTotalBelief){
-	            	changeMusic = true;
+	            	changeMusic = true;   	
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;
 	            	lerpStartTime = timerTwo.getTime();
@@ -114,13 +105,15 @@ pc.script.create('AudioController', function (context) {
 	            }    
 	        }
 
+	        if(this.musicLayer == 0.5 && !changeMusic) backToNormal = true;
+
               if(this.musicLayer == this.targetMusicLayer){
             	changeMusic = false;
 
             }
 
 			// start shifting towards correct music layer
-            if ((this.targetMusicLayer < this.musicLayer) && (this.musicLayer > 0.33)){
+            if ((this.targetMusicLayer < this.musicLayer) && (this.musicLayer > 0)){
             	 this.lerpMusic();
             	if (this.musicLayer < 0) this.musicLayer = 0;
             } else if ((this.targetMusicLayer > this.musicLayer) && (this.musicLayer < 1)){
@@ -149,6 +142,7 @@ pc.script.create('AudioController', function (context) {
 
 		lerpMusic: function(){
 				timer = new Date();
+				backToNormal = false;
             	var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
             	//console.log("timeSinceStartedLerp " + timeSinceStartedLerp + " lerpStartTime " + lerpStartTime);
         		var percentLerped = timeSinceStartedLerp / 10000;
