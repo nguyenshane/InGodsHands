@@ -43,6 +43,7 @@ pc.script.create('tribe', function (context) {
         this.stormEffect;
 
         this.rules = [];
+        this.events = [];
 
         this.isBusy = false;
         this.isSpiteful = false;
@@ -55,7 +56,9 @@ pc.script.create('tribe', function (context) {
         this.adaptTimer = 0;
         this.praiseTimer = 0;
         this.noSunTimer = 0;
+        this.falseIdolTimer = 0;
         this.ruleCooldownTimer = 0;
+        this.eventTimer = 10;
 
         this.praySmokeIsPlaying;
         
@@ -106,6 +109,7 @@ pc.script.create('tribe', function (context) {
             this.currTileTemperature = this.tile.getTemperature();
             
             this.createRuleList();
+            this.createEventList();
 
             this.calculateInfluence();
 
@@ -144,10 +148,22 @@ pc.script.create('tribe', function (context) {
             // Rules system is run through each from, sorted by weight                          //
             // if the NPC is busy (moving, praying, etc.), currentAction is called instead      //
             // Current Action is a different function depending on which rule has been fired    //
+            // Event system overrides normal rule system; every few min. an event happens       //
             //////////////////////////////////////////////////////////////////////////////////////
 
             if (!isPaused) {
-                if (!this.isBusy) {
+                if (!this.isBusy){
+                    if (this.eventTimer < 0){
+                        this.startFalseIdol();
+                        this.eventTimer = 240;
+                        // When we have multiple, run this code, for now just run the only event
+                        //this.events[Math.floor(pc.math.random(0, this.events.length))]
+                    } 
+                }
+                this.eventTimer -= dt;
+                //console.log("Event timer : " + this.eventTimer);
+
+                if (!this.isBusy) {                
                     if(this.ruleCooldownTimer < 0){
                         this.runRuleList();
                     } else this.ruleCooldownTimer -= dt;
@@ -417,10 +433,15 @@ pc.script.create('tribe', function (context) {
             // and belief will increase and decrease accordingly.
             if(this.cowerTimer <= 0){
                 switch(this.previousAction){
+                    case this.worshipFalseIdol:
+                        this.increaseFear();
+                        this.increaseBelief();
+                        this.isBusy = false;
+
                     case this.denounce:
                         this.increaseFear();
                         this.increaseBelief();
-                        this.isBusy = false
+                        this.isBusy = false;
                         
                         //console.log("THOU HAST BEEN SMITED");
                         break;
@@ -545,6 +566,25 @@ pc.script.create('tribe', function (context) {
         },
 
         /////////////////////////////////
+        //  Tribe Events ////////////////
+        /////////////////////////////////
+
+        startFalseIdol: function() {
+            this.setCurrentAction(this.worshipFalseIdol);
+            this.isBusy = true;
+            console.log("WE SHALL BEAR FALSE IDOLSZ");
+        },
+
+        worshipFalseIdol: function(deltaTime) {
+            if(this.falseIdolTimer > 8){
+                this.decreaseBelief();
+                this.falseIdolTimer = 0;
+            }
+
+            this.falseIdolTimer += deltaTime;
+        },
+
+        /////////////////////////////////
         //  Tribe data acces functions //
         /////////////////////////////////
 
@@ -661,8 +701,13 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new needToAdapt());
         },
 
+        createEventList: function() {
+            this.events.push(this.startFalseIdol);
+        },
+
         runRuleList: function() { 
             this.rules.sort(function(a, b){return b.weight - a.weight});
+            console.log(this.rules);
             for(var i = 0; i < this.rules.length; i++){
                 if(this.rules[i].testConditions(this)){
                     //console.log(this.rules[i].consequence.name);

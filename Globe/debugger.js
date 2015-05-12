@@ -21,7 +21,7 @@ debugstyles[DEBUG.WORLDGEN] = {
 
 debugstyles[DEBUG.AI] = {
 	name : "[AI] ",
-	on : false,
+	on : true,
 	color : "#990000", //Red
 };
 

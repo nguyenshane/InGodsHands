@@ -30,7 +30,7 @@ pc.script.create('game', function (context) {
         
         unloadLevel: function () {
             // Destroy all Entities and components created from the previous Pack.
-            this.currentPack.hierarchy.destroy(context.systems);
+            this.currentPack.hierarchy.destroy();
             this.currentPack = null;
         },
         
