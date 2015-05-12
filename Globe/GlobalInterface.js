@@ -15,6 +15,8 @@ pc.script.create('globalInterface', function (context) {
         this.isPaused = false;
 
         isPaused = this.isPaused;
+
+        snapshots = [];
     };
 	
     var camera;
@@ -24,6 +26,7 @@ pc.script.create('globalInterface', function (context) {
         initialize: function () {
 
         	globalTime = 0;
+            lastSnapshotTime = 0;
 			
 			//Global references to PlayCanvas components
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
@@ -155,6 +158,12 @@ pc.script.create('globalInterface', function (context) {
                 //prevTotalBelief = totalBelief;
 
                 sun.setPosition(0, 0, 0);
+
+                if (globalTime - lastSnapshotTime > 1) {
+                        this.takeSnapshot();
+                        lastSnapshotTime = globalTime;
+                        //debug.obj(DEBUG.TESTING, snapshots, "Snapshot taken");
+                }
           }
         },
 
@@ -178,6 +187,15 @@ pc.script.create('globalInterface', function (context) {
                 isPaused = this.isPaused;
             }
         },
+
+        takeSnapshot: function() {
+            var snapshot = {
+                temperature : globalTemperature,
+                belief : totalBelief
+            }
+            
+            snapshots.push(snapshot);
+        }
     };
 
     return GlobalVariables;
