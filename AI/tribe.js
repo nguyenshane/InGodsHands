@@ -600,11 +600,12 @@ pc.script.create('tribe', function (context) {
                 this.humans[i].enabled = false
             }
 
+            this.population = population;
+
             for(var i = 0; i < population; i++){
                 this.increasePopulation();
             }
 
-            this.population = population;
         },
 
         getIdealTemperature: function() {
