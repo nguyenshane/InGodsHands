@@ -13,7 +13,7 @@ pc.script.create('game', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             this.currentPack = null;
-            this.loadLevel(0);
+            this.loadLevel(1);
         },
 
         // Called every frame, dt is time in seconds since last update
