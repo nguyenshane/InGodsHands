@@ -88,8 +88,14 @@ pc.script.create('tribe', function (context) {
 
 			var t1 = new Date();
 			
-			var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
-            this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
+			//var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
+            //this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
+
+            this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
+
+            while (!this.tile.isPathable) {
+                this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
+            }
             
 
             totalBelief = 300;
@@ -594,11 +600,12 @@ pc.script.create('tribe', function (context) {
                 this.humans[i].enabled = false
             }
 
+            this.population = population;
+
             for(var i = 0; i < population; i++){
                 this.increasePopulation();
             }
 
-            this.population = population;
         },
 
         getIdealTemperature: function() {
