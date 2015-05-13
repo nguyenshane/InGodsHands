@@ -15,7 +15,7 @@ pc.script.create('tribe', function (context) {
         this.humanParent;
         this.humans = [];
 
-        this.population = 1;
+        this.population = 0;
         this.MAXPOPULATION = 5;
         this.MINPOPULATION = 1;
         
@@ -38,7 +38,7 @@ pc.script.create('tribe', function (context) {
         this.praiseIcon;
         this.paganStatue;
         this.hq;
-        this.hqCounter;
+        this.idolAngleChange;
 
         this.stormEffect;
 
@@ -83,13 +83,8 @@ pc.script.create('tribe', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 
-            console.log("tribes.length = " + tribes.length);
-
-            //this.humanParent = context.root.findByName("Humans1");
-            //console.log(context.root.findByName("Humans"));
             this.humanParent = context.root.findByName("Humans" + tribes.indexOf(this.entity));
-            
-            console.log(this.humanParent.name);
+            this.humans = this.humanParent.getChildren();
 
 			var t1 = new Date();
 			
@@ -129,13 +124,15 @@ pc.script.create('tribe', function (context) {
             this.paganStatue.setLocalEulerAngles(this.rotation.x - 180, this.rotation.y, this.rotation.z);
 
             this.paganStatue.enabled = true;
-            this.hqCounter = 180; // 3 seconds to rotate at 60fps
+            this.idolAngleChange = 0; // 3 seconds to rotate at 60fps
 	
             this.audio = context.root._children[0].script.AudioController;
 			
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
-            this.addHuman();
+
+            this.increasePopulation();
+            this.increasePopulation();
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1)); 
@@ -219,18 +216,6 @@ pc.script.create('tribe', function (context) {
                 
                 this.influencedAnimalAI(dt);
 			}
-
-            if (context.keyboard.isPressed(56)){ // press 8
-                if (this.hqCounter > 0){
-                    this.raisePagan(this.hqCounter--);
-                }
-            }
-
-            // if (context.keyboard.isPressed(57)){ // press 9
-            //     if (this.hqCounter > 0){
-            //         this.lowerPagan(this.hqCounter--);
-            //     }
-            // }
         },
         
         influencedAnimalAI: function(dt) {
@@ -375,8 +360,9 @@ pc.script.create('tribe', function (context) {
                 //console.log("Prayer timer up");
                 this.prayerTimer = 0;
                 this.decreaseBelief();
+                this.decreasePopulation();
                 this.isSpiteful = true;
-                
+
                 this.isBusy = false;
                 this.sunIcon.enabled = false;
                 this.rainIcon.enabled = false;
@@ -425,7 +411,8 @@ pc.script.create('tribe', function (context) {
             //this.stormEffect.enabled = true;            
             while(this.stormEffect.darkness < this.cowerTimer){
                 this.stormEffect.darkness += .005;
-            }            
+            }
+            this.idolAngleChange = 0;            
         },
 
         cower: function(deltaTime) {
@@ -469,6 +456,15 @@ pc.script.create('tribe', function (context) {
             } else {
                 this.stormEffect.darkness = 1;
             }
+
+            // if(this.previousAction === this.worshipFalseIdol){
+            //     this.lowerPagan(deltaTime);
+            // }
+
+            if (this.idolAngleChange < 180){
+                this.raisePagan(this.idolAngleChange++);
+            }
+
         },
 
         //////////////////////////////
@@ -517,25 +513,6 @@ pc.script.create('tribe', function (context) {
             this.denounceTimer -= deltaTime;
         },
 
-        raisePagan: function(hqCount) {
-            this.hq.enabled = false;
-            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180-hqCount), this.rotation.y, this.rotation.z);
-            //this.entity.setLocalEulerAngles(this.rotation.x - (270-hqCount), this.rotation.y, this.rotation.z);
-            //if (hqCount === 0) this.hq.enabled = false;
-            console.log("Raising pagan!");
-            if (hqCount === 0){
-               this.hqCounter = 180;
-            }
-        },
-
-        lowerPagan: function(hqCount) {
-            // //this.hq.enabled = true;
-            // this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x - (180-hqCount), this.rotation.y, this.rotation.z);
-            // this.entity.setLocalEulerAngles(this.rotation.x + (180-hqCount), this.rotation.y, this.rotation.z)
-            // //this.hq.enabled = false;
-            // console.log("Lowering pagan!");
-            // if (hqCount === 0) this.hqCounter = 180;
-        },
 
         // Tribe adapts to new temperature when ignored by god
         startAdapting: function() {
@@ -547,7 +524,6 @@ pc.script.create('tribe', function (context) {
             } else if(this.currTileTemperature > this.idealTemperature + 5){
                 this.idealTemperature += 5;
             }
-            this.population--;
             //CHANGE THIS WHEN WE GET SOUND
             this.audio.sound_TribeDenounce();
         },
@@ -573,6 +549,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.worshipFalseIdol);
             this.isBusy = true;
             console.log("WE SHALL BEAR FALSE IDOLSZ");
+            this.idolAngleChange = 180;
         },
 
         worshipFalseIdol: function(deltaTime) {
@@ -581,7 +558,23 @@ pc.script.create('tribe', function (context) {
                 this.falseIdolTimer = 0;
             }
 
+            if (this.idolAngleChange > 0){
+                this.raisePagan(this.idolAngleChange--);
+            }
+
             this.falseIdolTimer += deltaTime;
+        },
+
+        raisePagan: function(angleChange) {
+            this.hq.enabled = false;
+            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            console.log("Raising pagan!");
+        },
+
+        lowerPagan: function(angleChange) {
+            this.hq.enabled = true;
+            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            console.log("Raising pagan!");           
         },
 
         /////////////////////////////////
@@ -597,6 +590,14 @@ pc.script.create('tribe', function (context) {
         },
 
         setPopulation: function(population) {
+            for(var i = 0; i < this.humans.length; i++){
+                this.humans[i].enabled = false
+            }
+
+            for(var i = 0; i < population; i++){
+                this.increasePopulation();
+            }
+
             this.population = population;
         },
 
@@ -642,8 +643,11 @@ pc.script.create('tribe', function (context) {
 
         decreasePopulation: function() {
             --this.population;
+            // Decrease humans on screen to current population
+            this.humans[this.population].enabled = false;
 
             if (this.population < this.MINPOPULATION){
+                console.log("WE DIED");
                 // Kill the tribe
                 this.entity.enabled = false;
             }
@@ -676,20 +680,19 @@ pc.script.create('tribe', function (context) {
         },
 		
         addHuman: function() {
-            var e = this.humanParent.clone();
-            this.entity.getParent().addChild(e);
-            var newHuman = e.findByName("human1");
-            newHuman.enabled = true;
-            debug.log(DEBUG.AI, "New human "  + newHuman);
-            newHuman.script.Human.tribeParent = this;
-            this.humans.push(newHuman);
-            newHuman.script.Human.start();
-            newHuman.script.Human.chooseState();
-            //newHuman.script.Human.setAnimState("idle");
-        },
+            // Step through humans' pool and activate a new one 
+            for(var i = 0; i < this.humans.length; i++){
+                if (!this.humans[i].enabled) {
+                    this.humans[i].enabled = true;
+                    this.humans[i].script.Human.tribeParent = this;
+                    this.humans[i].script.Human.start();
+                    this.humans[i].script.Human.chooseState();
+                    break;
+                }            
+            }
 
-        chooseHuman: function() {
-            //for (var i = 0)
+            // Old animation code, keeping around til we figure this shit out
+            //newHuman.script.Human.setAnimState("idle");
         },
 
         // Constructs the NPC's list of rules
