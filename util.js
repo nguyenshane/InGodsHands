@@ -832,11 +832,11 @@ pc.script.create('FrameRate', function (context) {
 
 //Randomizes array contents, shamelessly stolen from the internet
 function shuffleArray(array) {
-	for(var j, x, i = array.length; i; j = Math.floor(Math.random() * i), x = array[--i], array[i] = array[j], array[j] = x);
+	for(var j, x, i = array.length; i; j = Math.floor(seed.step(8191, 0, 1) * i), x = array[--i], array[i] = array[j], array[j] = x);
 };
 
 function getRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(seed.step(8191, 0, 1) * array.length)];
 };
 
 //Also stolen from the internet
@@ -1257,4 +1257,21 @@ startTween = function (from, to, duration, currentPos, reverseAfter) {
             startTween(to, from, duration, currentPos, reverseAfter)
         } 
     }).start();
+};
+
+function seed(seed) {
+    this.seed = seed;
+    this.increment = 1;
+    this.multiplier = 1431655765;
+    this.increment = 1;
+    this.mod =  32768;
+    this.num = seed;
+    this.count = 0;
+
+    this.step = function(precision, min, max) {
+        this.num = ((this.multiplier * this.num) + this.increment) % this.mod;
+        var value = ((this.num % precision) * (max - min) / (precision - 1) + min);
+        debug.log(DEBUG.WORLDGEN, "Seed count " + ++this.count + ": " + value);
+        return value;
+    }
 };
