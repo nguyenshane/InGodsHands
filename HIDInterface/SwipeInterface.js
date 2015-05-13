@@ -45,7 +45,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             // append css to style
             if (document.head.querySelector) {
-                document.head.querySelector('style').innerHTML += css;
+               // document.head.querySelector('style').innerHTML += css;
             }
         
             var swipeWrapper = document.createElement('div');
