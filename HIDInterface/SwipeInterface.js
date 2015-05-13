@@ -17,6 +17,15 @@ pc.script.create('SwipeInterface', function (context) {
             var t1 = new Date();
 
             var css = function () {/*
+                .swipeWrapper{
+                    z-index: 101;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0.5
+                }
                 .left{
                     height:20%;
                     width: 20%;
@@ -44,12 +53,21 @@ pc.script.create('SwipeInterface', function (context) {
             css = css.slice(css.indexOf('/*') + 2).slice(0, -3);
 
             // append css to style
-            if (document.head.querySelector) {
-               // document.head.querySelector('style').innerHTML += css;
+            if (document.head) {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                if (style.styleSheet){
+                  style.styleSheet.cssText = css;
+                } else {
+                  style.appendChild(document.createTextNode(css));
+                }
+
+                document.head.appendChild(style);
             }
         
             var swipeWrapper = document.createElement('div');
-            swipeWrapper.innerHTML  = [
+            swipeWrapper.className = 'swipeWrapper';
+            swipeWrapper.innerHTML = [
                 '<div class="string left T"></div> <div class="center"></div> <div class="string right T"></div>',
                 '<div class="string left A"></div> <div class="center"></div> <div class="string right A"></div>',
                 '<div class="string left P"></div> <div class="center"></div> <div class="string right P"></div>',
