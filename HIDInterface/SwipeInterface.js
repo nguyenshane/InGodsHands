@@ -18,7 +18,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             var css = function () {/*
                 .swipeWrapper{
-                    z-index: 101;
+                    z-index: 0;
                     position: absolute;
                     top: 0;
                     left: 0;
