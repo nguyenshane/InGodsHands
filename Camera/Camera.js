@@ -18,9 +18,7 @@ pc.script.create('Camera', function (context) {
         initialize: function () {
             //this.stringW = context.root._children[0].script.HIDInterface.stringW;
             //this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
-
-            console.log("I'm PRINTING");
-
+            
 			//this.bgplane = this.entity.findByName("Plane");
             this.aura1 = this.entity.findByName("Aura1");
             this.aura2 = this.entity.findByName("Aura2");
@@ -34,16 +32,15 @@ pc.script.create('Camera', function (context) {
         
         move_W: function(position, distance, speed) {
             console.log('move_W', position, distance, speed);
-            if(!isPaused){
-    			if(position>0) {
+            if (!isPaused) {
+    			if (position > 0) {
     			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
                     //this.orbitAngle++;
                     //shaderSun.rotateLocal(0, -2, 0);
                     //sun.rotate(0, .01, 0);
                     this.rotationSpeed+=0.15;
                     this.lastRotationSpeed = this.rotationSpeed;
-    			}
-    			else {
+    			} else {
                     //context.root.findByName("Camera").script.camera.orbitAngle-=15;
                     //this.orbitAngle--;
                     //shaderSun.rotateLocal(0, 2, 0);
@@ -152,7 +149,8 @@ pc.script.create('Camera', function (context) {
             cameraEntity.translateLocal(0, this.height, this.distance);
 
             // Step 4: Look at the ball from the camera's new position
-            cameraEntity.lookAt(sphereEntity.getPosition());}
+            cameraEntity.lookAt(sphereEntity.getPosition());
+        }
     };
 
     return Camera;

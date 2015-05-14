@@ -651,7 +651,7 @@ pc.script.create('tribe', function (context) {
         decreasePopulation: function() {
             --this.population;
             // Decrease humans on screen to current population
-            this.humans[this.population].enabled = false;
+            if (this.population >= 0) this.humans[this.population].enabled = false;
 
             if (this.population < this.MINPOPULATION){
                 console.log("WE DIED");
@@ -717,9 +717,9 @@ pc.script.create('tribe', function (context) {
 
         runRuleList: function() { 
             this.rules.sort(function(a, b){return b.weight - a.weight});
-            console.log(this.rules);
-            for(var i = 0; i < this.rules.length; i++){
-                if(this.rules[i].testConditions(this)){
+            //console.log(this.rules);
+            for (var i = 0; i < this.rules.length; i++) {
+                if (this.rules[i].testConditions(this)) {
                     //console.log(this.rules[i].consequence.name);
                     this.rules[i].consequence(this);
                     break;
