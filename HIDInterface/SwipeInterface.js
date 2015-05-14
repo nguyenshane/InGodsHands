@@ -172,7 +172,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_L" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_W(-1,distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(-1,distance/50,(distance/50)/duration);
                 },
                 threshold:0
             });
@@ -181,7 +181,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_W(1,distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration);
                 },
                 threshold:0
             });
