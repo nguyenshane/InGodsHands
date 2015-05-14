@@ -14,7 +14,8 @@ pc.script.create('change_material', function (context) {
             this.humanFourMat = context.assets.find("Human4").resource;
             this.humanFiveMat = context.assets.find("Human5").resource;
 
-            console.log(this.entity.getParent().name);
+            //console.log(this.entity.getParent().name);
+            
             var model = this.entity.model.model;
             if (this.entity.getParent().name == "Humans0"){
             	model.meshInstances[0].material = this.humanOneMat;

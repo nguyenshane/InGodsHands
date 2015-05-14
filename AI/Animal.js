@@ -14,7 +14,7 @@ pc.script.create('Animal', function (context) {
 		this.food = this.maxFood * pc.math.random(0.5, 0.9);
 		this.foodConsumption = 0.1;
 		
-		this.strength = 3.0;
+		this.strength = 1.0;
         
         this.turnSpeed = 1.0;
 		this.moveSpeed = 1.0;
