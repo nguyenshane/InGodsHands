@@ -125,12 +125,12 @@ pc.script.create('HIDInterface', function (context) {
 			
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + distance;
+			temperatureDest = globalTemperature + (distance * position);
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 
-			var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance * position);
 
 			if (!UI.StringsliderT.mouseIsOver){
                 UI.StringsliderT.value = newStringTvalue;
@@ -147,10 +147,10 @@ pc.script.create('HIDInterface', function (context) {
 		moved_A: function(position, distance, speed) {
 			//console.log("String A moved: ", position, distance, speed);
 			
-			animalDensity += (distance * 0.0004);
+			animalDensity += ((distance * position) * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
-			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + (distance * position);
 			
 			if (!UI.StringsliderA.mouseIsOver){
                 UI.StringsliderA.value = newStringAvalue;
@@ -170,7 +170,7 @@ pc.script.create('HIDInterface', function (context) {
 			// 	}
 			// }
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + (distance * position);
 			
 			if (!UI.StringsliderP.mouseIsOver){
                 UI.StringsliderP.value = newStringPvalue;
@@ -178,7 +178,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
-			ico.faultNumMove = Math.abs(distance);
+			ico.faultNumMove = Math.abs((distance * position));
 			ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
 
 			inactiveTimer = 0;
@@ -187,10 +187,10 @@ pc.script.create('HIDInterface', function (context) {
 		moved_E: function(position, distance, speed) {
 			//console.log("String E moved: ", position, distance, speed);
 			
-			scripts.Atmosphere.makeStorm(distance, speed);
+			scripts.Atmosphere.makeStorm((distance * position), speed);
 			this.stormTriggerBox.scareTribes();
 
-			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + (distance * position);
 			
 			if (!UI.StringsliderE.mouseIsOver){
                 UI.StringsliderE.value = newStringEvalue;
@@ -202,7 +202,7 @@ pc.script.create('HIDInterface', function (context) {
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + (distance * position);
 			
 			if (!UI.StringsliderW.mouseIsOver){
                 UI.StringsliderW.value = newStringWvalue;
@@ -236,7 +236,7 @@ pc.script.create('HIDInterface', function (context) {
 		moving_W: function(position, distance, speed) {
 			if (!hasStopped) {
                 debug.log(DEBUG.HARDWARE, "String W moving: ", position, distance, speed);
-                camera.script.Camera.move_W(position,distance,speed);
+                camera.script.Camera.move_W(position,(distance * position),speed);
 			}
 		},
 

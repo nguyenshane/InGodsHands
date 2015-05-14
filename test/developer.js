@@ -61,35 +61,6 @@ pc.script.create('developer', function (context) {
 
     developer.prototype = {
         initialize: function () {
-            // Create a button to subtract
-            var buttonSub = document.createElement('BUTTON');
-            buttonSub.align = "left"
-            var t = document.createTextNode("-");
-            buttonSub.appendChild(t);
-
-            // //positions it
-            buttonSub.style.position = 'absolute';
-            buttonSub.style.top = '30%';
-            buttonSub.style.left = '10%';
-            buttonSub.style.visibility = 'hidden';
-
-            //onCLick sends to function
-            buttonSub.onClick = this.subTemperature();
-
-            // // Create a button to add
-            var buttonPlus = document.createElement('BUTTON');
-            var t = document.createTextNode("+");
-            buttonPlus.appendChild(t);
-
-            //positions it
-            buttonPlus.style.position = 'absolute';
-            buttonPlus.style.top = '30%';
-            buttonPlus.style.left = '12%';
-            buttonPlus.style.visibility = 'hidden';
-
-            //onCLick sends to function
-            buttonPlus.onClick = this.addTemperature();
-
 
             // Create a button to pause
             var buttonPause = document.createElement('BUTTON');
@@ -277,7 +248,7 @@ pc.script.create('developer', function (context) {
             div.style.position = 'absolute';
             div.style.width = '64px';
             div.style.top = '5%';
-            div.style.left = '10%';
+            div.style.left = '7%';
             div.style.marginLeft = '0px';            
             div.style.textAlign = 'center';
             div.style.color = 'white';
@@ -289,7 +260,7 @@ pc.script.create('developer', function (context) {
             tribePop.style.position = 'absolute';
             tribePop.style.width = '32x';
             tribePop.style.top = '16%';
-            tribePop.style.left = '70%';
+            tribePop.style.left = '85%';
             tribePop.style.marginLeft = '0px';
             tribePop.style.textAlign = 'center';
             tribePop.style.color = 'white';
@@ -301,7 +272,7 @@ pc.script.create('developer', function (context) {
             tribeBelief.style.position = 'absolute';
             tribeBelief.style.width = '32x';
             tribeBelief.style.top = '20%';
-            tribeBelief.style.left = '70%';
+            tribeBelief.style.left = '85%';
             tribeBelief.style.marginLeft = '0px';
             tribeBelief.style.textAlign = 'center';
             tribeBelief.style.color = 'white';
@@ -314,7 +285,7 @@ pc.script.create('developer', function (context) {
             tribeFear.style.position = 'absolute';
             tribeFear.style.width = '32x';
             tribeFear.style.top = '24%';
-            tribeFear.style.left = '70%';
+            tribeFear.style.left = '85%';
             tribeFear.style.marginLeft = '0px';
             tribeFear.style.textAlign = 'center';
             tribeFear.style.color = 'white';
@@ -396,8 +367,6 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(tribeBelief);
             document.body.appendChild(tribeFear);
 
-            document.body.appendChild(buttonSub);
-            document.body.appendChild(buttonPlus);
             document.body.appendChild(buttonPause);
             document.body.appendChild(buttonUI);
             document.body.appendChild(StringsliderT);
@@ -420,8 +389,6 @@ pc.script.create('developer', function (context) {
             this.tribeBelief = tribeBelief;
             this.tribeFear = tribeFear;
 
-            this.buttonPlus = buttonPlus;
-            this.buttonSub = buttonSub;
             this.buttonUI = buttonUI;
             this.buttonPause = buttonPause;
 
@@ -749,7 +716,7 @@ pc.script.create('developer', function (context) {
             touches.changedTouches.forEach(function (touch) {
              // When the touches end, send to string pull functions
               if (hasMovedT){
-                            var distance = this.sliderTDistance;
+                            var distance = Math.abs(this.sliderTDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeT;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionT;
@@ -765,7 +732,7 @@ pc.script.create('developer', function (context) {
                         }
 
                 if (hasMovedA){
-                            var distance = this.sliderADistance;
+                            var distance = Math.abs(this.sliderADistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeA;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionA;
@@ -781,7 +748,7 @@ pc.script.create('developer', function (context) {
                         }
 
                     if (hasMovedP){
-                            var distance = this.sliderPDistance;
+                            var distance = Math.abs(this.sliderPDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeP;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionP;
@@ -797,7 +764,7 @@ pc.script.create('developer', function (context) {
                         }
 
                 if (hasMovedE){
-                            var distance = this.sliderEDistance;
+                            var distance = Math.abs(this.sliderEDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeE;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionE;
@@ -813,7 +780,7 @@ pc.script.create('developer', function (context) {
                         }
                         
                 if (hasMovedW){
-                            var distance = this.sliderWDistance;
+                            var distance = Math.abs(this.sliderWDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeW;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
@@ -834,7 +801,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_T: function(){
              if (hasMovedT){
-                            var distance = this.sliderTDistance;
+                            var distance = Math.abs(this.sliderTDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeT;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionT;
@@ -852,7 +819,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_A: function(){
              if (hasMovedA){
-                            var distance = this.sliderADistance;
+                            var distance = Math.abs(this.sliderADistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeA;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionA;
@@ -870,7 +837,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_P: function(){
              if (hasMovedP){
-                            var distance = this.sliderPDistance;
+                            var distance = Math.abs(this.sliderPDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeP;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionP;
@@ -888,7 +855,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_E: function(){
              if (hasMovedE){
-                            var distance = this.sliderEDistance;
+                            var distance = Math.abs(this.sliderEDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeE;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionE;
@@ -906,7 +873,7 @@ pc.script.create('developer', function (context) {
 
         sendToMoving_W: function(){
              if (hasMovedW){
-                            var distance = this.sliderWDistance;
+                            var distance = Math.abs(this.sliderWDistance);
                             var timeSinceStartedPull =  this.time - pullStartTimeW;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
@@ -951,9 +918,6 @@ pc.script.create('developer', function (context) {
                     this.tribeBelief.style.visibility = 'hidden';
                     this.tribeFear.style.visibility = 'hidden';
 
-                    this.buttonPlus.style.visibility = 'hidden';
-                    this.buttonSub.style.visibility = 'hidden';
-
                     this.StringsliderT.style.visibility = 'hidden';
                     this.StringsliderA.style.visibility = 'hidden';
                     this.StringsliderP.style.visibility = 'hidden';
@@ -977,9 +941,6 @@ pc.script.create('developer', function (context) {
                     this.tribeBelief.style.visibility = 'hidden';
                     this.tribeFear.style.visibility = 'hidden';
 
-                    this.buttonPlus.style.visibility = 'hidden';
-                    this.buttonSub.style.visibility = 'hidden';
-
                     this.StringsliderT.style.visibility = 'visible';
                     this.StringsliderA.style.visibility = 'visible';
                     this.StringsliderP.style.visibility = 'visible';
@@ -1001,9 +962,6 @@ pc.script.create('developer', function (context) {
                     this.tribePop.style.visibility = 'visible';
                     this.tribeBelief.style.visibility = 'visible';
                     this.tribeFear.style.visibility = 'visible';
-
-                    this.buttonPlus.style.visibility = 'visible';
-                    this.buttonSub.style.visibility = 'visible';
 
                     this.StringsliderT.style.visibility = 'visible';
                     this.StringsliderA.style.visibility = 'visible';
