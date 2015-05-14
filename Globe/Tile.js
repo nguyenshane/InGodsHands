@@ -471,7 +471,7 @@ function Tile(index, vertexa, vertexb, vertexc){
             }
         }
 
-        if (volitileCount < this.vertexIndices.length) {
+        if (volitileCount < 2) {
             this.isPathable = true;
         } else {
             this.isPathable = false;
@@ -561,6 +561,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Creates a new tree on this tile if the tree density in the area is too low
 	this.spawnTree = function(temperature, size) {
+        if (!this.isPathable) return;
         if (this.hasTree || this.isOcean) return;
 		
 		var maxDist = 8;
@@ -668,6 +669,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	
 	//Creates a new animal on this tile if the animal density in the area is too low
 	this.spawnAnimal = function(temperature, size) {
+        if (!this.isPathable) return;
 		if (this.hasAnimal || this.isOcean) return;
 		
 		var maxDist = 12;
