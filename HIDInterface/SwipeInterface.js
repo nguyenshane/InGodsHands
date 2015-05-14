@@ -6,10 +6,14 @@ pc.script.create('SwipeInterface', function (context) {
     var SwipeInterface = function (entity) {
         this.entity = entity;
         pc.events.attach(this);
+
+        var T_L, T_R,
+            A_L, A_R,
+            P_L, P_R,
+            E_L, E_R,
+            W_L, W_R;
         
     };
-
-    var timer = new Date();
 
     SwipeInterface.prototype = {
         // Called once after all resources are loaded and before the first update
@@ -68,13 +72,28 @@ pc.script.create('SwipeInterface', function (context) {
             var swipeWrapper = document.createElement('div');
             swipeWrapper.className = 'swipeWrapper';
             swipeWrapper.innerHTML = [
-                '<div class="string left T"></div> <div class="center"></div> <div class="string right T"></div>',
-                '<div class="string left A"></div> <div class="center"></div> <div class="string right A"></div>',
-                '<div class="string left P"></div> <div class="center"></div> <div class="string right P"></div>',
-                '<div class="string left E"></div> <div class="center"></div> <div class="string right E"></div>',
-                '<div class="string left W"></div> <div class="center"></div> <div class="string right W"></div>'
+                '<div class="string left T" id="T_L"></div> <div class="center"></div> <div class="string right T" id="T_R"></div>',
+                '<div class="string left A" id="A_L"></div> <div class="center"></div> <div class="string right A" id="A_R"></div>',
+                '<div class="string left P" id="P_L"></div> <div class="center"></div> <div class="string right P" id="P_R"></div>',
+                '<div class="string left E" id="E_L"></div> <div class="center"></div> <div class="string right E" id="E_R"></div>',
+                '<div class="string left W" id="W_L"></div> <div class="center"></div> <div class="string right W" id="W_R"></div>'
                 ].join('\n');
             document.body.appendChild(swipeWrapper);
+
+            this.T_L = $("T_L"); this.T_R = $("T_R");
+            this.A_L = $("A_L"); this.A_R = $("A_R");
+            this.P_L = $("P_L"); this.P_R = $("P_R");
+            this.E_L = $("E_L"); this.E_R = $("E_R");
+            this.W_L = $("W_L"); this.W_R = $("W_R");
+
+            this.T_L.swipe({
+                //Generic swipe handler for all directions
+                swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+                  $(this).text("You swiped " + direction + " distance " + distance, " duration " + duration);  
+                }
+            });
+
+
 
 
             var t2 = new Date();
