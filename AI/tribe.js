@@ -24,6 +24,7 @@ pc.script.create('tribe', function (context) {
         this.idealTemperature = Math.floor((Math.random() * 20) + 55);
         this.currTileTemperature;
 
+        this.belief = 0;
         this.fear = 0;
 
         this.tile;
@@ -98,7 +99,7 @@ pc.script.create('tribe', function (context) {
             }
             
 
-            totalBelief = 300;
+            totalBelief += this.belief;
             prevTotalBelief = totalBelief;
 
             this.entity.setPosition(this.tile.center);
@@ -694,6 +695,7 @@ pc.script.create('tribe', function (context) {
                     this.humans[i].script.Human.tribeParent = this;
                     this.humans[i].script.Human.start();
                     this.humans[i].script.Human.chooseState();
+                    //this.humans[i].script.Human.setAnimState("humanwalk");
                     break;
                 }            
             }
