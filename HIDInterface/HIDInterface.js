@@ -126,6 +126,13 @@ pc.script.create('HIDInterface', function (context) {
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
 			temperatureDest = globalTemperature + (distance * position);
+
+			//NaN
+			if(speed != speed) speed = 1;
+
+			console.log("distance = " + distance + " speed = " + speed);
+
+
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
@@ -147,6 +154,9 @@ pc.script.create('HIDInterface', function (context) {
 		moved_A: function(position, distance, speed) {
 			//console.log("String A moved: ", position, distance, speed);
 			
+			//NaN
+			if(speed != speed) speed = 1;
+
 			animalDensity += ((distance * position) * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
@@ -170,6 +180,9 @@ pc.script.create('HIDInterface', function (context) {
 			// 	}
 			// }
 
+			//NaN
+			if(speed != speed) speed = 1;
+
 			var newStringPvalue = parseInt(UI.StringsliderP.value) + (distance * position);
 			
 			if (!UI.StringsliderP.mouseIsOver){
@@ -187,6 +200,9 @@ pc.script.create('HIDInterface', function (context) {
 		moved_E: function(position, distance, speed) {
 			//console.log("String E moved: ", position, distance, speed);
 			
+			//NaN
+			if(speed != speed) speed = 1;
+
 			scripts.Atmosphere.makeStorm((distance * position), speed);
 			this.stormTriggerBox.scareTribes();
 
@@ -202,6 +218,9 @@ pc.script.create('HIDInterface', function (context) {
 		moved_W: function(position, distance, speed) {
 			//console.log("String W moved: ", position, distance, speed);
 			
+			//NaN
+			if(speed != speed) speed = 1;
+
 			var newStringWvalue = parseInt(UI.StringsliderW.value) + (distance * position);
 			
 			if (!UI.StringsliderW.mouseIsOver){
