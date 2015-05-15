@@ -10,8 +10,6 @@ function IcoSphere(device, radius, subdivisions) {
 
     ico = this;
 
-    seed = new seed(Math.floor(pc.math.random(0, 32768)));
-
     subdivisions = (subdivisions || 1);
 
     this.updateFlag = false;

@@ -27,6 +27,8 @@ pc.script.create('globalInterface', function (context) {
 
         	globalTime = 0;
             lastSnapshotTime = 0;
+
+            seed = new seed(Math.floor(pc.math.random(0, 32768)));
 			
 			//Global references to PlayCanvas components
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
