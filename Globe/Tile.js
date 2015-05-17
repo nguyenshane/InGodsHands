@@ -446,17 +446,19 @@ function Tile(index, vertexa, vertexb, vertexc){
 	};
 
     this.canWalkTo = function(neighbor) {
-        var oceanVertCount = 0;
+        var unwalkableCount = 0;
 
+        var vert;
         for (var i = 0; i < this.vertexIndices.length; ++i) {
             for (var j = 0; j < neighbor.vertexIndices.length; ++j) {
-                if (this.vertexIndices[i] == neighbor.vertexIndices[j] && ico.vertexGraph[this.vertexIndices[i]].isOcean) {
-                    ++oceanVertCount;
+                vert = ico.vertexGraph[this.vertexIndices[i]];
+                if (this.vertexIndices[i] == neighbor.vertexIndices[j] && (vert.isOcean || vert.isMountain)) {
+                    ++unwalkableCount;
                 }
             }
         }
 
-        if (oceanVertCount < 2) {
+        if (unwalkableCount < 2) {
             return true;
         }
         return false;
@@ -464,9 +466,10 @@ function Tile(index, vertexa, vertexb, vertexc){
 
     this.pathable = function() {
         var volitileCount = 0;
-
+        var vert;
         for (var i = 0; i < this.vertexIndices.length; ++i) {
-            if (ico.vertexGraph[this.vertexIndices[i]].isOcean || ico.vertexGraph[this.vertexIndices[i]].isFault) {
+            vert = ico.vertexGraph[this.vertexIndices[i]];
+            if (vert.isOcean || vert.isFault || vert.isMountain) {
                 ++volitileCount;
             }
         }

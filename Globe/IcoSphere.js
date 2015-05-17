@@ -290,22 +290,25 @@ function IcoSphere(device, radius, subdivisions) {
 	}
 	
 	//var initialContinentLocation = 650;
-	initialContinentLocation = initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length))].index;
+	initialContinentLocation = initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001))].index;
 	
 	generateTerrain(this, fixedRepellerCount, initialContinentLocation, continentBufferDistance, stringiness, repellerCountMultiplier, repellerCountMin, repellerCountMax, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 
-	this.generateFault(219, 1, 10);
-	this.generateFault(100, 2, 15);
-	this.generateFault(382, 3, 10);
-	this.generateFault(90, 2, 8);
-	this.generateFault(225, 1, 10);
+	for (var i = 0; i < 10; ++i) {
+		this.generateFault(Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001)), Math.floor(seed.step(8191,1, 5)), Math.floor(seed.step(8191, 5, 20)));
+	}
+	//this.generateFault(219, 1, 10);
+	//this.generateFault(100, 2, 15);
+	//this.generateFault(382, 3, 10);
+	//this.generateFault(90, 2, 8);
+	//this.generateFault(225, 1, 10);
 
-	this.generateFault(10, 1, 10);
-	this.generateFault(83, 4, 16);
-	this.generateFault(59, 3, 12);
-	this.generateFault(325, 2, 8);
-	this.generateFault(298, 2, 9);
+	//this.generateFault(10, 1, 10);
+	//this.generateFault(83, 4, 16);
+	//this.generateFault(59, 3, 12);
+	//this.generateFault(325, 2, 8);
+	//this.generateFault(298, 2, 9);
 
 	var time3 = new Date();
 	debug.log(DEBUG.INIT, "terrain generation time: " + (time3-time2));
