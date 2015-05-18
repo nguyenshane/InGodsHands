@@ -93,25 +93,29 @@ pc.script.create('Camera', function (context) {
             this.aura3.rotateLocal(0, dt*-6, 0);
 
             // Scale belief aura
-            var maxScale = 10.5;
-            var minScale = 8.5;
+            var maxScale = 9;
+            var minScale = 7;
+
             this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+           
             // Change aura color
             if(totalBelief < prevTotalBelief) {
-                this.aura1Mat.diffuse = new pc.Color(1.0,0.35,0.35);
-                this.aura2Mat.diffuse = new pc.Color(1.0,0.65,0.65);
-                this.aura3Mat.diffuse = new pc.Color(1.0,0.85,0.85);
+                this.aura1Mat.emissive = new pc.Color(1.0,0.35,0.35);
+                this.aura2Mat.emissive = new pc.Color(1.0,0.65,0.65);
+                this.aura3Mat.emissive = new pc.Color(1.0,0.85,0.85);
             } else if(totalBelief > prevTotalBelief) {
-                this.aura1Mat.diffuse = new pc.Color(0.15,1.0,0.15);
-                this.aura2Mat.diffuse = new pc.Color(0.35,1.0,0.35);
-                this.aura3Mat.diffuse = new pc.Color(0.65,1.0,0.65);
+                this.aura1Mat.emissive = new pc.Color(0.15,1.0,0.15);
+                this.aura2Mat.emissive = new pc.Color(0.35,1.0,0.35);
+                this.aura3Mat.emissive = new pc.Color(0.65,1.0,0.65);
+
             } else {
-                this.aura1Mat.diffuse = new pc.Color(0.25,0.25,0.25);
-                this.aura2Mat.diffuse = new pc.Color(0.5,0.5,0.5);
-                this.aura3Mat.diffuse = new pc.Color(0.75,0.75,0.75);
+                this.aura1Mat.emissive = new pc.Color(0.25,0.25,0.25);
+                this.aura2Mat.emissive = new pc.Color(0.5,0.5,0.5);
+                this.aura3Mat.emissive = new pc.Color(0.75,0.75,0.75);
             }
+
             this.aura1Mat.update();
             this.aura2Mat.update();
             this.aura3Mat.update();

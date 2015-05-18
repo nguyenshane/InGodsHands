@@ -76,12 +76,13 @@ pc.script.create('Globe', function (context) {
                     "{",
                     "    float intensity = max(dot(normalize(fNormal), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
-                    "    float r = abs(fPosition.y)*(maxTemp-temperature)/maxTemp + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
+                    "    float lattem = (abs(fPosition.y) + 1.0)*(maxTemp-temperature)/maxTemp/2.8;",
+                    "    float r = lattem + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
                     "    float g = dist - radius*2.0/3.0;",
-                    "    float b = abs(fPosition.y)*(maxTemp-temperature)/maxTemp; //+ (dist - 1.5)*5.0;",
+                    "    float b = lattem; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     // Snow Tops
-                    "    if (dist > radius + max(0.20 - abs(fPosition.y)*(maxTemp-temperature)/maxTemp/2.0, 0.0)) {",
+                    "    if (dist > radius + max(0.20 - lattem/2.0, 0.0)) {",
                     "       color = intensity * sunIntensity * vec4(255.0/256.0, 253.0/256.0, 247.0/256.0, 1.0);",
                     // Mountain
                     "    } else if (dist > radius + 0.15) {",
@@ -91,7 +92,7 @@ pc.script.create('Globe', function (context) {
                     "       color = intensity * sunIntensity * vec4(r, g, b, 1.0);",
                     // Beaches
                     "    } else if (dist > radius) {",
-                    "       color = intensity * sunIntensity * vec4(245.0/256.0, 191.0/256.0, 125.0/256.0, 1.0);",
+                    "       color = intensity * sunIntensity * vec4((225.0 - lattem * 300.0)/256.0, (191.0 - lattem * 270.0)/256.0, (125.0 - lattem * 50.0)/256.0, 1.0);",
                     // Ocean
                     "    } else {",
                     "       color = intensity * sunIntensity * vec4(54.0/256.0, 152.0/256.0, 167.0/256.0, 1.0);",

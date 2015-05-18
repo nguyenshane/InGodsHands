@@ -57,6 +57,8 @@ function VertexNode(index, indices) {
 
 	this.isFault = false;
 
+	this.isMountain = false;
+
 	this.tiles = [];
 
 	this.addIndex = function(index) {
@@ -83,8 +85,14 @@ function VertexNode(index, indices) {
 		if (height <= ico.radius) {
 			height = ico.radius;
 			this.isOcean = true;
+			this.isMountain = false;
 		} else {
 			this.isOcean = false;
+			if (height > ico.radius + 0.15) {
+				this.isMountain = true;
+			} else {
+				this.isMountain = false;
+			}
 		}
 		var vertex = this.getVertex();
 		vertex.normalize();
