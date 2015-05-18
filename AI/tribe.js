@@ -403,6 +403,10 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
 
             this.audio.sound_TribePray();
+            // Play action animation for all humans
+            for(var i = 0; i < this.humans.length; i++){ 
+                this.humans[i].script.Human.setAnimState("pray");
+            }
         },
 
         ///////////////////////////
@@ -419,7 +423,11 @@ pc.script.create('tribe', function (context) {
             while(this.stormEffect.darkness < this.cowerTimer){
                 this.stormEffect.darkness += .005;
             }
-            this.idolAngleChange = 0;            
+            this.idolAngleChange = 0;
+            // Play action animation for all humans
+            for(var i = 0; i < this.humans.length; i++){ 
+                this.humans[i].script.Human.setAnimState("cower");
+            }
         },
 
         cower: function(deltaTime) {
@@ -487,6 +495,10 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon.enabled = true;
             this.audio.sound_TribePraise();
             // Play animation here
+            // Play action animation for all humans
+            for(var i = 0; i < this.humans.length; i++){ 
+                this.humans[i].script.Human.setAnimState("praise");
+            }
         },
 
         praise: function(deltaTime) {
@@ -506,6 +518,10 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
+            // Play action animation for all humans
+            for(var i = 0; i < this.humans.length; i++){ 
+                if(this.humans[i].enabled) this.humans[i].script.Human.setAnimState("denounce");
+            }
         },
 
         denounce: function(deltaTime) {
@@ -695,7 +711,6 @@ pc.script.create('tribe', function (context) {
                     this.humans[i].script.Human.tribeParent = this;
                     this.humans[i].script.Human.start();
                     this.humans[i].script.Human.chooseState();
-                    //this.humans[i].script.Human.setAnimState("humanwalk");
                     break;
                 }            
             }
