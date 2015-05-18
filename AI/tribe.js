@@ -477,7 +477,7 @@ pc.script.create('tribe', function (context) {
             // }
 
             if (this.idolAngleChange < 180){
-                this.raisePagan(this.idolAngleChange++);
+                this.lowerPagan(this.idolAngleChange++);
             }
 
         },
@@ -520,7 +520,7 @@ pc.script.create('tribe', function (context) {
             this.audio.sound_TribeDenounce();
             // Play action animation for all humans
             for(var i = 0; i < this.humans.length; i++){ 
-                if(this.humans[i].enabled) this.humans[i].script.Human.setAnimState("denounce");
+                this.humans[i].script.Human.setAnimState("denounce");
             }
         },
 
@@ -591,13 +591,11 @@ pc.script.create('tribe', function (context) {
         raisePagan: function(angleChange) {
             this.hq.enabled = false;
             this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
-            console.log("Raising pagan!");
         },
 
         lowerPagan: function(angleChange) {
             this.hq.enabled = true;
             this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
-            console.log("Raising pagan!");           
         },
 
         /////////////////////////////////
@@ -671,7 +669,6 @@ pc.script.create('tribe', function (context) {
             if (this.population >= 0) this.humans[this.population].enabled = false;
 
             if (this.population < this.MINPOPULATION){
-                console.log("WE DIED");
                 // Kill the tribe
                 this.entity.enabled = false;
             }
@@ -734,10 +731,8 @@ pc.script.create('tribe', function (context) {
 
         runRuleList: function() { 
             this.rules.sort(function(a, b){return b.weight - a.weight});
-            //console.log(this.rules);
             for (var i = 0; i < this.rules.length; i++) {
                 if (this.rules[i].testConditions(this)) {
-                    //console.log(this.rules[i].consequence.name);
                     this.rules[i].consequence(this);
                     break;
                 }

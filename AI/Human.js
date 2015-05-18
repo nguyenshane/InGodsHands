@@ -178,7 +178,7 @@ pc.script.create('Human', function (context) {
             var deltaVec = actualLerp(this.destinationTile.center, 
                                       this.startPosition, 
                                       percentTravelled);
-            
+
             this.entity.setPosition(deltaVec);
             
             // Once tribe is at next tile's center, movement is done.
@@ -230,7 +230,6 @@ pc.script.create('Human', function (context) {
         setAnimState: function(state){
             //this.state = state;
             // Set animation and blend from previous animation over 0.2 seconds
-            console.log("this.entity.animation", this.entity.animation.getAnimation(state));
             this.entity.animation.play(states[state].animation, this.blendTime);
         }
         
