@@ -75,7 +75,12 @@ pc.script.create('HIDInterface', function (context) {
         	this.middleP = this.stringP.isMiddle;
         	this.middleE = this.stringE.isMiddle;
         	this.middleW = this.stringW.isMiddle;
-        	
+
+        	this.coldEffect = context.root.findByName("ColdEffectPS").particlesystem;
+        	this.coldEffect.stop();
+        	this.heatEffect = context.root.findByName("HeatEffectPS").particlesystem;
+        	this.heatEffect.stop();
+
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
 
@@ -109,6 +114,11 @@ pc.script.create('HIDInterface', function (context) {
 				}
         	}
 
+        	if ((globalTemperature - temperatureDest == 0.0) && this.coldEffect.isPlaying) {
+        		this.coldEffect.stop();
+        	} else if ((globalTemperature - temperatureDest == 0.0) && this.heatEffect.isPlaying) {
+        		this.heatEffect.stop();
+        	}
 
         	// update middle status
         	// this.middleT = this.stringT.isMiddle;
@@ -144,11 +154,15 @@ pc.script.create('HIDInterface', function (context) {
             }
 			
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
-			for (var i = 0; i < 20; ++i) {
-				//console.log(ico.tiles[i].getTemperature());
-			}
 			
 			inactiveTimer = 0;
+
+			if (position < 0){
+				this.coldEffect.play();
+			} else if (position > 0) {
+				this.heatEffect.play();
+			}
+
 		},
 		
 		moved_A: function(position, distance, speed) {
