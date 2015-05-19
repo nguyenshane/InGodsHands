@@ -1,6 +1,18 @@
 pc.script.create('Human', function (context) {
     // Animation states
     var states = {
+        cower: {
+            animation: 'cower1'
+        },
+        pray: {
+            animation: 'pray2'
+        },
+        denounce: {
+            animation: 'denounce1'
+        },
+        praise: {
+            animation: 'praise1'
+        },
         idle: {
             animation: 'idle2'
         },
@@ -137,6 +149,8 @@ pc.script.create('Human', function (context) {
             } else {
                 this.setDestination(randomNeighbor);
             }
+
+            this.setAnimState('walk');
         },
         
         goToTile: function(destinationTile) {
@@ -161,7 +175,10 @@ pc.script.create('Human', function (context) {
             var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
             var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
-            var deltaVec = actualLerp(this.destinationTile.center, this.startPosition, percentTravelled);
+            var deltaVec = actualLerp(this.destinationTile.center, 
+                                      this.startPosition, 
+                                      percentTravelled);
+
             this.entity.setPosition(deltaVec);
             
             // Once tribe is at next tile's center, movement is done.
@@ -201,15 +218,18 @@ pc.script.create('Human', function (context) {
 
         chooseState: function(){
             // choose which starter function to call
-            if (!this.tribeParent.isBusy && this.currentAction != this.move && this.currentAction != this.followPath) {
+            if (!this.tribeParent.isBusy && 
+                this.currentAction != this.move && 
+                this.currentAction != this.followPath) {
+
                 this.wander();
+
             }
         },
 
         setAnimState: function(state){
             //this.state = state;
             // Set animation and blend from previous animation over 0.2 seconds
-            console.log("this.entity.animation",this.entity.animation);
             this.entity.animation.play(states[state].animation, this.blendTime);
         }
         
