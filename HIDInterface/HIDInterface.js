@@ -76,10 +76,12 @@ pc.script.create('HIDInterface', function (context) {
         	this.middleE = this.stringE.isMiddle;
         	this.middleW = this.stringW.isMiddle;
 
-        	this.coldEffect = context.root.findByName("ColdEffectPS").particlesystem;
-        	this.coldEffect.stop();
-        	this.heatEffect = context.root.findByName("HeatEffectPS").particlesystem;
-        	this.heatEffect.stop();
+        	this.coldEffect = context.root.findByName("ColdEffectPS");
+        	this.coldEffect.particlesystem.stop();
+        	//this.heatEffect.isPlaying = false;
+        	this.heatEffect = context.root.findByName("HeatEffectPS");
+        	this.heatEffect.particlesystem.stop();
+        	//this.heatEffect.isPlaying = false;
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
@@ -114,10 +116,16 @@ pc.script.create('HIDInterface', function (context) {
 				}
         	}
 
-        	if ((globalTemperature - temperatureDest == 0.0) && this.coldEffect.isPlaying) {
-        		this.coldEffect.stop();
-        	} else if ((globalTemperature - temperatureDest == 0.0) && this.heatEffect.isPlaying) {
-        		this.heatEffect.stop();
+        	if ((globalTemperature - temperatureDest <= 0.0) && this.coldEffect.isPlaying()) {
+        		console.log("HERE");
+        		this.coldEffect.particlesystem.stop();
+        		this.coldEffect.particlesystem.isPlaying = false;
+        	}
+
+        	if ((globalTemperature - temperatureDest <= 0.0) && this.heatEffect.isPlaying()) {
+        		console.log("heatEffect", this.heatEffect.isPlaying);
+        		this.heatEffect.particlesystem.stop();
+        		this.heatEffect.particlesystem.isPlaying = false;
         	}
 
         	// update middle status
@@ -158,9 +166,11 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
 
 			if (position < 0){
-				this.coldEffect.play();
+				this.coldEffect.particlesystem.play();
+				this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				this.heatEffect.play();
+				this.heatEffect.particlesystem.play();
+				this.heatEffect.particlesystem.isPlaying = true;
 			}
 
 		},
