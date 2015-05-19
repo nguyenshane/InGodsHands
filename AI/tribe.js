@@ -635,6 +635,12 @@ pc.script.create('tribe', function (context) {
         decreaseBelief: function() {
             prevTotalBelief = totalBelief;
             --totalBelief;
+
+            // Every time belief is decreased, check if it is too low
+            if (totalBelief < minTotalBelief){
+                console.log("Not enough belief. Please End Game.");
+                context.root._children[0].script.globalInterface.endGame();
+            }  
         },
 
         increaseFear: function() {
@@ -671,6 +677,7 @@ pc.script.create('tribe', function (context) {
             if (this.population < this.MINPOPULATION){
                 // Kill the tribe
                 this.entity.enabled = false;
+                context.root._children[0].script.globalInterface.doTribesExist();
             }
         },
 

@@ -60,6 +60,7 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
+            minTotalBelief = 190;
 			
 
 			//tribes = [];
@@ -191,6 +192,12 @@ pc.script.create('globalInterface', function (context) {
             }
         },
 
+        endGame: function() {
+            // all tribes gone, or not enough belief
+            // jump to end game screen
+            console.log("END GAME");
+        },
+
         takeSnapshot: function() {
             var snapshot = {
                 temperature : globalTemperature,
@@ -198,7 +205,15 @@ pc.script.create('globalInterface', function (context) {
             }
             
             snapshots.push(snapshot);
-        }
+        },
+
+        doTribesExist: function() {
+            for (var i = 0; i < tribes.length; i++) {
+                if (tribes[i].enabled) return;
+            }
+
+            this.endGame();
+        },
     };
 
     return GlobalVariables;
