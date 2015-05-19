@@ -80,7 +80,8 @@ pc.script.create('HIDInterface', function (context) {
         	this.coldEffect.particlesystem.stop();
         	//this.heatEffect.isPlaying = false;
         	this.heatEffect = context.root.findByName("HeatEffectPS");
-        	this.heatEffect.particlesystem.stop();
+        	//this.heatEffect.particlesystem.stop();
+        	console.log(this.heatEffect.particlesystem.isPlaying);
         	//this.heatEffect.isPlaying = false;
 
 			var t2 = new Date();
@@ -116,14 +117,12 @@ pc.script.create('HIDInterface', function (context) {
 				}
         	}
 
-        	if ((globalTemperature - temperatureDest <= 0.0) && this.coldEffect.isPlaying()) {
-        		console.log("HERE");
+        	if ((globalTemperature - temperatureDest <= 0.0) && this.coldEffect.particlesystem.isPlaying) {
         		this.coldEffect.particlesystem.stop();
         		this.coldEffect.particlesystem.isPlaying = false;
         	}
 
-        	if ((globalTemperature - temperatureDest <= 0.0) && this.heatEffect.isPlaying()) {
-        		console.log("heatEffect", this.heatEffect.isPlaying);
+        	if ((globalTemperature - temperatureDest >= 0.0) && this.heatEffect.particlesystem.isPlaying) {
         		this.heatEffect.particlesystem.stop();
         		this.heatEffect.particlesystem.isPlaying = false;
         	}
@@ -166,9 +165,11 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
 
 			if (position < 0){
+				console.log(this.coldEffect.particlesystem);
 				this.coldEffect.particlesystem.play();
 				this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
+				console.log(this.heatEffect.particlesystem);
 				this.heatEffect.particlesystem.play();
 				this.heatEffect.particlesystem.isPlaying = true;
 			}
