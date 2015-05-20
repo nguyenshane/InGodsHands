@@ -60,7 +60,7 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
-            minTotalBelief = 190;
+            minTotalBelief = 150;
 			
 
 			//tribes = [];
