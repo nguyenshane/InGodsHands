@@ -60,6 +60,7 @@ pc.script.create('globalInterface', function (context) {
             maxTotalBelief = 200;
             totalBelief = maxTotalBelief;
             prevTotalBelief = totalBelief;
+            minTotalBelief = 150;
 			
 
 			//tribes = [];
@@ -95,10 +96,13 @@ pc.script.create('globalInterface', function (context) {
             this.faultMoveMax = 20;
             this.faultIncrement = 0.01;
             this.faultDir = -1;
+
+            this.testEndScreen();
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+
             if (!isPaused) {
                 // Update globalTime, do not update anywhere else
                 globalTime += dt;
@@ -191,6 +195,12 @@ pc.script.create('globalInterface', function (context) {
             }
         },
 
+        endGame: function() {
+            // all tribes gone, or not enough belief
+            // jump to end game screen
+            console.log("END GAME");
+        },
+
         takeSnapshot: function() {
             var snapshot = {
                 temperature : globalTemperature,
@@ -198,6 +208,42 @@ pc.script.create('globalInterface', function (context) {
             }
             
             snapshots.push(snapshot);
+            this.drawSnapLine();
+        },
+
+        doTribesExist: function() {
+            for (var i = 0; i < tribes.length; i++) {
+                if (tribes[i].enabled) return;
+            }
+
+            this.endGame();
+        },
+
+        testEndScreen: function() {
+            var endCanvas = document.createElement('canvas');
+            endCanvas.id     = "endCanvas";
+            endCanvas.width  = 500;
+            endCanvas.height = 200;
+            endCanvas.style.zIndex   = 8;
+            endCanvas.style.position = "absolute";
+            endCanvas.style.border   = "0px solid";
+            document.body.appendChild(endCanvas);
+
+            canvas = document.getElementById("endCanvas");
+            ctx = canvas.getContext("2d");
+            ctx.beginPath();
+        },
+
+        drawSnapLine: function(element) {
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            for (var i = 0; i < snapshots.length; ++i) {
+                ctx.lineTo(i, canvas.height - snapshots[i].temperature);
+            }
+
+            // set line color
+            ctx.strokeStyle = '#ff0000';
+            ctx.stroke();
         }
     };
 
