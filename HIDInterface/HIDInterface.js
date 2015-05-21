@@ -82,6 +82,7 @@ pc.script.create('HIDInterface', function (context) {
         	this.heatEffect = context.root.findByName("HeatEffectPS");
         	this.heatEffect.particlesystem.stop();
         	//console.log(this.heatEffect.particlesystem.isPlaying);
+        	//this.heatEffect.particlesystem.stop();
         	//this.heatEffect.isPlaying = false;
 
 			var t2 = new Date();

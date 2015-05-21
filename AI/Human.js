@@ -59,6 +59,9 @@ pc.script.create('Human', function (context) {
 
     Human.prototype = {
 
+        initialize: function (){
+        },
+
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if (!isPaused) {
@@ -93,7 +96,10 @@ pc.script.create('Human', function (context) {
 
         start: function() {
             if (this.tribeParent != null || this.tribeParent != undefined) {
-                this.tile = this.tribeParent.tile.neighbora; 
+                this.entity.particlesystem.stop();
+
+                var randomInfluencedTile = getRandom(this.tribeParent.influencedTiles);
+                this.tile = randomInfluencedTile; 
 
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
@@ -102,10 +108,6 @@ pc.script.create('Human', function (context) {
                 
                 this.chooseState();
 
-                //this.setDestination(this.tile.neighbora.neighborb.neighbora);
-                //this.entity.model.model.meshInstances[0].material.diffuse = this.tribeParent.tribeColor;
-                //this.entity.model.model.meshInstances[0].material.emissive = this.tribeParent.tribeColor;
-                //this.entity.model.model.meshInstances[0].material.update();
             }
         },
 
