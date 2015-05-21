@@ -156,16 +156,7 @@ pc.script.create('tribe', function (context) {
             //////////////////////////////////////////////////////////////////////////////////////
 
             if (!isPaused) {
-                if (!this.isBusy){
-                    if (this.eventTimer < 0){
-                        this.startFalseIdol();
-                        this.eventTimer = 240;
-                        // When we have multiple, run this code, for now just run the only event
-                        //this.events[Math.floor(pc.math.random(0, this.events.length))]
-                    } 
-                }
                 this.eventTimer -= dt;
-                //console.log("Event timer : " + this.eventTimer);
 
                 if (!this.isBusy) {                
                     if(this.ruleCooldownTimer < 0){
@@ -476,7 +467,7 @@ pc.script.create('tribe', function (context) {
             //     this.lowerPagan(deltaTime);
             // }
 
-            if (this.idolAngleChange < 180){
+            if (this.idolAngleChange < 180 && this.previousAction == this.worshipFalseIdol){
                 this.lowerPagan(this.idolAngleChange++);
             }
 
@@ -723,6 +714,7 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToDenounceInactive());
             this.rules.push(new wantToDenounceNoSun());
             this.rules.push(new needToAdapt());
+            this.rules.push(new wantToWorshipFalseIdol());
         },
 
         createEventList: function() {
