@@ -80,8 +80,8 @@ pc.script.create('HIDInterface', function (context) {
         	this.coldEffect.particlesystem.stop();
         	//this.heatEffect.isPlaying = false;
         	this.heatEffect = context.root.findByName("HeatEffectPS");
-        	//this.heatEffect.particlesystem.stop();
-        	console.log(this.heatEffect.particlesystem.isPlaying);
+        	this.heatEffect.particlesystem.stop();
+        	//console.log(this.heatEffect.particlesystem.isPlaying);
         	//this.heatEffect.isPlaying = false;
 
 			var t2 = new Date();
@@ -163,7 +163,8 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			
 			inactiveTimer = 0;
-
+			this.coldEffect = context.root.findByName("ColdEffectPS");
+			this.heatEffect = context.root.findByName("HeatEffectPS");
 			if (position < 0){
 				console.log(this.coldEffect.particlesystem);
 				this.coldEffect.particlesystem.play();
