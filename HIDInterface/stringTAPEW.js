@@ -91,7 +91,7 @@ pc.extend(pc, function(){
             this.countClearfn = function(o) {o.pressing = false; o.reset(); };
             if (this.pressing) {
                 clearTimeout(this.countClear);
-                this.countClear = setTimeout(this.countClearfn, 500, this);
+                this.countClear = setTimeout(this.countClearfn, 200, this);
             }
             
             
@@ -99,7 +99,7 @@ pc.extend(pc, function(){
 
 		fireEvent: function() {
 			this.fire("moved", this.direction, this.distance, this.speed);
-			//console.log("FIRED in stringTAPEW, time: ", this.speed);
+			//console.log("FIRED in stringTAPEW, time: ", this.speed, this.direction, this.distance, this.speed);
 		},
         
         reset: function() {
@@ -113,7 +113,7 @@ pc.extend(pc, function(){
 			this.speed = 0;
 			
             clearInterval(this.count);
-            console.log("RESET");
+            //console.log("RESET");
         },
     
         

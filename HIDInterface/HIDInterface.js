@@ -142,10 +142,10 @@ pc.script.create('HIDInterface', function (context) {
 			
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + (distance * position);
+			temperatureDest = globalTemperature + (distance);
 
 			//NaN
-			if(speed != speed) speed = 1;
+			if(isNaN(speed)) speed = 1;
 
 			console.log("distance = " + distance + " speed = " + speed);
 
@@ -154,7 +154,7 @@ pc.script.create('HIDInterface', function (context) {
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 
-			var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance * position);
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance);
 
 			if (!UI.StringsliderT.mouseIsOver){
                 UI.StringsliderT.value = newStringTvalue;
@@ -241,7 +241,7 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moved_W: function(position, distance, speed) {
-			//console.log("String W moved: ", position, distance, speed);
+			console.log("String W moved: ", position, distance, speed);
 			
 			//NaN
 			if(speed != speed) speed = 1;

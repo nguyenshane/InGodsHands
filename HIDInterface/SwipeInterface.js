@@ -51,15 +51,17 @@ pc.script.create('SwipeInterface', function (context) {
                     float:left;
                     position: relative;
                 }
+                .up{ opacity: 1 }
+
                 .T_L{ background: linear-gradient(to right, rgba(48,76,80,1) 40%, rgba(0,0,0,0) 100%); }
-                .T_L:hover::after{ opacity: 1 }
-                #T_L::after{ position: absolute;
+                
+                .T_L_active{ position: absolute;
                       content: '';
                       top: 0;
                       left: 0;
                       width: 100%;
                       height: 100%;
-                      transition: box-shadow 1.5s ease, opacity 1.5s ease;
+                      transition: box-shadow 1.5s ease, opacity 1.5s ease, visibility 0s linear;
                       background: rgba(48,76,80,1); box-shadow: 0 0 2em red; opacity: 0;}
 
                 #A_L{ background: linear-gradient(to right, rgba(54,65,85,1) 40%, rgba(0,0,0,0) 100%); }
