@@ -713,7 +713,14 @@ pc.script.create('tribe', function (context) {
         decreasePopulation: function() {
             this.decrementPopulation();
             // Decrease humans on screen to current population
-            if (this.entity.enabled && this.population >= 0) this.humans[this.population].enabled = false;
+            if (this.entity.enabled && this.population >= 0) {
+                for (var i = this.humans.length; i >= 0; i++) {
+                    if (this.humans[i].enabled) {
+                        this.humans[i].enabled = false;
+                        break;
+                    }
+                }
+            }
         },
         
         decrementPopulation: function() {
@@ -754,7 +761,7 @@ pc.script.create('tribe', function (context) {
 		
         addHuman: function() {
             // Step through humans' pool and activate a new one 
-            for(var i = 0; i < this.humans.length; i++){
+            for (var i = 0; i < this.humans.length; i++) {
                 if (!this.humans[i].enabled) {
                     this.humans[i].enabled = true;
                     this.humans[i].script.Human.tribeParent = this;
