@@ -714,7 +714,7 @@ pc.script.create('tribe', function (context) {
             this.decrementPopulation();
             // Decrease humans on screen to current population
             if (this.entity.enabled && this.population >= 0) {
-                for (var i = this.humans.length; i >= 0; i--) {
+                for (var i = this.humans.length-1; i >= 0; i--) {
                     if (this.humans[i].enabled) {
                         this.humans[i].enabled = false;
                         break;
