@@ -27,7 +27,7 @@ pc.script.create('Animals', function (context) {
             for (var s = ico.tiles.length-1; s >= 0; s--) randomTiles[s] = s;
 			shuffleArray(randomTiles);
 			
-			for (var i = 0; i < randomTiles.length && this.animal_stack.length < this.stackBuffer; i++) {
+			for (var i = 0; i < randomTiles.length; i++) {
 				var tile = ico.tiles[randomTiles[i]];
 				tile.spawnAnimal(tile.getTemperature(), 3.0);
 			}

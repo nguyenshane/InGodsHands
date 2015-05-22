@@ -10,10 +10,6 @@ pc.script.create('Animal', function (context) {
         this.path;
         this.pathIndex;
 		
-		this.maxFood = 12.0;
-		this.food = this.maxFood * pc.math.random(0.5, 0.9);
-		this.foodConsumption = 0.1;
-		
 		this.strength = 1.0;
         
         this.turnSpeed = 1.0;
@@ -72,8 +68,6 @@ pc.script.create('Animal', function (context) {
                         this.entity.rotateLocal(0, this.facingDirection, 0);
                     }
                 }
-                
-				this.food -= this.foodConsumption * dt;
             }
         },
 
@@ -215,9 +209,11 @@ pc.script.create('Animal', function (context) {
         
         attack: function(object) {
             var human = object;
-            human.tribeParent.decreasePopulation();
-            
             human.underAttack = false;
+            
+            if (Math.random() < 0.5) {
+                human.killSelf();
+            }
         },
         
         goToTile: function(destinationTile) {

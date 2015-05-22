@@ -66,6 +66,8 @@ pc.script.create('tribe', function (context) {
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
         
+        this.strength = 3.0;
+        
         this.attackImmunityTime = 5.0;
         this.attackImmunityTimer = this.attackImmunityTime;
         
@@ -242,8 +244,8 @@ pc.script.create('tribe', function (context) {
                     }
                     
                     if (totalAnimalStrength > 0) {
-                        if (totalAnimalStrength > (this.population * 0.8)) {
-                            var chanceToAttack = (totalAnimalStrength / this.population) / 2;
+                        if (totalAnimalStrength >= this.strength) {
+                            var chanceToAttack = (totalAnimalStrength / this.strength) / 2;
                             
                             if (Math.random() < chanceToAttack) {
                                 if (this.attackImmunityTimer < 0) {
@@ -670,10 +672,14 @@ pc.script.create('tribe', function (context) {
         },
 
         decreasePopulation: function() {
-            --this.population;
+            this.decrementPopulation();
             // Decrease humans on screen to current population
-            if (this.population >= 0) this.humans[this.population].enabled = false;
-
+            if (this.entity.enabled && this.population >= 0) this.humans[this.population].enabled = false;
+        },
+        
+        decrementPopulation: function() {
+            --this.population;
+            
             if (this.population < this.MINPOPULATION){
                 // Kill the tribe
                 this.entity.enabled = false;

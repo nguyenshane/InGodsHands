@@ -108,6 +108,11 @@ pc.script.create('Human', function (context) {
                 //this.entity.model.model.meshInstances[0].material.update();
             }
         },
+        
+        killSelf: function() {
+            this.tribeParent.decrementPopulation();
+            this.enabled = false;
+        },
 
         //////////////////////////////////
         //  Human move action functions //
