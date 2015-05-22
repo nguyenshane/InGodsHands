@@ -51,15 +51,17 @@ pc.script.create('SwipeInterface', function (context) {
                     float:left;
                     position: relative;
                 }
+                .up{ opacity: 1 }
+
                 .T_L{ background: linear-gradient(to right, rgba(48,76,80,1) 40%, rgba(0,0,0,0) 100%); }
-                .T_L:hover::after{ opacity: 1 }
-                #T_L::after{ position: absolute;
+                
+                .T_L_active{ position: absolute;
                       content: '';
                       top: 0;
                       left: 0;
                       width: 100%;
                       height: 100%;
-                      transition: box-shadow 1.5s ease, opacity 1.5s ease;
+                      transition: box-shadow 1.5s ease, opacity 1.5s ease, visibility 0s linear;
                       background: rgba(48,76,80,1); box-shadow: 0 0 2em red; opacity: 0;}
 
                 #A_L{ background: linear-gradient(to right, rgba(54,65,85,1) 40%, rgba(0,0,0,0) 100%); }
@@ -112,8 +114,8 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("event", event);
-                  console.log("You swiped T_L" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_T(-1,distance/50,(distance/50)/duration);
+                  console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
+                  HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
                 },
                 //threshold:75
             });
@@ -130,8 +132,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.A_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped A_L" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_A(-1,distance/50,(distance/50)/duration);
+                  console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
+                  HIDInterface.moved_A(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
             });
@@ -148,8 +150,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.P_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped P_L" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_P(-1,distance/50,(distance/50)/duration);
+                  console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
+                  HIDInterface.moved_P(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
             });
@@ -166,8 +168,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped E_L" + " distance " + distance, " duration " + duration); 
-                  HIDInterface.moved_E(-1,distance/50,(distance/50)/duration); 
+                  console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
+                  HIDInterface.moved_E(-1,-distance/50,(distance/50)/duration); 
                 },
                 threshold:0
             });
@@ -184,8 +186,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.W_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped W_L" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moving_W(-1,distance/50,(distance/50)/duration);
+                  console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
+                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
             });

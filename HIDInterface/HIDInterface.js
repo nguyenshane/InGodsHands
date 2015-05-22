@@ -80,8 +80,9 @@ pc.script.create('HIDInterface', function (context) {
         	this.coldEffect.particlesystem.stop();
         	//this.heatEffect.isPlaying = false;
         	this.heatEffect = context.root.findByName("HeatEffectPS");
+        	this.heatEffect.particlesystem.stop();
+        	//console.log(this.heatEffect.particlesystem.isPlaying);
         	//this.heatEffect.particlesystem.stop();
-        	console.log(this.heatEffect.particlesystem.isPlaying);
         	//this.heatEffect.isPlaying = false;
 
 			var t2 = new Date();
@@ -142,10 +143,10 @@ pc.script.create('HIDInterface', function (context) {
 			
 			temperatureChange = true;
 			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + (distance * position);
+			temperatureDest = globalTemperature + (distance);
 
 			//NaN
-			if(speed != speed) speed = 1;
+			if(isNaN(speed)) speed = 1;
 
 			console.log("distance = " + distance + " speed = " + speed);
 
@@ -154,7 +155,7 @@ pc.script.create('HIDInterface', function (context) {
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 
-			var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance * position);
+			var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance);
 
 			if (!UI.StringsliderT.mouseIsOver){
                 UI.StringsliderT.value = newStringTvalue;
@@ -163,7 +164,8 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			
 			inactiveTimer = 0;
-
+			this.coldEffect = context.root.findByName("ColdEffectPS");
+			this.heatEffect = context.root.findByName("HeatEffectPS");
 			if (position < 0){
 				console.log(this.coldEffect.particlesystem);
 				this.coldEffect.particlesystem.play();
@@ -241,7 +243,7 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moved_W: function(position, distance, speed) {
-			//console.log("String W moved: ", position, distance, speed);
+			console.log("String W moved: ", position, distance, speed);
 			
 			//NaN
 			if(speed != speed) speed = 1;

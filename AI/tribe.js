@@ -58,8 +58,9 @@ pc.script.create('tribe', function (context) {
         this.praiseTimer = 0;
         this.noSunTimer = 0;
         this.falseIdolTimer = 0;
+        this.sacrificeTimer = 0;
         this.ruleCooldownTimer = 0;
-        this.eventTimer = 10;
+        this.eventTimer = 240;
 
         this.praySmokeIsPlaying;
         
@@ -113,7 +114,6 @@ pc.script.create('tribe', function (context) {
             this.currTileTemperature = this.tile.getTemperature();
             
             this.createRuleList();
-            this.createEventList();
 
             this.calculateInfluence();
 
@@ -158,16 +158,7 @@ pc.script.create('tribe', function (context) {
             //////////////////////////////////////////////////////////////////////////////////////
 
             if (!isPaused) {
-                if (!this.isBusy){
-                    if (this.eventTimer < 0){
-                        this.startFalseIdol();
-                        this.eventTimer = 240;
-                        // When we have multiple, run this code, for now just run the only event
-                        //this.events[Math.floor(pc.math.random(0, this.events.length))]
-                    } 
-                }
                 this.eventTimer -= dt;
-                //console.log("Event timer : " + this.eventTimer);
 
                 if (!this.isBusy) {                
                     if(this.ruleCooldownTimer < 0){
@@ -194,7 +185,7 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 25) {
+                if (this.increasePopulationTimer >= 25 && !this.isBusy) {
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
@@ -437,6 +428,12 @@ pc.script.create('tribe', function (context) {
             // and belief will increase and decrease accordingly.
             if(this.cowerTimer <= 0){
                 switch(this.previousAction){
+                    case this.sacrifice:
+                        this.humans[population-1].particlesystem.stop();
+                        this.increaseFear();
+                        this.decreaseBelief();
+                        this.isBusy = false;
+
                     case this.worshipFalseIdol:
                         this.increaseFear();
                         this.increaseBelief();
@@ -478,7 +475,7 @@ pc.script.create('tribe', function (context) {
             //     this.lowerPagan(deltaTime);
             // }
 
-            if (this.idolAngleChange < 180){
+            if (this.idolAngleChange < 180 && this.previousAction == this.worshipFalseIdol){
                 this.lowerPagan(this.idolAngleChange++);
             }
 
@@ -598,6 +595,31 @@ pc.script.create('tribe', function (context) {
         lowerPagan: function(angleChange) {
             this.hq.enabled = true;
             this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+        },
+
+        startSacrifice: function() {
+            this.sacrificeTimer = 30;
+            this.setCurrentAction(this.sacrifice);
+            this.isBusy = true;
+            console.log("starting sacrifice");
+            // Play praise animation for all humans except the one being sacrificed
+            for (var i = 0; i < this.population; i++){
+                if(i == this.population-1){
+                    this.humans[i].particlesystem.play();
+                    this.humans[i].script.Human.setAnimState('cower');
+                } else {
+                    this.humans[i].script.Human.setAnimState('praise');
+                }
+            }
+        },
+
+        sacrifice: function(deltaTime) {
+            if(this.sacrificeTimer <= 0){
+                this.increaseBelief();
+                this.decreasePopulation();
+            }
+
+            this.sacrificeTimer -= deltaTime;
         },
 
         /////////////////////////////////
@@ -736,10 +758,8 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToDenounceInactive());
             this.rules.push(new wantToDenounceNoSun());
             this.rules.push(new needToAdapt());
-        },
-
-        createEventList: function() {
-            this.events.push(this.startFalseIdol);
+            this.rules.push(new wantToWorshipFalseIdol());
+            this.rules.push(new wantToSacrifice());
         },
 
         runRuleList: function() { 

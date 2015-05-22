@@ -177,3 +177,66 @@ wantToDenounceNoSun.prototype = {
         tribe.startDenouncing();
     }    
 };
+
+/* 
+ *  wantToWorshipFalseIdol means the tribe will denounce God the player's existence 
+ *  If not punished, they will lose belief
+ *    
+ */
+
+var wantToWorshipFalseIdol = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = Math.floor((Math.random() * 10) + 10);
+    this.conditions = [allConditions.isEventCooldownUp];
+};
+
+wantToWorshipFalseIdol.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        debug.log(DEBUG.AI, "All hail the Devil King!");
+        tribe.ruleCooldownTimer = 4;
+        tribe.startFalseIdol();
+        tribe.eventTimer = 240;
+    }    
+};
+
+/* 
+ *  wantToSacrifice means the tribe will sacrifice a tribe member
+ *    
+ */
+
+var wantToSacrifice = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 12;
+    this.conditions = [allConditions.isEventCooldownUp];
+};
+
+wantToSacrifice.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        debug.log(DEBUG.AI, "Sacrifice Chase!");
+        tribe.ruleCooldownTimer = 4;
+        tribe.startSacrifice();
+        tribe.eventTimer = 240;
+    }    
+};

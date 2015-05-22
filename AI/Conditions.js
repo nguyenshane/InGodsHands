@@ -97,6 +97,14 @@ pc.script.create('Conditions', function (context) {
             }
             return false;    
         },
+       
+        isEventCooldownUp: function(tribe){
+            if(tribe.eventTimer <= 0){ 
+                return true;
+            }
+            return false;
+        },
+
     };
 
     return Conditions;
