@@ -146,7 +146,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if(isNaN(speed)) speed = 1;
 
-			console.log("distance = " + distance + " speed = " + speed);
+			//console.log("distance = " + distance + " speed = " + speed);
 
 
 			velocity = Math.abs((speed) * 50);
@@ -165,13 +165,13 @@ pc.script.create('HIDInterface', function (context) {
 			this.coldEffect = context.root.findByName("ColdEffectPS");
 			this.heatEffect = context.root.findByName("HeatEffectPS");
 			if (position < 0){
-				console.log(this.coldEffect.particlesystem);
+				//console.log(this.coldEffect.particlesystem);
 				this.coldEffect.particlesystem.play();
-				this.coldEffect.particlesystem.isPlaying = true;
+				//this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				console.log(this.heatEffect.particlesystem);
+				//console.log(this.heatEffect.particlesystem);
 				this.heatEffect.particlesystem.play();
-				this.heatEffect.particlesystem.isPlaying = true;
+				//this.heatEffect.particlesystem.isPlaying = true;
 			}
 
 		},

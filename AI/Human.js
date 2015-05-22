@@ -95,8 +95,9 @@ pc.script.create('Human', function (context) {
         },
 
         start: function() {
-            if (this.tribeParent != null || this.tribeParent != undefined) {
-                this.entity.particlesystem.stop();
+            if (this.tribeParent != null && this.tribeParent != undefined) {
+                if(this.entity.particlesystem != null)
+                    this.entity.particlesystem.stop();
 
                 var randomInfluencedTile = getRandom(this.tribeParent.influencedTiles);
                 this.tile = randomInfluencedTile; 
