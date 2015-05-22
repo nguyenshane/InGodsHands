@@ -2,6 +2,12 @@ function addTribe () {
     for (var i = 0; i < tribes.length; i++) {
         if (!tribes[i].enabled) {
             tribes[i].enabled = true;
+
+            var app = pc.fw.Application.getApplication('application-canvas').context;
+            var tribeInfo = app.root.findByName('Rv1-stable').script.developer;
+
+            tribeInfo.addTribeDiv = true;
+
             break;
         }
     }
@@ -18,6 +24,8 @@ pc.script.create('tribe', function (context) {
         this.population = 0;
         this.MAXPOPULATION = 5;
         this.MINPOPULATION = 1;
+
+        this.tribeMessage = " ";
         
         this.increasePopulationTimer = 0;
 
@@ -374,6 +382,7 @@ pc.script.create('tribe', function (context) {
                  this.prayerTimer > 0){
 
                 //console.log("Prayer fulfilled!");
+                this.tribeMessage = ("Prayer fulfilled!");
                 this.prayerTimer = 0;
                 
                 this.isBusy = false;
@@ -408,6 +417,7 @@ pc.script.create('tribe', function (context) {
        
         startCowering: function () {
             //console.log("Tribe is now cowering");
+            this.tribeMessage = ("Tribe is now cowering");
             this.cowerTimer = 6;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
@@ -451,6 +461,7 @@ pc.script.create('tribe', function (context) {
                         this.decreaseBelief();
                         this.isBusy = false;
                         //console.log("Stop scaring me!");
+                        this.tribeMessage = ("Stop scaring me!");
                         break;
 
                     default:
@@ -487,6 +498,7 @@ pc.script.create('tribe', function (context) {
 
         startPraise: function() {
             //console.log("I love god!");
+            this.tribeMessage = ("I love god!");
             this.increaseBelief();
             this.praiseTimer = 6;
             this.setCurrentAction(this.praise);
@@ -504,6 +516,7 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon.enabled = true;
             if(this.praiseTimer <= 0){
                 //console.log("God is good!");
+                this.tribeMessage = ("God is good!");
                 this.increaseBelief();
                 this.praiseTimer = 0;
                 this.praiseIcon.enabled = false;
@@ -526,6 +539,7 @@ pc.script.create('tribe', function (context) {
         denounce: function(deltaTime) {
             if(this.denounceTimer <= 0){
                 //console.log("DENOUNCED GOD");
+                this.tribeMessage = ("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
                 
@@ -553,6 +567,7 @@ pc.script.create('tribe', function (context) {
         adapt: function(deltaTime) {
             if(this.adaptTimer <= 0){
                 //console.log("ADAPTED TO TEMP");
+                this.tribeMessage = ("ADAPTED TO TEMP");
                 this.idealTemperature 
                 this.decreaseBelief();
                 this.adaptTimer = 0;
@@ -571,6 +586,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.worshipFalseIdol);
             this.isBusy = true;
             console.log("WE SHALL BEAR FALSE IDOLSZ");
+            this.tribeMessage = ("WE SHALL BEAR FALSE IDOLSZ");
             this.idolAngleChange = 180;
         },
 
@@ -602,6 +618,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.sacrifice);
             this.isBusy = true;
             console.log("starting sacrifice");
+            tribeMessage = ("starting sacrifice");
             // Play praise animation for all humans except the one being sacrificed
             for (var i = 0; i < this.population; i++){
                 if(i == this.population-1){

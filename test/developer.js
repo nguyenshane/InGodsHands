@@ -9,6 +9,8 @@ pc.script.create('developer', function (context) {
         this.sliderEDistance = 0;
         this.sliderWDistance = 0;
 
+        this.addTribeDiv = false;
+
         //slider positions
         this.positionT = 1;
         this.positionA = 1;
@@ -58,6 +60,7 @@ pc.script.create('developer', function (context) {
     var needToStartTimeW = true;
 
     var switchUIOn = false;
+    var maxDiv = 0;
 
     developer.prototype = {
         initialize: function () {
@@ -246,43 +249,64 @@ pc.script.create('developer', function (context) {
             div.style.visibility = 'hidden';
 
             //text for the Tribe Population read out
-            var tribePop = document.createElement('div');
-            tribePop.style.position = 'absolute';
-            tribePop.style.width = '32x';
-            tribePop.style.top = '16%';
-            tribePop.style.left = '85%';
-            tribePop.style.marginLeft = '0px';
-            tribePop.style.textAlign = 'center';
-            tribePop.style.color = 'white';
-            tribePop.style.fontSize = '16';
-            tribePop.style.visibility = 'hidden';
+            var tribePop = [];
+            var tribeBelief = [];
+            var tribeFear = [];
+            var tribeMessage = [];
 
-            //text for the Tribe Prayer read out
-            var tribeBelief = document.createElement('div');
-            tribeBelief.style.position = 'absolute';
-            tribeBelief.style.width = '32x';
-            tribeBelief.style.top = '20%';
-            tribeBelief.style.left = '85%';
-            tribeBelief.style.marginLeft = '0px';
-            tribeBelief.style.textAlign = 'center';
-            tribeBelief.style.color = 'white';
-            tribeBelief.style.fontSize = '16';
-            tribeBelief.style.visibility = 'hidden';
+                    tribePopDiv = document.body.appendChild(document.createElement('div'));
+                    tribePopDiv.style.position = 'absolute';
+                    tribePopDiv.style.width = '32x';
+                    tribePopDiv.style.top = '16%'
+                    tribePopDiv.style.left = '75%';
+                    tribePopDiv.style.marginLeft = '0px';
+                    tribePopDiv.style.textAlign = 'center';
+                    tribePopDiv.style.color = 'white';
+                    tribePopDiv.style.fontSize = '10';
+                    tribePopDiv.style.visibility = 'hidden';
 
-
-            //text for the Tribe Prayer read out
-            var tribeFear = document.createElement('div');
-            tribeFear.style.position = 'absolute';
-            tribeFear.style.width = '32x';
-            tribeFear.style.top = '24%';
-            tribeFear.style.left = '85%';
-            tribeFear.style.marginLeft = '0px';
-            tribeFear.style.textAlign = 'center';
-            tribeFear.style.color = 'white';
-            tribeFear.style.fontSize = '16';
-            tribeFear.style.visibility = 'hidden';
+                    //text for the Tribe Prayer read out
+                    tribeBeliefDiv = document.body.appendChild(document.createElement('div'));
+                    tribeBeliefDiv.style.position = 'absolute';
+                    tribeBeliefDiv.style.width = '32x';
+                    tribeBeliefDiv.style.top = '20%'
+                    tribeBeliefDiv.style.left = '75%';
+                    tribeBeliefDiv.style.marginLeft = '0px';
+                    tribeBeliefDiv.style.textAlign = 'center';
+                    tribeBeliefDiv.style.color = 'white';
+                    tribeBeliefDiv.style.fontSize = '10';
+                    tribeBeliefDiv.style.visibility = 'hidden';
 
 
+                    //text for the Tribe Prayer read out
+                    tribeFearDiv = document.body.appendChild(document.createElement('div'));
+                    tribeFearDiv.style.position = 'absolute';
+                    tribeFearDiv.style.width = '32x';
+                    tribeFearDiv.style.top = '24%'
+                    tribeFearDiv.style.left = '75%';
+                    tribeFearDiv.style.marginLeft = '0px';
+                    tribeFearDiv.style.textAlign = 'center';
+                    tribeFearDiv.style.color = 'white';
+                    tribeFearDiv.style.fontSize = '10';
+                    tribeFearDiv.style.visibility = 'hidden';
+
+                    //text for the Tribe Prayer read out
+                    tribeMessageDiv = document.body.appendChild(document.createElement('div'));
+                    tribeMessageDiv.style.position = 'absolute';
+                    tribeMessageDiv.style.width = '32x';
+                    tribeMessageDiv.style.top = '28%'
+                    tribeMessageDiv.style.left = '75%';
+                    tribeMessageDiv.style.marginLeft = '0px';
+                    tribeMessageDiv.style.textAlign = 'center';
+                    tribeMessageDiv.style.color = 'white';
+                    tribeMessageDiv.style.fontSize = '10';
+                    tribeMessageDiv.style.visibility = 'hidden';
+
+                tribePop.push(tribePopDiv);
+                tribeBelief.push(tribeBeliefDiv);
+                tribeFear.push(tribeFearDiv);
+                tribeMessage.push(tribeMessageDiv);
+            
             //text for the Temperature slider
             var divTString = document.createElement('div');
             divTString.style.position = 'absolute';
@@ -353,10 +377,6 @@ pc.script.create('developer', function (context) {
             document.body.appendChild(divWString);
             //document.body.appendChild(musicText);
 
-            document.body.appendChild(tribePop);
-            document.body.appendChild(tribeBelief);
-            document.body.appendChild(tribeFear);
-
             document.body.appendChild(buttonPause);
             document.body.appendChild(buttonUI);
             document.body.appendChild(StringsliderT);
@@ -378,6 +398,8 @@ pc.script.create('developer', function (context) {
             this.tribePop = tribePop;
             this.tribeBelief = tribeBelief;
             this.tribeFear = tribeFear;
+            this.tribeMessage = tribeMessage;
+
 
             this.buttonUI = buttonUI;
             this.buttonPause = buttonPause;
@@ -400,32 +422,13 @@ pc.script.create('developer', function (context) {
             // Set some default state on the UI element
              this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
              
-             var tribeInfo = pc.fw.Application.getApplication('application-canvas').context.root.findByName('BaseTribe').script.tribe;
+             var tribeInfo = [];
+              
+            
+                tribeInfo[0]  = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[0].script.tribe;
 
-             this.setTribeText(('Tribe Pop: ' + tribeInfo.population), 
-               ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
-           
-
-            //attaches a touch listener to it
-                        // StringsliderT.addEventListener("touchstart", this.onTouchStart, false);
-                        // StringsliderT.addEventListener("touchend", this.onTouchEnd, false);
-
-
-            //attaches a touch listener to it
-                        // StringsliderA.addEventListener("touchstart", this.onTouchStart, false);
-                        // StringsliderA.addEventListener("touchend", this.onTouchEnd, false);
-
-            //attaches a touch listener to it
-                        // StringsliderP.addEventListener("touchstart", this.onTouchStart, false);
-                        // StringsliderP.addEventListener("touchend", this.onTouchEnd, false);
-
-            // //attaches a touch listener to it
-                        // StringsliderE.addEventListener("touchstart", this.onTouchStart, false);
-                        // StringsliderE.addEventListener("touchend", this.onTouchEnd, false);
-
-            //attaches a touch listener to it
-                        // StringsliderW.addEventListener("touchstart", this.onTouchStart, false);
-                        // StringsliderW.addEventListener("touchend", this.onTouchEnd, false);
+             this.setTribeText(('Tribe #' +1+ " Pop: " + tribeInfo[0].population), ('Tribe #' +1+ " Belief: " + totalBelief), 
+                ('Tribe #' +1+ " Fear: "+ tribeInfo[0].fear), ('Tribe #' +1+ " Message: "+ tribeInfo[0].tribeMessage), 0 );
 
         },
 
@@ -433,22 +436,36 @@ pc.script.create('developer', function (context) {
         update: function (dt) {
              //updates the global temperature
              var app = pc.fw.Application.getApplication('application-canvas').context;
-             var tribeInfo = app.root.findByName('BaseTribe').script.tribe;
-
+            
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
 
-            this.setTribeText(('Tribe Pop: ' + tribeInfo.population), 
-               ('Tribe Belief: ' + totalBelief), ('Tribe Fear: ' + tribeInfo.fear) );
+              
+              var tribeInfo = [];
+
+             for(var i = 0; i < this.tribePop.length; i++){
+                tribeInfo[i]  = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[i].script.tribe;
+                
+             this.setTribeText(('Tribe #' +(i+1)+ " Pop: " + tribeInfo[i].population), ('Tribe #' +(i+1)+ " Belief: " + totalBelief), 
+                ('Tribe #' +(i+1)+ " Fear: "+ tribeInfo[i].fear), ('Tribe #' +(i+1)+ " Message: "+ tribeInfo[i].tribeMessage), i );
+                       
+               }
+            
+                        if(this.addTribeDiv){
+                                console.log("tribe Added");
+                                 maxDiv++;
+                                 this.checkNewTribeDiv(maxDiv);
+                                 console.log("maxDiv = " + maxDiv);
+                                 this.addTribeDiv = false;
+                         }
 
              this.time += dt;
 
              // var cast = this.sliderT.value * 1.0;
              //  globalTemperature =  cast;    
-
-              this.createPausePlane();
               this.stringPull();
               this.setPosition();
               this.mouseCheck();
+
               //this.checkMusic();
               this.setVisibilty();
 
@@ -456,6 +473,67 @@ pc.script.create('developer', function (context) {
                   switchUIOn++;
                   if(switchUIOn > 2) switchUIOn = 0;
               }
+        },
+
+        checkNewTribeDiv(i){
+                    var tribePopDiv = document.body.appendChild(document.createElement('div'));
+                    tribePopDiv.style.position = 'absolute';
+                    tribePopDiv.style.width = '32x';
+                    var popString = (16 + i*16).toString();
+                    tribePopDiv.style.top = popString.concat('%');
+                    tribePopDiv.style.left = '75%';
+                    tribePopDiv.style.marginLeft = '0px';
+                    tribePopDiv.style.textAlign = 'center';
+                    tribePopDiv.style.color = 'white';
+                    tribePopDiv.style.fontSize = '10';
+                    tribePopDiv.style.visibility = 'hidden';
+
+                    //text for the Tribe Prayer read out
+                    var tribeBeliefDiv = document.body.appendChild(document.createElement('div'));
+                    tribeBeliefDiv.style.position = 'absolute';
+                    tribeBeliefDiv.style.width = '32x';
+                    var beliefString = (20 + i*16).toString();
+                    tribeBeliefDiv.style.top = beliefString.concat('%');
+                    tribeBeliefDiv.style.left = '75%';
+                    tribeBeliefDiv.style.marginLeft = '0px';
+                    tribeBeliefDiv.style.textAlign = 'center';
+                    tribeBeliefDiv.style.color = 'white';
+                    tribeBeliefDiv.style.fontSize = '10';
+                    tribeBeliefDiv.style.visibility = 'hidden';
+
+
+                    //text for the Tribe Prayer read out
+                    var tribeFearDiv = document.body.appendChild(document.createElement('div'));
+                    tribeFearDiv.style.position = 'absolute';
+                    tribeFearDiv.style.width = '32x';
+                    var fearString = (24 + i*16).toString();
+                    tribeFearDiv.style.top = fearString.concat('%');
+                    tribeFearDiv.style.left = '75%';
+                    tribeFearDiv.style.marginLeft = '0px';
+                    tribeFearDiv.style.textAlign = 'center';
+                    tribeFearDiv.style.color = 'white';
+                    tribeFearDiv.style.fontSize = '10';
+                    tribeFearDiv.style.visibility = 'hidden';
+
+                    //text for the Tribe Prayer read out
+                    var tribeMessageDiv = document.body.appendChild(document.createElement('div'));
+                    tribeMessageDiv.style.position = 'absolute';
+                    tribeMessageDiv.style.width = '32x';
+                    var messageString = (28 + i*16).toString();
+                    tribeMessageDiv.style.top = messageString.concat('%');
+                    tribeMessageDiv.style.left = '75%';
+                    tribeMessageDiv.style.marginLeft = '0px';
+                    tribeMessageDiv.style.textAlign = 'center';
+                    tribeMessageDiv.style.color = 'white';
+                    tribeMessageDiv.style.fontSize = '10';
+                    tribeMessageDiv.style.visibility = 'hidden';   
+
+
+                this.tribePop.push(tribePopDiv);
+                this.tribeBelief.push(tribeBeliefDiv);
+                this.tribeFear.push(tribeFearDiv);
+                this.tribeMessage.push(tribeMessageDiv);
+
         },
 
         mouseCheck: function(){
@@ -660,7 +738,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_T: function(){
              if (hasMovedT){
-                            var distance = Math.abs(this.sliderTDistance);
+                            var distance = this.sliderTDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeT;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionT;
@@ -678,7 +756,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_A: function(){
              if (hasMovedA){
-                            var distance = Math.abs(this.sliderADistance);
+                            var distance = this.sliderADistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeA;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionA;
@@ -696,7 +774,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_P: function(){
              if (hasMovedP){
-                            var distance = Math.abs(this.sliderPDistance);
+                            var distance = this.sliderPDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeP;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionP;
@@ -714,7 +792,7 @@ pc.script.create('developer', function (context) {
 
         sendToMove_E: function(){
              if (hasMovedE){
-                            var distance = Math.abs(this.sliderEDistance);
+                            var distance = this.sliderEDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeE;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionE;
@@ -732,7 +810,7 @@ pc.script.create('developer', function (context) {
 
         sendToMoving_W: function(){
              if (hasMovedW){
-                            var distance = Math.abs(this.sliderWDistance);
+                            var distance = this.sliderWDistance;
                             var timeSinceStartedPull =  this.time - pullStartTimeW;
                             var speed = Math.abs(distance)/timeSinceStartedPull;
                             var position = this.positionW;
@@ -773,9 +851,12 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'hidden';
                     this.divWString.style.visibility = 'hidden';
 
-                    this.tribePop.style.visibility = 'hidden';
-                    this.tribeBelief.style.visibility = 'hidden';
-                    this.tribeFear.style.visibility = 'hidden';
+                    for(var i = 0; i < this.tribePop.length; i++){
+                    this.tribePop[i].style.visibility = 'hidden';
+                    this.tribeBelief[i].style.visibility = 'hidden';
+                    this.tribeFear[i].style.visibility = 'hidden';
+                    this.tribeMessage[i].style.visibility = 'hidden';
+                    }
 
                     this.StringsliderT.style.visibility = 'hidden';
                     this.StringsliderA.style.visibility = 'hidden';
@@ -796,9 +877,12 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'visible';
                     this.divWString.style.visibility = 'visible';
 
-                    this.tribePop.style.visibility = 'hidden';
-                    this.tribeBelief.style.visibility = 'hidden';
-                    this.tribeFear.style.visibility = 'hidden';
+                     for(var i = 0; i < this.tribePop.length; i++){
+                    this.tribePop[i].style.visibility = 'hidden';
+                    this.tribeBelief[i].style.visibility = 'hidden';
+                    this.tribeFear[i].style.visibility = 'hidden';
+                    this.tribeMessage[i].style.visibility = 'hidden';
+                    }
 
                     this.StringsliderT.style.visibility = 'visible';
                     this.StringsliderA.style.visibility = 'visible';
@@ -818,9 +902,12 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'visible';
                     this.divWString.style.visibility = 'visible';
 
-                    this.tribePop.style.visibility = 'visible';
-                    this.tribeBelief.style.visibility = 'visible';
-                    this.tribeFear.style.visibility = 'visible';
+                     for(var i = 0; i < this.tribePop.length; i++){
+                    this.tribePop[i].style.visibility = 'visible';
+                    this.tribeBelief[i].style.visibility = 'visible';
+                    this.tribeFear[i].style.visibility = 'visible';
+                    this.tribeMessage[i].style.visibility = 'visible';
+                    }
 
                     this.StringsliderT.style.visibility = 'visible';
                     this.StringsliderA.style.visibility = 'visible';
@@ -836,38 +923,11 @@ pc.script.create('developer', function (context) {
         },
 
 
-        setTribeText: function (message, message2, message3) {
-        this.tribePop.innerHTML = message;
-        this.tribeBelief.innerHTML = message2;
-        this.tribeFear.innerHTML = message3;
-        },
-
-        createPausePlane: function () {
-            if(isPaused){
-            var entity = new pc.Entity();
-            var isCreated = true;
-
-            //makes a plane to but in front of the world when paused
-            entity.addComponent("model", {
-                type: 'box'
-            });
-
-            // var black =  app.assets.getAssetByResourceId(this.materials[0]).resource;
-            // entity.model.model.meshInstances[0].material = black;
-
-            entity.setLocalPosition(0,0,0);
-            entity.setLocalScale(30,1,30);
-
-            var app = pc.fw.Application.getApplication('application-canvas').context;
-
-            //add to the Hierarchy
-            context.root.addChild(entity);
-
-            }
-            else if(isCreated){
-                entity.destroy();
-                isCreated = false;
-            }
+        setTribeText: function (message, message2, message3, message4, i) {
+                this.tribePop[i].innerHTML = message;
+                this.tribeBelief[i].innerHTML = message2;
+                this.tribeFear[i].innerHTML = message3;
+                this.tribeMessage[i].innerHTML = message4;
         },
 
     };
