@@ -113,8 +113,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.T_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("event", event);
-                  console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
+                  //console.log("event", event);
+                  //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
                 },
                 //threshold:75
@@ -123,7 +123,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.T_R.swipe({
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped T_R" + " distance " + distance, " duration " + duration);
+                  //console.log("You swiped T_R" + " distance " + distance, " duration " + duration);
                   HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
                 },
                 threshold:0
@@ -132,7 +132,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.A_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
+                  //console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_A(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
@@ -141,7 +141,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.A_R.swipe({
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped A_R" + " distance " + distance, " duration " + duration); 
+                  //console.log("You swiped A_R" + " distance " + distance, " duration " + duration); 
                   HIDInterface.moved_A(1,distance/50,(distance/50)/duration); 
                 },
                 threshold:0
@@ -150,7 +150,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.P_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
+                  //console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_P(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
@@ -159,7 +159,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.P_R.swipe({
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped P_R" + " distance " + distance, " duration " + duration);  
+                  //console.log("You swiped P_R" + " distance " + distance, " duration " + duration);  
                   HIDInterface.moved_P(1,distance/50,(distance/50)/duration);
                 },
                 threshold:0
@@ -168,7 +168,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
+                  //console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
                   HIDInterface.moved_E(-1,-distance/50,(distance/50)/duration); 
                 },
                 threshold:0
@@ -177,7 +177,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_R.swipe({
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped E_R" + " distance " + distance, " duration " + duration);  
+                  //console.log("You swiped E_R" + " distance " + distance, " duration " + duration);  
                   HIDInterface.moved_E(1,distance/50,(distance/50)/duration);
                 },
                 threshold:0
@@ -186,7 +186,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.W_L.swipe({
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
+                  //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration);
                 },
                 threshold:0
