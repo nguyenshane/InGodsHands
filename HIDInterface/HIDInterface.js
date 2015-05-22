@@ -187,7 +187,7 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity += ((distance * position) * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			
-			var newStringAvalue = parseInt(UI.StringsliderA.value) + (distance * position);
+			var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
 			
 			if (!UI.StringsliderA.mouseIsOver){
                 UI.StringsliderA.value = newStringAvalue;
@@ -210,7 +210,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if(speed != speed) speed = 1;
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + (distance * position);
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
 			
 			if (!UI.StringsliderP.mouseIsOver){
                 UI.StringsliderP.value = newStringPvalue;
@@ -233,7 +233,7 @@ pc.script.create('HIDInterface', function (context) {
 			scripts.Atmosphere.makeStorm((distance * position), speed);
 			this.stormTriggerBox.scareTribes();
 
-			var newStringEvalue = parseInt(UI.StringsliderE.value) + (distance * position);
+			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
 			
 			if (!UI.StringsliderE.mouseIsOver){
                 UI.StringsliderE.value = newStringEvalue;
@@ -248,7 +248,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if(speed != speed) speed = 1;
 
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + (distance * position);
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
 			
 			if (!UI.StringsliderW.mouseIsOver){
                 UI.StringsliderW.value = newStringWvalue;
