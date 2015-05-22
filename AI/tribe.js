@@ -406,8 +406,8 @@ pc.script.create('tribe', function (context) {
 
             this.audio.sound_TribePray();
             // Play action animation for all humans
-            for(var i = 0; i < this.humans.length; i++){ 
-                this.humans[i].script.Human.setAnimState("pray");
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("pray");
             }
         },
 
@@ -428,8 +428,8 @@ pc.script.create('tribe', function (context) {
             }
             this.idolAngleChange = 0;
             // Play action animation for all humans
-            for(var i = 0; i < this.humans.length; i++){ 
-                this.humans[i].script.Human.setAnimState("cower");
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("cower");
             }
         },
 
@@ -437,9 +437,11 @@ pc.script.create('tribe', function (context) {
             // Depending on what the tribe was doing before hand, their fear
             // and belief will increase and decrease accordingly.
             if(this.cowerTimer <= 0){
-                switch(this.previousAction){
+                switch (this.previousAction) {
                     case this.sacrifice:
-                        this.humans[population-1].particlesystem.stop();
+                        for (var i = this.humans.length; i >= 0; i--) {
+                            if (this.humans[i].enabled) this.humans[i].particlesystem.stop();
+                        }
                         this.increaseFear();
                         this.decreaseBelief();
                         this.isBusy = false;
@@ -507,8 +509,8 @@ pc.script.create('tribe', function (context) {
             this.audio.sound_TribePraise();
             // Play animation here
             // Play action animation for all humans
-            for(var i = 0; i < this.humans.length; i++){ 
-                this.humans[i].script.Human.setAnimState("praise");
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("praise");
             }
         },
 
@@ -531,8 +533,8 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
             // Play action animation for all humans
-            for(var i = 0; i < this.humans.length; i++){ 
-                this.humans[i].script.Human.setAnimState("denounce");
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("denounce");
             }
         },
 
@@ -620,12 +622,17 @@ pc.script.create('tribe', function (context) {
             console.log("starting sacrifice");
             tribeMessage = ("starting sacrifice");
             // Play praise animation for all humans except the one being sacrificed
-            for (var i = 0; i < this.population; i++){
-                if(i == this.population-1){
-                    this.humans[i].particlesystem.play();
-                    this.humans[i].script.Human.setAnimState('cower');
-                } else {
-                    this.humans[i].script.Human.setAnimState('praise');
+            var lastHuman = true;
+            for (var i = this.humans.length-1; i >= 0; i--) {
+                var human = this.humans[i];
+                if (human.enabled) {
+                    if (lastHuman) {
+                        lastHuman = false;
+                        human.particlesystem.play();
+                        human.script.Human.setAnimState('cower');
+                    } else {
+                        human.script.Human.setAnimState('praise');
+                    }
                 }
             }
         },
@@ -652,7 +659,7 @@ pc.script.create('tribe', function (context) {
         },
 
         setPopulation: function(population) {
-            for(var i = 0; i < this.humans.length; i++){
+            for (var i = 0; i < this.humans.length; i++) {
                 this.humans[i].enabled = false
             }
 
@@ -762,11 +769,12 @@ pc.script.create('tribe', function (context) {
         addHuman: function() {
             // Step through humans' pool and activate a new one 
             for (var i = 0; i < this.humans.length; i++) {
-                if (!this.humans[i].enabled) {
-                    this.humans[i].enabled = true;
-                    this.humans[i].script.Human.tribeParent = this;
-                    this.humans[i].script.Human.start();
-                    this.humans[i].script.Human.chooseState();
+                var human = this.humans[i];
+                if (!human.enabled) {
+                    human.enabled = true;
+                    human.script.Human.tribeParent = this;
+                    human.script.Human.start();
+                    human.script.Human.chooseState();
                     break;
                 }            
             }
