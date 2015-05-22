@@ -436,10 +436,10 @@ pc.script.create('tribe', function (context) {
         cower: function(deltaTime) {
             // Depending on what the tribe was doing before hand, their fear
             // and belief will increase and decrease accordingly.
-            if(this.cowerTimer <= 0){
+            if (this.cowerTimer <= 0) {
                 switch (this.previousAction) {
                     case this.sacrifice:
-                        for (var i = this.humans.length; i >= 0; i--) {
+                        for (var i = this.humans.length-1; i >= 0; i--) {
                             if (this.humans[i].enabled) this.humans[i].particlesystem.stop();
                         }
                         this.increaseFear();
