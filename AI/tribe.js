@@ -102,24 +102,29 @@ pc.script.create('tribe', function (context) {
 			
 			//var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             //this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
-
-            this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
-
-            while (!this.tile.isPathable) {
-                this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
-            }
             
-
-            totalBelief += this.belief;
-            prevTotalBelief = totalBelief;
-
+            var randomTiles = [];
+            for (var s = ico.tiles.length-1; s >= 0; s--) randomTiles[s] = s;
+			shuffleArray(randomTiles);
+            
+            this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
+            for (var i = 0; i < randomTiles.length; i++) {
+				var tile = ico.tiles[randomTiles[i]];
+                if (tile.isPathable && tile.latitude < 45 && tile.latitude > -45) {
+                    this.tile = tile;
+                    break;
+                }
+			}
+            
             this.entity.setPosition(this.tile.center);
-            this.tile.hasTribe = true;
-
             this.rotation = this.tile.getRotationAlignedWithNormal();
-
+            this.tile.hasTribe = true;
+            
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
+            
+            totalBelief += this.belief;
+            prevTotalBelief = totalBelief;
             
             this.createRuleList();
 
@@ -147,7 +152,7 @@ pc.script.create('tribe', function (context) {
 			
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
-
+            
             this.increasePopulation();
             this.increasePopulation();
 
