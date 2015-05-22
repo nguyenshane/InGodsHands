@@ -187,7 +187,7 @@ pc.script.create('HIDInterface', function (context) {
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
 			*/
             
-            animalMigrationOffset += (distance * position) * 1.5;
+            animalMigrationOffset += distance * 1.5;
             
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
