@@ -59,7 +59,7 @@ pc.script.create('Human', function (context) {
 
     Human.prototype = {
 
-        initialize: function (){
+        initialize: function () {
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -107,7 +107,6 @@ pc.script.create('Human', function (context) {
                 this.entity.rotateLocal(0, this.facingDirection, 0);
                 
                 this.chooseState();
-
             }
         },
         

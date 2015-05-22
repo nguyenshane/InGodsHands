@@ -176,6 +176,9 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.localRotNormal;
 	this.localRotCenter;
     
+    this.latitude;
+    this.longitude;
+    
     this.isOcean = true;
     this.isPathable = true;
     
@@ -484,12 +487,11 @@ function Tile(index, vertexa, vertexb, vertexc){
     }
 
     this.getLatitude = function() {
-		return pc.math.RAD_TO_DEG * (Math.atan2(this.center.y, this.center.z));
-        //return this.center.y/ico.radius;
+        return 90 - pc.math.RAD_TO_DEG * (Math.acos(this.center.y / this.center.length()));
     };
 
     this.getLongitude = function() {
-        return pc.math.RAD_TO_DEG * (Math.acos(this.center.x/ico.radius));
+        return pc.math.RAD_TO_DEG * (Math.atan2(this.center.x, this.center.z));
     };
 
     this.getAltitude = function() {
@@ -968,6 +970,11 @@ function Tile(index, vertexa, vertexb, vertexc){
         return center;
     };
     
+    this.calculateLatLon = function() {
+        this.latitude = this.getLatitude();
+        this.longitude = this.getLongitude();
+    };
+    
     this.equals = function(other){
 		/*
         return (this.center.x === (other.center.x) &&
@@ -975,7 +982,7 @@ function Tile(index, vertexa, vertexb, vertexc){
                 this.center.z === (other.center.z));
 		*/
 		return this.index === other.index;
-    }
+    };
 
     this.subdivide = function() {
         //debug.log(DEBUG.AI, "Entering subdivide for face " + this.index);

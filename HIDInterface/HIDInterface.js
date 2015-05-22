@@ -10,9 +10,7 @@ pc.script.create('HIDInterface', function (context) {
 		pc.events.attach(this);
 		
 		this.direction, this.distance, this.speed = 0;
-        
     };
-
 
     var timer = new Date();
 	var temperatureChange;
@@ -184,9 +182,18 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if(speed != speed) speed = 1;
 
-			animalDensity += ((distance * position) * 0.0004);
+			/*
+            animalDensity += ((distance * position) * 0.0004);
 			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
-			
+			*/
+            
+            animalMigrationOffset += (distance * position) * 1.5;
+            
+            var animals = scripts.Animals.animal_stack;
+            for (var i = 0; i < animals.length; i++) {
+                animals[i].migrationFlag = true;
+            }
+            
 			var newStringAvalue = parseInt(UI.StringsliderA.value) + (distance * position);
 			
 			if (!UI.StringsliderA.mouseIsOver){

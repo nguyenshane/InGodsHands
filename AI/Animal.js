@@ -2,6 +2,7 @@ pc.script.create('Animal', function (context) {
     // Creates a new Animal instance
     var Animal = function (entity) {
         this.entity = entity;
+        this.entity.migrationFlag = false;
         
         this.tile = null;
         
@@ -29,9 +30,14 @@ pc.script.create('Animal', function (context) {
         
         this.rotation;
         this.facingDirection = Math.random() * 360;
+        
+        this.initialLatitude, this.initialLongitude;
     };
 
     Animal.prototype = {
+        
+        initialize: function () {
+        },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
@@ -42,7 +48,7 @@ pc.script.create('Animal', function (context) {
                     this.externalBehaviorInterruptFlag = false;
                 }
                 
-                if (this.currentAction != null) this.currentAction();
+                if (this.currentAction != null) this.currentAction(dt);
                 
                 if (this.tile != null) {
                     if (this.destinationTile != null) {
@@ -73,7 +79,9 @@ pc.script.create('Animal', function (context) {
 
         start: function() {
             this.tile = this.entity.tile;
-
+            this.initialLatitude = this.tile.latitude;
+            this.initialLongitude = this.tile.longitude;
+            
             this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.chooseState();
@@ -148,6 +156,59 @@ pc.script.create('Animal', function (context) {
                 this.setCurrentAction(this.previousAction);
             }
 		},
+        
+        beginMigration: function() {
+            this.migrationDelay = Math.random() * 3;
+            this.setCurrentAction(this.migrate);
+        },
+        
+        migrate: function(dt) {
+            this.migrationDelay -= dt;
+            if (this.migrationDelay < 0) {
+                var migrationLatitude = this.initialLatitude + animalMigrationOffset;
+                var migrationLongitude = this.initialLongitude;
+                
+                //restricting to a longitude band and sorting by latitudinal distance (excluding all tiles that aren't between the desired latitude/z-position and current z-position) might be a good idea
+                //sort tiles by longitudinal distance, then split this sorted array into sections of 20 or so tiles, sort these sections by latitudinal distance and iterate through them, break after the 4th or so section
+                //or use apsp instead of searching multiple times, iterate through visited tiles to find the best one with a valid path
+                
+                var apsp = dijkstrasAPSP(this.tile);
+                var prev = apsp.prev;
+                
+                var dists = [];
+                dists[ico.tiles.length-1] = null;
+                
+                for (var i = 0; i < ico.tiles.length; i++) {
+                    var tile = ico.tiles[i];
+                    dists[i] = {dist: llDistSq(migrationLatitude, migrationLongitude, tile.latitude, tile.longitude), index: i};
+                }
+                
+                dists.sort(function(a, b) {return a.dist - b.dist;});
+                
+                for (var i = 0; i < dists.length; i++) {
+                    var tile = ico.tiles[dists[i].index];
+                    if (prev[tile.index] !== -1) {
+                        this.path = [];
+                        while (prev[tile.index] !== -2) {
+                            this.path.push(tile);
+                            tile = prev[tile.index];
+                        }
+                        this.path.push(tile);
+                        this.setPath(null, this.followPath);
+                        return;
+                    }
+                    
+                    /*
+                    if (this.setPath(tile, this.followPath)) {
+                        return;
+                    }
+                    */
+                }
+                
+                this.setCurrentAction(null);
+                this.chooseState();
+            }
+        },
 
         wander: function() {
             if (this.tile.type.movementCost >= 0) {
@@ -155,6 +216,10 @@ pc.script.create('Animal', function (context) {
             } else {
                 this.setDestination(this.tile.getRandomNeighbor());
             }
+        },
+        
+        idle: function() {
+            this.chooseState();
         },
         
         attackTribe: function(tribe) {
@@ -264,7 +329,7 @@ pc.script.create('Animal', function (context) {
         },
 		
 		setPath: function(destination, action) {
-			this.path = dijkstras(this.tile, destination);
+			if (destination !== null) this.path = dijkstras(this.tile, destination);
             
             if (this.path != null) {
                 this.pathIndex = this.path.length-1; //path array starts from destination
@@ -274,9 +339,13 @@ pc.script.create('Animal', function (context) {
                 this.travelStartTime = timer.getTime();
                 
                 this.setCurrentAction(action);
+                
+                return true;
             } else {
                 this.setCurrentAction(null);
                 this.chooseState();
+                
+                return false;
             }
 		},
 
@@ -285,14 +354,22 @@ pc.script.create('Animal', function (context) {
             this.currentAction = newAction;
         },
 
-        chooseState: function(){
+        chooseState: function() {
             // choose which starter function to call
-            if (this.currentAction != this.move &&
-                this.currentAction != this.followPath &&
-                this.currentAction != this.followTarget &&
-                this.currentAction != this.moveOnceState) {
+            if (this.currentAction == null ||
+                this.currentAction == this.idle) {
+                
                 //this.wander();
+                
+                if (this.entity.migrationFlag) {
+                    this.entity.migrationFlag = false;
+                    this.beginMigration();
+                }
+                
+                return;
             }
+            
+            //this.currentAction = this.idle;
         }
     };
 

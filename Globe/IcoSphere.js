@@ -285,7 +285,7 @@ function IcoSphere(device, radius, subdivisions) {
 		if (this.vertexGraph[t.vertexIndices[0]].getVertex().z > 1.45) {
 			initialLocationTiles.push(t);
 			//console.log(i);
-			//icosphere.setVertexHeight(t.vertexIndices[0], 1);
+			//ico.setVertexHeight(t.vertexIndices[0], 1);
 		}
 	}
 	
@@ -363,6 +363,7 @@ IcoSphere.prototype._recalculateMesh = function() {
 	unbufferedColors[this.tiles.length*3-1] = 0;
     for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
+        tile.calculateLatLon();
 		tile.calculateCenter2();
 		tile.calculateNormal();
 		tile.calculateRotationVectors();

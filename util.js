@@ -985,11 +985,31 @@ function distSq(v1, v2) {
     return x*x + y*y + z*z;
 };
 
+function llDistSq(lat1, lon1, lat2, lon2) {
+    var latDist = lat2 - lat1;
+    var lonDist = lon2 - lon1;
+    return latDist*latDist + lonDist*lonDist;
+};
+
+//Unit vector for axis, angle in radians (I think)
+function rotateAboutAxis(vector, axis, angle) {
+    var cos = Math.cos(angle);
+    var sin = Math.sin(angle);
+    
+    var v = vector.clone();
+    multScalar(v, cos);
+    v.add(multScalar(new pc.Vec3().cross(axis, vector), sin));
+    v.add(multScalar(axis, new pc.Vec3().dot(axis, vector) * (1 - cos)));
+    
+    return v;
+};
+
 function extendVector(vector, dist) {
 	var v = new pc.Vec3(vector.x, vector.y, vector.z);
 	v.normalize();
 	v.scale(dist);
 	v.add(vector);
+    
 	return v;
 };
 
@@ -997,6 +1017,8 @@ function multScalar(vector, scalar) {
 	vector.x *= scalar;
 	vector.y *= scalar;
 	vector.z *= scalar;
+    
+    return vector;
 };
 
 //Additive object model scaling
@@ -1230,6 +1252,51 @@ dijkstras = function(startTile, destTile) {
     } else {
         return null; //no path found
 	}
+};
+
+dijkstrasAPSP = function(startTile) {
+    var dist = [];
+    var prev = [];
+	for (var i = ico.tiles.length-1; i >= 0; i--) {
+		dist[i] = -1;
+		prev[i] = -1;
+	}
+	
+	var queue = new BinaryHeap(
+		function(element) { return element.dist; },
+		function(element) { return element.tile.index; },
+		'dist'
+	);
+	
+	queue.push({tile: startTile, dist: 0});
+    dist[startTile.index] = 0;
+    prev[startTile.index] = -2;
+	
+	var tile;
+	var p = 0;
+    while (p < 500 && queue.size() > 0) {
+		p++;
+        tile = queue.pop().tile;
+		
+		if (tile === null) break; //searched all available tiles
+
+        var neighbors = tile.getNeighbors();
+        for (var n = 0; n < neighbors.length; n++) {
+			var next = neighbors[n];
+			if (next.type.movementCost >= 0) { //ignore impassable terrain (negative cost)
+				var nextDist = (next.type.movementCost + tile.type.movementCost) / 2; //might be a good idea to precompute this and update it whenever tile type is changed
+				var newCost = dist[tile.index] + nextDist;
+
+				if (prev[next.index] === -1 || newCost < dist[next.index]) {
+					prev[next.index] = tile;
+					dist[next.index] = newCost;
+					queue.push({tile: next, dist: dist[next.index]});
+				}
+			}
+		}
+	}
+    
+    return {dist: dist, prev: prev};
 }
 
 startTween = function (from, to, duration, currentPos, reverseAfter) {
