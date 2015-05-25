@@ -135,7 +135,7 @@ pc.script.create('tribe', function (context) {
             this.sunIcon = this.entity.findByName("PraySun");
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
-            this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
             this.praySmoke = this.entity.findByName("TestFogTribe");
 
             this.praySmokeIsPlaying = false;
@@ -428,9 +428,7 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
             this.stormIcon.enabled = true;
             //this.stormEffect.enabled = true;            
-            while(this.stormEffect.darkness < this.cowerTimer){
-                this.stormEffect.darkness += .005;
-            }
+
             this.idolAngleChange = 0;
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
@@ -483,11 +481,11 @@ pc.script.create('tribe', function (context) {
             }
 
             this.cowerTimer -= deltaTime;
-            if(this.stormEffect.darkness > 1){
-                this.stormEffect.darkness -= deltaTime;
-            } else {
-                this.stormEffect.darkness = 1;
-            }
+            // if(this.stormEffect.darkness > 1){
+            //     this.stormEffect.darkness -= deltaTime;
+            // } else {
+            //     this.stormEffect.darkness = 1;
+            // }
 
             // if(this.previousAction === this.worshipFalseIdol){
             //     this.lowerPagan(deltaTime);

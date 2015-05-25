@@ -45,9 +45,10 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
+			this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 
-			//console.log("The box: " + this.stormTriggerBox.tribesInTrigger.length);
+			console.log("Vignette: " + this.stormEffect.darkness);
 
 			temperatureChange = false;
 			temperatureDest = 0.0;
@@ -238,7 +239,12 @@ pc.script.create('HIDInterface', function (context) {
 			if(speed != speed) speed = 1;
 
 			scripts.Atmosphere.makeStorm((distance * position), speed);
-			this.stormTriggerBox.scareTribes();
+			
+			if(this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
+
+			while(this.stormEffect.darkness < 6){
+                this.stormEffect.darkness += .005;
+            }
 
 			var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
 			
