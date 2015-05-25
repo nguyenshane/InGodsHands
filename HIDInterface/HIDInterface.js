@@ -77,12 +77,8 @@ pc.script.create('HIDInterface', function (context) {
 
         	this.coldEffect = context.root.findByName("ColdEffectPS");
         	this.coldEffect.particlesystem.stop();
-        	//this.heatEffect.isPlaying = false;
         	this.heatEffect = context.root.findByName("HeatEffectPS");
-        	this.heatEffect.particlesystem.stop();
-        	//console.log(this.heatEffect.particlesystem.isPlaying);
-        	//this.heatEffect.particlesystem.stop();
-        	//this.heatEffect.isPlaying = false;
+        	this.heatEffect.particlesystem.stop();        	
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
@@ -103,6 +99,7 @@ pc.script.create('HIDInterface', function (context) {
         	//console.log("isPaused value: " + UI.isPaused);
 
         	if(temperatureChange == true  && !hasStopped){
+        		console.log(globalTemperature + " goal: " + temperatureDest);
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
@@ -166,13 +163,11 @@ pc.script.create('HIDInterface', function (context) {
 			this.coldEffect = context.root.findByName("ColdEffectPS");
 			this.heatEffect = context.root.findByName("HeatEffectPS");
 			if (position < 0){
-				//console.log(this.coldEffect.particlesystem);
 				this.coldEffect.particlesystem.play();
-				//this.coldEffect.particlesystem.isPlaying = true;
+				this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				//console.log(this.heatEffect.particlesystem);
 				this.heatEffect.particlesystem.play();
-				//this.heatEffect.particlesystem.isPlaying = true;
+				this.heatEffect.particlesystem.isPlaying = true;
 			}
 
 		},
