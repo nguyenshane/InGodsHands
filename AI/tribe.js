@@ -471,7 +471,6 @@ pc.script.create('tribe', function (context) {
 
                     default:
                         this.increaseFear();
-                        this.increaseBelief();
                         this.setCurrentAction(this.previousAction);
                         //console.log("Cower done");
                         break;
@@ -481,15 +480,7 @@ pc.script.create('tribe', function (context) {
             }
 
             this.cowerTimer -= deltaTime;
-            // if(this.stormEffect.darkness > 1){
-            //     this.stormEffect.darkness -= deltaTime;
-            // } else {
-            //     this.stormEffect.darkness = 1;
-            // }
 
-            // if(this.previousAction === this.worshipFalseIdol){
-            //     this.lowerPagan(deltaTime);
-            // }
 
             if (this.idolAngleChange < 180 && this.previousAction == this.worshipFalseIdol){
                 this.lowerPagan(this.idolAngleChange++);
