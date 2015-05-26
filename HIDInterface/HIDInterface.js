@@ -48,8 +48,6 @@ pc.script.create('HIDInterface', function (context) {
 			this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 
-			console.log("Vignette: " + this.stormEffect.darkness);
-
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;

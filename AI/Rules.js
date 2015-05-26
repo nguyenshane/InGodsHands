@@ -204,6 +204,7 @@ wantToWorshipFalseIdol.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "All hail the Devil King!");
+        this.weight = Math.floor((Math.random() * 10) + 10);
         tribe.ruleCooldownTimer = 4;
         tribe.startFalseIdol();
         tribe.eventTimer = 240;
@@ -219,7 +220,7 @@ var wantToSacrifice = function() {
     // All conditions to choose from for making rules
     var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
     
-    this.weight = 12;
+    this.weight = Math.floor((Math.random() * 10) + 10);
     this.conditions = [allConditions.isEventCooldownUp];
 };
 
@@ -235,6 +236,7 @@ wantToSacrifice.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Sacrifice Chase!");
+        this.weight = Math.floor((Math.random() * 10) + 10);
         tribe.ruleCooldownTimer = 4;
         tribe.startSacrifice();
         tribe.eventTimer = 240;
