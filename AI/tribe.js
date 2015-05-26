@@ -153,8 +153,7 @@ pc.script.create('tribe', function (context) {
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
             
-            this.increasePopulation();
-            this.increasePopulation();
+            this.setPopulation(2);
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1)); 
@@ -707,8 +706,6 @@ pc.script.create('tribe', function (context) {
             for (var i = 0; i < this.humans.length; i++) {
                 this.humans[i].enabled = false
             }
-
-            this.population = population;
 
             for(var i = 0; i < population; i++){
                 this.increasePopulation();
