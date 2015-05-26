@@ -707,6 +707,8 @@ pc.script.create('tribe', function (context) {
                 this.humans[i].enabled = false
             }
 
+            this.population = 0;
+
             for(var i = 0; i < population; i++){
                 this.increasePopulation();
             }
