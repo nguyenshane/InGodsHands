@@ -29,7 +29,7 @@ pc.script.create('tribe', function (context) {
         
         this.increasePopulationTimer = 0;
 
-        this.idealTemperature = Math.floor((Math.random() * 20) + 55);
+        this.idealTemperature = Math.floor((Math.random() * 20) + 90);
         this.currTileTemperature;
 
         this.belief = 0;
