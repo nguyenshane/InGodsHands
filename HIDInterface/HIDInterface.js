@@ -76,8 +76,10 @@ pc.script.create('HIDInterface', function (context) {
 
         	this.coldEffect = context.root.findByName("ColdEffectPS");
         	this.coldEffect.particlesystem.stop();
-        	this.heatEffect = context.root.findByName("HeatEffectPS");
-        	this.heatEffect.particlesystem.stop();        	
+        	this.heatEffectL = context.root.findByName("HeatEffectPSL");
+        	this.heatEffectL.particlesystem.stop();      
+        	this.heatEffectR = context.root.findByName("HeatEffectPSR");
+        	this.heatEffectR.particlesystem.stop();   	
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
@@ -98,7 +100,6 @@ pc.script.create('HIDInterface', function (context) {
         	//console.log("isPaused value: " + UI.isPaused);
 
         	if(temperatureChange == true  && !hasStopped){
-        		console.log(globalTemperature + " goal: " + temperatureDest);
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
@@ -118,9 +119,11 @@ pc.script.create('HIDInterface', function (context) {
         		this.coldEffect.particlesystem.isPlaying = false;
         	}
 
-        	if ((globalTemperature - temperatureDest >= 0.0) && this.heatEffect.particlesystem.isPlaying) {
-        		this.heatEffect.particlesystem.stop();
-        		this.heatEffect.particlesystem.isPlaying = false;
+        	if ((globalTemperature - temperatureDest >= 0.0) && this.heatEffectL.particlesystem.isPlaying) {
+        		this.heatEffectL.particlesystem.stop();
+        		this.heatEffectL.particlesystem.isPlaying = false;
+        		this.heatEffectR.particlesystem.stop();
+        		this.heatEffectR.particlesystem.isPlaying = false;
         	}
 
         	// update middle status
@@ -159,14 +162,14 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			
 			inactiveTimer = 0;
-			this.coldEffect = context.root.findByName("ColdEffectPS");
-			this.heatEffect = context.root.findByName("HeatEffectPS");
 			if (position < 0){
 				this.coldEffect.particlesystem.play();
 				this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				this.heatEffect.particlesystem.play();
-				this.heatEffect.particlesystem.isPlaying = true;
+				this.heatEffectL.particlesystem.play();
+				this.heatEffectL.particlesystem.isPlaying = true;
+				this.heatEffectR.particlesystem.play();
+				this.heatEffectR.particlesystem.isPlaying = true;
 			}
 
 		},
