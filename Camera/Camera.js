@@ -27,6 +27,8 @@ pc.script.create('Camera', function (context) {
             this.aura1Mat = this.aura1.model.model.getMaterials()[0];
             this.aura2Mat = this.aura2.model.model.getMaterials()[0];
             this.aura3Mat = this.aura3.model.model.getMaterials()[0];
+
+            this.lights = this.entity.findByName("TribeLights");
 			
         },
         
@@ -91,10 +93,11 @@ pc.script.create('Camera', function (context) {
             this.aura1.rotateLocal(0, dt*4, 0);
             this.aura2.rotateLocal(0, dt*8, 0);
             this.aura3.rotateLocal(0, dt*-6, 0);
+            this.lights.rotateLocal(0, 0, dt*10);
 
             // Scale belief aura
-            var maxScale = 9;
-            var minScale = 7;
+            var maxScale = 14;
+            var minScale = 10;
 
             this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
