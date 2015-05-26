@@ -461,7 +461,7 @@ function Tile(index, vertexa, vertexb, vertexc){
             }
         }
 
-        if (unwalkableCount < 2) {
+        if (unwalkableCount < 3) {
             return true;
         }
         return false;

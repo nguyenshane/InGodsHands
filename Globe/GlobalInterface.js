@@ -40,7 +40,7 @@ pc.script.create('globalInterface', function (context) {
 			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 			
-			animalDensity = 0.07;
+			animalDensity = 0.0225; // 0.07 too high
             animalMigrationOffset = 0;
 			
 			treeDensity = 0.1; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
