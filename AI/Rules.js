@@ -240,3 +240,33 @@ wantToSacrifice.prototype = {
         tribe.eventTimer = 240;
     }    
 };
+
+/* 
+ *  needAnimals makes tribes ask for animals
+ *    
+ */
+
+var needAnimals = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 3;
+    this.conditions = [allConditions.hasNoAnimals];
+};
+
+needAnimals.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        debug.log(DEBUG.AI, "Aye, we need some animals ovuh heeyuh!");
+        tribe.ruleCooldownTimer = 4;
+        tribe.startPrayForAnimals();
+    }    
+};

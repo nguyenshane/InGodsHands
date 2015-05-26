@@ -416,6 +416,57 @@ pc.script.create('tribe', function (context) {
             }
         },
 
+        startPrayForAnimals: function () {
+            // console.log("TIME TO PRAY FOR ANIMALS");
+            this.prayerTimer = 20;
+            this.setCurrentAction(this.prayForAnimals);
+            this.prayForSomething();
+            this.isBusy = true;
+
+            this.audio.sound_TribePray();
+            // Play action animation for all humans
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("pray");
+            }
+        },
+
+        prayForAnimals: function (deltaTime) {
+            // Put symbol here when we have art for it
+            ///////////////////////////////////////
+
+            if(this.prayerTimer <= 0){
+                // console.log("Animal Prayer timer up");
+                this.prayerTimer = 0;
+                this.decreaseBelief();
+                this.decreasePopulation();
+                this.isSpiteful = true;
+
+                this.isBusy = false;
+                // Turn off symbols here
+                /////////////////////////
+                this.prayForSomething();
+            }
+
+            if (this.prayerTimer > 0){
+                for(var i = 0; i < this.influencedTiles.length; i++){
+                    if(this.influencedTiles.hasAnimal){
+                        //console.log("Prayer fulfilled!");
+                        this.tribeMessage = ("Animal Prayer fulfilled!");
+                        this.prayerTimer = 0;
+                        
+                        this.isBusy = false;
+                        // Turn off symbols here
+                        ////////////////////////
+                        this.startPraise();
+                        this.prayForSomething();
+                    }
+                }
+            }
+            
+            this.prayerTimer -= deltaTime;
+        },
+
+
         ///////////////////////////
         //  Tribe fear functions //
         ///////////////////////////
@@ -773,8 +824,6 @@ pc.script.create('tribe', function (context) {
                 }            
             }
 
-            // Old animation code, keeping around til we figure this shit out
-            //newHuman.script.Human.setAnimState("idle");
         },
 
         // Constructs the NPC's list of rules
@@ -786,6 +835,8 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new needToAdapt());
             this.rules.push(new wantToWorshipFalseIdol());
             this.rules.push(new wantToSacrifice());
+            this.rules.push(new needAnimals());
+
         },
 
         runRuleList: function() { 
