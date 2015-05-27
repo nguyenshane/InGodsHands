@@ -118,6 +118,7 @@ pc.script.create('globalInterface', function (context) {
                 globalTime += dt;
                 inactiveTimer += dt;
 
+                TWEEN.update();
 
                 //Only called on first update (since ico isn't defined in initialize)
                 if (!this.init) {

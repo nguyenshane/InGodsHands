@@ -720,18 +720,20 @@ pc.script.create('tribe', function (context) {
         },
 
         increaseBelief: function() {
+            ++this.belief;
             prevTotalBelief = totalBelief;
             ++totalBelief;
         },
 
         decreaseBelief: function() {
+            --this.belief;
             prevTotalBelief = totalBelief;
             --totalBelief;
 
             // Every time belief is decreased, check if it is too low
-            if (totalBelief < minTotalBelief){
-                console.log("Not enough belief. Please End Game.");
-                context.root._children[0].script.globalInterface.endGame();
+            if (this.belief <= 0){
+                console.log("Not enough belief. Tribe has died.");
+                //context.root._children[0].script.globalInterface.endGame();
             }  
         },
 
