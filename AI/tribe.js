@@ -153,7 +153,7 @@ pc.script.create('tribe', function (context) {
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
             
-            this.setPopulation(2);
+            this.setPopulation(3);
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "tribe initialization: " + (t2-t1)); 
@@ -451,8 +451,8 @@ pc.script.create('tribe', function (context) {
             }
 
             if (this.prayerTimer > 0){
-                for(var i = 0; i < this.influencedTiles.length; i++){
-                    if(this.influencedTiles.hasAnimal){
+                for (var i = 0; i < this.influencedTiles.length; i++) {
+                    if (this.influencedTiles.hasAnimal){
                         //console.log("Prayer fulfilled!");
                         this.tribeMessage = ("Animal Prayer fulfilled!");
                         this.prayerTimer = 0;
@@ -802,7 +802,7 @@ pc.script.create('tribe', function (context) {
 
         calculateInfluence: function() {
             var influenceRate;
-            if (this.population < 15){
+            if (this.population <= 3){
                 influenceRate = 9;
             } else {
                 influenceRate = 18;
