@@ -32,7 +32,7 @@ pc.script.create('SwipeInterface', function (context) {
                 }
                 .left{
                     height:20%;
-                    width: 20%;
+                    width: 30%;
                     background: none;
                     float:left;
                     box-shadow: none;
@@ -40,13 +40,13 @@ pc.script.create('SwipeInterface', function (context) {
                 }
                 .center{
                     height:20%;
-                    width: 60%;
+                    width: 40%;
                     background: none;
                     float:left;
                 }
                 .right{
                     height:20%;
-                    width: 20%;
+                    width: 30%;
                     background: none;
                     float:left;
                     position: relative;
