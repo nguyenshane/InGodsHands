@@ -362,6 +362,20 @@ pc.script.create('tribe', function (context) {
                 this.praySmokeIsPlaying = false;
             }
         },
+		
+		startPrayForTemperature: function () {
+			this.tribeMessage = ("Praying for temperature change: " + Math.floor(this.currTileTemperature) + " " + this.idealTemperature);
+            this.prayerTimer = 15;
+            this.setCurrentAction(this.prayForTemperature);
+            this.prayForSomething();
+            this.isBusy = true;
+
+            this.audio.sound_TribePray();
+            // Play action animation for all humans
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("pray");
+            }
+        },
 
         prayForTemperature: function (deltaTime) {
             if(this.currTileTemperature > this.idealTemperature){
@@ -388,7 +402,7 @@ pc.script.create('tribe', function (context) {
                  this.prayerTimer > 0){
 
                 //console.log("Prayer fulfilled!");
-                this.tribeMessage = ("Prayer fulfilled!");
+                this.tribeMessage = ("Temperature prayer fulfilled!");
                 this.prayerTimer = 0;
                 
                 this.isBusy = false;
@@ -402,23 +416,10 @@ pc.script.create('tribe', function (context) {
 
             this.prayerTimer -= deltaTime;
         },
-
-        startPrayForTemperature: function () {
-            //console.log("TIME TO PRAY");
-            this.prayerTimer = 15;
-            this.setCurrentAction(this.prayForTemperature);
-            this.prayForSomething();
-            this.isBusy = true;
-
-            this.audio.sound_TribePray();
-            // Play action animation for all humans
-            for (var i = 0; i < this.humans.length; i++) {
-                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("pray");
-            }
-        },
-
+		
         startPrayForAnimals: function () {
             // console.log("TIME TO PRAY FOR ANIMALS");
+			this.tribeMessage = ("Praying for animals");
             this.prayerTimer = 20;
             this.setCurrentAction(this.prayForAnimals);
             this.prayForSomething();
@@ -437,6 +438,7 @@ pc.script.create('tribe', function (context) {
 
             if(this.prayerTimer <= 0){
                 // console.log("Animal Prayer timer up");
+				this.tribeMessage = ("Animal Prayer failed!");
                 this.prayerTimer = 0;
                 this.decreaseBelief();
                 this.decreasePopulation();
@@ -492,6 +494,8 @@ pc.script.create('tribe', function (context) {
             // Depending on what the tribe was doing before hand, their fear
             // and belief will increase and decrease accordingly.
             if (this.cowerTimer <= 0) {
+				this.tribeMessage = ("Done cowering");
+				
                 switch (this.previousAction) {
                     case this.sacrifice:
                         for (var i = this.humans.length-1; i >= 0; i--) {
@@ -600,6 +604,7 @@ pc.script.create('tribe', function (context) {
 
         // Tribe adapts to new temperature when ignored by god
         startAdapting: function() {
+			this.tribeMessage = ("Adapting to temperature");
             this.adaptTimer = 10;
             this.setCurrentAction(this.adapt);
             this.isBusy = true;
