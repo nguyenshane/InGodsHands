@@ -770,6 +770,8 @@ pc.script.create('tribe', function (context) {
                 addTribe();
                 this.setPopulation(2);
             }
+			
+			this.calculateInfluence();
         },
 
         decreasePopulation: function() {
@@ -788,6 +790,8 @@ pc.script.create('tribe', function (context) {
         decrementPopulation: function() {
             --this.population;
             
+			this.calculateInfluence();
+			
             if (this.population < this.MINPOPULATION){
                 // Kill the tribe
                 this.entity.enabled = false;
