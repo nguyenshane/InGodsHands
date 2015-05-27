@@ -420,59 +420,61 @@ pc.script.create('developer', function (context) {
             //timer = 2.0;
 
             // Set some default state on the UI element
-             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
-             
-             var tribeInfo = [];
-              
+            this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
             
-                tribeInfo[0]  = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[0].script.tribe;
+            var tribeInfo = [];
+            
+            tribeInfo[0] = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[0].script.tribe;
 
-             this.setTribeText(('Tribe #' +1+ " Pop: " + tribeInfo[0].population), ('Tribe #' +1+ " Belief: " + totalBelief), 
-                ('Tribe #' +1+ " Fear: "+ tribeInfo[0].fear), ('Tribe #' +1+ " Message: "+ tribeInfo[0].tribeMessage), 0 );
-
+            this.setTribeText(
+				('Tribe #' +1+ " Pop: " + tribeInfo[0].population),
+				('Tribe #' +1+ " Belief: " + tribeInfo[0].belief), 
+                ('Tribe #' +1+ " Fear: "+ tribeInfo[0].fear),
+				('Tribe #' +1+ " Message: "+ tribeInfo[0].tribeMessage), 0);
         },
 
          // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-             //updates the global temperature
-             var app = pc.fw.Application.getApplication('application-canvas').context;
+            //updates the global temperature
+            var app = pc.fw.Application.getApplication('application-canvas').context;
             
             this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
+  
+            var tribeInfo = [];
 
-              
-              var tribeInfo = [];
-
-             for(var i = 0; i < this.tribePop.length; i++){
-                tribeInfo[i]  = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[i].script.tribe;
+            for (var i = 0; i < this.tribePop.length; i++) {
+                tribeInfo[i] = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[i].script.tribe;
                 
-             this.setTribeText(('Tribe #' +(i+1)+ " Pop: " + tribeInfo[i].population), ('Tribe #' +(i+1)+ " Belief: " + totalBelief), 
-                ('Tribe #' +(i+1)+ " Fear: "+ tribeInfo[i].fear), ('Tribe #' +(i+1)+ " Message: "+ tribeInfo[i].tribeMessage), i );
-                       
-               }
+				this.setTribeText(
+					('Tribe #' +(i+1)+ " Pop: " + tribeInfo[i].population),
+					('Tribe #' +(i+1)+ " Belief: " + tribeInfo[i].belief), 
+					('Tribe #' +(i+1)+ " Fear: "+ tribeInfo[i].fear),
+					('Tribe #' +(i+1)+ " Message: "+ tribeInfo[i].tribeMessage), i);
+            }
             
-                        if(this.addTribeDiv){
-                                console.log("tribe Added");
-                                 maxDiv++;
-                                 this.checkNewTribeDiv(maxDiv);
-                                 console.log("maxDiv = " + maxDiv);
-                                 this.addTribeDiv = false;
-                         }
+			if (this.addTribeDiv) {
+				console.log("tribe Added");
+				maxDiv++;
+				this.checkNewTribeDiv(maxDiv);
+				console.log("maxDiv = " + maxDiv);
+				this.addTribeDiv = false;
+			}
 
-             this.time += dt;
+            this.time += dt;
 
-             // var cast = this.sliderT.value * 1.0;
-             //  globalTemperature =  cast;    
-              this.stringPull();
-              this.setPosition();
-              this.mouseCheck();
+			// var cast = this.sliderT.value * 1.0;
+			//  globalTemperature =  cast;    
+			this.stringPull();
+			this.setPosition();
+			this.mouseCheck();
 
-              //this.checkMusic();
-              this.setVisibilty();
+			//this.checkMusic();
+			this.setVisibilty();
 
-              this.buttonUI.onclick = function UIButtonClicked(){
-                  switchUIOn++;
-                  if(switchUIOn > 2) switchUIOn = 0;
-              }
+			this.buttonUI.onclick = function UIButtonClicked(){
+				switchUIOn++;
+				if(switchUIOn > 2) switchUIOn = 0;
+			}
         },
 
         checkNewTribeDiv(i){
