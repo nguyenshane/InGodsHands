@@ -32,7 +32,7 @@ pc.script.create('tribe', function (context) {
         this.idealTemperature = Math.floor((Math.random() * 20) + 90);
         this.currTileTemperature;
 
-        this.belief = 0;
+        this.belief = 10;
         this.fear = 0;
 
         this.tile;
@@ -57,8 +57,8 @@ pc.script.create('tribe', function (context) {
         this.isBusy = false;
         this.isSpiteful = false;
         this.inSun = false;
-        this.previousAction;
-        this.currentAction;
+        this.previousAction = this.idle;
+        this.currentAction = this.idle;
         this.prayerTimer = 0;
         this.cowerTimer = 0;
         this.denounceTimer = 0;
@@ -343,6 +343,8 @@ pc.script.create('tribe', function (context) {
             }
 
         },
+		
+		idle: function() {},
 
         ////////////////////////////////////
         //  Tribe prayer action functions //
@@ -732,6 +734,8 @@ pc.script.create('tribe', function (context) {
 
             // Every time belief is decreased, check if it is too low
             if (this.belief <= 0){
+				console.log(this.belief + " " + totalBelief)
+				
                 console.log("Not enough belief. Tribe has died.");
                 //context.root._children[0].script.globalInterface.endGame();
             }  
@@ -782,6 +786,11 @@ pc.script.create('tribe', function (context) {
             if (this.population < this.MINPOPULATION){
                 // Kill the tribe
                 this.entity.enabled = false;
+				
+				for (var i = this.humans.length-1; i >= 0; i--) {
+                    this.humans[i].enabled = false;
+                }
+				
                 context.root._children[0].script.globalInterface.doTribesExist();
             }
         },

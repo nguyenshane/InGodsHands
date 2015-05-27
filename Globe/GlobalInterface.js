@@ -67,7 +67,7 @@ pc.script.create('globalInterface', function (context) {
             this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 
             maxTotalBelief = 250;
-            totalBelief = 200;
+            totalBelief = 0;
             prevTotalBelief = totalBelief;
             minTotalBelief = 150;
 			
@@ -247,7 +247,8 @@ pc.script.create('globalInterface', function (context) {
             for (var i = 0; i < tribes.length; i++) {
                 if (tribes[i].enabled) return;
             }
-
+			
+			console.log("All tribes dead");
             this.endGame();
         },
 
