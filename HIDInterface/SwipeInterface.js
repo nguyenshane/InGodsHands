@@ -53,7 +53,7 @@ pc.script.create('SwipeInterface', function (context) {
                 }
                 .up{ opacity: 1 }
 
-                .T_L{ background: linear-gradient(to right, rgba(48,76,80,1) 40%, rgba(0,0,0,0) 100%); }
+                .T_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%); }
                 
                 .T_L_active{ position: absolute;
                       content: '';
@@ -64,16 +64,16 @@ pc.script.create('SwipeInterface', function (context) {
                       transition: box-shadow 1.5s ease, opacity 1.5s ease, visibility 0s linear;
                       background: rgba(48,76,80,1); box-shadow: 0 0 2em red; opacity: 0;}
 
-                #A_L{ background: linear-gradient(to right, rgba(54,65,85,1) 40%, rgba(0,0,0,0) 100%); }
-                #P_L{ background: linear-gradient(to right, rgba(40,43,62,1) 40%, rgba(0,0,0,0) 100%); }
-                #E_L{ background: linear-gradient(to right, rgba(127,83,108,1) 40%, rgba(0,0,0,0) 100%); }
-                #W_L{ background: linear-gradient(to right, rgba(216,94,112,1) 40%, rgba(0,0,0,0) 100%); }
+                #A_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); }
+                #P_L{ background: linear-gradient(to right, rgba(188,191,188,1) 20%, rgba(0,0,0,0) 100%); }
+                #E_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); }
+                #W_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%); }
 
-                #T_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(48,76,80,1) 60%); }
-                #A_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(54,65,85,1) 60%); }
-                #P_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(40,43,62,1) 60%); }
-                #E_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(127,83,108,1) 60%); }
-                #W_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(216,94,112,1) 60%); }
+                #T_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); }
+                #A_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); }
+                #P_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(188,191,188,1) 80%); }
+                #E_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); }
+                #W_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); }
             */}.toString().trim();
             css = css.slice(css.indexOf('/*') + 2).slice(0, -3);
 
