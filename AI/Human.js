@@ -190,6 +190,12 @@ pc.script.create('Human', function (context) {
             
             // Once tribe is at next tile's center, movement is done.
             if (percentTravelled >= 1) {
+				if (this.tribeParent.isBusy) {
+					this.setCurrentAction(null);
+					this.chooseState();
+					return;
+				}
+				
                 this.tile.hasHuman = false;
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
@@ -228,9 +234,8 @@ pc.script.create('Human', function (context) {
             if (!this.tribeParent.isBusy && 
                 this.currentAction != this.move && 
                 this.currentAction != this.followPath) {
-
+				
                 this.wander();
-
             }
         },
 

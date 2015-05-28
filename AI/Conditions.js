@@ -108,7 +108,6 @@ pc.script.create('Conditions', function (context) {
         hasNoAnimals: function(tribe){
             for(var i = 0; i < tribe.influencedTiles.length; i++){
                 if (tribe.influencedTiles[i].hasAnimal) {
-                    console.log(tribe.influencedTiles[i].hasAnimal);        
                     return false;
                 }
             }
