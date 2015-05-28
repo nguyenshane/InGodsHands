@@ -96,28 +96,28 @@ pc.script.create('Camera', function (context) {
             this.lights.rotateLocal(0, 0, dt*10);
 
             // Scale belief aura
-            var maxScale = 14;
-            var minScale = 10;
+            var maxScale = 18;
+            var minScale = 12;
 
             this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
             this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
            
             // Change aura color
-            if(totalBelief < prevTotalBelief) {
-                this.aura1Mat.emissive = new pc.Color(1.0,0.35,0.35);
-                this.aura2Mat.emissive = new pc.Color(1.0,0.65,0.65);
-                this.aura3Mat.emissive = new pc.Color(1.0,0.85,0.85);
-            } else if(totalBelief > prevTotalBelief) {
-                this.aura1Mat.emissive = new pc.Color(0.15,1.0,0.15);
-                this.aura2Mat.emissive = new pc.Color(0.35,1.0,0.35);
-                this.aura3Mat.emissive = new pc.Color(0.65,1.0,0.65);
+            // if(totalBelief < prevTotalBelief) {
+            //     this.aura1Mat.emissive = new pc.Color(1.0,0.35,0.35);
+            //     this.aura2Mat.emissive = new pc.Color(1.0,0.65,0.65);
+            //     this.aura3Mat.emissive = new pc.Color(1.0,0.85,0.85);
+            // } else if(totalBelief > prevTotalBelief) {
+            //     this.aura1Mat.emissive = new pc.Color(0.15,1.0,0.15);
+            //     this.aura2Mat.emissive = new pc.Color(0.35,1.0,0.35);
+            //     this.aura3Mat.emissive = new pc.Color(0.65,1.0,0.65);
 
-            } else {
+            // } else {
                 this.aura1Mat.emissive = new pc.Color(0.25,0.25,0.25);
                 this.aura2Mat.emissive = new pc.Color(0.5,0.5,0.5);
                 this.aura3Mat.emissive = new pc.Color(0.75,0.75,0.75);
-            }
+            // }
 
             this.aura1Mat.update();
             this.aura2Mat.update();
