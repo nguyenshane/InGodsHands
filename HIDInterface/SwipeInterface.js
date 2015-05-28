@@ -1,6 +1,8 @@
 ///
 // Description: This is the control input for swipe
 ///
+pc.script.attribute('swipeAsset', 'asset', []);
+
 pc.script.create('SwipeInterface', function (context) {
     // Creates a new TestString instance
     var SwipeInterface = function (entity) {
@@ -19,6 +21,12 @@ pc.script.create('SwipeInterface', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             var t1 = new Date();
+
+            for (var id=0; id<this.swipeAsset.length; id++) {
+                //console.log('id', id);
+                console.log("this.swipeAsset[id]", this.swipeAsset[id]);
+                //console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
+            }
 
             var css = function () {/*
                 .swipeWrapper{
@@ -53,16 +61,12 @@ pc.script.create('SwipeInterface', function (context) {
                 }
                 .up{ opacity: 1 }
 
-                .T_L{ background: linear-gradient(to right, rgba(48,76,80,1) 40%, rgba(0,0,0,0) 100%); }
+                .T_L{ background: linear-gradient(to right, rgba(48,76,80,1) 40%, rgba(0,0,0,0) 100%); 
+                      transition: all 1.0s ease;}
                 
-                .T_L_active{ position: absolute;
-                      content: '';
-                      top: 0;
-                      left: 0;
-                      width: 100%;
-                      height: 100%;
-                      transition: box-shadow 1.5s ease, opacity 1.5s ease, visibility 0s linear;
-                      background: rgba(48,76,80,1); box-shadow: 0 0 2em red; opacity: 0;}
+                .T_L_active{ 
+                      transition: box-shadow 1.0s ease;
+                      background: rgba(48,76,80,1); box-shadow: 0 0 2em red;}
 
                 #A_L{ background: linear-gradient(to right, rgba(54,65,85,1) 40%, rgba(0,0,0,0) 100%); }
                 #P_L{ background: linear-gradient(to right, rgba(40,43,62,1) 40%, rgba(0,0,0,0) 100%); }
@@ -111,13 +115,26 @@ pc.script.create('SwipeInterface', function (context) {
 
 
             this.T_L.swipe({
+                tap:function(event, target) {
+                  //console.log("tap event ", event, " target ", target);
+                  var jtarget = $(target);
+                  jtarget.addClass('T_L_active');
+                },
+                hold:function(event, target) {
+                  //console.log("tap event ", event, " target ", target);
+                  var jtarget = $(target);
+                  jtarget.addClass('T_L_active');
+                },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("event", event);
+                  console.log("event", event);
                   //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
+                  var jtarget = $(event.srcElement);
+                  jtarget.removeClass('T_L_active');
                 },
                 //threshold:75
+                longTapThreshold:0
             });
 
             this.T_R.swipe({
