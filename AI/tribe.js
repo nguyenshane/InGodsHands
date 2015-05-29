@@ -18,6 +18,8 @@ pc.script.create('tribe', function (context) {
     var Tribe = function (entity) {
         this.entity = entity;
         
+        this.origin = new pc.Vec3(0,0,0);
+
         this.humanParent;
         this.humans = [];
 
@@ -86,7 +88,7 @@ pc.script.create('tribe', function (context) {
         // Variables for lerp, in milliseconds
 
         //this.foodPopTimer = 0;
-        this.travelTime = 3000;
+        this.travelTime = 6000;
         this.travelStartTime;
 
     };
@@ -142,8 +144,8 @@ pc.script.create('tribe', function (context) {
 
             this.hq = this.entity.findByName("HQ");
             this.hq.enabled = true;
-            this.paganStatue = this.entity.findByName("PaganStatue");
-            this.paganStatue.setLocalEulerAngles(this.rotation.x - 180, this.rotation.y, this.rotation.z);
+            this.paganStatue = context.root.findByName("PaganParent").findByName("PaganStatue" + tribes.indexOf(this.entity));
+            this.paganStatue.setPosition(this.origin);
 
             this.paganStatue.enabled = true;
             this.idolAngleChange = 0; // 3 seconds to rotate at 60fps
@@ -183,10 +185,11 @@ pc.script.create('tribe', function (context) {
                 // Set temperature of tile
                 this.currTileTemperature = this.tile.getTemperature();
 
-                // Set lighting in shader
-                this.rotation = this.tile.getRotationAlignedWithNormal();
+                // rotating statues properly
+                this.rotation = this.tile.getRotationAlignedWithSphere();
                 this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
-
+                this.paganStatue.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+               
                 // Increase no sun timer whenever tribe doesn't have sun
                 if(!this.inSun){
                     this.noSunTimer += dt;
@@ -488,6 +491,9 @@ pc.script.create('tribe', function (context) {
             for (var i = 0; i < this.humans.length; i++) {
                 if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("cower");
             }
+
+            var timer = new Date();
+            this.travelStartTime = timer.getTime();
         },
 
         cower: function(deltaTime) {
@@ -538,8 +544,8 @@ pc.script.create('tribe', function (context) {
             this.cowerTimer -= deltaTime;
 
 
-            if (this.idolAngleChange < 180 && this.previousAction == this.worshipFalseIdol){
-                this.lowerPagan(this.idolAngleChange++);
+            if (this.previousAction == this.worshipFalseIdol){
+                this.lowerPagan();
             }
 
         },
@@ -640,7 +646,12 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
             console.log("WE SHALL BEAR FALSE IDOLSZ");
             this.tribeMessage = ("WE SHALL BEAR FALSE IDOLSZ");
-            this.idolAngleChange = 180;
+            //this.idolAngleChange = 180;
+
+            this.startPosition = this.paganStatue.getPosition().clone();
+
+            var timer = new Date();
+            this.travelStartTime = timer.getTime();
         },
 
         worshipFalseIdol: function(deltaTime) {
@@ -649,21 +660,48 @@ pc.script.create('tribe', function (context) {
                 this.falseIdolTimer = 0;
             }
 
-            if (this.idolAngleChange > 0){
-                this.raisePagan(this.idolAngleChange--);
-            }
+            this.raisePagan(this.idolAngleChange--);
 
             this.falseIdolTimer += deltaTime;
         },
 
         raisePagan: function(angleChange) {
-            this.hq.enabled = false;
-            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            //this.hq.enabled = false;
+            //this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
+            
+            var deltaVec = new pc.Vec3;
+
+            deltaVec.lerp(this.startPosition, this.tile.center, percentTravelled);
+            if(percentTravelled <= 1){
+                this.paganStatue.setPosition(deltaVec);
+            }
+            deltaVec.lerp(this.tile.center, this.origin, percentTravelled);
+            if(percentTravelled <= 1){
+                this.entity.setPosition(deltaVec);
+            }  
         },
 
         lowerPagan: function(angleChange) {
-            this.hq.enabled = true;
-            this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            //this.hq.enabled = true;
+            //this.paganStatue.setLocalEulerAngles(this.paganStatue.rotation.x + (180 - angleChange), this.rotation.y, this.rotation.z);
+            
+            var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
+            
+            var deltaVec = new pc.Vec3;
+
+            deltaVec.lerp(this.tile.center, this.origin, percentTravelled);
+            if(percentTravelled <= 1){
+                this.paganStatue.setPosition(deltaVec);
+            }
+            deltaVec.lerp(this.origin, this.tile.center, percentTravelled);
+            if(percentTravelled <= 1){
+                this.entity.setPosition(deltaVec);
+            }        
         },
 
         startSacrifice: function() {
@@ -742,6 +780,7 @@ pc.script.create('tribe', function (context) {
 				console.log(this.belief + " " + totalBelief)
 				
                 console.log("Not enough belief. Tribe has died.");
+                this.entity.enabled = false;
                 //context.root._children[0].script.globalInterface.endGame();
             }  
         },
