@@ -22,11 +22,28 @@ pc.script.create('SwipeInterface', function (context) {
         initialize: function () {
             var t1 = new Date();
 
-            for (var id=0; id<this.swipeAsset.length; id++) {
-                //console.log('id', id);
-                console.log("this.swipeAsset[id]", this.swipeAsset[id]);
-                //console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
-            }
+            var TLactive = context.assets.find("TLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var TRactive = context.assets.find("TRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ALactive = context.assets.find("ALactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ARactive = context.assets.find("ARactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var PLactive = context.assets.find("PLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var PRactive = context.assets.find("PRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ELactive = context.assets.find("ERactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ERactive = context.assets.find("ERactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var WLactive = context.assets.find("WLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var WRactive = context.assets.find("WRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+
+
+            var TLidle = context.assets.find("TLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var TRidle = context.assets.find("TRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ALidle = context.assets.find("ALidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ARidle = context.assets.find("ARidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var PLidle = context.assets.find("PLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var PRidle = context.assets.find("PRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ELidle = context.assets.find("ERidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var ERidle = context.assets.find("ERidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var WLidle = context.assets.find("WLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var WRidle = context.assets.find("WRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
 
             var css = function () {/*
                 .swipeWrapper{
@@ -78,6 +95,30 @@ pc.script.create('SwipeInterface', function (context) {
                 #P_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(188,191,188,1) 80%); }
                 #E_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); }
                 #W_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); }
+
+                .left img {
+                    height: 50%;
+                    top: 25%;
+                    left: 5%;
+                    position: absolute;
+                    pointer-events: none;
+                    float: left;
+                    transition: all 1.0s ease;
+                }
+
+                .left img.active{
+                    opacity: 0;
+                    transition: all 0.8s ease;
+                }
+
+                .right img {
+                    height: 50%;
+                    top: 25%;
+                    right: 5%;
+                    position: absolute;
+                    pointer-events: none;
+                    float: right;
+                }
             */}.toString().trim();
             css = css.slice(css.indexOf('/*') + 2).slice(0, -3);
 
@@ -97,11 +138,11 @@ pc.script.create('SwipeInterface', function (context) {
             var swipeWrapper = document.createElement('div');
             swipeWrapper.className = 'swipeWrapper';
             swipeWrapper.innerHTML = [
-                '<div class="left T_L" id="T_L"></div> <div class="center"></div> <div class="right T_R" id="T_R"></div>',
-                '<div class="left A_L" id="A_L"></div> <div class="center"></div> <div class="right A_R" id="A_R"></div>',
-                '<div class="left P_L" id="P_L"></div> <div class="center"></div> <div class="right P_R" id="P_R"></div>',
-                '<div class="left E_L" id="E_L"></div> <div class="center"></div> <div class="right E_R" id="E_R"></div>',
-                '<div class="left W_L" id="W_L"></div> <div class="center"></div> <div class="right W_R" id="W_R"></div>'
+                '<div class="left T_L" id="T_L"><img id="TLidle" src="'+TLidle+'"/><img id="TLactive" class="active" src="'+TLactive+'"/></div><div class="center"></div> <div class="right T_R" id="T_R"><img src="'+TRidle+'"/></div>',
+                '<div class="left A_L" id="A_L"><img src="'+ALidle+'"/></div> <div class="center"></div> <div class="right A_R" id="A_R"><img src="'+ARidle+'"/></div>',
+                '<div class="left P_L" id="P_L"><img src="'+PLidle+'"/></div> <div class="center"></div> <div class="right P_R" id="P_R"><img src="'+PRidle+'"/></div>',
+                '<div class="left E_L" id="E_L"><img src="'+ELidle+'"/></div> <div class="center"></div> <div class="right E_R" id="E_R"><img src="'+ERidle+'"/></div>',
+                '<div class="left W_L" id="W_L"><img src="'+WLidle+'"/></div> <div class="center"></div> <div class="right W_R" id="W_R"><img src="'+WRidle+'"/></div>'
                 ].join('\n');
             document.body.appendChild(swipeWrapper);
 
@@ -116,13 +157,18 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_L.swipe({
                 tap:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
+                  console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
+                  jtarget.children(".active").css('opacity', 0.8);
+
                   jtarget.addClass('T_L_active');
+                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
+                  jtarget.children(".active").css('opacity', 0.8);
+                  //jtarget.children().attr('src', TLactive)
                   jtarget.addClass('T_L_active');
                 },
                 //Generic swipe handler for all directions
@@ -131,7 +177,10 @@ pc.script.create('SwipeInterface', function (context) {
                   //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
+                  //jtarget.children().attr('src', TLidle)
+                  jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_L_active');
+                  
                 },
                 //threshold:75
                 longTapThreshold:0
