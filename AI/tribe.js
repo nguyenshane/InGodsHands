@@ -778,10 +778,9 @@ pc.script.create('tribe', function (context) {
             // Every time belief is decreased, check if it is too low
             if (this.belief <= 0){
 				console.log(this.belief + " " + totalBelief)
-				
                 console.log("Not enough belief. Tribe has died.");
-                this.entity.enabled = false;
-                //context.root._children[0].script.globalInterface.endGame();
+                
+                this.killSelf();
             }  
         },
 
@@ -832,15 +831,19 @@ pc.script.create('tribe', function (context) {
 			this.calculateInfluence();
 			
             if (this.population < this.MINPOPULATION){
-                // Kill the tribe
-                this.entity.enabled = false;
-				
-				for (var i = this.humans.length-1; i >= 0; i--) {
-                    this.humans[i].enabled = false;
-                }
-				
-                context.root._children[0].script.globalInterface.doTribesExist();
+                this.killSelf();
             }
+        },
+        
+        killSelf: function() {
+            // Kill the tribe
+            for (var i = this.humans.length-1; i >= 0; i--) {
+                this.humans[i].enabled = false;
+            }
+            
+            this.entity.enabled = false;
+            
+            context.root._children[0].script.globalInterface.doTribesExist();
         },
 
         calculateInfluence: function() {
