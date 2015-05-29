@@ -28,9 +28,6 @@ pc.script.create('Camera', function (context) {
             this.aura2Mat = this.aura2.model.model.getMaterials()[0];
             this.aura3Mat = this.aura3.model.model.getMaterials()[0];
 
-            this.lights = this.entity.findByName("TribeLights");
-            this.lightFour = this.lights.findByName("Directional Light 4");
-
             this.counter = 0;
 			
         },
@@ -97,18 +94,6 @@ pc.script.create('Camera', function (context) {
             this.aura2.rotateLocal(0, dt*8, 0);
             this.aura3.rotateLocal(0, dt*-6, 0);
             this.lights.rotateLocal(0, 0, dt*10);
-
-            if (this.counter > 120 && this.counter <= 180){
-                this.lightFour.light.intensity += this.lightFour.light.intensity/25;
-            } else if (this.counter > 180 && this.counter <= 240 && this.lightFour.light.intensity >= 1){
-                this.lightFour.light.intensity -= this.lightFour.light.intensity/25;
-            } else if (this.counter > 300){
-                this.counter = 0;
-                this.lightFour.light.intensity = 1;
-            }
-            this.counter++;
-
-
 
             // Scale belief aura
             var maxScale = 18;
