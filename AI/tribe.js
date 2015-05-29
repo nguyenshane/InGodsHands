@@ -138,6 +138,7 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
             this.praySmoke = this.entity.findByName("TestFogTribe");
+            this.beliefLight.enabled = true;
             this.beliefLight.script.LightController.startShineBeliefLight();
 
             this.praySmokeIsPlaying = false;
