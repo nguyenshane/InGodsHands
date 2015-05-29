@@ -133,12 +133,10 @@ pc.script.create('tribe', function (context) {
 
             this.calculateInfluence();
 
-            //this.icons = this.entity.getChildren();
             this.rainIcon = this.entity.findByName("PrayClouds");
             this.sunIcon = this.entity.findByName("PraySun");
             this.stormIcon = this.entity.findByName("FearStorm");
             this.praiseIcon = this.entity.findByName("PraiseHands");
-            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
             this.praySmoke = this.entity.findByName("TestFogTribe");
             this.beliefLight.script.LightController.startShineBeliefLight();
 
@@ -457,7 +455,7 @@ pc.script.create('tribe', function (context) {
 
             if (this.prayerTimer > 0){
                 for (var i = 0; i < this.influencedTiles.length; i++) {
-                    if (this.influencedTiles.hasAnimal){
+                    if (this.influencedTiles[i].hasAnimal){
                         //console.log("Prayer fulfilled!");
                         this.tribeMessage = ("Animal Prayer fulfilled!");
                         this.prayerTimer = 0;

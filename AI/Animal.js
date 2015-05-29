@@ -283,8 +283,12 @@ pc.script.create('Animal', function (context) {
         },
         
         migrateAlongPath: function() {
-            var offsetDiff = this.currentMigrationOffset - animalMigrationOffset;
-            if (offsetDiff > 1.0 || offsetDiff < -1.0) {
+            var timer = new Date();
+            var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
+            var percentTravelled = timeSinceTravelStarted / this.travelTime;
+            
+            var offsetDiff = Math.abs(this.currentMigrationOffset - animalMigrationOffset);
+            if (percentTravelled >= 1 && offsetDiff > 1.0) {
                 this.beginMigration();
             } else {
                 this.followPath();
