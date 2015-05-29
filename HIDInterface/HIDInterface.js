@@ -94,7 +94,7 @@ pc.script.create('HIDInterface', function (context) {
         		hasStopped = false;
         	}
             
-            /*
+            ///*
         	if (temperatureChange == true  && !hasStopped) {
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
@@ -118,8 +118,9 @@ pc.script.create('HIDInterface', function (context) {
         		this.heatEffectR.particlesystem.stop();
         		this.heatEffectR.particlesystem.isPlaying = false;
         	}
-            */
+            ///*/
             
+            /*
             this.temperatureEffectTimer -= dt;
             if (this.temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
                 this.coldEffect.particlesystem.stop();
@@ -132,6 +133,7 @@ pc.script.create('HIDInterface', function (context) {
         		this.heatEffectR.particlesystem.stop();
         		this.heatEffectR.particlesystem.isPlaying = false;
             }
+            */
         },
 
     //---------------------------------------------------------------------------------------------
@@ -150,7 +152,7 @@ pc.script.create('HIDInterface', function (context) {
             
             inactiveTimer = 0;
             
-            /*
+            ///*
             temperatureChange = true;
 			temperatureStart = globalTemperature;
 			temperatureDest = globalTemperature + (distance);
@@ -161,8 +163,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			
-			
-			if (position < 0){
+			if (position < 0) {
 				this.coldEffect.particlesystem.play();
 				this.coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
@@ -171,7 +172,7 @@ pc.script.create('HIDInterface', function (context) {
 				this.heatEffectR.particlesystem.play();
 				this.heatEffectR.particlesystem.isPlaying = true;
 			}
-            */
+            ///*/
 		},
 		
 		moved_A: function(position, distance, speed) {
@@ -187,20 +188,15 @@ pc.script.create('HIDInterface', function (context) {
             }
             
 			inactiveTimer = 0;
-
-			/*
-            animalDensity += ((distance * position) * 0.0004);
-			animalDensity = pc.math.clamp(animalDensity, 0.005, 0.1);
-			*/
             
-            /*
+            ///*
             animalMigrationOffset += distance * 1.5;
             
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
                 animals[i].migrationFlag = true;
             }
-            */
+            ///*/
 		},
 		
 		moved_P: function(position, distance, speed) {
@@ -217,12 +213,12 @@ pc.script.create('HIDInterface', function (context) {
             
 			inactiveTimer = 0;
             
-            /*
+            ///*
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
 			ico.faultNumMove = Math.abs((distance * position));
 			ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
-            */
+            ///*/
 		},
 		
 		moved_E: function(position, distance, speed) {
@@ -305,7 +301,7 @@ pc.script.create('HIDInterface', function (context) {
 			if (!UI.StringsliderA.mouseIsOver){
                 UI.StringsliderA.value = newStringAvalue;
             }
-			
+            
 			inactiveTimer = 0;
             
             animalMigrationOffset += distance * 1.5;
@@ -347,7 +343,7 @@ pc.script.create('HIDInterface', function (context) {
 			if (!UI.StringsliderE.mouseIsOver) {
                 UI.StringsliderE.value = newStringEvalue;
             }
-			
+            
 			inactiveTimer = 0;
 		},
 		
