@@ -28,7 +28,7 @@ pc.script.create('Camera', function (context) {
             this.aura2Mat = this.aura2.model.model.getMaterials()[0];
             this.aura3Mat = this.aura3.model.model.getMaterials()[0];
 
-            this.lights = this.entity.findByName("TribeLights");
+            this.counter = 0;
 			
         },
         
