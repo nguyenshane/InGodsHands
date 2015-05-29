@@ -449,6 +449,8 @@ function Tile(index, vertexa, vertexb, vertexc){
 	};
 
     this.canWalkTo = function(neighbor) {
+        if (neighbor.hasTribe) return false;
+        
         var unwalkableCount = 0;
 
         var vert;

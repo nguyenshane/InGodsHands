@@ -14,7 +14,7 @@ pc.script.create('Animal', function (context) {
 		this.strength = 1.0;
         
         this.turnSpeed = 1.0;
-		this.moveSpeed = 1.0;
+		this.moveSpeed = 1.5;
 		
 		// Variables for lerp, in milliseconds
         this.travelTime = 2000.0 / this.moveSpeed;
@@ -32,6 +32,7 @@ pc.script.create('Animal', function (context) {
         this.facingDirection = Math.random() * 360;
         
         this.initialLatitude, this.initialLongitude;
+        this.currentMigrationOffset;
     };
 
     Animal.prototype = {
@@ -158,12 +159,13 @@ pc.script.create('Animal', function (context) {
 		},
         
         beginMigration: function() {
-            this.migrationDelay = Math.random() * 3;
+            this.migrationDelay = Math.random() * 2.5;
             this.setCurrentAction(this.migrate);
         },
         
         migrate: function(dt) {
             this.migrationDelay -= dt;
+            
             if (this.migrationDelay < 0) {
                 var migrationLatitude = this.initialLatitude + animalMigrationOffset;
                 var migrationLongitude = this.initialLongitude;
@@ -194,15 +196,10 @@ pc.script.create('Animal', function (context) {
                             tile = prev[tile.index];
                         }
                         this.path.push(tile);
-                        this.setPath(null, this.followPath);
+                        this.setPath(null, this.migrateAlongPath);
+                        this.currentMigrationOffset = animalMigrationOffset;
                         return;
                     }
-                    
-                    /*
-                    if (this.setPath(tile, this.followPath)) {
-                        return;
-                    }
-                    */
                 }
                 
                 this.setCurrentAction(null);
@@ -283,6 +280,15 @@ pc.script.create('Animal', function (context) {
         
         goToTile: function(destinationTile) {
 			this.setPath(destinationTile, this.followPath);
+        },
+        
+        migrateAlongPath: function() {
+            var offsetDiff = this.currentMigrationOffset - animalMigrationOffset;
+            if (offsetDiff > 1.0 || offsetDiff < -1.0) {
+                this.beginMigration();
+            } else {
+                this.followPath();
+            }
         },
         
         followPath: function() {
