@@ -455,7 +455,7 @@ pc.script.create('tribe', function (context) {
 
             if (this.prayerTimer > 0){
                 for (var i = 0; i < this.influencedTiles.length; i++) {
-                    if (this.influencedTiles.hasAnimal){
+                    if (this.influencedTiles[i].hasAnimal){
                         //console.log("Prayer fulfilled!");
                         this.tribeMessage = ("Animal Prayer fulfilled!");
                         this.prayerTimer = 0;
