@@ -73,6 +73,7 @@ pc.script.create('tribe', function (context) {
         this.eventTimer = 240;
 
         this.praySmokeIsPlaying;
+        this.beliefLight;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
@@ -139,6 +140,7 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon = this.entity.findByName("PraiseHands");
             //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
             this.praySmoke = this.entity.findByName("TestFogTribe");
+            this.beliefLight.script.LightController.startShineBeliefLight();
 
             this.praySmokeIsPlaying = false;
 
@@ -575,7 +577,6 @@ pc.script.create('tribe', function (context) {
             if(this.praiseTimer <= 0){
                 //console.log("God is good!");
                 this.tribeMessage = ("God is good!");
-                this.increaseBelief();
                 this.praiseTimer = 0;
                 this.praiseIcon.enabled = false;
                 this.isBusy = false;
@@ -768,6 +769,7 @@ pc.script.create('tribe', function (context) {
             ++this.belief;
             prevTotalBelief = totalBelief;
             ++totalBelief;
+            this.beliefLight.script.LightController.startShineBeliefLight();
         },
 
         decreaseBelief: function() {

@@ -75,7 +75,7 @@ pc.script.create('globalInterface', function (context) {
 			//tribes = [];
 			tribes = context.root.findByName("TribeParent").getChildren();
 
-            tribeLights = context.root.findByName("TribeLights").getChildren();
+            tribeLights = context.root.findByName("Camera").findByName("TribeLights").getChildren();
             context.root._children[0].script.globalInterface.assignTribeBeliefLights();
 
             // Queue of tribe actions, only want two running at once.
@@ -257,7 +257,7 @@ pc.script.create('globalInterface', function (context) {
 
         assignTribeBeliefLights: function() {
             for (var i = 0; i < tribes.length; i++){
-                tribes[i].beliefLight = tribeLights[i];
+                tribes[i].script.tribe.beliefLight = tribeLights[i];
             }
         },
 
