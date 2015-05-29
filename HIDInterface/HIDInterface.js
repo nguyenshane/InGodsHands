@@ -47,10 +47,13 @@ pc.script.create('HIDInterface', function (context) {
 			this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
             
-            this.temperatureEffectTimer = 1.0;
+            temperatureEffectTimer = 1.0;
+            
+            ///*
 			temperatureChange = false;
 			temperatureDest = 0.0;
 			velocity = 0.0;
+            ///*/
 
 			app = pc.fw.Application.getApplication('application-canvas').context;
 			UI = context.root._children[0].script.developer;
@@ -78,7 +81,14 @@ pc.script.create('HIDInterface', function (context) {
         	this.heatEffectL = context.root.findByName("HeatEffectPSL");
         	this.heatEffectL.particlesystem.stop();      
         	this.heatEffectR = context.root.findByName("HeatEffectPSR");
-        	this.heatEffectR.particlesystem.stop();   	
+        	this.heatEffectR.particlesystem.stop();   
+
+            coldEffect = this.coldEffect;
+            heatEffectL = this.heatEffectL;
+            heatEffectR = this.heatEffectR;
+            
+            stormEffect = this.stormEffect;
+            stormTriggerBox = this.stormTriggerBox;
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "HIDInterface initialization: " + (t2-t1));
@@ -121,13 +131,13 @@ pc.script.create('HIDInterface', function (context) {
             ///*/
             
             /*
-            this.temperatureEffectTimer -= dt;
-            if (this.temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
+            temperatureEffectTimer -= dt;
+            if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
                 this.coldEffect.particlesystem.stop();
         		this.coldEffect.particlesystem.isPlaying = false;
             }
             
-            if (this.temperatureEffectTimer < 0 && this.heatEffectL.particlesystem.isPlaying) {
+            if (temperatureEffectTimer < 0 && this.heatEffectL.particlesystem.isPlaying) {
                 this.heatEffectL.particlesystem.stop();
         		this.heatEffectL.particlesystem.isPlaying = false;
         		this.heatEffectR.particlesystem.stop();
@@ -164,13 +174,13 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
 			
 			if (position < 0) {
-				this.coldEffect.particlesystem.play();
-				this.coldEffect.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.play();
+				coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				this.heatEffectL.particlesystem.play();
-				this.heatEffectL.particlesystem.isPlaying = true;
-				this.heatEffectR.particlesystem.play();
-				this.heatEffectR.particlesystem.isPlaying = true;
+				heatEffectL.particlesystem.play();
+				heatEffectL.particlesystem.isPlaying = true;
+				heatEffectR.particlesystem.play();
+				heatEffectR.particlesystem.isPlaying = true;
 			}
             ///*/
 		},
@@ -207,7 +217,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
 			
-			if (!UI.StringsliderP.mouseIsOver){
+			if (!UI.StringsliderP.mouseIsOver) {
                 UI.StringsliderP.value = newStringPvalue;
             }
             
@@ -237,10 +247,10 @@ pc.script.create('HIDInterface', function (context) {
 
 			scripts.Atmosphere.makeStorm((distance * position), speed);
 			
-			if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
+			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
 
-			while (this.stormEffect.darkness < 6) {
-                this.stormEffect.darkness += .005;
+			while (stormEffect.darkness < 6) {
+                stormEffect.darkness += .005;
             }
 		},
 		
@@ -278,16 +288,16 @@ pc.script.create('HIDInterface', function (context) {
             globalTemperature += distance;
             
 			if (position < 0) {
-				this.coldEffect.particlesystem.play();
-				this.coldEffect.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.play();
+				coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				this.heatEffectL.particlesystem.play();
-				this.heatEffectL.particlesystem.isPlaying = true;
-				this.heatEffectR.particlesystem.play();
-				this.heatEffectR.particlesystem.isPlaying = true;
+				heatEffectL.particlesystem.play();
+				heatEffectL.particlesystem.isPlaying = true;
+				heatEffectR.particlesystem.play();
+				heatEffectR.particlesystem.isPlaying = true;
 			}
             
-            this.temperatureEffectTimer = 1.0;
+            temperatureEffectTimer = 1.0;
 		},
 		
 		moving_A: function(position, distance, speed) {
