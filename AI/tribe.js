@@ -667,7 +667,7 @@ pc.script.create('tribe', function (context) {
         },
 
         worshipFalseIdol: function(deltaTime) {
-            if(this.falseIdolTimer > 8){
+            if (this.falseIdolTimer > 8) {
                 this.decreaseBelief();
                 this.falseIdolTimer = 0;
             }
@@ -720,7 +720,6 @@ pc.script.create('tribe', function (context) {
             this.sacrificeTimer = 30;
             this.setCurrentAction(this.sacrifice);
             this.isBusy = true;
-            console.log("starting sacrifice");
             tribeMessage = ("starting sacrifice");
             // Play praise animation for all humans except the one being sacrificed
             var lastHuman = true;
@@ -739,7 +738,7 @@ pc.script.create('tribe', function (context) {
         },
 
         sacrifice: function(deltaTime) {
-            if(this.sacrificeTimer <= 0){
+            if (this.sacrificeTimer <= 0) {
                 this.increaseBelief();
                 this.decreasePopulation();
             }
