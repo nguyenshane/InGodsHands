@@ -5,7 +5,6 @@ function addTribe() {
 
             var app = pc.fw.Application.getApplication('application-canvas').context;
             var tribeInfo = app.root.findByName('Rv1-stable').script.developer;
-
             tribeInfo.addTribeDiv = true;
 
             break;

@@ -106,7 +106,7 @@ pc.script.create('Human', function (context) {
                 this.tile = infTiles[randomTiles[0]];
                 for (var i = 0; i < randomTiles.length; i++) {
                     var tile = infTiles[randomTiles[i]];
-                    if (tile.isPathable && !tile.hasHuman) {
+                    if (tile.isPathable && !tile.hasHuman && !tile.hasTribe) {
                         this.tile = tile;
                         break;
                     }

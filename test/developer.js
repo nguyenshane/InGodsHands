@@ -443,7 +443,9 @@ pc.script.create('developer', function (context) {
             var tribeInfo = [];
 
             for (var i = 0; i < this.tribePop.length; i++) {
-                tribeInfo[i] = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children[i].script.tribe;
+                var tribes = pc.fw.Application.getApplication('application-canvas').context.root.findByName('TribeParent')._children;
+                if (i < tribes.length) tribeInfo[i] = tribes[i].script.tribe;
+                else break;
                 
 				this.setTribeText(
 					('Tribe #' +(i+1)+ " Pop: " + tribeInfo[i].population),
@@ -453,10 +455,9 @@ pc.script.create('developer', function (context) {
             }
             
 			if (this.addTribeDiv) {
-				console.log("tribe Added");
 				maxDiv++;
+                debug.log(DEBUG.AI, "tribe Added: " + maxDiv);
 				this.checkNewTribeDiv(maxDiv);
-				console.log("maxDiv = " + maxDiv);
 				this.addTribeDiv = false;
 			}
 
