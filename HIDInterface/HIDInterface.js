@@ -104,7 +104,7 @@ pc.script.create('HIDInterface', function (context) {
         		hasStopped = false;
         	}
             
-            ///*
+            /*
         	if (temperatureChange == true  && !hasStopped) {
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
@@ -128,9 +128,9 @@ pc.script.create('HIDInterface', function (context) {
         		this.heatEffectR.particlesystem.stop();
         		this.heatEffectR.particlesystem.isPlaying = false;
         	}
-            ///*/
+            */
             
-            /*
+            ///*
             temperatureEffectTimer -= dt;
             if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
                 this.coldEffect.particlesystem.stop();
@@ -143,7 +143,7 @@ pc.script.create('HIDInterface', function (context) {
         		this.heatEffectR.particlesystem.stop();
         		this.heatEffectR.particlesystem.isPlaying = false;
             }
-            */
+            ///*/
         },
 
     //---------------------------------------------------------------------------------------------
@@ -285,7 +285,7 @@ pc.script.create('HIDInterface', function (context) {
 			
 			inactiveTimer = 0;
             
-            globalTemperature += distance * 2.0;
+            globalTemperature += (distance * 2.0);
             
 			if (position < 0) {
 				coldEffect.particlesystem.play();
