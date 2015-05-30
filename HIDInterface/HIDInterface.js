@@ -165,7 +165,7 @@ pc.script.create('HIDInterface', function (context) {
             ///*
             temperatureChange = true;
 			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + (distance);
+			temperatureDest = globalTemperature + (distance * 2.0);
             
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
@@ -285,7 +285,7 @@ pc.script.create('HIDInterface', function (context) {
 			
 			inactiveTimer = 0;
             
-            globalTemperature += distance;
+            globalTemperature += distance * 2.0;
             
 			if (position < 0) {
 				coldEffect.particlesystem.play();
