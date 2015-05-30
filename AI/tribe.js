@@ -117,7 +117,7 @@ pc.script.create('tribe', function (context) {
                     var tribeTooClose = false;
                     
                     for (var i = 0; i < tribes.length; i++) {
-                        if (tribes[i].enabled && distSq(tribes[i].position, tile.center) < 0.25) {
+                        if (tribes[i].enabled && distSq(tribes[i].position, tile.center) < 0.8*0.8) {
                             tribeTooClose = true;
                             break;
                         }
@@ -860,29 +860,57 @@ pc.script.create('tribe', function (context) {
         },
 
         calculateInfluence: function() {
+            /*
             var influenceRate;
             if (this.population <= 3){
-                influenceRate = 9;
+                influenceRate = 12;
             } else {
-                influenceRate = 18;
+                influenceRate = 19;
             }
-
+            */
+            var influenceDistance = 0.6*0.6;
+            if (this.population <= 3) influenceDistance = 0.4*0.4;
+            
             // Sick tile influence calculation algorithm
             // basically a BFS
             this.influencedTiles = [];            
             this.influencedTiles.push(this.tile);
             var currTile;
-            var counter = influenceRate;
+            //var counter = influenceRate;
             var queue = [this.tile.neighbora, this.tile.neighborb, this.tile.neighborc];
 
-            while (counter > 0) {
+            while (/*counter > 0*/queue.length > 0) {
                 currTile = queue.shift();
-                queue.push(currTile.neighbora, currTile.neighborb, currTile.neighborc);
-                if (this.influencedTiles.indexOf(currTile) === -1) {
+                
+                if (distSq(currTile.center, this.tile.center) < influenceDistance &&
+                    this.influencedTiles.indexOf(currTile) === -1) {
+                        
+                    queue.push(currTile.neighbora, currTile.neighborb, currTile.neighborc);
                     this.influencedTiles.push(currTile);
-                    counter--;
+                    //counter--;
+                    
+                    /*
+                    //temp - shows influenced tiles
+                    var normal = currTile.normal.clone();
+                    multScalar(normal, -1);
+                    var ind = currTile.index*3*3;
+                    ico.normals[ind] = normal.x;
+                    ico.normals[ind+1] = normal.y;
+                    ico.normals[ind+2] = normal.z;
+                    ind += 3;
+                    ico.normals[ind] = normal.x;
+                    ico.normals[ind+1] = normal.y;
+                    ico.normals[ind+2] = normal.z;
+                    ind += 3;
+                    ico.normals[ind] = normal.x;
+                    ico.normals[ind+1] = normal.y;
+                    ico.normals[ind+2] = normal.z;
+                    */
                 }
             }
+            
+            //temp - shows influenced tiles
+            //ico.updateReturnMesh();
         },
 		
         addHuman: function() {
