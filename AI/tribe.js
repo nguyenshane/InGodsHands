@@ -116,8 +116,8 @@ pc.script.create('tribe', function (context) {
                 if (tile.isPathable && Math.abs(tile.latitude) < 45) {
                     var tribeTooClose = false;
                     
-                    for (var i = 0; i < tribes.length; i++) {
-                        if (tribes[i].enabled && distSq(tribes[i].position, tile.center) < 0.8*0.8) {
+                    for (var j = 0; j < tribes.length; j++) {
+                        if (tribes[j].enabled && distSq(tribes[j].position, tile.center) < 0.8*0.8) {
                             tribeTooClose = true;
                             break;
                         }
