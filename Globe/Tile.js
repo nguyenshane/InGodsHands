@@ -1153,6 +1153,25 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.animal.setPosition(this.center);
             this.animal.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
+        
+        if (this.hasTribe) {
+            var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+            var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+            var angle = m.getEulerAngles();
+            this.tribe.setPosition(this.center);
+            this.tribe.setEulerAngles(angle.x - 90, angle.y, angle.z);
+        }
+        
+        if (this.hasHuman) {
+            var hs = this.human.script.Human;
+            if (!hs.isMoving) {
+                var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);
+                var m = new pc.Mat4().setLookAt(new pc.Vec3(0, 0, 0), normal, new pc.Vec3(0, 1, 0));
+                var angle = m.getEulerAngles();
+                this.human.setPosition(this.center);
+                this.human.setEulerAngles(angle.x - 90, angle.y, angle.z);
+            }
+        }
     }
 
     this.linkNodes = function() {

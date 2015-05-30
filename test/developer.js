@@ -730,11 +730,18 @@ pc.script.create('developer', function (context) {
         onMouseUp: function (event) {
             // If the left mouse button is released, change the last postion of the slider
             if (event.button === pc.MOUSEBUTTON_LEFT) {
-              this.sendToMove_T();
-              this.sendToMove_A();
-              this.sendToMove_P();
-              this.sendToMove_E();
-              this.sendToMoving_W();
+                /*
+                this.sendToMove_T();
+                this.sendToMove_A();
+                this.sendToMove_P();
+                this.sendToMove_E();
+                */
+                
+                this.sendToMoving_T();
+                this.sendToMoving_A();
+                this.sendToMoving_P();
+                this.sendToMoving_E();
+                this.sendToMoving_W();
             }
         },
 

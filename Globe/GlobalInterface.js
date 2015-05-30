@@ -71,8 +71,6 @@ pc.script.create('globalInterface', function (context) {
             prevTotalBelief = totalBelief;
             minTotalBelief = 150;
 			
-
-			//tribes = [];
 			tribes = context.root.findByName("TribeParent").getChildren();
 
             tribeLights = context.root.findByName("TribeLights").getChildren();

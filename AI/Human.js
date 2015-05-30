@@ -96,12 +96,22 @@ pc.script.create('Human', function (context) {
 
         start: function() {
             if (this.tribeParent != null && this.tribeParent != undefined) {
-                if(this.entity.particlesystem != null)
+                if (this.entity.particlesystem != null)
                     this.entity.particlesystem.stop();
 
-                var randomInfluencedTile = getRandom(this.tribeParent.influencedTiles);
-                this.tile = randomInfluencedTile; 
-
+                var infTiles = this.tribeParent.influencedTiles;
+                var randomTiles = [];
+                for (var s = infTiles.length-1; s >= 0; s--) randomTiles[s] = s;
+                shuffleArray(randomTiles);
+                this.tile = infTiles[randomTiles[0]];
+                for (var i = 0; i < randomTiles.length; i++) {
+                    var tile = infTiles[randomTiles[i]];
+                    if (tile.isPathable && !tile.hasHuman) {
+                        this.tile = tile;
+                        break;
+                    }
+                }
+                
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
@@ -231,10 +241,7 @@ pc.script.create('Human', function (context) {
 
         chooseState: function(){
             // choose which starter function to call
-            if (!this.tribeParent.isBusy && 
-                this.currentAction != this.move && 
-                this.currentAction != this.followPath) {
-				
+            if (!this.tribeParent.isBusy && !this.isMoving) {
                 this.wander();
             }
         },
@@ -243,6 +250,11 @@ pc.script.create('Human', function (context) {
             //this.state = state;
             // Set animation and blend from previous animation over 0.2 seconds
             this.entity.animation.play(states[state].animation, this.blendTime);
+        },
+        
+        isMoving: function() {
+            return (this.currentAction == this.move ||
+                    this.currentAction == this.followPath);
         }
         
     };

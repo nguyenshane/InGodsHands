@@ -112,15 +112,27 @@ pc.script.create('tribe', function (context) {
             this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
             for (var i = 0; i < randomTiles.length; i++) {
 				var tile = ico.tiles[randomTiles[i]];
-                if (tile.isPathable && tile.latitude < 45 && tile.latitude > -45) {
-                    this.tile = tile;
-                    break;
+                if (tile.isPathable && Math.abs(tile.latitude) < 45) {
+                    var tribeTooClose = false;
+                    
+                    for (var i = 0; i < tribes.length; i++) {
+                        if (tribes[i].enabled && distSq(tribes[i].position, tile.center) < 0.25) {
+                            tribeTooClose = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!tribeTooClose) {
+                        this.tile = tile;
+                        break;
+                    }
                 }
 			}
             
             this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
             this.tile.hasTribe = true;
+            this.tile.tribe = this.entity;
             
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
@@ -297,6 +309,7 @@ pc.script.create('tribe', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasTribe = true;
+                this.tile.tribe = this.entity;
                 this.migrate();
             }
         },
@@ -752,10 +765,9 @@ pc.script.create('tribe', function (context) {
 
             this.population = 0;
 
-            for(var i = 0; i < population; i++){
+            for (var i = 0; i < population; i++) {
                 this.increasePopulation();
             }
-
         },
 
         getIdealTemperature: function() {
@@ -802,7 +814,7 @@ pc.script.create('tribe', function (context) {
         increasePopulation: function() {
             ++this.population;
             this.addHuman();
-            if (this.population > this.MAXPOPULATION){
+            if (this.population > this.MAXPOPULATION) {
                 addTribe();
                 this.setPopulation(2);
             }
@@ -882,7 +894,6 @@ pc.script.create('tribe', function (context) {
                     break;
                 }            
             }
-
         },
 
         // Constructs the NPC's list of rules
@@ -895,7 +906,6 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToWorshipFalseIdol());
             this.rules.push(new wantToSacrifice());
             this.rules.push(new needAnimals());
-
         },
 
         runRuleList: function() { 
