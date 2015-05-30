@@ -745,76 +745,80 @@ pc.script.create('developer', function (context) {
             }
         },
 
-        sendToMove_T: function(){
-             if (hasMovedT){
-                            var distance = this.sliderTDistance;
-                            var timeSinceStartedPull =  this.time - pullStartTimeT;
-                            var speed = Math.abs(distance)/timeSinceStartedPull;
-                            var position = this.positionT;
-                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'moved_T', position, distance, speed);
+        sendToMove_T: function() {
+            if (hasMovedT) {
+                var distance = this.sliderTDistance;
+                var timeSinceStartedPull =  this.time - pullStartTimeT;
+                var speed = Math.abs(distance)/timeSinceStartedPull;
+                var position = this.positionT;
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                stringPullLerp.script.send('HIDInterface', 'moved_T', position, distance, speed);
 
-                            //console.log("pullStartTime " + pullStartTimeT);
-                            //console.log("Time " + this.time);
-                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
-                             sliderTLastPos = this.StringsliderT.value;
-                             this.sliderTDistance = 0.0;
-                             needToStartTimeT = true;
-                        }
+                //console.log("pullStartTime " + pullStartTimeT);
+                //console.log("Time " + this.time);
+                //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                
+                sliderTLastPos = this.StringsliderT.value;
+                this.sliderTDistance = 0.0;
+                needToStartTimeT = true;
+            }
         },
 
-        sendToMove_A: function(){
-             if (hasMovedA){
-                            var distance = this.sliderADistance;
-                            var timeSinceStartedPull =  this.time - pullStartTimeA;
-                            var speed = Math.abs(distance)/timeSinceStartedPull;
-                            var position = this.positionA;
-                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'moved_A', position, distance, speed);
+        sendToMove_A: function() {
+            if (hasMovedA) {
+                var distance = this.sliderADistance;
+                var timeSinceStartedPull =  this.time - pullStartTimeA;
+                var speed = Math.abs(distance)/timeSinceStartedPull;
+                var position = this.positionA;
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                stringPullLerp.script.send('HIDInterface', 'moved_A', position, distance, speed);
 
-                            //console.log("pullStartTime " + pullStartTimeA);
-                            //console.log("Time " + this.time);
-                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
-                             sliderALastPos = this.StringsliderA.value;
-                             this.sliderADistance = 0.0;
-                             needToStartTimeA = true;
-                        }
+                //console.log("pullStartTime " + pullStartTimeA);
+                //console.log("Time " + this.time);
+                //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                
+                sliderALastPos = this.StringsliderA.value;
+                this.sliderADistance = 0.0;
+                needToStartTimeA = true;
+            }
         },
 
-        sendToMove_P: function(){
-             if (hasMovedP){
-                            var distance = this.sliderPDistance;
-                            var timeSinceStartedPull =  this.time - pullStartTimeP;
-                            var speed = Math.abs(distance)/timeSinceStartedPull;
-                            var position = this.positionP;
-                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'moved_P', position, distance, speed);
+        sendToMove_P: function() {
+            if (hasMovedP) {
+                var distance = this.sliderPDistance;
+                var timeSinceStartedPull =  this.time - pullStartTimeP;
+                var speed = Math.abs(distance)/timeSinceStartedPull;
+                var position = this.positionP;
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                stringPullLerp.script.send('HIDInterface', 'moved_P', position, distance, speed);
 
-                            //console.log("pullStartTime " + pullStartTimeP);
-                            //console.log("Time " + this.time);
-                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
-                             sliderPLastPos = this.StringsliderP.value;
-                             this.sliderPDistance = 0.0;
-                             needToStartTimeP = true;
-                        }
+                //console.log("pullStartTime " + pullStartTimeP);
+                //console.log("Time " + this.time);
+                //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                
+                sliderPLastPos = this.StringsliderP.value;
+                this.sliderPDistance = 0.0;
+                needToStartTimeP = true;
+            }
         },
 
-        sendToMove_E: function(){
-             if (hasMovedE){
-                            var distance = this.sliderEDistance;
-                            var timeSinceStartedPull =  this.time - pullStartTimeE;
-                            var speed = Math.abs(distance)/timeSinceStartedPull;
-                            var position = this.positionE;
-                            var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
-                             stringPullLerp.script.send('HIDInterface', 'moved_E', position, distance, speed);
+        sendToMove_E: function() {
+            if (hasMovedE) {
+                var distance = this.sliderEDistance;
+                var timeSinceStartedPull =  this.time - pullStartTimeE;
+                var speed = Math.abs(distance)/timeSinceStartedPull;
+                var position = this.positionE;
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                stringPullLerp.script.send('HIDInterface', 'moved_E', position, distance, speed);
 
-                            //console.log("pullStartTime " + pullStartTimeE);
-                            //console.log("Time " + this.time);
-                            //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
-                             sliderELastPos = this.StringsliderE.value;
-                             this.sliderEDistance = 0.0;
-                             needToStartTimeE = true;
-                        }
+                //console.log("pullStartTime " + pullStartTimeE);
+                //console.log("Time " + this.time);
+                //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                
+                sliderELastPos = this.StringsliderE.value;
+                this.sliderEDistance = 0.0;
+                needToStartTimeE = true;
+            }
         },
         
         sendToMoving_T: function(){
@@ -866,7 +870,8 @@ pc.script.create('developer', function (context) {
 
                 //console.log("pullStartTime " + pullStartTimeP);
                 //console.log("Time " + this.time);
-                console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                //console.log("position: " + position + " distance: "+ distance + " speed: " + speed);
+                
                 sliderPLastPos = this.StringsliderP.value;
                 this.sliderPDistance = 0.0;
                 needToStartTimeP = true;
@@ -911,7 +916,7 @@ pc.script.create('developer', function (context) {
             }
         },
 
-        subTemperature: function(){
+        subTemperature: function() {
             globalTemperature = globalTemperature - 1;
         },
 
@@ -925,9 +930,9 @@ pc.script.create('developer', function (context) {
             this.musicText.innerHTML = message7;
         },
 
-        setVisibilty: function(){
-            switch(switchUIOn){
-                    case 0:
+        setVisibilty: function() {
+            switch (switchUIOn) {
+                case 0:
                     this.div.style.visibility = 'hidden';
                     this.divTString.style.visibility = 'hidden'; 
                     this.divAString.style.visibility = 'hidden';
@@ -935,11 +940,11 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'hidden';
                     this.divWString.style.visibility = 'hidden';
 
-                    for(var i = 0; i < this.tribePop.length; i++){
-                    this.tribePop[i].style.visibility = 'hidden';
-                    this.tribeBelief[i].style.visibility = 'hidden';
-                    this.tribeFear[i].style.visibility = 'hidden';
-                    this.tribeMessage[i].style.visibility = 'hidden';
+                    for (var i = 0; i < this.tribePop.length; i++) {
+                        this.tribePop[i].style.visibility = 'hidden';
+                        this.tribeBelief[i].style.visibility = 'hidden';
+                        this.tribeFear[i].style.visibility = 'hidden';
+                        this.tribeMessage[i].style.visibility = 'hidden';
                     }
 
                     this.StringsliderT.style.visibility = 'hidden';
@@ -952,8 +957,7 @@ pc.script.create('developer', function (context) {
                     this.musicText.style.visibility = 'hidden';
                     break;
 
-                    case 1:
-
+                case 1:
                     this.div.style.visibility = 'hidden';
                     this.divTString.style.visibility = 'visible'; 
                     this.divAString.style.visibility = 'visible';
@@ -961,11 +965,11 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'visible';
                     this.divWString.style.visibility = 'visible';
 
-                     for(var i = 0; i < this.tribePop.length; i++){
-                    this.tribePop[i].style.visibility = 'hidden';
-                    this.tribeBelief[i].style.visibility = 'hidden';
-                    this.tribeFear[i].style.visibility = 'hidden';
-                    this.tribeMessage[i].style.visibility = 'hidden';
+                    for (var i = 0; i < this.tribePop.length; i++) {
+                        this.tribePop[i].style.visibility = 'hidden';
+                        this.tribeBelief[i].style.visibility = 'hidden';
+                        this.tribeFear[i].style.visibility = 'hidden';
+                        this.tribeMessage[i].style.visibility = 'hidden';
                     }
 
                     this.StringsliderT.style.visibility = 'visible';
@@ -978,7 +982,7 @@ pc.script.create('developer', function (context) {
                     this.musicText.style.visibility = 'hidden';
                     break;
 
-                    case 2:
+                case 2:
                     this.div.style.visibility = 'visible';
                     this.divTString.style.visibility = 'visible'; 
                     this.divAString.style.visibility = 'visible';
@@ -986,11 +990,11 @@ pc.script.create('developer', function (context) {
                     this.divEString.style.visibility = 'visible';
                     this.divWString.style.visibility = 'visible';
 
-                     for(var i = 0; i < this.tribePop.length; i++){
-                    this.tribePop[i].style.visibility = 'visible';
-                    this.tribeBelief[i].style.visibility = 'visible';
-                    this.tribeFear[i].style.visibility = 'visible';
-                    this.tribeMessage[i].style.visibility = 'visible';
+                    for (var i = 0; i < this.tribePop.length; i++) {
+                        this.tribePop[i].style.visibility = 'visible';
+                        this.tribeBelief[i].style.visibility = 'visible';
+                        this.tribeFear[i].style.visibility = 'visible';
+                        this.tribeMessage[i].style.visibility = 'visible';
                     }
 
                     this.StringsliderT.style.visibility = 'visible';
@@ -1002,16 +1006,15 @@ pc.script.create('developer', function (context) {
                     this.musicSlider.style.visibility = 'visible';
                     this.musicText.style.visibility = 'visible';
                     break;
-
-                    }
+            }
         },
 
 
         setTribeText: function (message, message2, message3, message4, i) {
-                this.tribePop[i].innerHTML = message;
-                this.tribeBelief[i].innerHTML = message2;
-                this.tribeFear[i].innerHTML = message3;
-                this.tribeMessage[i].innerHTML = message4;
+            this.tribePop[i].innerHTML = message;
+            this.tribeBelief[i].innerHTML = message2;
+            this.tribeFear[i].innerHTML = message3;
+            this.tribeMessage[i].innerHTML = message4;
         },
 
     };
