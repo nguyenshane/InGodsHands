@@ -1,4 +1,4 @@
-function addTribe () {
+function addTribe() {
     for (var i = 0; i < tribes.length; i++) {
         if (!tribes[i].enabled) {
             tribes[i].enabled = true;
@@ -760,18 +760,6 @@ pc.script.create('tribe', function (context) {
             return this.population;
         },
 
-        setPopulation: function(population) {
-            for (var i = 0; i < this.humans.length; i++) {
-                this.humans[i].enabled = false
-            }
-
-            this.population = 0;
-
-            for (var i = 0; i < population; i++) {
-                this.increasePopulation();
-            }
-        },
-
         getIdealTemperature: function() {
             return this.idealTemperature;
         },
@@ -845,6 +833,18 @@ pc.script.create('tribe', function (context) {
 			
             if (this.population < this.MINPOPULATION){
                 this.killSelf();
+            }
+        },
+        
+        setPopulation: function(population) {
+            for (var i = 0; i < this.humans.length; i++) {
+                this.humans[i].enabled = false
+            }
+
+            this.population = 0;
+
+            for (var i = 0; i < population; i++) {
+                this.increasePopulation();
             }
         },
         
