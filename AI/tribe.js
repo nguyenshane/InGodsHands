@@ -605,7 +605,7 @@ pc.script.create('tribe', function (context) {
             //console.log("I love god!");
             this.tribeMessage = ("I love god!");
             this.increaseBelief();
-            this.praiseTimer = 6;
+            this.praiseTimer = 5;
             this.setCurrentAction(this.praise);
             this.isBusy = true;
             // this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
@@ -631,7 +631,7 @@ pc.script.create('tribe', function (context) {
         },
 
         startDenouncing: function() {
-            this.denounceTimer = 15;
+            this.denounceTimer = 30;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
