@@ -44,7 +44,6 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
-			console.log(camera.script);
 			//this.stormEffect = camera.script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
