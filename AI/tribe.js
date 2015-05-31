@@ -72,7 +72,7 @@ pc.script.create('tribe', function (context) {
         this.ruleCooldownTimer = 0;
         this.eventTimer = 240;
 
-        this.praySmokeIsPlaying;
+        this.iconSmokeIsPlaying;
         this.beliefLight;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
@@ -152,14 +152,15 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon = this.entity.findByName("PraiseHands").model.model.meshInstances[0].material.opacityMap;
             this.animalIcon = this.entity.findByName("PrayAnimal").model.model.meshInstances[0].material.opacityMap;
 
-            this.praySmoke = this.entity.findByName("TestFogTribe");
+            this.iconSmoke = this.entity.findByName("TestFogTribe");
+            this.iconSmokeIsPlaying = false;
+            this.praySmoke = this.entity.findByName("PraySmoke");
+            this.praySmokeIsPlaying = false;
 
-            //this.praySmoke.particlesystem.colorMap = this.praiseIcon;
+            //this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
 
             this.beliefLight.enabled = true;
             this.beliefLight.script.LightController.startShineBeliefLight();
-
-            this.praySmokeIsPlaying = false;
 
             this.hq = this.entity.findByName("HQ");
             this.hq.enabled = true;
@@ -375,12 +376,16 @@ pc.script.create('tribe', function (context) {
 
         // Display smoke for prayer notification
         prayForSomething: function () {
-            //this.praySmoke.enabled = !this.praySmoke.enabled;
-            //console.log(this.praySmoke);
-            if (!this.praySmokeIsPlaying){
+            //this.iconSmoke.enabled = !this.iconSmoke.enabled;
+            //console.log(this.iconSmoke);
+            if (!this.iconSmokeIsPlaying){
+                this.iconSmoke.particlesystem.play();
+                this.iconSmokeIsPlaying = true;
                 this.praySmoke.particlesystem.play();
                 this.praySmokeIsPlaying = true;
             } else {
+                this.iconSmoke.particlesystem.stop();
+                this.iconSmokeIsPlaying = false;
                 this.praySmoke.particlesystem.stop();
                 this.praySmokeIsPlaying = false;
             }
@@ -394,9 +399,9 @@ pc.script.create('tribe', function (context) {
             this.isBusy = true;
 
             if(this.currTileTemperature > this.idealTemperature){
-                this.praySmoke.particlesystem.colorMap = this.rainIcon;
+                this.iconSmoke.particlesystem.colorMap = this.rainIcon;
             } else {
-                this.praySmoke.particlesystem.colorMap = this.sunIcon;
+                this.iconSmoke.particlesystem.colorMap = this.sunIcon;
             }
 
             this.audio.sound_TribePray();
@@ -446,7 +451,7 @@ pc.script.create('tribe', function (context) {
             this.prayerTimer = 20;
             this.setCurrentAction(this.prayForAnimals);
 
-            this.praySmoke.particlesystem.colorMap = this.animalIcon;
+            this.iconSmoke.particlesystem.colorMap = this.animalIcon;
             this.prayForSomething();
             this.isBusy = true;
 
@@ -505,7 +510,7 @@ pc.script.create('tribe', function (context) {
             this.cowerTimer = 6;
             this.setCurrentAction(this.cower);
             this.isBusy = true;
-            this.praySmoke.particlesystem.colorMap = this.stormIcon;
+            this.iconSmoke.particlesystem.colorMap = this.stormIcon;
             //this.stormEffect.enabled = true;            
 
             this.idolAngleChange = 0;
@@ -584,7 +589,7 @@ pc.script.create('tribe', function (context) {
             this.praiseTimer = 6;
             this.setCurrentAction(this.praise);
             this.isBusy = true;
-            this.praySmoke.particlesystem.colorMap = this.praiseIcon;
+            this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
             this.prayForSomething();
             this.audio.sound_TribePraise();
             // Play action animation for all humans
@@ -670,6 +675,7 @@ pc.script.create('tribe', function (context) {
             //this.idolAngleChange = 180;
 
             this.startPosition = this.paganStatue.getPosition().clone();
+            this.audio.sound_TribeWorshipFalseIdol();
 
             var timer = new Date();
             this.travelStartTime = timer.getTime();

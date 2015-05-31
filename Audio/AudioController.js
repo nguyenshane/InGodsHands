@@ -238,6 +238,16 @@ pc.script.create('AudioController', function (context) {
 			this.audio.audiosource.play("IGH Angry Chant");
 		},
 
+		sound_TribeWorshipFalseIdol: function(){
+			//console.log("Play sound: Tribe Denounce");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Statue Demon");
+		},
+
 		sound_MakeThunder: function(){
 			//console.log("Play sound: Thunder");
 
