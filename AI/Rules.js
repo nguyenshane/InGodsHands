@@ -34,7 +34,7 @@ wantToMigrate.prototype = {
     },
     
     consequence: function(tribe){
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.migrate();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -72,7 +72,7 @@ needToAdapt.prototype = {
         debug.log(DEBUG.AI, "We shall just adapt to the temperature!");
         this.weight--;
 
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.startAdapting();
 
         var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
@@ -109,7 +109,7 @@ needTemperatureChange.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Need temperature change fired");
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.startPrayForTemperature();
     }    
 };
@@ -140,7 +140,7 @@ wantToDenounceInactive.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Does God truly exist?!");
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
@@ -172,7 +172,7 @@ wantToDenounceNoSun.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Where is the god damned sun?!?!");
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.resetInactionTimer();
         tribe.startDenouncing();
     }    
@@ -205,7 +205,7 @@ wantToWorshipFalseIdol.prototype = {
     consequence: function(tribe){
         debug.log(DEBUG.AI, "All hail the Devil King!");
         this.weight = Math.floor((Math.random() * 10) + 10);
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.startFalseIdol();
         tribe.eventTimer = 240;
     }    
@@ -237,7 +237,7 @@ wantToSacrifice.prototype = {
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Sacrifice Chase!");
         this.weight = Math.floor((Math.random() * 10) + 10);
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.startSacrifice();
         tribe.eventTimer = 240;
     }    
@@ -268,7 +268,7 @@ needAnimals.prototype = {
     
     consequence: function(tribe){
         debug.log(DEBUG.AI, "Aye, we need some animals ovuh heeyuh!");
-        tribe.ruleCooldownTimer = 4;
+        tribe.ruleCooldownTimer = 8;
         tribe.startPrayForAnimals();
     }    
 };
