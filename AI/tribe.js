@@ -580,7 +580,7 @@ pc.script.create('tribe', function (context) {
 
                     default:
                         this.increaseFear();
-                        this.setCurrentAction(this.previousAction);
+                        this.isBusy = false;
                         //console.log("Cower done");
                         break;
                 }
