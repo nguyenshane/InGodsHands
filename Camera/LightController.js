@@ -35,7 +35,6 @@ pc.script.create('LightController', function (context) {
 
         startShineBeliefLight: function(){
         	this.lightUp = true;
-            console.log(this.origColor);
         	this.shineBeliefLight();
         },
 
@@ -57,7 +56,6 @@ pc.script.create('LightController', function (context) {
         startLightning: function(){
             this.lightningOn = true;
             this.entity.light.color = new pc.Color(1, 1, 1, 1);
-            console.log("HERE");
             this.enabled = true;
             this.shineLightning();
         },

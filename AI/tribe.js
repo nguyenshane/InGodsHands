@@ -166,6 +166,10 @@ pc.script.create('tribe', function (context) {
 
             this.hq = this.entity.findByName("HQ");
             this.hq.enabled = true;
+            this.hqBaseColor = this.hq.model.model.meshInstances[0].material.diffuse;
+            this.hqGrayColor = this.hq.model.model.meshInstances[0].material.emissive;
+            this.hqBrightnessInterval = 1.8;
+            //console.log(this.hqBaseColor);
             this.paganStatue = context.root.findByName("PaganParent").findByName("PaganStatue" + tribes.indexOf(this.entity));
             this.paganStatue.setPosition(this.origin);
 
@@ -808,12 +812,14 @@ pc.script.create('tribe', function (context) {
             prevTotalBelief = totalBelief;
             ++totalBelief;
             this.beliefLight.script.LightController.startShineBeliefLight();
+            this.increaseHQBrightness();
         },
 
         decreaseBelief: function() {
             --this.belief;
             prevTotalBelief = totalBelief;
             --totalBelief;
+            this.decreaseHQBrightness();
 
             // Every time belief is decreased, check if it is too low
             if (this.belief <= 0){
@@ -822,6 +828,33 @@ pc.script.create('tribe', function (context) {
                 
                 this.killSelf();
             }  
+        },
+
+        increaseHQBrightness: function() {
+            var prevIntensity = this.hq.model.model.meshInstances[0].material.emissiveIntensity;
+            this.hq.model.model.meshInstances[0].material.emissive = this.hqBaseColor;
+            
+            if (!(this.hq.model.model.meshInstances[0].material.emissive == this.hqBaseColor)){
+                this.hq.model.model.meshInstances[0].material.emissive = this.hqBaseColor;
+            } else if (prevIntensity < 9){
+                this.hq.model.model.meshInstances[0].material.emissiveIntensity += this.hqBrightnessInterval;
+            }
+
+            this.hq.model.model.meshInstances[0].material.update();
+        },
+
+        decreaseHQBrightness: function() {
+            var prevIntensity = this.hq.model.model.meshInstances[0].material.emissiveIntensity;
+
+            if (prevIntensity <= this.hqBrightnessInterval && prevIntensity > 0){
+                this.hq.model.model.meshInstances[0].material.emissiveIntensity = 0;
+            } else if (prevIntensity > this.hqBrightnessInterval){
+                this.hq.model.model.meshInstances[0].material.emissiveIntensity -= this.hqBrightnessInterval;
+            } else if (this.hq.model.model.meshInstances[0].material.emissive == this.hqBaseColor){
+                this.hq.model.model.meshInstances[0].material.emissive = this.hqGrayColor;
+            }
+
+            this.hq.model.model.meshInstances[0].material.update();
         },
 
         increaseFear: function() {
