@@ -1,6 +1,6 @@
 function addTribe() {
     for (var i = 0; i < tribes.length; i++) {
-        if (!tribes[i].enabled) {
+        if (!tribes[i].enabled && !tribes[i].script.tribe.died) {
             tribes[i].enabled = true;
 
             var app = pc.fw.Application.getApplication('application-canvas').context;
@@ -25,6 +25,8 @@ pc.script.create('tribe', function (context) {
         this.population = 0;
         this.MAXPOPULATION = 5;
         this.MINPOPULATION = 1;
+
+        this.died = false;
 
         this.tribeMessage = " ";
         
@@ -887,6 +889,8 @@ pc.script.create('tribe', function (context) {
                 this.humans[i].enabled = false;
             }
             
+            this.died = true;
+
             this.paganStatue.enabled = false;
             this.entity.enabled = false;
             
