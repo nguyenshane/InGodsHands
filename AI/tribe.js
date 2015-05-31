@@ -779,6 +779,7 @@ pc.script.create('tribe', function (context) {
             if (this.sacrificeTimer <= 0) {
                 this.increaseBelief();
                 this.decreasePopulation();
+                this.isBusy = false;
             }
 
             this.sacrificeTimer -= deltaTime;
