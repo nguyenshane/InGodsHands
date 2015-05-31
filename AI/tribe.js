@@ -409,7 +409,7 @@ pc.script.create('tribe', function (context) {
 		
 		startPrayForTemperature: function () {
 			this.tribeMessage = ("Praying for temperature change: " + Math.floor(this.currTileTemperature) + " " + this.idealTemperature);
-            this.prayerTimer = 15;
+            this.prayerTimer = 40;
             this.setCurrentAction(this.prayForTemperature);
             //this.prayForSomething();
             this.isBusy = true;
