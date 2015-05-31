@@ -465,7 +465,7 @@ pc.script.create('tribe', function (context) {
         startPrayForAnimals: function () {
             // console.log("TIME TO PRAY FOR ANIMALS");
 			this.tribeMessage = ("Praying for animals");
-            this.prayerTimer = 20;
+            this.prayerTimer = 35;
             this.setCurrentAction(this.prayForAnimals);
 
             // this.iconSmoke.particlesystem.colorMap = this.animalIcon;
