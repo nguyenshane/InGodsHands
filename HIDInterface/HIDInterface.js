@@ -47,6 +47,7 @@ pc.script.create('HIDInterface', function (context) {
 			console.log(camera.script);
 			//this.stormEffect = camera.script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
+			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
             
             temperatureEffectTimer = 1.0;
             
@@ -249,6 +250,11 @@ pc.script.create('HIDInterface', function (context) {
 			scripts.Atmosphere.makeStorm((distance * position), speed);
 			
 			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
+
+			for (var i = 0; i < this.lightsArray.length; i++){
+				this.lightsArray[i].enabled = true;
+				this.lightsArray[i].script.LightController.startLightning();
+			}
 
 			// while (stormEffect.darkness < 6) {
    //              stormEffect.darkness += .005;
