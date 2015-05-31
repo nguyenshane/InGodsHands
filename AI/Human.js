@@ -241,7 +241,7 @@ pc.script.create('Human', function (context) {
 
         chooseState: function(){
             // choose which starter function to call
-            if (!this.tribeParent.isBusy && !this.isMoving) {
+            if (!this.tribeParent.isBusy && !this.isMoving()) {
                 this.wander();
             }
         },
