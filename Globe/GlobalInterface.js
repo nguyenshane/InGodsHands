@@ -64,7 +64,7 @@ pc.script.create('globalInterface', function (context) {
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
 
-            this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 
             maxTotalBelief = 250;
             totalBelief = 0;
@@ -178,11 +178,11 @@ pc.script.create('globalInterface', function (context) {
 
                 sun.setPosition(0, 0, 0);
 
-                if(this.stormEffect.darkness > 1){
-                    this.stormEffect.darkness -= dt;
-                } else {
-                    this.stormEffect.darkness = 1;
-                }
+                // if(this.stormEffect.darkness > 1){
+                //     this.stormEffect.darkness -= dt;
+                // } else {
+                //     this.stormEffect.darkness = 1;
+                // }
 
                 if (globalTime - lastSnapshotTime > 1 && !isPaused) {
                         this.takeSnapshot();

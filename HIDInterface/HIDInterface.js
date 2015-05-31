@@ -44,7 +44,8 @@ pc.script.create('HIDInterface', function (context) {
 			//tribe = context.root.findByName("BaseTribe").script.tribe;
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
-			this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+			console.log(camera.script);
+			//this.stormEffect = camera.script.vignette.effect;
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
             
             temperatureEffectTimer = 1.0;
@@ -87,7 +88,7 @@ pc.script.create('HIDInterface', function (context) {
             heatEffectL = this.heatEffectL;
             heatEffectR = this.heatEffectR;
             
-            stormEffect = this.stormEffect;
+            //stormEffect = this.stormEffect;
             stormTriggerBox = this.stormTriggerBox;
 
 			var t2 = new Date();
@@ -249,9 +250,9 @@ pc.script.create('HIDInterface', function (context) {
 			
 			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
 
-			while (stormEffect.darkness < 6) {
-                stormEffect.darkness += .005;
-            }
+			// while (stormEffect.darkness < 6) {
+   //              stormEffect.darkness += .005;
+   //          }
 		},
 		
 		moved_W: function(position, distance, speed) {

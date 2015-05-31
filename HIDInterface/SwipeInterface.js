@@ -22,28 +22,28 @@ pc.script.create('SwipeInterface', function (context) {
         initialize: function () {
             var t1 = new Date();
 
-            var TLactive = context.assets.find("TLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var TRactive = context.assets.find("TRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ALactive = context.assets.find("ALactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ARactive = context.assets.find("ARactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var PLactive = context.assets.find("PLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var PRactive = context.assets.find("PRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ELactive = context.assets.find("ERactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ERactive = context.assets.find("ERactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var WLactive = context.assets.find("WLactive", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var WRactive = context.assets.find("WRactive", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var TLactive = context.assets.find("TLactive", "texture").getFileUrl();
+            var TRactive = context.assets.find("TRactive", "texture").getFileUrl();
+            var ALactive = context.assets.find("ALactive", "texture").getFileUrl();
+            var ARactive = context.assets.find("ARactive", "texture").getFileUrl();
+            var PLactive = context.assets.find("PLactive", "texture").getFileUrl();
+            var PRactive = context.assets.find("PRactive", "texture").getFileUrl();
+            var ELactive = context.assets.find("ERactive", "texture").getFileUrl();
+            var ERactive = context.assets.find("ERactive", "texture").getFileUrl();
+            var WLactive = context.assets.find("WLactive", "texture").getFileUrl();
+            var WRactive = context.assets.find("WRactive", "texture").getFileUrl();
 
 
-            var TLidle = context.assets.find("TLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var TRidle = context.assets.find("TRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ALidle = context.assets.find("ALidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ARidle = context.assets.find("ARidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var PLidle = context.assets.find("PLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var PRidle = context.assets.find("PRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ELidle = context.assets.find("ERidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var ERidle = context.assets.find("ERidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var WLidle = context.assets.find("WLidle", pc.asset.ASSET_TEXTURE).getFileUrl();
-            var WRidle = context.assets.find("WRidle", pc.asset.ASSET_TEXTURE).getFileUrl();
+            var TLidle = context.assets.find("TLidle", "texture").getFileUrl();
+            var TRidle = context.assets.find("TRidle", "texture").getFileUrl();
+            var ALidle = context.assets.find("ALidle", "texture").getFileUrl();
+            var ARidle = context.assets.find("ARidle", "texture").getFileUrl();
+            var PLidle = context.assets.find("PLidle", "texture").getFileUrl();
+            var PRidle = context.assets.find("PRidle", "texture").getFileUrl();
+            var ELidle = context.assets.find("ERidle", "texture").getFileUrl();
+            var ERidle = context.assets.find("ERidle", "texture").getFileUrl();
+            var WLidle = context.assets.find("WLidle", "texture").getFileUrl();
+            var WRidle = context.assets.find("WRidle", "texture").getFileUrl();
 
             var css = function () {/*
                 .swipeWrapper{
