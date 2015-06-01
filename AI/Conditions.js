@@ -33,8 +33,8 @@ pc.script.create('Conditions', function (context) {
         },
 
         isTileTemperatureNotIdeal: function(tribe){
-            if ((tribe.idealTemperature + 5 < tribe.currTileTemperature) ||
-                (tribe.idealTemperature - 5 > tribe.currTileTemperature)) {
+            if ((tribe.idealTemperature + 8 < tribe.currTileTemperature) ||
+                (tribe.idealTemperature - 8 > tribe.currTileTemperature)) {
                 return true;
             }
             return false;
