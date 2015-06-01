@@ -603,7 +603,6 @@ pc.script.create('tribe', function (context) {
                         //console.log("Cower done");
                         break;
                 }
-                //this.prayForSomething();
                 this.deactivatePraySmoke();
                 this.cowerTimer = 0;                    
             }
@@ -627,8 +626,6 @@ pc.script.create('tribe', function (context) {
             this.praiseTimer = 5;
             this.setCurrentAction(this.praise);
             this.isBusy = true;
-            // this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
-            // this.prayForSomething();
             this.activatePraySmoke(this.praiseIcon);
             this.audio.sound_TribePraise();
             // Play action animation for all humans
@@ -642,7 +639,6 @@ pc.script.create('tribe', function (context) {
                 //console.log("God is good!");
                 this.tribeMessage = ("God is good!");
                 this.praiseTimer = 0;
-                // this.prayForSomething();
                 this.deactivatePraySmoke();
                 this.isBusy = false;
             }
@@ -716,7 +712,6 @@ pc.script.create('tribe', function (context) {
         startFalseIdol: function() {
             this.setCurrentAction(this.worshipFalseIdol);
             this.isBusy = true;
-            console.log("WE SHALL BEAR FALSE IDOLSZ");
             this.tribeMessage = ("WE SHALL BEAR FALSE IDOLSZ");
 
             this.startPosition = this.paganStatue.getPosition().clone();
