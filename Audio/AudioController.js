@@ -87,13 +87,13 @@ pc.script.create('AudioController', function (context) {
             // set the target music layer based on belief change.
 
            if(!changeMusic && backToNormal){
-	            if (totalBelief > prevTotalBelief){
+	            if (global[GLOBAL.BELIEF] > prevTotalBelief){
 	            	changeMusic = true;   	
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;
 	            	lerpStartTime = timerTwo.getTime();
 	                this.targetMusicLayer = 1;
-	            } else if (totalBelief < prevTotalBelief){
+	            } else if (global[GLOBAL.BELIEF] < prevTotalBelief){
 	            	changeMusic = true;
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;

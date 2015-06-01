@@ -50,6 +50,8 @@ pc.script.create('HIDInterface', function (context) {
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
             
+			this.audio = context.root._children[0].script.AudioController;
+
             temperatureEffectTimer = 1.0;
 
             stormTimer = 0;
@@ -252,7 +254,7 @@ pc.script.create('HIDInterface', function (context) {
 			
 			inactiveTimer = 0;
 
-			scripts.Atmosphere.makeStorm((distance * position), speed);
+			//scripts.Atmosphere.makeStorm((distance * position), speed);
 			
 			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
 
@@ -260,6 +262,7 @@ pc.script.create('HIDInterface', function (context) {
 				this.lightsArray[i].enabled = true;
 				this.lightsArray[i].script.LightController.startLightning();
 			}
+            this.audio.sound_MakeThunder();
 
 			// while (stormEffect.darkness < 6) {
    //              stormEffect.darkness += .005;

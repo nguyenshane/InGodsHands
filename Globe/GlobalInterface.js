@@ -111,7 +111,7 @@ pc.script.create('globalInterface', function (context) {
             this.faultIncrement = 0.01;
             this.faultDir = -1;
 
-            this.setupEndScreen();
+            this.setupSnapshots();
             this.setupGlobalVariables();
         },
 
@@ -234,7 +234,6 @@ pc.script.create('globalInterface', function (context) {
         },
 
         setupGlobalVariables: function() {
-            snapshots = [];
 
             global = [];
             global[GLOBAL.TEMPERATURE] = 50;
@@ -283,6 +282,9 @@ pc.script.create('globalInterface', function (context) {
             endColors[GLOBAL.PUNISH] = '#00ffff';
             endColors[GLOBAL.ROTATION] = '#0000ff';
             endColors[GLOBAL.BELIEF] = '#ff00ff';
+
+            month = 0;
+            year = 30000;
         },
 
         lerpToDestination: function(elem) {
@@ -295,14 +297,130 @@ pc.script.create('globalInterface', function (context) {
             }
         },
 
-        takeSnapshot: function() {
-            var snapshot = [];
-            snapshot[GLOBAL.BELIEF] = global[GLOBAL.BELIEF];
-            snapshot[GLOBAL.TEMPERATURE] = global[GLOBAL.TEMPERATURE];
-            
-            snapshots.push(snapshot);
-            //this.drawEndScreen();
+        setupSnapshots: function() {
+            snapshots = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Temperature",
+                        fillColor: "rgba(255,79,70,0.1)",
+                        strokeColor: "rgba(255,79,70,1)",
+                        pointColor: "rgba(255,79,70,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(255,79,70,1)",
+                        data: []
+                    },
+                    {
+                        label: "Animal Migration",
+                        fillColor: "rgba(232,152,43,0.1)",
+                        strokeColor: "rgba(232,152,43,1)",
+                        pointColor: "rgba(232,152,43,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(232,152,43,1)",
+                        data: []
+                    },
+                    {
+                        label: "Plate Tectonics",
+                        fillColor: "rgba(107,246,255,0.1)",
+                        strokeColor: "rgba(107,246,255,1)",
+                        pointColor: "rgba(107,246,255,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(107,246,255,1)",
+                        data: []
+                    },
+                    {
+                        label: "Punishment",
+                        fillColor: "rgba(255,244,64,0.1)",
+                        strokeColor: "rgba(255,244,64,1)",
+                        pointColor: "rgba(255,244,64,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(255,244,64,1)",
+                        data: []
+                    },
+                    {
+                        label: "World Rotation",
+                        fillColor: "rgba(105,232,111,0.1)",
+                        strokeColor: "rgba(105,232,111,1)",
+                        pointColor: "rgba(105,232,111,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(105,232,111,1)",
+                        data: []
+                    }/*,
+                    {
+                        label: "Total Belief",
+                        fillColor: "rgba(220,220,220,0.1)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: []
+                    }*/
+                ]
+            };
         },
+
+        takeSnapshot: function() {
+            console.log(snapshots);
+            for (var i = 0; i < snapshots.datasets.length; ++i) {
+                snapshots.datasets[i].data.push(global[i]);
+            }
+            snapshots.labels.push(year + " BC");
+            /*var label;
+            switch(month) {
+                case 0:
+                    label = "January " + year + " BC";
+                    break;
+                case 1:
+                    label = "February " + year + " BC";
+                    break;
+                case 2:
+                    label = "March " + year + " BC";
+                    break;
+                case 3:
+                    label = "April " + year + " BC";
+                    break;
+                case 4:
+                    label = "May " + year + " BC";
+                    break;
+                case 5:
+                    label = "June " + year + " BC";
+                    break;
+                case 6:
+                    label = "July " + year + " BC";
+                    break;
+                case 7:
+                    label = "August " + year + " BC";
+                    break;
+                case 8:
+                    label = "September " + year + " BC";
+                    break;
+                case 9:
+                    label = "October " + year + " BC";
+                    break;
+                case 10:
+                    label = "November " + year + " BC";
+                    break;
+                case 11:
+                    label = "December " + year + " BC";
+                    break;
+            }
+            snapshots.labels.push(label);
+
+            month = (month + 1) % 12;
+            if (month = 0) {
+                --year;
+            }*/
+
+            --year;
+        },
+
+
 
         doTribesExist: function() {
             for (var i = 0; i < tribes.length; i++) {
@@ -344,11 +462,11 @@ pc.script.create('globalInterface', function (context) {
         },
 
         drawEndScreen: function() {
-            canvas.style.display = "inline";
+            /*canvas.style.display = "inline";
             ctx.fillStyle = '#999999';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             this.drawSnapLine(GLOBAL.TEMPERATURE, '#ff0000');
-            this.drawSnapLine(GLOBAL.BELIEF, '#00ff00');
+            this.drawSnapLine(GLOBAL.BELIEF, '#00ff00');*/
         },
 
         drawSnapLine: function(element, color) {
