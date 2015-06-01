@@ -15,6 +15,11 @@ pc.script.create('SwipeInterface', function (context) {
             E_L, E_R,
             W_L, W_R;
         
+        var T_LH, T_RH,
+            A_LH, A_RH,
+            P_LH, P_RH,
+            E_LH, E_RH,
+            W_LH, W_RH;
     };
 
     SwipeInterface.prototype = {
@@ -172,22 +177,27 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_L.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
 
                   jtarget.addClass('T_L_active');
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_T', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   //anything here is ontouchstart
-                  //console.log("tap event ", event, " target ", target);
+                  this.T_LH = true;
+                  console.log("tap start ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   //jtarget.children().attr('src', TLactive)
                   jtarget.addClass('T_L_active');
                   jtarget.on('touchend', function(){
                     //anything here is ontouchend
+                    console.log("tap end ", event, " target ", target);
+                    this.T_LH = false;
                     $(this).removeClass('T_L_active');
                   });
                 },
@@ -214,6 +224,8 @@ pc.script.create('SwipeInterface', function (context) {
 
                   jtarget.addClass('T_R_active');
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_T', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -227,7 +239,8 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped T_R" + " distance " + distance, " duration " + duration);
+                  console.log("event", event);
+                  //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
@@ -243,6 +256,8 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_L_active');
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_A', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
@@ -268,6 +283,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_R_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_A', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -294,6 +311,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_P', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
@@ -319,6 +338,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_R_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_P', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -345,6 +366,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_E', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
@@ -370,6 +393,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_R_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_E', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -396,6 +421,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_W', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
@@ -421,6 +448,8 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_R_active');
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_W', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -450,7 +479,11 @@ pc.script.create('SwipeInterface', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
 
-
+            if (this.T_LH) {
+              console.log("holdingTL");
+                var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                    stringPull.script.send('HIDInterface', 'moving_T', -1, 0, 0);
+            }
         },
         
 
