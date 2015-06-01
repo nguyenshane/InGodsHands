@@ -197,7 +197,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('T_L_active');
 
                   jtarget.on('touchend', function(){
-                    console.log("tap end",$(this));
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
                     self.holding_T_L = false;
                   });
@@ -215,6 +215,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('T_L_active');
                   jtarget.on('touchend', function(){
                     //anything here is ontouchend
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
                     self.holding_T_L = false;
                   });
@@ -241,6 +242,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
                     self.holding_T_R = false;
                   });
@@ -256,6 +258,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('T_R_active');
                   jtarget.on('touchend', function(){
                     //anything here is ontouchend
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
                     self.holding_T_R = false;
                   });
@@ -279,6 +282,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_L_active');
                     self.holding_A_L = false;
                   });
@@ -292,6 +296,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_L_active');
                     self.holding_A_L = false;
                   });
@@ -314,6 +319,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('A_R_active');
                   self.holding_A_R = false;
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_R_active');
                   });
                 },
@@ -324,6 +330,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_R_active');
                     self.holding_A_R = false;
                   });
@@ -345,6 +352,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_L_active');
                     self.holding_P_L = false;
                   });
@@ -355,6 +363,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_L_active');
                     self.holding_P_L = false;
                   });
@@ -377,6 +386,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('P_R_active');
                   self.holding_P_R = false;
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_R_active');
                   });
                 },
@@ -387,6 +397,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_R_active');
                     self.holding_P_R = false;
                   });
@@ -408,6 +419,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_L_active');
                     self.holding_E_L = false;
                   });
@@ -418,6 +430,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_L_active');
                     self.holding_E_L = false;
                   });
@@ -439,6 +452,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_R_active');
                     self.holding_E_R = false;
                   });
@@ -450,6 +464,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_R_active');
                     self.holding_E_R = false;
                   });
@@ -471,6 +486,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_L_active');
                     self.holding_W_L = false;
                   });
@@ -481,6 +497,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_L_active');
                     self.holding_W_L = false;
                   });
@@ -488,7 +505,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
-                  this.HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_L_active');
@@ -502,6 +519,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_R_active');
                     self.holding_W_R = false;
                   });
@@ -513,6 +531,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_R_active');
                   jtarget.on('touchend', function(){
+                    $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_R_active');
                     self.holding_W_R = false;
                   });
@@ -520,7 +539,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  this.HIDInterface.moving_W(1,distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_R_active');
@@ -535,17 +554,17 @@ pc.script.create('SwipeInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/4,5);
-            if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/4,5);
-            if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/4,5);
-            if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/4,5);
-            if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1/4,5);
+            if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/8,10);
+            if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
+            if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
+            if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/8,10);
+            if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1/100,10);
             
-            if (this.holding_T_R) this.HIDInterface.moving_T(1,1/4,5);
-            if (this.holding_A_R) this.HIDInterface.moving_A(1,1/4,5);
-            if (this.holding_P_R) this.HIDInterface.moving_P(1,1/4,5);
-            if (this.holding_E_R) this.HIDInterface.moving_E(1,1/4,5);
-            if (this.holding_W_R) this.HIDInterface.moving_W(1,1/4,5);
+            if (this.holding_T_R) this.HIDInterface.moving_T(1,1/8,10);
+            if (this.holding_A_R) this.HIDInterface.moving_A(1,1/8,10);
+            if (this.holding_P_R) this.HIDInterface.moving_P(1,1/8,10);
+            if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
+            if (this.holding_W_R) this.HIDInterface.moving_W(1,1/100,10);
         },
         
 
