@@ -453,7 +453,6 @@ pc.script.create('tribe', function (context) {
             if(this.prayerTimer <= 0){
                 //console.log("Prayer timer up");
                 this.prayerTimer = 0;
-                this.decreaseBelief();
                 this.decreasePopulation();
                 this.isSpiteful = true;
 
@@ -696,7 +695,6 @@ pc.script.create('tribe', function (context) {
                 //console.log("ADAPTED TO TEMP");
                 this.tribeMessage = ("ADAPTED TO TEMP");
                 this.idealTemperature 
-                this.decreaseBelief();
                 this.adaptTimer = 0;
                 this.isSpiteful = false;
                 this.isBusy = false;
