@@ -71,8 +71,8 @@ pc.script.create('tribe', function (context) {
         this.noSunTimer = 0;
         this.falseIdolTimer = 0;
         this.sacrificeTimer = 0;
-        this.ruleCooldownTimer = 0;
-        this.eventTimer = 240;
+        this.ruleCooldownTimer = 10;
+        this.eventTimer = 200;
 
         this.iconSmokeIsPlaying;
         this.beliefLight;
@@ -157,8 +157,11 @@ pc.script.create('tribe', function (context) {
 
 
             this.iconSmoke = this.entity.findByName("TestFogTribe");
+            this.iconSmoke.particlesystem.stop();
             this.iconSmokeIsPlaying = false;
+            this.origIconColor = this.entity.findByName("TestFogTribe").particlesystem.colorGraph;
             this.praySmoke = this.entity.findByName("PraySmoke");
+            this.praySmoke.particlesystem.stop();
             this.praySmokeIsPlaying = false;
 
             //this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
@@ -384,6 +387,15 @@ pc.script.create('tribe', function (context) {
 
         activatePraySmoke: function (icon) {
             this.iconSmoke.particlesystem.colorMap = icon;
+
+            if (icon == this.denounceIcon) {
+                this.iconSmoke.particlesystem.colorGraph = context.root.findByName("RedColorGraph").particlesystem.colorGraph;
+                this.iconSmoke.particlesystem.intensity = 3;
+            } else {
+                this.iconSmoke.particlesystem.colorGraph = this.origIconColor;
+                this.iconSmoke.particlesystem.intensity = 20;
+            }
+
             this.iconSmoke.particlesystem.play();
             this.iconSmokeIsPlaying = true;
             this.praySmoke.particlesystem.play();
@@ -448,6 +460,7 @@ pc.script.create('tribe', function (context) {
                 this.isBusy = false;
                 //this.prayForSomething();
                 this.deactivatePraySmoke();
+                this.startDenouncing();
             }
 
             if ((this.currTileTemperature > (this.idealTemperature - 8) &&
@@ -504,6 +517,7 @@ pc.script.create('tribe', function (context) {
                 // Turn off symbols here
                 /////////////////////////
                 this.deactivatePraySmoke();
+                this.startDenouncing();
                 //this.prayForSomething();
             }
 
@@ -515,10 +529,7 @@ pc.script.create('tribe', function (context) {
                         this.prayerTimer = 0;
                         
                         this.isBusy = false;
-                        // Turn off symbols here
-                        ////////////////////////
-                        // this.startPraise();
-                        // this.prayForSomething();
+                        this.startPraise();
                         this.deactivatePraySmoke();
                     }
                 }
@@ -544,7 +555,10 @@ pc.script.create('tribe', function (context) {
             this.idolAngleChange = 0;
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
-                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("cower");
+                if (this.humans[i].enabled){ 
+                    this.humans[i].particlesystem.stop();
+                    this.humans[i].script.Human.setAnimState("cower");
+                }
             }
 
             var timer = new Date();
@@ -559,9 +573,6 @@ pc.script.create('tribe', function (context) {
 				
                 switch (this.previousAction) {
                     case this.sacrifice:
-                        for (var i = this.humans.length-1; i >= 0; i--) {
-                            if (this.humans[i].enabled) this.humans[i].particlesystem.stop();
-                        }
                         this.increaseFear();
                         this.decreaseBelief();
                         this.isBusy = false;
@@ -592,7 +603,6 @@ pc.script.create('tribe', function (context) {
                         //console.log("Cower done");
                         break;
                 }
-                //this.prayForSomething();
                 this.deactivatePraySmoke();
                 this.cowerTimer = 0;                    
             }
@@ -616,8 +626,6 @@ pc.script.create('tribe', function (context) {
             this.praiseTimer = 5;
             this.setCurrentAction(this.praise);
             this.isBusy = true;
-            // this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
-            // this.prayForSomething();
             this.activatePraySmoke(this.praiseIcon);
             this.audio.sound_TribePraise();
             // Play action animation for all humans
@@ -631,7 +639,6 @@ pc.script.create('tribe', function (context) {
                 //console.log("God is good!");
                 this.tribeMessage = ("God is good!");
                 this.praiseTimer = 0;
-                // this.prayForSomething();
                 this.deactivatePraySmoke();
                 this.isBusy = false;
             }
@@ -639,10 +646,11 @@ pc.script.create('tribe', function (context) {
         },
 
         startDenouncing: function() {
-            this.denounceTimer = 30;
+            this.denounceTimer = 10;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
+            this.beliefLight.script.LightController.startDenounceLight();
             this.activatePraySmoke(this.denounceIcon);
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
@@ -704,7 +712,6 @@ pc.script.create('tribe', function (context) {
         startFalseIdol: function() {
             this.setCurrentAction(this.worshipFalseIdol);
             this.isBusy = true;
-            console.log("WE SHALL BEAR FALSE IDOLSZ");
             this.tribeMessage = ("WE SHALL BEAR FALSE IDOLSZ");
 
             this.startPosition = this.paganStatue.getPosition().clone();
