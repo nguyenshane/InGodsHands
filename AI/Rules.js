@@ -37,7 +37,7 @@ wantToMigrate.prototype = {
         tribe.ruleCooldownTimer = 8;
         tribe.migrate();
 
-        var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
             moveS.script.AudioController.sound_TribeMov();
             //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    
@@ -75,7 +75,7 @@ needToAdapt.prototype = {
         tribe.ruleCooldownTimer = 8;
         tribe.startAdapting();
 
-        var moveS = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+        var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
             moveS.script.AudioController.sound_TribeMov();
             //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    

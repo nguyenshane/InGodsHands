@@ -50,7 +50,7 @@ pc.script.create('HIDInterface', function (context) {
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
             
-			this.audio = context.root._children[0].script.AudioController;
+			this.audio = context.root.findByName("Rv1-stable").script.AudioController;
 
             temperatureEffectTimer = 1.0;
 
@@ -63,7 +63,7 @@ pc.script.create('HIDInterface', function (context) {
             ///*/
 
 			app = pc.fw.Application.getApplication('application-canvas').context;
-			UI = context.root._children[0].script.developer;
+			UI = context.root.findByName("Rv1-stable").script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -414,7 +414,7 @@ pc.script.create('HIDInterface', function (context) {
 			}
 		},
 		
-		moving_W: function(position, distance, speed) {
+		moving_W: function(position, distance, speed, isSwipping) {
             debug.log(DEBUG.HARDWARE, "String W moving: ", position, distance, speed);
             
             //NaN
@@ -429,7 +429,7 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
             
 			if (!hasStopped) {
-                camera.script.Camera.move_W(position,(distance * position), speed);
+                camera.script.Camera.move_W(position,(distance * position), speed, isSwipping);
 			}
 		},
 

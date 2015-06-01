@@ -41,8 +41,8 @@ pc.script.create('globalInterface', function (context) {
             debug.log(DEBUG.INIT, "Seed: " + seed.seed);
 			
 			//Global references to PlayCanvas components
-			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
-			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
+			scripts = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").script;
+			camera = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera");
 			
 			animalDensity = 0.0225; // 0.07 too high
             animalMigrationOffset = 0;
@@ -68,7 +68,7 @@ pc.script.create('globalInterface', function (context) {
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
 
-            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
+            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera").script.vignette.effect;
 
             maxTotalBelief = 250;
             totalBelief = 0;
@@ -306,9 +306,9 @@ pc.script.create('globalInterface', function (context) {
                         fillColor: "rgba(255,79,70,0.1)",
                         strokeColor: "rgba(255,79,70,1)",
                         pointColor: "rgba(255,79,70,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,79,70,1)",
+                        //pointStrokeColor: "#fff",
+                        //pointHighlightFill: "#fff",
+                        //pointHighlightStroke: "rgba(255,79,70,1)",
                         data: []
                     },
                     {
@@ -316,8 +316,8 @@ pc.script.create('globalInterface', function (context) {
                         fillColor: "rgba(232,152,43,0.1)",
                         strokeColor: "rgba(232,152,43,1)",
                         pointColor: "rgba(232,152,43,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
+                        //pointStrokeColor: "#fff",
+                        //pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(232,152,43,1)",
                         data: []
                     },
@@ -326,9 +326,9 @@ pc.script.create('globalInterface', function (context) {
                         fillColor: "rgba(107,246,255,0.1)",
                         strokeColor: "rgba(107,246,255,1)",
                         pointColor: "rgba(107,246,255,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(107,246,255,1)",
+                        //pointStrokeColor: "#fff",
+                        //pointHighlightFill: "#fff",
+                        //pointHighlightStroke: "rgba(107,246,255,1)",
                         data: []
                     },
                     {
@@ -336,9 +336,9 @@ pc.script.create('globalInterface', function (context) {
                         fillColor: "rgba(255,244,64,0.1)",
                         strokeColor: "rgba(255,244,64,1)",
                         pointColor: "rgba(255,244,64,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(255,244,64,1)",
+                        //pointStrokeColor: "#fff",
+                        //pointHighlightFill: "#fff",
+                        //pointHighlightStroke: "rgba(255,244,64,1)",
                         data: []
                     },
                     {
@@ -346,9 +346,9 @@ pc.script.create('globalInterface', function (context) {
                         fillColor: "rgba(105,232,111,0.1)",
                         strokeColor: "rgba(105,232,111,1)",
                         pointColor: "rgba(105,232,111,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(105,232,111,1)",
+                        //pointStrokeColor: "#fff",
+                        //pointHighlightFill: "#fff",
+                        //pointHighlightStroke: "rgba(105,232,111,1)",
                         data: []
                     }/*,
                     {

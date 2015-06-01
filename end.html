@@ -24,6 +24,8 @@
 		.wrapper {
 		    text-align: center;
 		    height:80%;
+		    position: relative;
+		    margin-bottom: 20px;
 		}
        	.btn {
 			background: #304c50;
@@ -42,10 +44,17 @@
 			padding: 10px 20px 10px 20px;
 			text-decoration: none;
 			border: none;
+			margin: 20px;
 		}
 		.btn:hover {
 		  	background: #304c50;
 		  	text-decoration: none;
+		}
+		#endChart {
+			width:80%;
+			height: 100%;
+			position: relative;
+			
 		}
     </style>
     <script src="End/chart.min.js"></script>
@@ -54,11 +63,12 @@
 </head>
 <body>
 	<div class="wrapper">
-		<canvas id="endChart" width="700px" height="500px"></canvas>
+		<canvas id="endChart" width="100%" height="100%"></canvas>
 	</div>
 	<button class="btn" onclick="location.href = 'index.html';">Restart</button>
 <script>
-	var lineChartData = localStorage.getItem('snapshots');;
+	//var lineChartData = localStorage.getItem('snapshots');
+	var lineChartData ='{"labels":["30000 BC","29999 BC","29998 BC","29997 BC","29996 BC","29995 BC","29994 BC","29993 BC","29992 BC","29991 BC","29990 BC","29989 BC","29988 BC","29987 BC","29986 BC","29985 BC","29984 BC","29983 BC","29982 BC","29981 BC","29980 BC","29979 BC","29978 BC"],"datasets":[{"label":"Temperature","fillColor":"rgba(255,79,70,0.1)","strokeColor":"rgba(255,79,70,1)","pointColor":"rgba(255,79,70,1)","data":[97,61,74,98,45,30,31,32,66,97,54,90,16,57,16,31,13,60,69,95,53,12,92,10,44,35,56,67,70,76,18,35,60,84,10,85,78,48,62,22,93,40,19,86,46,16,0,39,89,49]},{"label":"Animal Migration","fillColor":"rgba(232,152,43,0.1)","strokeColor":"rgba(232,152,43,1)","pointColor":"rgba(232,152,43,1)","pointHighlightStroke":"rgba(232,152,43,1)","data":[92,90,66,21,70,26,40,24,8,26,34,9,34,9,18,59,22,55,41,96,64,37,45,27,23,96,8,46,8,58,0,36,13,77,4,8,83,1,41,13,12,42,89,23,62,22,78,2,100,50]},{"label":"Plate Tectonics","fillColor":"rgba(107,246,255,0.1)","strokeColor":"rgba(107,246,255,1)","pointColor":"rgba(107,246,255,1)","data":[44,38,87,94,52,25,86,24,13,9,7,9,30,9,13,41,33,39,50,89,91,44,56,89,38,57,86,5,25,89,42,61,36,29,48,27,97,28,94,77,93,68,3,16,94,95,67,7,89,56]},{"label":"Punishment","fillColor":"rgba(255,244,64,0.1)","strokeColor":"rgba(255,244,64,1)","pointColor":"rgba(255,244,64,1)","data":[48,6,71,57,4,56,72,100,7,69,60,84,53,77,34,26,63,12,33,97,73,55,18,100,22,90,30,69,88,54,62,63,20,40,63,32,98,68,10,91,86,87,4,25,99,34,20,15,40,5]},{"label":"World Rotation","fillColor":"rgba(105,232,111,0.1)","strokeColor":"rgba(105,232,111,1)","pointColor":"rgba(105,232,111,1)","data":[20,78,14,0,63,25,93,25,96,64,14,22,98,65,37,19,88,6,80,18,49,88,91,55,69,29,50,65,46,68,60,38,3,24,99,89,48,1,56,83,8,14,20,30,56,88,0,46,78,23]}]}';
 	console.log("parse", JSON.parse(lineChartData));
 
 	Chart.defaults.global.animationSteps = 100;
@@ -72,12 +82,26 @@
 	Chart.defaults.global.scaleFontSize = 10;
 
 	var ctx = document.getElementById("endChart").getContext("2d");
-	var LineChartDemo = new Chart(ctx).Line(JSON.parse(lineChartData), {
-	    pointDotRadius: 1,
-	    bezierCurve: false,
-	    scaleShowVerticalLines: false,
-	    scaleGridLineColor: "white"
+	var LineChart = new Chart(ctx).Line(JSON.parse(lineChartData), {
+	    pointDotRadius: 5,
+	    bezierCurve: true,
+	    bezierCurveTension : 0.1,
+	    scaleShowGridLines : false,
+	    scaleShowVerticalLines: true,
+	    datasetStrokeWidth : 1,
+	    datasetFill : false,
+	    scaleGridLineColor: "white",
+	    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
 	});
+
+	LineChart.datasets.splice(3,1);
+	// LineChart.update();
+	// LineChart.datasets[2] = "";
+	LineChart.update();
+	console.log(LineChart);
+
 </script>
     
 </body>

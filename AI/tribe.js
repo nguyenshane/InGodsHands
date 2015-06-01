@@ -181,7 +181,7 @@ pc.script.create('tribe', function (context) {
             this.paganStatue.enabled = true;
             this.idolAngleChange = 0; // 3 seconds to rotate at 60fps
 	
-            this.audio = context.root._children[0].script.AudioController;
+            this.audio = context.root.findByName("Rv1-stable").script.AudioController;
 			
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
@@ -936,7 +936,7 @@ pc.script.create('tribe', function (context) {
             this.paganStatue.enabled = false;
             this.entity.enabled = false;
             
-            context.root._children[0].script.globalInterface.doTribesExist();
+            context.root.findByName("Rv1-stable").script.globalInterface.doTribesExist();
         },
 
         calculateInfluence: function() {

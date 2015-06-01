@@ -10,13 +10,14 @@ pc.script.create('Camera', function (context) {
         this.orbitAngle = 0;
         this.rotationSpeed = 0;
         this.lastRotationSpeed = 0;
+        this.isSwipping = false;
         
     };
 
     Camera.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            //this.stringW = context.root._children[0].script.HIDInterface.stringW;
+            //this.stringW = context.root.findByName("Rv1-stable").script.HIDInterface.stringW;
             //this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
             
 			//this.bgplane = this.entity.findByName("Plane");
@@ -33,8 +34,9 @@ pc.script.create('Camera', function (context) {
 			
         },
         
-        move_W: function(position, distance, speed) {
-            console.log('move_W', position, distance, speed);
+        move_W: function(position, distance, speed, isSwipping) {
+            console.log('move_W', position, distance, speed, isSwipping);
+            this.isSwipping = isSwipping;
             if (!isPaused) {
     			if (position > 0) {
     			    //context.root.findByName("Camera").script.camera.orbitAngle+=15;
@@ -61,6 +63,10 @@ pc.script.create('Camera', function (context) {
                 this.orbitAngle += this.rotationSpeed;
                 shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
                 sun.rotate(0, .01*this.rotationSpeed, 0);
+            }
+            if (this.isSwipping===true) {
+                this.rotationSpeed = 0;
+                this.isSwipping = false;
             }
 
             /*

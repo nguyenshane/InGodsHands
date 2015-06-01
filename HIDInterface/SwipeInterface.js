@@ -54,95 +54,95 @@ pc.script.create('SwipeInterface', function (context) {
             var WRidle = context.assets.find("WRidle", "texture").getFileUrl();
 
             var css = function () {/*
-                .swipeWrapper{
-                    z-index: 0;
-                    position: relative;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    opacity: 0.65;
-                    -webki-totuch-callout: none;
-                    -webkit-user-select: none; 
+              .swipeWrapper{
+                  z-index: 0;
+                  position: relative;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  opacity: 0.65;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
 
-                }
-                .left{
-                    height:20%;
-                    width: 30%;
-                    background: none;
-                    float:left;
-                    box-shadow: none;
-                    position: relative;
-                    -webki-totuch-callout: none;
-                    -webkit-user-select: none; 
-                }
-                .left img {
-                    height: 50%;
-                    top: 25%;
-                    left: 5%;
-                    position: absolute;
-                    pointer-events: none;
-                    float: left;
-                    transition: all 1.0s ease;
-                }
+              }
+              .left{
+                  height:20%;
+                  width: 30%;
+                  background: none;
+                  float:left;
+                  box-shadow: none;
+                  position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
+              }
+              .left img {
+                  height: 50%;
+                  top: 25%;
+                  left: 5%;
+                  position: absolute;
+                  pointer-events: none;
+                  float: left;
+                  transition: all 1.0s ease;
+              }
 
-                .left img.active{
-                    opacity: 0;
-                    transition: all 0.8s ease;
-                }
-                .center{
-                    height:20%;
-                    width: 40%;
-                    background: none;
-                    float:left;
-                }
-                .right{
-                    height:20%;
-                    width: 30%;
-                    background: none;
-                    float:left;
-                    position: relative;
-                    -webki-totuch-callout: none;
-                    -webkit-user-select: none; 
-                }
-                .right img {
-                    height: 50%;
-                    top: 25%;
-                    right: 5%;
-                    position: absolute;
-                    pointer-events: none;
-                    float: right;
-                }
+              .left img.active{
+                  opacity: 0;
+                  transition: all 0.8s ease;
+              }
+              .center{
+                  height:20%;
+                  width: 40%;
+                  background: none;
+                  float:left;
+              }
+              .right{
+                  height:20%;
+                  width: 30%;
+                  background: none;
+                  float:left;
+                  position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
+              }
+              .right img {
+                  height: 50%;
+                  top: 25%;
+                  right: 5%;
+                  position: absolute;
+                  pointer-events: none;
+                  float: right;
+              }
 
-                .right img.active{
-                    opacity: 0;
-                    transition: all 0.8s ease;
-                }
+              .right img.active{
+                  opacity: 0;
+                  transition: all 0.8s ease;
+              }
 
-                .T_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%); transition: all 1.0s ease;}
-                .A_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); transition: all 1.0s ease;}
-                .P_L{ background: linear-gradient(to right, rgba(188,191,188,1) 20%, rgba(0,0,0,0) 100%); transition: all 1.0s ease;}
-                .E_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); transition: all 1.0s ease;}
-                .W_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%);  transition: all 1.0s ease;}
-                
-                .T_L_active{ transition: box-shadow 1.0s ease; background: rgba(48,76,80,1); box-shadow: 0 0 2em white;}
-                .A_L_active{ transition: box-shadow 1.0s ease; background: rgba(54,65,85,1); box-shadow: 0 0 2em white;}
-                .P_L_active{ transition: box-shadow 1.0s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
-                .E_L_active{ transition: box-shadow 1.0s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
-                .W_L_active{ transition: box-shadow 1.0s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
-                
+              .T_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%); transition: all 0.5s ease;}
+              .A_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); transition: all 0.5s ease;}
+              .P_L{ background: linear-gradient(to right, rgba(188,191,188,1) 20%, rgba(0,0,0,0) 100%); transition: all 0.5s ease;}
+              .E_L{ background: linear-gradient(to right, rgba(126,127,125,1) 30%, rgba(0,0,0,0) 100%); transition: all 0.5s ease;}
+              .W_L{ background: linear-gradient(to right, rgba(63,64,63,1) 40%, rgba(0,0,0,0) 100%);  transition: all 0.5s ease;}
+              
+              .T_L_active{ transition: box-shadow 0.5s ease; background: rgba(48,76,80,1); box-shadow: 0 0 2em white;}
+              .A_L_active{ transition: box-shadow 0.5s ease; background: rgba(54,65,85,1); box-shadow: 0 0 2em white;}
+              .P_L_active{ transition: box-shadow 0.5s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
+              .E_L_active{ transition: box-shadow 0.5s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
+              .W_L_active{ transition: box-shadow 0.5s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
+              
 
-                .T_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); transition: all 1.0s ease;}
-                .A_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); transition: all 1.0s ease;}
-                .P_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(188,191,188,1) 80%); transition: all 1.0s ease;}
-                .E_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); transition: all 1.0s ease;}
-                .W_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); transition: all 1.0s ease;}
+              .T_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); transition: all 0.5s ease;}
+              .A_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); transition: all 0.5s ease;}
+              .P_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(188,191,188,1) 80%); transition: all 0.5s ease;}
+              .E_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); transition: all 0.5s ease;}
+              .W_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); transition: all 0.5s ease;}
 
-                .T_R_active{ transition: box-shadow 1.0s ease; background: rgba(48,76,80,1); box-shadow: 0 0 2em white;}
-                .A_R_active{ transition: box-shadow 1.0s ease; background: rgba(54,65,85,1); box-shadow: 0 0 2em white;}
-                .P_R_active{ transition: box-shadow 1.0s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
-                .E_R_active{ transition: box-shadow 1.0s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
-                .W_R_active{ transition: box-shadow 1.0s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
+              .T_R_active{ transition: box-shadow 0.5s ease; background: rgba(48,76,80,1); box-shadow: 0 0 2em white;}
+              .A_R_active{ transition: box-shadow 0.5s ease; background: rgba(54,65,85,1); box-shadow: 0 0 2em white;}
+              .P_R_active{ transition: box-shadow 0.5s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
+              .E_R_active{ transition: box-shadow 0.5s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
+              .W_R_active{ transition: box-shadow 0.5s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
 
                 
             */}.toString().trim();
@@ -182,7 +182,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L = $("#E_L"); this.E_R = $("#E_R");
             this.W_L = $("#W_L"); this.W_R = $("#W_R");
 
-            var HIDInterface = context.root._children[0].script.HIDInterface;
+            var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
 
@@ -197,12 +197,12 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('T_L_active');
 
                   jtarget.on('touchend', function(){
+                    self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
-                    self.holding_T_L = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
                   stringPull.script.send('HIDInterface', 'moving_T', -1, 0, 0);
                 },
                 hold:function(event, target) {
@@ -215,9 +215,9 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.addClass('T_L_active');
                   jtarget.on('touchend', function(){
                     //anything here is ontouchend
+                    self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
-                    self.holding_T_L = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -229,6 +229,7 @@ pc.script.create('SwipeInterface', function (context) {
                   //jtarget.children().attr('src', TLidle)
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_L_active');
+                  self.holding_T_L = false;
                   
                 },
                 //threshold:75
@@ -247,7 +248,7 @@ pc.script.create('SwipeInterface', function (context) {
                     self.holding_T_R = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
                   stringPull.script.send('HIDInterface', 'moving_T', 1, 0, 0);
                 },
                 hold:function(event, target) {
@@ -287,7 +288,7 @@ pc.script.create('SwipeInterface', function (context) {
                     self.holding_A_L = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
                   stringPull.script.send('HIDInterface', 'moving_A', -1, 0, 0);
                 },
                 hold:function(event, target) {
@@ -505,7 +506,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration,true);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_L_active');
@@ -539,7 +540,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration);
+                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration,true);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_R_active');
@@ -554,17 +555,18 @@ pc.script.create('SwipeInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-            if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/8,10);
-            if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
-            if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
-            if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/8,10);
-            if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1/100,10);
-            
-            if (this.holding_T_R) this.HIDInterface.moving_T(1,1/8,10);
-            if (this.holding_A_R) this.HIDInterface.moving_A(1,1/8,10);
-            if (this.holding_P_R) this.HIDInterface.moving_P(1,1/8,10);
-            if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
-            if (this.holding_W_R) this.HIDInterface.moving_W(1,1/100,10);
+          console.log('this.holding_T_L',this.holding_T_L);
+          if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/8,10);
+          if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
+          if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
+          if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/8,10);
+          if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1/100,0,true);
+          
+          if (this.holding_T_R) this.HIDInterface.moving_T(1,1/8,10);
+          if (this.holding_A_R) this.HIDInterface.moving_A(1,1/8,10);
+          if (this.holding_P_R) this.HIDInterface.moving_P(1,1/8,10);
+          if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
+          if (this.holding_W_R) this.HIDInterface.moving_W(1,1/100,0,true);
         },
         
 

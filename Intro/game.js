@@ -42,7 +42,8 @@ pc.script.create('game', function (context) {
         },
         
         loadRoot: function (index) {
-            console.log("scene", context.loadSceneHierarchy(this.ROOTS[index]));
+            console.log("scene", context.root);
+            context.loadSceneHierarchy(this.ROOTS[index])
         }
     };
 
