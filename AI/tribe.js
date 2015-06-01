@@ -390,7 +390,7 @@ pc.script.create('tribe', function (context) {
 
             if (icon == this.denounceIcon) {
                 this.iconSmoke.particlesystem.colorGraph = context.root.findByName("RedColorGraph").particlesystem.colorGraph;
-                this.iconSmoke.particlesystem.intensity = 3;
+                this.iconSmoke.particlesystem.intensity = 10;
             } else {
                 this.iconSmoke.particlesystem.colorGraph = this.origIconColor;
                 this.iconSmoke.particlesystem.intensity = 20;
