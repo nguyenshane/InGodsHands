@@ -220,7 +220,7 @@ pc.script.create('globalInterface', function (context) {
                 context.timeScale = 1;
                 this.isPaused = false;
                 isPaused = this.isPaused;
-                canvas.style.display = "none";
+                //canvas.style.display = "none";
             }
         },
 
