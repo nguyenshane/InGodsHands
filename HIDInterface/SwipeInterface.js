@@ -180,11 +180,16 @@ pc.script.create('SwipeInterface', function (context) {
                   console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
+                  //anything here is ontouchstart
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   //jtarget.children().attr('src', TLactive)
                   jtarget.addClass('T_L_active');
+                  jtarget.on('touchend', function(){
+                    //anything here is ontouchend
+                    $(this).removeClass('T_L_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -215,6 +220,10 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_R_active');
+                  jtarget.on('touchend', function(){
+                    //anything here is ontouchend
+                    $(this).removeClass('T_R_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -239,6 +248,9 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_L_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('A_L_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -253,18 +265,18 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.A_R.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
-
                   jtarget.addClass('A_R_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_R_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('A_R_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -282,12 +294,14 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('P_L_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -302,18 +316,18 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.P_R.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
-
                   jtarget.addClass('P_R_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_R_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('P_R_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -331,12 +345,14 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('E_L_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -351,18 +367,18 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.E_R.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
-
                   jtarget.addClass('E_R_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_R_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('E_R_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -380,12 +396,14 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('W_L_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
@@ -400,18 +418,18 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.W_R.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
-
                   jtarget.addClass('W_R_active');
-                  console.log("jtarget.children ", jtarget.children(".active"));
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_R_active');
+                  jtarget.on('touchend', function(){
+                    $(this).removeClass('W_R_active');
+                  });
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
