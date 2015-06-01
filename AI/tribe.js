@@ -140,8 +140,8 @@ pc.script.create('tribe', function (context) {
             // get current tile's temperature that the tribe is on
             this.currTileTemperature = this.tile.getTemperature();
             
-            totalBelief += this.belief;
-            prevTotalBelief = totalBelief;
+            global[GLOBAL.BELIEF] += this.belief;
+            prevTotalBelief = global[GLOBAL.BELIEF];
             
             this.createRuleList();
 
@@ -773,6 +773,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.sacrifice);
             this.isBusy = true;
             tribeMessage = ("starting sacrifice");
+            this.audio.sound_TribeSacrifice();
             // Play praise animation for all humans except the one being sacrificed
             var lastHuman = true;
             for (var i = this.humans.length-1; i >= 0; i--) {
@@ -817,21 +818,21 @@ pc.script.create('tribe', function (context) {
 
         increaseBelief: function() {
             ++this.belief;
-            prevTotalBelief = totalBelief;
-            ++totalBelief;
+            prevTotalBelief = global[GLOBAL.BELIEF];
+            ++global[GLOBAL.BELIEF];
             this.beliefLight.script.LightController.startShineBeliefLight();
             this.increaseHQBrightness();
         },
 
         decreaseBelief: function() {
             --this.belief;
-            prevTotalBelief = totalBelief;
-            --totalBelief;
+            prevTotalBelief = global[GLOBAL.BELIEF];
+            --global[GLOBAL.BELIEF];
             this.decreaseHQBrightness();
 
             // Every time belief is decreased, check if it is too low
             if (this.belief <= 0){
-				console.log(this.belief + " " + totalBelief)
+				console.log(this.belief + " " + global[GLOBAL.BELIEF])
                 console.log("Not enough belief. Tribe has died.");
                 
                 this.killSelf();

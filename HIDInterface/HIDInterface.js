@@ -30,6 +30,8 @@ pc.script.create('HIDInterface', function (context) {
         initialize: function () {
 			var t1 = new Date();
 
+			hidInterface = this;
+
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
 			this.stringP = new pc.StringTAPEW('P');
@@ -51,6 +53,8 @@ pc.script.create('HIDInterface', function (context) {
 			this.audio = context.root._children[0].script.AudioController;
 
             temperatureEffectTimer = 1.0;
+
+            stormTimer = 0;
             
             ///*
 			temperatureChange = false;
@@ -106,26 +110,28 @@ pc.script.create('HIDInterface', function (context) {
         	} else {
         		hasStopped = false;
         	}
+
+        	--stormTimer;
             
             /*
         	if (temperatureChange == true  && !hasStopped) {
         		timer = new Date();
         		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
         		var percentLerped = timeSinceStartedLerp / velocity;
-        		globalTemperature = pc.math.lerp(temperatureStart, temperatureDest, percentLerped);
+        		global[GLOBAL.TEMPERATURE] = pc.math.lerp(temperatureStart, temperatureDest, percentLerped);
 
-				if ((globalTemperature - temperatureDest) == 0.0) {
+				if ((global[GLOBAL.TEMPERATURE] - temperatureDest) == 0.0) {
 					temperatureChange = false;
 					debug.log(DEBUG.HARDWARE, "Done temp change");
 				}
         	}
             
-        	if ((globalTemperature - temperatureDest <= 0.0) && this.coldEffect.particlesystem.isPlaying) {
+        	if ((global[GLOBAL.TEMPERATURE] - temperatureDest <= 0.0) && this.coldEffect.particlesystem.isPlaying) {
         		this.coldEffect.particlesystem.stop();
         		this.coldEffect.particlesystem.isPlaying = false;
         	}
 
-        	if ((globalTemperature - temperatureDest >= 0.0) && this.heatEffectL.particlesystem.isPlaying) {
+        	if ((global[GLOBAL.TEMPERATURE] - temperatureDest >= 0.0) && this.heatEffectL.particlesystem.isPlaying) {
         		this.heatEffectL.particlesystem.stop();
         		this.heatEffectL.particlesystem.isPlaying = false;
         		this.heatEffectR.particlesystem.stop();
@@ -157,7 +163,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (isNaN(speed)) speed = 1;
             
-            var newStringTvalue = parseInt(UI.StringsliderT.value) + (distance);
+            var newStringTvalue = parseInt(UI.StringsliderT.value) + (0);
 
 			if (!UI.StringsliderT.mouseIsOver) {
                 UI.StringsliderT.value = newStringTvalue;
@@ -167,14 +173,14 @@ pc.script.create('HIDInterface', function (context) {
             
             ///*
             temperatureChange = true;
-			temperatureStart = globalTemperature;
-			temperatureDest = globalTemperature + (distance * 2.0);
+			temperatureStart = global[GLOBAL.TEMPERATURE];
+			temperatureDest = global[GLOBAL.TEMPERATURE] + (distance * 2.0);
             
 			velocity = Math.abs((speed) * 50);
 			timer = new Date();
 			lerpStartTime = timer.getTime();
 
-			debug.log(DEBUG.HARDWARE, "Global Temp: " + globalTemperature);
+			debug.log(DEBUG.HARDWARE, "Global Temp: " + global[GLOBAL.TEMPERATURE]);
 			
 			if (position < 0) {
 				coldEffect.particlesystem.play();
@@ -194,7 +200,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
             
-            var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+            var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
             
 			if (!UI.StringsliderA.mouseIsOver) {
                 UI.StringsliderA.value = newStringAvalue;
@@ -203,7 +209,7 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
             
             ///*
-            animalMigrationOffset += distance * 1.5;
+            //global[GLOBAL.ANIMALS] += distance * 1.5;
             
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
@@ -218,7 +224,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
 			
 			if (!UI.StringsliderP.mouseIsOver) {
                 UI.StringsliderP.value = newStringPvalue;
@@ -240,7 +246,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
             
-            var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+            var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
 			
 			if (!UI.StringsliderE.mouseIsOver) {
                 UI.StringsliderE.value = newStringEvalue;
@@ -269,7 +275,7 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
 
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
 			
 			if (!UI.StringsliderW.mouseIsOver) {
                 UI.StringsliderW.value = newStringWvalue;
@@ -281,20 +287,27 @@ pc.script.create('HIDInterface', function (context) {
     //---------------------------------------------------------------------------------------------
 
 		moving_T: function(position, distance, speed) {
-			debug.log(DEBUG.HARDWARE, "String T moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String T moving: " + position + " " + distance + " " + speed);
             
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringTvalue = parseInt(UI.StringsliderT.value) + distance;
+            var newStringTvalue = parseInt(UI.StringsliderT.value) + 0;
             
 			if (!UI.StringsliderT.mouseIsOver){
                 UI.StringsliderT.value = newStringTvalue;
             }
 			
 			inactiveTimer = 0;
+
+			var elem = GLOBAL.TEMPERATURE;
             
-            globalTemperature += (distance * 2.0);
+            globalDest[elem] += position;
+            if (globalDest[elem] > globalMax[elem]) {
+            	globalDest[elem] = globalMax[elem];
+        	} else if (globalDest[elem] < globalMin[elem]) {
+            	globalDest[elem] = globalMin[elem];
+        	}
             
 			if (position < 0) {
 				coldEffect.particlesystem.play();
@@ -310,12 +323,12 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moving_A: function(position, distance, speed) {
-			debug.log(DEBUG.HARDWARE, "String A moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String A moving: " + position + " " + distance + " " + speed);
             
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringAvalue = parseInt(UI.StringsliderA.value) + distance;
+            var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
             
 			if (!UI.StringsliderA.mouseIsOver){
                 UI.StringsliderA.value = newStringAvalue;
@@ -323,7 +336,16 @@ pc.script.create('HIDInterface', function (context) {
             
 			inactiveTimer = 0;
             
-            animalMigrationOffset += distance * 1.5;
+            //global[GLOBAL.ANIMALS] += distance * 1.5;
+
+            var elem = GLOBAL.ANIMALS;
+            
+            globalDest[elem] += position;
+            if (globalDest[elem] > globalMax[elem]) {
+            	globalDest[elem] = globalMax[elem];
+        	} else if (globalDest[elem] < globalMin[elem]) {
+            	globalDest[elem] = globalMin[elem];
+        	}
             
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
@@ -332,23 +354,35 @@ pc.script.create('HIDInterface', function (context) {
 		},
 		
 		moving_P: function(position, distance, speed) {
-			debug.log(DEBUG.HARDWARE, "String P moving: ", position, distance, speed);
+			debug.log(DEBUG.HARDWARE, "String P moving: " + position + " " + distance + " " + speed);
             
             //NaN
 			if (speed != speed) speed = 1;
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + distance;
+			var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
 			
 			if (!UI.StringsliderP.mouseIsOver) {
                 UI.StringsliderP.value = newStringPvalue;
             }
             
 			inactiveTimer = 0;
+
+			var elem = GLOBAL.FAULTS;
+            
+            globalDest[elem] += position;
+            if (globalDest[elem] > globalMax[elem]) {
+            	globalDest[elem] = globalMax[elem];
+        	} else if (globalDest[elem] < globalMin[elem]) {
+            	globalDest[elem] = globalMin[elem];
+        	} else {
+        		ico.faultNumMove = 1; //Math.abs((distance * position));
+				ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+        	}
             
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
-			ico.faultNumMove = Math.abs((distance * position));
-			ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+			//ico.faultNumMove = 1; //Math.abs((distance * position));
+			//ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
 		},
 		
 		moving_E: function(position, distance, speed) {
@@ -357,13 +391,27 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringEvalue = parseInt(UI.StringsliderE.value) + distance;
+            var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
 			
 			if (!UI.StringsliderE.mouseIsOver) {
                 UI.StringsliderE.value = newStringEvalue;
             }
             
 			inactiveTimer = 0;
+
+			if (stormTimer < 0) {
+
+				scripts.Atmosphere.makeStorm((distance * position), speed);
+				
+				if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
+
+				for (var i = 0; i < hidInterface.lightsArray.length; i++){
+					hidInterface.lightsArray[i].enabled = true;
+					hidInterface.lightsArray[i].script.LightController.startLightning();
+				}
+
+				stormTimer = 50;
+			}
 		},
 		
 		moving_W: function(position, distance, speed) {
@@ -372,7 +420,7 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
 
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + distance;
+			var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
 			
 			if (!UI.StringsliderW.mouseIsOver) {
                 UI.StringsliderW.value = newStringWvalue;

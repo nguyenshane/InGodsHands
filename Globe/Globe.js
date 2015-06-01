@@ -82,7 +82,7 @@ pc.script.create('Globe', function (context) {
                     "    float b = lattem; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     // Snow Tops
-                    "    if (dist > radius + max(0.20 - lattem/2.0, 0.0)) {",
+                    "    if (dist > radius + max(0.20 - lattem/2.0, 0.00)) {",
                     "       color = intensity * sunIntensity * vec4(255.0/256.0, 253.0/256.0, 247.0/256.0, 1.0);",
                     // Mountain
                     "    } else if (dist > radius + 0.15) {",
@@ -178,8 +178,8 @@ pc.script.create('Globe', function (context) {
                 }
 
                 // Set temperature variables in shader
-            	this.material.setParameter('temperature', globalTemperature);
-                this.material.setParameter('maxTemp', globalTemperatureMax);
+            	this.material.setParameter('temperature', global[GLOBAL.TEMPERATURE]);
+                this.material.setParameter('maxTemp', globalMax[GLOBAL.TEMPERATURE]);
                 
                 this.material.setParameter('time', globalTime);
 

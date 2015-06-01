@@ -91,18 +91,18 @@ pc.script.create('Camera', function (context) {
 			// Rotate plane background
 			//this.bgplane.rotateLocal(0, dt*-2, 0);
             // Rotate belief auras
-            this.aura1.rotateLocal(0, dt*4, 0);
-            this.aura2.rotateLocal(0, dt*8, 0);
-            this.aura3.rotateLocal(0, dt*-6, 0);
+            this.aura1.rotateLocal(0, dt*-0.5, 0);
+            this.aura2.rotateLocal(0, dt*-3, 0);
+            this.aura3.rotateLocal(0, dt*-1.2, 0);
             this.lights.rotateLocal(0, 0, dt*10);
 
             // Scale belief aura
             var maxScale = 18;
             var minScale = 12;
 
-            this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
-            this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
-            this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            //this.aura1.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            //this.aura2.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
+            //this.aura3.setLocalScale(minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief, minScale + maxScale*totalBelief/maxTotalBelief);
            
             // Change aura color
             // if(totalBelief < prevTotalBelief) {

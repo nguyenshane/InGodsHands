@@ -87,13 +87,13 @@ pc.script.create('AudioController', function (context) {
             // set the target music layer based on belief change.
 
            if(!changeMusic && backToNormal){
-	            if (totalBelief > prevTotalBelief){
+	            if (global[GLOBAL.BELIEF] > prevTotalBelief){
 	            	changeMusic = true;   	
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;
 	            	lerpStartTime = timerTwo.getTime();
 	                this.targetMusicLayer = 1;
-	            } else if (totalBelief < prevTotalBelief){
+	            } else if (global[GLOBAL.BELIEF] < prevTotalBelief){
 	            	changeMusic = true;
 	            	timerTwo = new Date();
 	            	this.musicLayerStart = this.musicLayer;
@@ -245,7 +245,17 @@ pc.script.create('AudioController', function (context) {
 			this.playing = false;
 			this.paused = false;
 			
-			this.audio.audiosource.play("IGH Statue Demon");
+			this.audio.audiosource.play("IGH Statue Demon 2");
+		},
+
+		sound_TribeSacrifice: function(){
+			//console.log("Play sound: Tribe Denounce");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Sacrifice 2");
 		},
 
 		sound_MakeThunder: function(){

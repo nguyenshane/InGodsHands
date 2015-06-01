@@ -6,7 +6,11 @@
 
 var GLOBAL = {
     TEMPERATURE : 0,
-    BELIEF : 1,
+    ANIMALS : 1,
+    FAULTS : 2,
+    PUNISH : 3,
+    ROTATION : 4,
+    BELIEF : 5,
 }
 
 pc.script.attribute('globalSunRotation', 'number', 30);
@@ -57,9 +61,9 @@ pc.script.create('globalInterface', function (context) {
 			rainChance = 0.1 * m;
 			rainHumidityChance = 1.2 * m;
 			
-            globalTemperature = 90;
-            globalTemperatureMax = 140;
-            globalTemperatureMin = 40;
+            //global[GLOBAL.TEMPERATURE] = 50;
+            //globalMax[GLOBAL.TEMPERATURE] = 100;
+            //globalMin[GLOBAL.TEMPERATURE] = 0;
 			
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
@@ -107,8 +111,8 @@ pc.script.create('globalInterface', function (context) {
             this.faultIncrement = 0.01;
             this.faultDir = -1;
 
-            this.setupEndScreen();
             this.setupSnapshots();
+            this.setupGlobalVariables();
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -160,6 +164,11 @@ pc.script.create('globalInterface', function (context) {
                     ico.tiles[i].intermittentUpdate();
                 }
                 this.lastUpdatedTile += tilesToUpdate;
+
+                //Move global vars closer to their destination
+                for (var i = 0; i < global.length; ++i) {
+                    this.lerpToDestination(i);
+                }
 
 
                 // Test vertex neighbors update
@@ -221,28 +230,197 @@ pc.script.create('globalInterface', function (context) {
             console.log("END GAME");
             //this.setupEndScreen();
             this.drawEndScreen();
+            setTimeout(function() { location.href = 'end.html' },10000);
+        },
+
+        setupGlobalVariables: function() {
+
+            global = [];
+            global[GLOBAL.TEMPERATURE] = 50;
+            global[GLOBAL.ANIMALS] = 50;
+            global[GLOBAL.FAULTS] = 50;
+            global[GLOBAL.PUNISH] = 50;
+            global[GLOBAL.ROTATION] = 50;
+            global[GLOBAL.BELIEF] = 50;
+
+            globalMax = [];
+            globalMax[GLOBAL.TEMPERATURE] = 100;
+            globalMax[GLOBAL.ANIMALS] = 100;
+            globalMax[GLOBAL.FAULTS] = 100;
+            globalMax[GLOBAL.PUNISH] = 100;
+            globalMax[GLOBAL.ROTATION] = 100;
+            globalMax[GLOBAL.BELIEF] = 100;
+
+            globalMin = [];
+            globalMin[GLOBAL.TEMPERATURE] = 0;
+            globalMin[GLOBAL.ANIMALS] = 0;
+            globalMin[GLOBAL.FAULTS] = 0;
+            globalMin[GLOBAL.PUNISH] = 0;
+            globalMin[GLOBAL.ROTATION] = 0;
+            globalMin[GLOBAL.BELIEF] = 0;
+
+            globalDest = [];
+            globalDest[GLOBAL.TEMPERATURE] = 50;
+            globalDest[GLOBAL.ANIMALS] = 50;
+            globalDest[GLOBAL.FAULTS] = 50;
+            globalDest[GLOBAL.PUNISH] = 50;
+            globalDest[GLOBAL.ROTATION] = 50;
+            globalDest[GLOBAL.BELIEF] = 50;
+
+            globalPrev = [];
+            globalPrev[GLOBAL.TEMPERATURE] = 50;
+            globalPrev[GLOBAL.ANIMALS] = 50;
+            globalPrev[GLOBAL.FAULTS] = 50;
+            globalPrev[GLOBAL.PUNISH] = 50;
+            globalPrev[GLOBAL.ROTATION] = 50;
+            globalPrev[GLOBAL.BELIEF] = 50;
+
+            endColors = [];
+            endColors[GLOBAL.TEMPERATURE] = '#ff0000';
+            endColors[GLOBAL.ANIMALS] = '#ffff00';
+            endColors[GLOBAL.FAULTS] = '#00ff00';
+            endColors[GLOBAL.PUNISH] = '#00ffff';
+            endColors[GLOBAL.ROTATION] = '#0000ff';
+            endColors[GLOBAL.BELIEF] = '#ff00ff';
+
+            month = 0;
+            year = 30000;
+        },
+
+        lerpToDestination: function(elem) {
+            if (global[elem] != globalDest[elem]) {
+                global[elem] += (globalDest[elem] - globalPrev[elem])/30;
+                if (global[elem] > Math.max(globalDest[elem], globalPrev[elem]) || global[elem] < Math.min(globalDest[elem], globalPrev[elem])) {
+                    global[elem] = globalDest[elem];
+                    globalPrev[elem] = globalDest[elem];
+                }
+            }
         },
 
         setupSnapshots: function() {
-            snapshots = [];
-
-            globalMax = [];
-            globalMax[GLOBAL.TEMPERATURE] = globalTemperatureMax;
-            globalMax[GLOBAL.BELIEF] = maxTotalBelief;
-
-            globalMin = [];
-            globalMin[GLOBAL.TEMPERATURE] = globalTemperatureMin;
-            globalMin[GLOBAL.BELIEF] = minTotalBelief;
+            snapshots = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Temperature",
+                        fillColor: "rgba(255,79,70,0.1)",
+                        strokeColor: "rgba(255,79,70,1)",
+                        pointColor: "rgba(255,79,70,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(255,79,70,1)",
+                        data: []
+                    },
+                    {
+                        label: "Animal Migration",
+                        fillColor: "rgba(232,152,43,0.1)",
+                        strokeColor: "rgba(232,152,43,1)",
+                        pointColor: "rgba(232,152,43,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(232,152,43,1)",
+                        data: []
+                    },
+                    {
+                        label: "Plate Tectonics",
+                        fillColor: "rgba(107,246,255,0.1)",
+                        strokeColor: "rgba(107,246,255,1)",
+                        pointColor: "rgba(107,246,255,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(107,246,255,1)",
+                        data: []
+                    },
+                    {
+                        label: "Punishment",
+                        fillColor: "rgba(255,244,64,0.1)",
+                        strokeColor: "rgba(255,244,64,1)",
+                        pointColor: "rgba(255,244,64,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(255,244,64,1)",
+                        data: []
+                    },
+                    {
+                        label: "World Rotation",
+                        fillColor: "rgba(105,232,111,0.1)",
+                        strokeColor: "rgba(105,232,111,1)",
+                        pointColor: "rgba(105,232,111,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(105,232,111,1)",
+                        data: []
+                    }/*,
+                    {
+                        label: "Total Belief",
+                        fillColor: "rgba(220,220,220,0.1)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: []
+                    }*/
+                ]
+            };
         },
 
         takeSnapshot: function() {
-            var snapshot = [];
-            snapshot[GLOBAL.TEMPERATURE] = globalTemperature;
-            snapshot[GLOBAL.BELIEF] = totalBelief;
-            
-            snapshots.push(snapshot);
-            //this.drawEndScreen();
+            console.log(snapshots);
+            for (var i = 0; i < snapshots.datasets.length; ++i) {
+                snapshots.datasets[i].data.push(global[i]);
+            }
+            snapshots.labels.push(year + " BC");
+            /*var label;
+            switch(month) {
+                case 0:
+                    label = "January " + year + " BC";
+                    break;
+                case 1:
+                    label = "February " + year + " BC";
+                    break;
+                case 2:
+                    label = "March " + year + " BC";
+                    break;
+                case 3:
+                    label = "April " + year + " BC";
+                    break;
+                case 4:
+                    label = "May " + year + " BC";
+                    break;
+                case 5:
+                    label = "June " + year + " BC";
+                    break;
+                case 6:
+                    label = "July " + year + " BC";
+                    break;
+                case 7:
+                    label = "August " + year + " BC";
+                    break;
+                case 8:
+                    label = "September " + year + " BC";
+                    break;
+                case 9:
+                    label = "October " + year + " BC";
+                    break;
+                case 10:
+                    label = "November " + year + " BC";
+                    break;
+                case 11:
+                    label = "December " + year + " BC";
+                    break;
+            }
+            snapshots.labels.push(label);
+
+            month = (month + 1) % 12;
+            if (month = 0) {
+                --year;
+            }*/
+
+            --year;
         },
+
+
 
         doTribesExist: function() {
             for (var i = 0; i < tribes.length; i++) {
@@ -284,11 +462,11 @@ pc.script.create('globalInterface', function (context) {
         },
 
         drawEndScreen: function() {
-            canvas.style.display = "inline";
+            /*canvas.style.display = "inline";
             ctx.fillStyle = '#999999';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             this.drawSnapLine(GLOBAL.TEMPERATURE, '#ff0000');
-            this.drawSnapLine(GLOBAL.BELIEF, '#00ff00');
+            this.drawSnapLine(GLOBAL.BELIEF, '#00ff00');*/
         },
 
         drawSnapLine: function(element, color) {
@@ -300,6 +478,7 @@ pc.script.create('globalInterface', function (context) {
 
             ctx.strokeStyle = color;
             ctx.stroke();
+            console.log('snapshots', snapshots);
         }
     };
 
