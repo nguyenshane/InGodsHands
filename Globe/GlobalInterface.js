@@ -366,7 +366,8 @@ pc.script.create('globalInterface', function (context) {
         },
 
         takeSnapshot: function() {
-            console.log(snapshots);
+            //console.log(snapshots);
+            localStorage.setItem('snapshots', JSON.stringify(snapshots));
             for (var i = 0; i < snapshots.datasets.length; ++i) {
                 snapshots.datasets[i].data.push(global[i]);
             }

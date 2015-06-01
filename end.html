@@ -1,0 +1,94 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+	<link rel="manifest" href="/manifest.json">
+    <style type="text/css">
+        html {
+            height: 100%;
+            background-color: #1d292c;
+        }
+        body {
+            margin: 0;
+            max-height: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1d292c;
+            font-family: Helvetica, arial, sans-serif;
+            position: relative;
+            width: 100%;
+        }
+
+		.wrapper {
+		    text-align: center;
+		}
+
+       	.btn {
+		  background: #304c50;
+		  background-image: -webkit-linear-gradient(top, #304c50, #000000);
+		  background-image: -moz-linear-gradient(top, #304c50, #000000);
+		  background-image: -ms-linear-gradient(top, #304c50, #000000);
+		  background-image: -o-linear-gradient(top, #304c50, #000000);
+		  background-image: linear-gradient(to bottom, #304c50, #000000);
+		  -webkit-border-radius: 11;
+		  -moz-border-radius: 11;
+		  border-radius: 11px;
+		  text-shadow: 1px 1px 3px #304c50;
+		  font-family: Arial;
+		  color: #ffffff;
+		  font-size: 20px;
+		  padding: 10px 20px 10px 20px;
+		  text-decoration: none;
+		  position: absolute;
+		  top: 50%;
+		  border: none;
+		}
+
+		.btn:hover {
+		  background: #304c50;
+		  text-decoration: none;
+		}
+    </style>
+    <script src="chart.min.js"></script>
+    <title>In God's Hands</title>
+
+</head>
+<body>
+	<div class="wrapper">
+		<canvas id="myChart" width="700px" height="500px"></canvas><br>
+	    <button class="btn" onclick="location.href = 'index.html';">Restart</button>
+	</div>
+<script>
+
+console.log("hello");
+	var lineChartData = localStorage.getItem('snapshots');;
+
+
+	console.log("parse", JSON.parse(lineChartData));
+
+	Chart.defaults.global.animationSteps = 100;
+	Chart.defaults.global.tooltipYPadding = 16;
+	Chart.defaults.global.tooltipCornerRadius = 0;
+	Chart.defaults.global.tooltipTitleFontStyle = "normal";
+	Chart.defaults.global.tooltipFillColor = "rgba(0,160,0,0.8)";
+	Chart.defaults.global.animationEasing = "easeOutBounce";
+	Chart.defaults.global.responsive = false;
+	Chart.defaults.global.scaleLineColor = "white";
+	Chart.defaults.global.scaleFontSize = 10;
+
+	var ctx = document.getElementById("myChart").getContext("2d");
+	var LineChartDemo = new Chart(ctx).Line(JSON.parse(lineChartData), {
+	    pointDotRadius: 1,
+	    bezierCurve: false,
+	    scaleShowVerticalLines: false,
+	    scaleGridLineColor: "white"
+	});
+
+
+</script>
+    
+</body>
+</html>
