@@ -274,7 +274,7 @@ pc.script.create('Animal', function (context) {
             human.underAttack = false;
             
             if (Math.random() < 0.5) {
-                human.killSelf();
+                //human.killSelf();
             }
         },
         

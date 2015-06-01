@@ -71,7 +71,7 @@ pc.script.create('tribe', function (context) {
         this.noSunTimer = 0;
         this.falseIdolTimer = 0;
         this.sacrificeTimer = 0;
-        this.ruleCooldownTimer = 0;
+        this.ruleCooldownTimer = 10;
         this.eventTimer = 240;
 
         this.iconSmokeIsPlaying;
@@ -157,8 +157,10 @@ pc.script.create('tribe', function (context) {
 
 
             this.iconSmoke = this.entity.findByName("TestFogTribe");
+            this.iconSmoke.particlesystem.stop();
             this.iconSmokeIsPlaying = false;
             this.praySmoke = this.entity.findByName("PraySmoke");
+            this.praySmoke.particlesystem.stop();
             this.praySmokeIsPlaying = false;
 
             //this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
@@ -544,7 +546,10 @@ pc.script.create('tribe', function (context) {
             this.idolAngleChange = 0;
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
-                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("cower");
+                if (this.humans[i].enabled){ 
+                    this.humans[i].particlesystem.stop();
+                    this.humans[i].script.Human.setAnimState("cower");
+                }
             }
 
             var timer = new Date();
@@ -559,9 +564,6 @@ pc.script.create('tribe', function (context) {
 				
                 switch (this.previousAction) {
                     case this.sacrifice:
-                        for (var i = this.humans.length-1; i >= 0; i--) {
-                            if (this.humans[i].enabled) this.humans[i].particlesystem.stop();
-                        }
                         this.increaseFear();
                         this.decreaseBelief();
                         this.isBusy = false;
