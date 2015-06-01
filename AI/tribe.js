@@ -158,6 +158,7 @@ pc.script.create('tribe', function (context) {
 
             this.iconSmoke = this.entity.findByName("TestFogTribe");
             this.iconSmokeIsPlaying = false;
+            this.origIconColor = this.entity.findByName("TestFogTribe").particlesystem.colorGraph;
             this.praySmoke = this.entity.findByName("PraySmoke");
             this.praySmokeIsPlaying = false;
 
@@ -384,6 +385,15 @@ pc.script.create('tribe', function (context) {
 
         activatePraySmoke: function (icon) {
             this.iconSmoke.particlesystem.colorMap = icon;
+
+            if (icon == this.denounceIcon) {
+                this.iconSmoke.particlesystem.colorGraph = context.root.findByName("RedColorGraph").particlesystem.colorGraph;
+                this.iconSmoke.particlesystem.intensity = 3;
+            } else {
+                this.iconSmoke.particlesystem.colorGraph = this.origIconColor;
+                this.iconSmoke.particlesystem.intensity = 20;
+            }
+
             this.iconSmoke.particlesystem.play();
             this.iconSmokeIsPlaying = true;
             this.praySmoke.particlesystem.play();
@@ -448,6 +458,7 @@ pc.script.create('tribe', function (context) {
                 this.isBusy = false;
                 //this.prayForSomething();
                 this.deactivatePraySmoke();
+                this.startDenouncing();
             }
 
             if ((this.currTileTemperature > (this.idealTemperature - 8) &&
@@ -504,6 +515,7 @@ pc.script.create('tribe', function (context) {
                 // Turn off symbols here
                 /////////////////////////
                 this.deactivatePraySmoke();
+                this.startDenouncing();
                 //this.prayForSomething();
             }
 
@@ -639,10 +651,11 @@ pc.script.create('tribe', function (context) {
         },
 
         startDenouncing: function() {
-            this.denounceTimer = 30;
+            this.denounceTimer = 10;
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
+            this.beliefLight.script.LightController.startDenounceLight();
             this.activatePraySmoke(this.denounceIcon);
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
