@@ -72,7 +72,7 @@ pc.script.create('tribe', function (context) {
         this.falseIdolTimer = 0;
         this.sacrificeTimer = 0;
         this.ruleCooldownTimer = 10;
-        this.eventTimer = 240;
+        this.eventTimer = 200;
 
         this.iconSmokeIsPlaying;
         this.beliefLight;
