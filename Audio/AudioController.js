@@ -245,7 +245,17 @@ pc.script.create('AudioController', function (context) {
 			this.playing = false;
 			this.paused = false;
 			
-			this.audio.audiosource.play("IGH Statue Demon");
+			this.audio.audiosource.play("IGH Statue Demon 2");
+		},
+
+		sound_TribeSacrifice: function(){
+			//console.log("Play sound: Tribe Denounce");
+
+			this.audio = context.root._children[0];
+			this.playing = false;
+			this.paused = false;
+			
+			this.audio.audiosource.play("IGH Sacrifice 2");
 		},
 
 		sound_MakeThunder: function(){
