@@ -529,10 +529,7 @@ pc.script.create('tribe', function (context) {
                         this.prayerTimer = 0;
                         
                         this.isBusy = false;
-                        // Turn off symbols here
-                        ////////////////////////
-                        // this.startPraise();
-                        // this.prayForSomething();
+                        this.startPraise();
                         this.deactivatePraySmoke();
                     }
                 }
