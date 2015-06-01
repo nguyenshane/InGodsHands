@@ -52,13 +52,13 @@ pc.extend(pc, function(){
             if (event.key === this.leftKey) {
                 //this.rotating = true;
                 this.pressing = true;
-                this.direction--;
+                this.fire("moving", -1, this.distance, this.speed);
                 this.doCount();                
             }
             if (event.key === this.rightKey) {
                 //this.rotating = true;
                 this.pressing = true;
-                this.direction++;
+                this.fire("moving", 1, this.distance, this.speed);
                 this.doCount();
                 //console.log(this.direction);
             }
@@ -98,7 +98,7 @@ pc.extend(pc, function(){
         },
 
 		fireEvent: function() {
-			this.fire("moved", this.direction, this.distance, this.speed);
+			//this.fire("moved", this.direction, this.distance, this.speed);
 			//console.log("FIRED in stringTAPEW, time: ", this.speed, this.direction, this.distance, this.speed);
 		},
         
@@ -118,7 +118,7 @@ pc.extend(pc, function(){
     
         
         onKeyUp: function (event) {
-            this.rotating = false;
+            /*this.rotating = false;
             this.distance += this.direction;
 			if(this.direction>0) this.direction = 1;
 			else if (this.direction<=0) this.direction = -1;
@@ -132,7 +132,7 @@ pc.extend(pc, function(){
 
             // When the space bar is pressed this scrolls the window.
             // Calling preventDefault() on the original browser event stops this.
-            event.event.preventDefault();
+            event.event.preventDefault();*/
         },
     };
     

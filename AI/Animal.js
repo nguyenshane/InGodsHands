@@ -167,7 +167,7 @@ pc.script.create('Animal', function (context) {
             this.migrationDelay -= dt;
             
             if (this.migrationDelay < 0) {
-                var migrationLatitude = this.initialLatitude + animalMigrationOffset;
+                var migrationLatitude = this.initialLatitude + (global[GLOBAL.ANIMALS] - 50)*50;
                 var migrationLongitude = this.initialLongitude;
                 
                 //restricting to a longitude band and sorting by latitudinal distance (excluding all tiles that aren't between the desired latitude/z-position and current z-position) might be a good idea
@@ -197,7 +197,7 @@ pc.script.create('Animal', function (context) {
                         }
                         this.path.push(tile);
                         this.setPath(null, this.migrateAlongPath);
-                        this.currentMigrationOffset = animalMigrationOffset;
+                        this.currentMigrationOffset = global[GLOBAL.ANIMALS];
                         return;
                     }
                 }
@@ -274,7 +274,7 @@ pc.script.create('Animal', function (context) {
             human.underAttack = false;
             
             if (Math.random() < 0.5) {
-                human.killSelf();
+                //human.killSelf();
             }
         },
         
@@ -287,7 +287,7 @@ pc.script.create('Animal', function (context) {
             var timeSinceTravelStarted = timer.getTime() - this.travelStartTime;
             var percentTravelled = timeSinceTravelStarted / this.travelTime;
             
-            var offsetDiff = Math.abs(this.currentMigrationOffset - animalMigrationOffset);
+            var offsetDiff = Math.abs(this.currentMigrationOffset - global[GLOBAL.ANIMALS]);
             if (percentTravelled >= 1 && offsetDiff > 1.0) {
                 this.beginMigration();
             } else {

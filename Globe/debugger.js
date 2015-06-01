@@ -45,7 +45,7 @@ debugstyles[DEBUG.ANIMALS] = {
 
 debugstyles[DEBUG.HARDWARE] = {
 	name : "[HARDWARE INTERFACE] ",
-	on : false,
+	on : true,
 	color : "#009999", //Cyan
 };
 

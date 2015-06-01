@@ -561,7 +561,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     };
 
     this.getTemperature = function(){
-        this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalTemperatureMax/2 + globalTemperature/2;
+        this.temperature = (1.0 - Math.abs(this.center.y/ico.radius))*globalMax[GLOBAL.TEMPERATURE]/2 + global[GLOBAL.TEMPERATURE]/2;
         this.assignType(); // update type of tile when it's temperature changes
         return this.temperature;
     };

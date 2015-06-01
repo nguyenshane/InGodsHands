@@ -6,7 +6,11 @@
 
 var GLOBAL = {
     TEMPERATURE : 0,
-    BELIEF : 1,
+    ANIMALS : 1,
+    FAULTS : 2,
+    PUNISH : 3,
+    ROTATION : 4,
+    BELIEF : 5,
 }
 
 pc.script.attribute('globalSunRotation', 'number', 30);
@@ -57,9 +61,9 @@ pc.script.create('globalInterface', function (context) {
 			rainChance = 0.1 * m;
 			rainHumidityChance = 1.2 * m;
 			
-            globalTemperature = 90;
-            globalTemperatureMax = 140;
-            globalTemperatureMin = 40;
+            //global[GLOBAL.TEMPERATURE] = 50;
+            //globalMax[GLOBAL.TEMPERATURE] = 100;
+            //globalMin[GLOBAL.TEMPERATURE] = 0;
 			
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
@@ -108,7 +112,7 @@ pc.script.create('globalInterface', function (context) {
             this.faultDir = -1;
 
             this.setupEndScreen();
-            this.setupSnapshots();
+            this.setupGlobalVariables();
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -160,6 +164,11 @@ pc.script.create('globalInterface', function (context) {
                     ico.tiles[i].intermittentUpdate();
                 }
                 this.lastUpdatedTile += tilesToUpdate;
+
+                //Move global vars closer to their destination
+                for (var i = 0; i < global.length; ++i) {
+                    this.lerpToDestination(i);
+                }
 
 
                 // Test vertex neighbors update
@@ -223,22 +232,72 @@ pc.script.create('globalInterface', function (context) {
             this.drawEndScreen();
         },
 
-        setupSnapshots: function() {
+        setupGlobalVariables: function() {
             snapshots = [];
 
+            global = [];
+            global[GLOBAL.TEMPERATURE] = 50;
+            global[GLOBAL.ANIMALS] = 50;
+            global[GLOBAL.FAULTS] = 50;
+            global[GLOBAL.PUNISH] = 50;
+            global[GLOBAL.ROTATION] = 50;
+            global[GLOBAL.BELIEF] = 50;
+
             globalMax = [];
-            globalMax[GLOBAL.TEMPERATURE] = globalTemperatureMax;
-            globalMax[GLOBAL.BELIEF] = maxTotalBelief;
+            globalMax[GLOBAL.TEMPERATURE] = 100;
+            globalMax[GLOBAL.ANIMALS] = 100;
+            globalMax[GLOBAL.FAULTS] = 100;
+            globalMax[GLOBAL.PUNISH] = 100;
+            globalMax[GLOBAL.ROTATION] = 100;
+            globalMax[GLOBAL.BELIEF] = 100;
 
             globalMin = [];
-            globalMin[GLOBAL.TEMPERATURE] = globalTemperatureMin;
-            globalMin[GLOBAL.BELIEF] = minTotalBelief;
+            globalMin[GLOBAL.TEMPERATURE] = 0;
+            globalMin[GLOBAL.ANIMALS] = 0;
+            globalMin[GLOBAL.FAULTS] = 0;
+            globalMin[GLOBAL.PUNISH] = 0;
+            globalMin[GLOBAL.ROTATION] = 0;
+            globalMin[GLOBAL.BELIEF] = 0;
+
+            globalDest = [];
+            globalDest[GLOBAL.TEMPERATURE] = 50;
+            globalDest[GLOBAL.ANIMALS] = 50;
+            globalDest[GLOBAL.FAULTS] = 50;
+            globalDest[GLOBAL.PUNISH] = 50;
+            globalDest[GLOBAL.ROTATION] = 50;
+            globalDest[GLOBAL.BELIEF] = 50;
+
+            globalPrev = [];
+            globalPrev[GLOBAL.TEMPERATURE] = 50;
+            globalPrev[GLOBAL.ANIMALS] = 50;
+            globalPrev[GLOBAL.FAULTS] = 50;
+            globalPrev[GLOBAL.PUNISH] = 50;
+            globalPrev[GLOBAL.ROTATION] = 50;
+            globalPrev[GLOBAL.BELIEF] = 50;
+
+            endColors = [];
+            endColors[GLOBAL.TEMPERATURE] = '#ff0000';
+            endColors[GLOBAL.ANIMALS] = '#ffff00';
+            endColors[GLOBAL.FAULTS] = '#00ff00';
+            endColors[GLOBAL.PUNISH] = '#00ffff';
+            endColors[GLOBAL.ROTATION] = '#0000ff';
+            endColors[GLOBAL.BELIEF] = '#ff00ff';
+        },
+
+        lerpToDestination: function(elem) {
+            if (global[elem] != globalDest[elem]) {
+                global[elem] += (globalDest[elem] - globalPrev[elem])/30;
+                if (global[elem] > Math.max(globalDest[elem], globalPrev[elem]) || global[elem] < Math.min(globalDest[elem], globalPrev[elem])) {
+                    global[elem] = globalDest[elem];
+                    globalPrev[elem] = globalDest[elem];
+                }
+            }
         },
 
         takeSnapshot: function() {
             var snapshot = [];
-            snapshot[GLOBAL.TEMPERATURE] = globalTemperature;
-            snapshot[GLOBAL.BELIEF] = totalBelief;
+            snapshot[GLOBAL.BELIEF] = global[GLOBAL.BELIEF];
+            snapshot[GLOBAL.TEMPERATURE] = global[GLOBAL.TEMPERATURE];
             
             snapshots.push(snapshot);
             //this.drawEndScreen();
