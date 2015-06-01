@@ -35,7 +35,7 @@ pc.script.create('tribe', function (context) {
         this.idealTemperature = Math.floor((Math.random() * 20) + 90);
         this.currTileTemperature;
 
-        this.belief = 10;
+        this.belief = 4;
         this.fear = 0;
 
         this.tile;
@@ -226,7 +226,7 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 25 && !this.isBusy) {
+                if (this.increasePopulationTimer >= 60 && !this.isBusy) {
                     this.increasePopulation();
                     this.increasePopulationTimer = 0;
                 }
