@@ -221,6 +221,7 @@ pc.script.create('globalInterface', function (context) {
             console.log("END GAME");
             //this.setupEndScreen();
             this.drawEndScreen();
+            setTimeout(function() { location.href = 'end.html' },10000);
         },
 
         setupSnapshots: function() {
@@ -300,6 +301,7 @@ pc.script.create('globalInterface', function (context) {
 
             ctx.strokeStyle = color;
             ctx.stroke();
+            console.log('snapshots', snapshots);
         }
     };
 
