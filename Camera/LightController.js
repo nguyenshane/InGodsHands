@@ -3,6 +3,7 @@ pc.script.create('LightController', function (context) {
     var LightController = function (entity) {
         this.entity = entity;
         this.beliefTimer;
+        this.denounceTimer;
         this.intensity;
         this.lightUp;
         this.lightningOn;
@@ -19,6 +20,8 @@ pc.script.create('LightController', function (context) {
             this.intensity = this.entity.light.intensity;
             this.beliefTimer = 180;
             this.lightUp = false;
+            this.denounceTimer = 180;
+            this.denounceOn = false;
             this.origColor = this.entity.light.color;
             this.lightningTimer = 40;
             this.lightningOn = false;
@@ -28,7 +31,9 @@ pc.script.create('LightController', function (context) {
         update: function (dt) {
         	if (this.lightUp){
         		this.shineBeliefLight();
-        	} else if (this.lightningOn){
+        	} else if (this.denounceOn){
+                this.shineDenounceLight();
+            } else if (this.lightningOn){
                 this.shineLightning();
             }
         },
@@ -51,6 +56,28 @@ pc.script.create('LightController', function (context) {
         	}
 
         	this.beliefTimer--;
+        },
+
+        startDenounceLight: function() {
+            this.denounceOn = true;
+            this.entity.light.color = new pc.Color(1, 0, 0, 1);
+            this.shineDenounceLight();
+        },
+
+        shineDenounceLight: function (deltaTime){
+            if (this.denounceTimer === 0){ 
+                this.intensity = 1;
+                this.denounceOn = false;
+                this.denounceTimer = 180;
+                this.entity.light.color = this.origColor;
+                return;
+            } else if (this.denounceTimer > 90){
+                this.entity.light.intensity += 0.20;
+            } else {
+                this.entity.light.intensity -= 0.20;
+            }
+
+            this.denounceTimer--;
         },
 
         startLightning: function(){
