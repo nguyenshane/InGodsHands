@@ -773,6 +773,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.sacrifice);
             this.isBusy = true;
             tribeMessage = ("starting sacrifice");
+            this.audio.sound_TribeSacrifice();
             // Play praise animation for all humans except the one being sacrificed
             var lastHuman = true;
             for (var i = this.humans.length-1; i >= 0; i--) {

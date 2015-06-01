@@ -23,7 +23,6 @@ pc.script.create('SwipeInterface', function (context) {
 
         var HIDInterface;
 
-        
     };
 
     SwipeInterface.prototype = {
@@ -191,7 +190,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_L.swipe({
                 tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
 
@@ -203,6 +202,8 @@ pc.script.create('SwipeInterface', function (context) {
                     self.holding_T_L = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_T', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   //anything here is ontouchstart
@@ -244,6 +245,8 @@ pc.script.create('SwipeInterface', function (context) {
                     self.holding_T_R = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_T', 1, 0, 0);
                 },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
@@ -259,7 +262,8 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped T_R" + " distance " + distance, " duration " + duration);
+                  console.log("event", event);
+                  //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
@@ -279,6 +283,8 @@ pc.script.create('SwipeInterface', function (context) {
                     self.holding_A_L = false;
                   });
                   console.log("jtarget.children ", jtarget.children(".active"));
+                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                  stringPull.script.send('HIDInterface', 'moving_A', -1, 0, 0);
                 },
                 hold:function(event, target) {
                   self.holding_A_L = true;
@@ -529,7 +535,6 @@ pc.script.create('SwipeInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-
             if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/4,5);
             if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/4,5);
             if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/4,5);

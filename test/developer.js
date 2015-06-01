@@ -420,7 +420,7 @@ pc.script.create('developer', function (context) {
             //timer = 2.0;
 
             // Set some default state on the UI element
-            this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
+            this.setText(('Global temperature: ' + global[GLOBAL.TEMPERATURE]), ('T') , ('A'), ('P'), ('E'), ('W') , ("music"));
             
             var tribeInfo = [];
             
@@ -438,7 +438,7 @@ pc.script.create('developer', function (context) {
             //updates the global temperature
             var app = pc.fw.Application.getApplication('application-canvas').context;
             
-            this.setText(('Global temperature: ' + globalTemperature), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
+            this.setText(('Global temperature: ' + global[GLOBAL.TEMPERATURE]), ('T') , ('A'), ('P'), ('E'), ('W'), ("music"));
   
             var tribeInfo = [];
 
@@ -464,7 +464,7 @@ pc.script.create('developer', function (context) {
             this.time += dt;
 
 			// var cast = this.sliderT.value * 1.0;
-			//  globalTemperature =  cast;    
+			//  global[GLOBAL.TEMPERATURE] =  cast;    
 			this.stringPull();
 			this.setPosition();
 			this.mouseCheck();
@@ -647,7 +647,7 @@ pc.script.create('developer', function (context) {
         },
 
         addTemperature: function(){
-            globalTemperature = globalTemperature + 1;
+            global[GLOBAL.TEMPERATURE] = global[GLOBAL.TEMPERATURE] + 1;
             //console.log("clicked");
         },
 
@@ -655,6 +655,8 @@ pc.script.create('developer', function (context) {
 
               if(this.StringsliderT.value != sliderTLastPos){
                this.sliderTDistance = this.StringsliderT.value - sliderTLastPos;
+               var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
+                stringPullLerp.script.send('HIDInterface', 'moving_T', this.sliderTDistance/5, 0, 0);
                hasMovedT = true;
                 }
               else {
@@ -918,7 +920,7 @@ pc.script.create('developer', function (context) {
         },
 
         subTemperature: function() {
-            globalTemperature = globalTemperature - 1;
+            global[GLOBAL.TEMPERATURE] = global[GLOBAL.TEMPERATURE] - 1;
         },
 
         setText: function (message, message2, message3, message4, message5, message6, message7) {
