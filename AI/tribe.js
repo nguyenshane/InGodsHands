@@ -153,6 +153,8 @@ pc.script.create('tribe', function (context) {
             this.stormIcon = this.entity.findByName("FearStorm").model.model.meshInstances[0].material.opacityMap;
             this.praiseIcon = this.entity.findByName("PraiseHands").model.model.meshInstances[0].material.opacityMap;
             this.animalIcon = this.entity.findByName("PrayAnimal").model.model.meshInstances[0].material.opacityMap;
+            this.denounceIcon = this.entity.findByName("DenounceGod").model.model.meshInstances[0].material.opacityMap;
+
 
             this.iconSmoke = this.entity.findByName("TestFogTribe");
             this.iconSmokeIsPlaying = false;
@@ -641,6 +643,7 @@ pc.script.create('tribe', function (context) {
             this.setCurrentAction(this.denounce);
             this.isBusy = true;
             this.audio.sound_TribeDenounce();
+            this.activatePraySmoke(this.denounceIcon);
             // Play action animation for all humans
             for (var i = 0; i < this.humans.length; i++) {
                 if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("denounce");
@@ -653,7 +656,7 @@ pc.script.create('tribe', function (context) {
                 this.tribeMessage = ("DENOUNCED GOD");
                 this.decreaseBelief();
                 this.denounceTimer = 0;
-                
+                this.deactivatePraySmoke();
                 this.isBusy = false;
             }
             
@@ -939,8 +942,8 @@ pc.script.create('tribe', function (context) {
                 influenceRate = 19;
             }
             */
-            var influenceDistance = 0.6*0.6;
-            if (this.population <= 3) influenceDistance = 0.4*0.4;
+            var influenceDistance = 0.8*0.8;
+            if (this.population <= 3) influenceDistance = 0.8*0.8;
             
             // Sick tile influence calculation algorithm
             // basically a BFS
