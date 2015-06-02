@@ -74,7 +74,7 @@ pc.script.create('developer', function (context) {
             buttonPause.style.position = 'absolute';
             buttonPause.style.top = '3%';
             buttonPause.style.left = '93%';
-            //buttonPause.style.visibility = 'hidden';
+            buttonPause.style.visibility = 'hidden';
             //console.log("gi ",  this.context.root.findByName("Rv1-stable").script.globalInterface);
             buttonPause.addEventListener('click', this.context.root.findByName("Rv1-stable").script.globalInterface.pauseGame);
 
@@ -88,7 +88,7 @@ pc.script.create('developer', function (context) {
             buttonUI.style.position = 'absolute';
             buttonUI.style.top = '3%';
             buttonUI.style.left = '90%';
-            //buttonUI.style.visibility = 'hidden';
+            buttonUI.style.visibility = 'hidden';
 
             //buttonUI.addEventListener('click', this.UIButtonClicked());
 
