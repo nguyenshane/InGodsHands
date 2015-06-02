@@ -60,8 +60,6 @@ pc.script.create('SwipeInterface', function (context) {
                   width: 100%;
                   height: 100%;
                   opacity: 0.65;
-                  -webki-totuch-callout: none;
-                  -webkit-user-select: none; 
               }
               .left{
                   height:20%;
@@ -70,8 +68,6 @@ pc.script.create('SwipeInterface', function (context) {
                   float:left;
                   box-shadow: none;
                   position: relative;
-                  -webki-totuch-callout: none;
-                  -webkit-user-select: none; 
               }
               .left img {
                   height: 50%;
@@ -98,8 +94,6 @@ pc.script.create('SwipeInterface', function (context) {
                   background: none;
                   float:left;
                   position: relative;
-                  -webki-totuch-callout: none;
-                  -webkit-user-select: none; 
               }
               .right img {
                   height: 50%;
@@ -179,32 +173,20 @@ pc.script.create('SwipeInterface', function (context) {
             var self = this;
 
             this.T_L.swipe({
-                tap:function(event, target) {
+                hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
-
                   jtarget.addClass('T_L_active');
+                  self.holding_T_L = true;
 
                   jtarget.on('touchend', function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
                   });
-                  console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
-                  stringPull.script.send('HIDInterface', 'moving_T', -1, 0, 0);
-                },
-                hold:function(event, target) {
-                  //anything here is ontouchstart
-                  //console.log("tap event ", event, " target ", target);
-                  self.holding_T_L = true;
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  //jtarget.children().attr('src', TLactive)
-                  jtarget.addClass('T_L_active');
-                  jtarget.on('touchend', function(){
-                    //anything here is ontouchend
+
+                  jtarget.mouseup(function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
@@ -212,46 +194,36 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("event", event);
+                  //console.log("event", event);
                   //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                   HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
                   var jtarget = $(event.srcElement);
-                  //jtarget.children().attr('src', TLidle)
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_L_active');
                   self.holding_T_L = false;
-                  
                 },
                 //threshold:75
                 longTapThreshold:0
             });
 
             this.T_R.swipe({
-                tap:function(event, target) {
-                  console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('T_R_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('T_R_active');
-                    self.holding_T_R = false;
-                  });
-                  console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
-                  stringPull.script.send('HIDInterface', 'moving_T', 1, 0, 0);
-                },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
-                  self.holding_T_R = true;
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_R_active');
+                  self.holding_T_R = true;
+
                   jtarget.on('touchend', function(){
-                    //anything here is ontouchend
+                    self.holding_T_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_T_R = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('T_R_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -268,28 +240,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.A_L.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('A_L_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('A_L_active');
-                    self.holding_A_L = false;
-                  });
-                  console.log("jtarget.children ", jtarget.children(".active"));
-                  var stringPull = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
-                  stringPull.script.send('HIDInterface', 'moving_A', -1, 0, 0);
-                },
                 hold:function(event, target) {
-                  self.holding_A_L = true;
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_L_active');
+                  self.holding_A_L = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_A_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_L_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_A_L = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('A_L_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -304,26 +271,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.A_R.swipe({
-                tap:function(event, target) {
+                hold:function(event, target) {
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('A_R_active');
-                  self.holding_A_R = false;
+                  self.holding_A_R = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_A_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_R_active');
                   });
-                },
-                hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  self.holding_A_R = true;
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('A_R_active');
-                  jtarget.on('touchend', function(){
+
+                  jtarget.mouseup(function(){
+                    self.holding_A_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('A_R_active');
-                    self.holding_A_R = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -338,25 +302,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.P_L.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('P_L_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('P_L_active');
-                    self.holding_P_L = false;
-                  });
-                },
                 hold:function(event, target) {
-                  self.holding_P_L = true;
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_L_active');
+                  self.holding_P_L = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_P_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_L_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_P_L = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('P_L_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -371,26 +333,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.P_R.swipe({
-                tap:function(event, target) {
+                hold:function(event, target) {
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('P_R_active');
-                  self.holding_P_R = false;
+                  self.holding_P_R = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_P_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_R_active');
                   });
-                },
-                hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  self.holding_P_R = true;
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('P_R_active');
-                  jtarget.on('touchend', function(){
+
+                  jtarget.mouseup(function(){
+                    self.holding_P_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('P_R_active');
-                    self.holding_P_R = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -405,25 +364,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.E_L.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('E_L_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_L_active');
-                    self.holding_E_L = false;
-                  });
-                },
                 hold:function(event, target) {
-                  self.holding_E_L = true;
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_L_active');
+                  self.holding_E_L = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_E_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_L_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_E_L = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('E_L_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -438,26 +395,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.E_R.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('E_R_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_R_active');
-                    self.holding_E_R = false;
-                  });
-                },
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target
-                  self.holding_E_R = true;
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('E_R_active');
+                  self.holding_E_R = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_E_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('E_R_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_E_R = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('E_R_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -472,25 +426,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.W_L.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('W_L_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_L_active');
-                    self.holding_W_L = false;
-                  });
-                },
                 hold:function(event, target) {
-                  self.holding_W_L = true;
+                  //console.log("tap event ", event, " target ", target);
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_L_active');
+                  self.holding_W_L = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_W_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_L_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_W_L = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('W_L_active');
                   });
                 },
                 //Generic swipe handler for all directions
@@ -505,26 +457,23 @@ pc.script.create('SwipeInterface', function (context) {
             });
 
             this.W_R.swipe({
-                tap:function(event, target) {
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('W_R_active');
-                  jtarget.on('touchend', function(){
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_R_active');
-                    self.holding_W_R = false;
-                  });
-                },
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
-                  self.holding_W_R = true;
                   var jtarget = $(target);
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('W_R_active');
+                  self.holding_W_R = true;
+
                   jtarget.on('touchend', function(){
+                    self.holding_W_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('W_R_active');
+                  });
+
+                  jtarget.mouseup(function(){
                     self.holding_W_R = false;
+                    $(this).children(".active").css('opacity', 0);
+                    $(this).removeClass('W_R_active');
                   });
                 },
                 //Generic swipe handler for all directions
