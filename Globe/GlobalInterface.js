@@ -239,11 +239,11 @@ pc.script.create('globalInterface', function (context) {
                 contentType:"application/json; charset=utf-8",
                 dataType:"json",
                 success: function(data, textStatus, jqXHR){
-
+                    console.log("AJAX success", data, textStatus, jqXHR);
                 }
             });
-            
-            setTimeout(function() { location.href = 'http://in-gods-hands.info/end/end.html' },10000);
+
+            setTimeout(function() { location.href = 'http://in-gods-hands.info/end/end.html' },5000);
         },
 
         setupGlobalVariables: function() {
