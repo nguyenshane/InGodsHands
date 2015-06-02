@@ -231,6 +231,18 @@ pc.script.create('globalInterface', function (context) {
             //this.setupEndScreen();
             this.drawEndScreen();
             this.condenseSnapshots();
+            localStorage.setItem('snapshots', JSON.stringify(snapshots));
+            $.ajax({
+                url:"https://api.myjson.com/bins/195hc",
+                type:"PUT",
+                data: JSON.stringify(snapshots),
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(data, textStatus, jqXHR){
+
+                }
+            });
+            
             setTimeout(function() { location.href = 'http://in-gods-hands.info/end/end.html' },10000);
         },
 
@@ -308,7 +320,7 @@ pc.script.create('globalInterface', function (context) {
                         strokeColor: "rgba(255,79,70,1)",
                         pointColor: "rgba(255,79,70,1)",
                         //pointStrokeColor: "#fff",
-                        //pointHighlightFill: "#fff",
+                        pointHighlightFill: "#fff",
                         //pointHighlightStroke: "rgba(255,79,70,1)",
                         data: []
                     },
@@ -318,8 +330,8 @@ pc.script.create('globalInterface', function (context) {
                         strokeColor: "rgba(232,152,43,1)",
                         pointColor: "rgba(232,152,43,1)",
                         //pointStrokeColor: "#fff",
-                        //pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(232,152,43,1)",
+                        pointHighlightFill: "#fff",
+                        //pointHighlightStroke: "rgba(232,152,43,1)",
                         data: []
                     },
                     {
@@ -328,7 +340,7 @@ pc.script.create('globalInterface', function (context) {
                         strokeColor: "rgba(107,246,255,1)",
                         pointColor: "rgba(107,246,255,1)",
                         //pointStrokeColor: "#fff",
-                        //pointHighlightFill: "#fff",
+                        pointHighlightFill: "#fff",
                         //pointHighlightStroke: "rgba(107,246,255,1)",
                         data: []
                     },
@@ -338,7 +350,7 @@ pc.script.create('globalInterface', function (context) {
                         strokeColor: "rgba(255,244,64,1)",
                         pointColor: "rgba(255,244,64,1)",
                         //pointStrokeColor: "#fff",
-                        //pointHighlightFill: "#fff",
+                        pointHighlightFill: "#fff",
                         //pointHighlightStroke: "rgba(255,244,64,1)",
                         data: []
                     },
@@ -348,7 +360,7 @@ pc.script.create('globalInterface', function (context) {
                         strokeColor: "rgba(105,232,111,1)",
                         pointColor: "rgba(105,232,111,1)",
                         //pointStrokeColor: "#fff",
-                        //pointHighlightFill: "#fff",
+                        pointHighlightFill: "#fff",
                         //pointHighlightStroke: "rgba(105,232,111,1)",
                         data: []
                     }/*,
@@ -379,7 +391,7 @@ pc.script.create('globalInterface', function (context) {
 
         takeSnapshot: function() {
             //console.log(snapshots);
-            localStorage.setItem('snapshots', JSON.stringify(snapshots));
+            
             for (var i = 0; i < snapshots.datasets.length; ++i) {
                 snapshots.datasets[i].data.push(global[i]);
             }
