@@ -506,7 +506,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration,true);
+                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration,false);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_L_active');
@@ -540,7 +540,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration,true);
+                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration,false);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_R_active');
@@ -560,13 +560,13 @@ pc.script.create('SwipeInterface', function (context) {
           if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
           if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
           if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/8,10);
-          if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1/100,0,true);
+          if (this.holding_W_L) this.HIDInterface.moving_W(-1,-10,10,true);
           
           if (this.holding_T_R) this.HIDInterface.moving_T(1,1/8,10);
           if (this.holding_A_R) this.HIDInterface.moving_A(1,1/8,10);
           if (this.holding_P_R) this.HIDInterface.moving_P(1,1/8,10);
           if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
-          if (this.holding_W_R) this.HIDInterface.moving_W(1,1/100,0,true);
+          if (this.holding_W_R) this.HIDInterface.moving_W(1,10,10,true);
         },
         
 
