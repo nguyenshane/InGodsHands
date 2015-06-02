@@ -22,7 +22,6 @@ pc.script.create('SwipeInterface', function (context) {
             holding_W_L = holding_W_R = false;
 
         var HIDInterface;
-
     };
 
     SwipeInterface.prototype = {
@@ -40,7 +39,6 @@ pc.script.create('SwipeInterface', function (context) {
             var ERactive = context.assets.find("ERactive", "texture").getFileUrl();
             var WLactive = context.assets.find("WLactive", "texture").getFileUrl();
             var WRactive = context.assets.find("WRactive", "texture").getFileUrl();
-
 
             var TLidle = context.assets.find("TLidle", "texture").getFileUrl();
             var TRidle = context.assets.find("TRidle", "texture").getFileUrl();
@@ -64,7 +62,6 @@ pc.script.create('SwipeInterface', function (context) {
                   opacity: 0.65;
                   -webki-totuch-callout: none;
                   -webkit-user-select: none; 
-
               }
               .left{
                   height:20%;
@@ -85,7 +82,6 @@ pc.script.create('SwipeInterface', function (context) {
                   float: left;
                   transition: all 1.0s ease;
               }
-
               .left img.active{
                   opacity: 0;
                   transition: all 0.8s ease;
@@ -113,7 +109,6 @@ pc.script.create('SwipeInterface', function (context) {
                   pointer-events: none;
                   float: right;
               }
-
               .right img.active{
                   opacity: 0;
                   transition: all 0.8s ease;
@@ -130,7 +125,6 @@ pc.script.create('SwipeInterface', function (context) {
               .P_L_active{ transition: box-shadow 0.5s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
               .E_L_active{ transition: box-shadow 0.5s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
               .W_L_active{ transition: box-shadow 0.5s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
-              
 
               .T_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(63,64,63,1) 60%); transition: all 0.5s ease;}
               .A_R{ background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(126,127,125,1) 70%); transition: all 0.5s ease;}
@@ -143,8 +137,6 @@ pc.script.create('SwipeInterface', function (context) {
               .P_R_active{ transition: box-shadow 0.5s ease; background: rgba(40,43,62,1); box-shadow: 0 0 2em white;}
               .E_R_active{ transition: box-shadow 0.5s ease; background: rgba(127,83,108,1); box-shadow: 0 0 2em white;}
               .W_R_active{ transition: box-shadow 0.5s ease; background: rgba(216,94,112,1); box-shadow: 0 0 2em white;}
-
-                
             */}.toString().trim();
             css = css.slice(css.indexOf('/*') + 2).slice(0, -3);
 
@@ -185,8 +177,6 @@ pc.script.create('SwipeInterface', function (context) {
             var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
-
-
 
             this.T_L.swipe({
                 tap:function(event, target) {
@@ -555,7 +545,6 @@ pc.script.create('SwipeInterface', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
-          console.log('this.holding_T_L',this.holding_T_L);
           if (this.holding_T_L) this.HIDInterface.moving_T(-1,-1/8,10);
           if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
           if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
@@ -568,9 +557,6 @@ pc.script.create('SwipeInterface', function (context) {
           if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
           if (this.holding_W_R) this.HIDInterface.moving_W(1,10,10,true);
         },
-        
-
     };
-
     return SwipeInterface;
 });

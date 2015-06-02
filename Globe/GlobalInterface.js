@@ -230,7 +230,7 @@ pc.script.create('globalInterface', function (context) {
             console.log("END GAME");
             //this.setupEndScreen();
             this.drawEndScreen();
-            setTimeout(function() { location.href = 'end.html' },10000);
+            setTimeout(function() { location.href = 'http://in-gods-hands.info/end/end.html' },10000);
         },
 
         setupGlobalVariables: function() {

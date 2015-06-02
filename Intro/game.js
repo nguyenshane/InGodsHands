@@ -9,24 +9,27 @@ pc.script.create('game', function (context) {
         ];
 
         this.currentRoot = null;
+        this.currentRootIndex = 0;
     };
 
     Game.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.loadRoot(1);
+            this.loadRoot(0);
         },
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
         },
         
-        loadNextRoot: function (level) {
-            this.unloadRoot(level-1);
-            if (level === this.LEVELS.length) {
-                level = 0;
+        loadNextRoot: function () {
+            this.unloadRoot();
+            
+            if (this.currentRootIndex === this.ROOTS.length) {
+                this.currentRootIndex = 0;
             }
-            this.loadRoot(level);
+            this.currentRootIndex++;
+            this.loadRoot(this.currentRootIndex);
         },
 
         reset: function () {
@@ -36,14 +39,15 @@ pc.script.create('game', function (context) {
         
         unloadRoot: function () {
             // Destroy all Entities and components created from the previous Pack.
-            console.log('currentRoot to destroy', this.currentRoot);
-            this.currentRoot.destroy();
-            this.currentRoot = null;
+            console.log('currentRoot to destroy', context.root._children[1]);
+            context.root._children[1].destroy();
         },
         
         loadRoot: function (index) {
-            console.log("scene", context.root);
-            context.loadSceneHierarchy(this.ROOTS[index])
+            context.loadSceneHierarchy(this.ROOTS[index]);
+            this.currentRootIndex = index;
+            //this.currentRoot = context.root._children[index+1]; //jump over the Shell
+            console.log("currentRoot loading", index, context.root);
         }
     };
 
