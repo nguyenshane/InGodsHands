@@ -405,9 +405,6 @@ pc.script.create('HIDInterface', function (context) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
             	globalDest[elem] = globalMin[elem];
-        	} else {
-        		ico.faultNumMove = 1; //Math.abs((distance * position));
-				ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
         	}
 
 			if (stormTimer < 0) {
@@ -445,9 +442,6 @@ pc.script.create('HIDInterface', function (context) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
             	globalDest[elem] = globalMin[elem];
-        	} else {
-        		//ico.faultNumMove = 1; //Math.abs((distance * position));
-				//ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
         	}
             
 			if (!hasStopped) {

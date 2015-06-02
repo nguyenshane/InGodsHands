@@ -167,7 +167,7 @@ function Tile(index, vertexa, vertexb, vertexc){
     this.neighbora, this.neighborb, this.neighborc;
     this.neighbors = [];
 	
-    var normalIndex, hasHuman, divided;
+    var normalIndex, divided;
 	
     this.index = index;
     
@@ -188,9 +188,10 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.food = this.baseFood;
 	
     this.entities = [];
-	this.tree, this.animal, this.rain, this.fog;
+	this.tree, this.animal, this.human, this.rain, this.fog;
     
     this.hasTribe = false;
+    this.hasHuman = false;
 	this.hasTree = false;
 	this.hasAnimal = false;
 	this.isRaining = false;
