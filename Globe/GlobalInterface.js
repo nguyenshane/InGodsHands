@@ -380,8 +380,8 @@ pc.script.create('globalInterface', function (context) {
 
         condenseSnapshots: function() {
 
-            var divisions = 50
-            var divider = Math.floor(snapshots.labels.length/divisions);
+            var divisions = 50;
+            var divider = Math.ceil(snapshots.labels.length/divisions);
             for (var i = 0; i < divisions + 1; ++i) {
                 for (var j = 1; j < divider; ++j) {
                     if (snapshots.labels[i*divider + j]) snapshots.labels[i*divider + j] = "";
