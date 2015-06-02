@@ -112,6 +112,9 @@ pc.script.create('Human', function (context) {
                     }
                 }
                 
+                this.tile.hasHuman = true;
+                this.tile.human = this.entity;
+                
                 this.entity.setPosition(this.tile.center);
                 this.rotation = this.tile.getRotationAlignedWithNormal();
                 this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
@@ -153,6 +156,7 @@ pc.script.create('Human', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasHuman = true;
+                this.tile.human = this.entity;
                 this.setCurrentAction(null);
                 this.chooseState();
             }
@@ -212,6 +216,7 @@ pc.script.create('Human', function (context) {
                 this.tile = this.destinationTile;
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasHuman = true;
+                this.tile.human = this.entity;
                 
                 this.startPosition = this.entity.getPosition().clone();
                 var timer2 = new Date();

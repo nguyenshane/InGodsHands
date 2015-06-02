@@ -188,7 +188,7 @@ function Tile(index, vertexa, vertexb, vertexc){
 	this.food = this.baseFood;
 	
     this.entities = [];
-	this.tree, this.animal, this.rain, this.fog;
+	this.tree, this.animal, this.human, this.rain, this.fog;
     
     this.hasTribe = false;
 	this.hasTree = false;
