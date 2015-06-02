@@ -891,12 +891,11 @@ pc.script.create('tribe', function (context) {
         },
 
         decreasePopulation: function() {
-            this.decrementPopulation();
             // Decrease humans on screen to current population
             if (this.entity.enabled && this.population >= 0) {
                 for (var i = this.humans.length-1; i >= 0; i--) {
                     if (this.humans[i].enabled) {
-                        this.humans[i].enabled = false;
+                        this.humans[i].script.Human.killSelf();
                         break;
                     }
                 }
@@ -915,7 +914,7 @@ pc.script.create('tribe', function (context) {
         
         setPopulation: function(population) {
             for (var i = 0; i < this.humans.length; i++) {
-                this.humans[i].enabled = false
+                if (this.humans[i].enabled) this.humans[i].script.Human.killSelf();
             }
 
             this.population = 0;
@@ -928,11 +927,12 @@ pc.script.create('tribe', function (context) {
         killSelf: function() {
             // Kill the tribe
             for (var i = this.humans.length-1; i >= 0; i--) {
-                this.humans[i].enabled = false;
+                this.humans[i].script.Human.killSelf();
             }
             
             this.died = true;
-
+            this.tile.hasTribe = false;
+            
             this.paganStatue.enabled = false;
             this.entity.enabled = false;
             

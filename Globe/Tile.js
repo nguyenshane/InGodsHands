@@ -1162,7 +1162,7 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.tribe.setEulerAngles(angle.x - 90, angle.y, angle.z);
         }
         
-        if (this.hasHuman && this.human) {
+        if (this.hasHuman) {
             var hs = this.human.script.Human;
             if (!hs.isMoving) {
                 var normal = new pc.Vec3(this.normal.x, this.normal.y, this.normal.z);

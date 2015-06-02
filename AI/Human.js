@@ -123,7 +123,9 @@ pc.script.create('Human', function (context) {
         
         killSelf: function() {
             this.tribeParent.decrementPopulation();
-            this.enabled = false;
+            this.tile.hasHuman = false;
+            
+            this.entity.enabled = false;
         },
 
         //////////////////////////////////
