@@ -32,7 +32,8 @@ pc.script.create('tribe', function (context) {
         
         this.increasePopulationTimer = 0;
 
-        this.idealTemperature = Math.floor((Math.random() * 20) + 90);
+        this.idealTemperature = Math.floor((Math.random() * 10) + 60);
+        console.log(this.idealTemperature);
         this.currTileTemperature;
 
         this.belief = 4;
@@ -261,6 +262,7 @@ pc.script.create('tribe', function (context) {
                 }
                 
                 this.influencedAnimalAI(dt);
+                console.log(this.tile.temperature);
 			}
         },
         
