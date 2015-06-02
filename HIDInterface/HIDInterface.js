@@ -399,6 +399,17 @@ pc.script.create('HIDInterface', function (context) {
             
 			inactiveTimer = 0;
 
+			var elem = GLOBAL.PUNISH;
+			globalDest[elem] += position;
+            if (globalDest[elem] > globalMax[elem]) {
+            	globalDest[elem] = globalMax[elem];
+        	} else if (globalDest[elem] < globalMin[elem]) {
+            	globalDest[elem] = globalMin[elem];
+        	} else {
+        		ico.faultNumMove = 1; //Math.abs((distance * position));
+				ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+        	}
+
 			if (stormTimer < 0) {
 
 				scripts.Atmosphere.makeStorm((distance * position), speed);
@@ -427,6 +438,17 @@ pc.script.create('HIDInterface', function (context) {
             }
             
 			inactiveTimer = 0;
+
+			var elem = GLOBAL.ROTATION;
+			globalDest[elem] += position;
+            if (globalDest[elem] > globalMax[elem]) {
+            	globalDest[elem] = globalMax[elem];
+        	} else if (globalDest[elem] < globalMin[elem]) {
+            	globalDest[elem] = globalMin[elem];
+        	} else {
+        		ico.faultNumMove = 1; //Math.abs((distance * position));
+				ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
+        	}
             
 			if (!hasStopped) {
                 camera.script.Camera.move_W(position,(distance * position), speed, isSwipping);
