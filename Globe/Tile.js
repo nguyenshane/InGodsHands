@@ -1230,6 +1230,6 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.type = TILETYPES.WATER;
         }
         
-        ico.updateFlag = true;
+        //ico.updateFlag = true;
     };
 }

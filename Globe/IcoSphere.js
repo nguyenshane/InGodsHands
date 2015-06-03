@@ -28,6 +28,8 @@ function IcoSphere(device, radius, subdivisions) {
     
     this.tiles = [];
 
+    this.tileUpdateQ = [];
+
     this.faults = [];
     this.currFault;
     this.currFaultIndex = 9;
@@ -345,6 +347,31 @@ IcoSphere.prototype.updateReturnMesh = function() {
     this.updateFlag = false;
 };
 
+IcoSphere.prototype.addToTileUpdateQ = function(index) {
+	for (var i = 0; i < this.tileUpdateQ.length; ++i) {
+        if (this.tileUpdateQ[i] === index) {
+            return;
+        }
+    }
+    this.tileUpdateQ.push(index);
+};
+
+IcoSphere.prototype.updateNextTiles = function(numTiles) {
+    var tile;
+
+    for (var i = 0; i < numTiles; ++i) {
+		tile = this.tiles[this.tileUpdateQ[0]];
+
+	    if (tile) {
+			tile.recalculateGeometry();
+			tile.reposition();
+			ico.updateFlag = true;
+	    }
+	    this.tileUpdateQ.shift();
+	}
+
+};
+
 IcoSphere.prototype.setVertexHeight = function(index, height) {
 	this.vertexHeights[index] = height;
 	this.setVertexMagnitude(index, height + this.radius);
@@ -363,9 +390,9 @@ IcoSphere.prototype._recalculateMesh = function() {
 	unbufferedColors[this.tiles.length*3-1] = 0;
     for (var i = 0; i < this.tiles.length; ++i) {
 		var tile = this.tiles[i];
-        tile.calculateLatLon();
 		tile.calculateCenter2();
 		tile.calculateNormal();
+        tile.calculateLatLon();
 		tile.calculateRotationVectors();
 		tile.isOcean = false;
 		tile.index = i;
@@ -454,7 +481,7 @@ IcoSphere.prototype.unshareVertices = function() {
 	var vertices = [];
 	var bufferedVertices = [];
     var tiles = this.tiles;
-
+	
 	for (var i = 0; i < tiles.length; i++) {
 		var tile = tiles[i];
 		for (var j = 0; j < tile.vertexIndices.length; j++) {

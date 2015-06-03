@@ -177,6 +177,8 @@ pc.script.create('Globe', function (context) {
                     ico.moveFaults(ico.faultIncrement);
                 }
 
+                ico.updateNextTiles(10);
+
                 // Set temperature variables in shader
             	this.material.setParameter('temperature', global[GLOBAL.TEMPERATURE]);
                 this.material.setParameter('maxTemp', globalMax[GLOBAL.TEMPERATURE]);
