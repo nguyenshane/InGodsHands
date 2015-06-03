@@ -24,7 +24,7 @@ pc.script.create('Camera', function (context) {
             //this.aura1 = this.entity.findByName("Aura1");
             //this.aura2 = this.entity.findByName("Aura2");
             //this.aura3 = this.entity.findByName("Aura3");
-            //this.lights = this.entity.findByName("TribeLights");
+            this.lights = this.entity.findByName("TribeLights");
             //this.aura1Mat = context.assets.find("BeliefAura1", pc.asset.ASSET_MATERIAL).resource;
             //this.aura1Mat = this.aura1.model.model.getMaterials()[0];
             //this.aura2Mat = this.aura2.model.model.getMaterials()[0];
@@ -100,7 +100,7 @@ pc.script.create('Camera', function (context) {
             //this.aura1.rotateLocal(0, dt*-0.5, 0);
             //this.aura2.rotateLocal(0, dt*-3, 0);
             //this.aura3.rotateLocal(0, dt*-1.2, 0);
-            //this.lights.rotateLocal(0, 0, dt*10);
+            this.lights.rotateLocal(0, 0, dt*10);
 
             // Scale belief aura
             //var maxScale = 18;
