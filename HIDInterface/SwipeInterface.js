@@ -60,6 +60,8 @@ pc.script.create('SwipeInterface', function (context) {
                   width: 100%;
                   height: 100%;
                   opacity: 0.65;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .left{
                   height:20%;
@@ -68,6 +70,8 @@ pc.script.create('SwipeInterface', function (context) {
                   float:left;
                   box-shadow: none;
                   position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .left img {
                   height: 50%;
@@ -94,6 +98,8 @@ pc.script.create('SwipeInterface', function (context) {
                   background: none;
                   float:left;
                   position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .right img {
                   height: 50%;
