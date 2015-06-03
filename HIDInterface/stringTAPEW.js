@@ -64,7 +64,6 @@ pc.extend(pc, function(){
             }
 
             if (event.key == 81) {
-                console.log("Pressed Q");
                 globalInterface.endGame();
             }
             

@@ -913,7 +913,7 @@ pc.script.create('tribe', function (context) {
             
 			this.influenceCalculationFlag = true;
 			
-            if (this.population < this.MINPOPULATION){
+            if (this.population < this.MINPOPULATION && !this.died){
                 this.killSelf();
             }
         },
@@ -931,12 +931,14 @@ pc.script.create('tribe', function (context) {
         },
         
         killSelf: function() {
+            this.died = true;
+            
             // Kill the tribe
             for (var i = this.humans.length-1; i >= 0; i--) {
-                this.humans[i].script.Human.killSelf();
+                if (this.humans[i].enabled)
+                    this.humans[i].script.Human.killSelf();
             }
             
-            this.died = true;
             this.tile.hasTribe = false;
             
             this.paganStatue.enabled = false;
