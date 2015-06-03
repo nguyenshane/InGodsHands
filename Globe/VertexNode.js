@@ -105,8 +105,7 @@ function VertexNode(index, indices) {
 		ico.updateFlag = true;
 
 		for (var i = 0; i < this.tiles.length; ++i) {
-			this.tiles[i].recalculateGeometry();
-			this.tiles[i].reposition();
+			ico.addToTileUpdateQ(this.tiles[i].index);
 		}
 	}
 

@@ -76,10 +76,10 @@ pc.script.create('Globe', function (context) {
                     "{",
                     "    float intensity = max(dot(normalize(fNormal), normalize(sunDir)), ambient);",
                     "    float dist = length(fPosition);",
-                    "    float lattem = (abs(fPosition.y) + 1.0)*(maxTemp-temperature)/maxTemp/2.8;",
-                    "    float r = lattem + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
+                    "    float lattem = (abs(fPosition.y) + 1.0)*(maxTemp-temperature)/maxTemp/2.8 - 0.2;",
+                    "    float r = (lattem + 0.7)/4.0 + 0.5*(radius - abs(fPosition.y))*temperature/maxTemp; //(dist - 1.5)*7.0;",
                     "    float g = dist - radius*2.0/3.0;",
-                    "    float b = lattem; //+ (dist - 1.5)*5.0;",
+                    "    float b = (lattem - 0.2) * 3.0; //+ (dist - 1.5)*5.0;",
                     "    vec4 color;",
                     // Snow Tops
                     "    if (dist > radius + max(0.20 - lattem/2.0, 0.00)) {",
@@ -176,6 +176,8 @@ pc.script.create('Globe', function (context) {
                 if (ico.faultNumMove > 0) {
                     ico.moveFaults(ico.faultIncrement);
                 }
+
+                ico.updateNextTiles(10);
 
                 // Set temperature variables in shader
             	this.material.setParameter('temperature', global[GLOBAL.TEMPERATURE]);

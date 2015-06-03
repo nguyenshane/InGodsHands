@@ -62,10 +62,8 @@ pc.extend(pc, function(){
                 this.doCount();
                 //console.log(this.direction);
             }
-            console.log(event.key);
 
             if (event.key == 81) {
-                console.log("Pressed Q");
                 globalInterface.endGame();
             }
             

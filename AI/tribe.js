@@ -32,7 +32,7 @@ pc.script.create('tribe', function (context) {
         
         this.increasePopulationTimer = 0;
 
-        this.idealTemperature = Math.floor((Math.random() * 20) + 90);
+        this.idealTemperature = Math.floor((Math.random() * 10) + 60);
         this.currTileTemperature;
 
         this.belief = 4;
@@ -42,6 +42,7 @@ pc.script.create('tribe', function (context) {
         this.destinationTile;
         this.startPosition;
         this.influencedTiles = [];
+        this.influenceCalculationFlag = false;
         
         this.icons = [];
         this.sunIcon;
@@ -261,6 +262,11 @@ pc.script.create('tribe', function (context) {
                 }
                 
                 this.influencedAnimalAI(dt);
+                
+                if (this.influenceCalculationFlag) {
+                    this.influenceCalculationFlag = false;
+                    this.calculateInfluence();
+                }
 			}
         },
         
@@ -371,7 +377,7 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                this.calculateInfluence();
+                this.influenceCalculationFlag = true;
                 
                 this.isBusy = false;
                 this.isSpiteful = false;
@@ -887,7 +893,7 @@ pc.script.create('tribe', function (context) {
                 this.setPopulation(2);
             }
 			
-			this.calculateInfluence();
+			this.influenceCalculationFlag = true;
         },
 
         decreasePopulation: function() {
@@ -905,9 +911,9 @@ pc.script.create('tribe', function (context) {
         decrementPopulation: function() {
             --this.population;
             
-			this.calculateInfluence();
+			this.influenceCalculationFlag = true;
 			
-            if (this.population < this.MINPOPULATION){
+            if (this.population < this.MINPOPULATION && !this.died){
                 this.killSelf();
             }
         },
@@ -925,12 +931,14 @@ pc.script.create('tribe', function (context) {
         },
         
         killSelf: function() {
+            this.died = true;
+            
             // Kill the tribe
             for (var i = this.humans.length-1; i >= 0; i--) {
-                this.humans[i].script.Human.killSelf();
+                if (this.humans[i].enabled)
+                    this.humans[i].script.Human.killSelf();
             }
             
-            this.died = true;
             this.tile.hasTribe = false;
             
             this.paganStatue.enabled = false;

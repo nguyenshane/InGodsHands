@@ -984,6 +984,7 @@ function Tile(index, vertexa, vertexb, vertexc){
                 this.center.y === (other.center.y) &&
                 this.center.z === (other.center.z));
 		*/
+        if (!other) return false;
 		return this.index === other.index;
     };
 
@@ -1229,6 +1230,6 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.type = TILETYPES.WATER;
         }
         
-        ico.updateFlag = true;
+        //ico.updateFlag = true;
     };
 }

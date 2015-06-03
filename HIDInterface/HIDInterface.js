@@ -409,7 +409,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			if (stormTimer < 0) {
 
-				scripts.Atmosphere.makeStorm((distance * position), speed);
+				//scripts.Atmosphere.makeStorm((distance * position), speed);
 				
 				if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
 

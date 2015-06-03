@@ -125,6 +125,7 @@ pc.script.create('globalInterface', function (context) {
 
                 TWEEN.update();
 
+                /*
                 //Only called on first update (since ico isn't defined in initialize)
                 if (!this.init) {
                     //Initialize variables for intermittentUpdate
@@ -164,6 +165,7 @@ pc.script.create('globalInterface', function (context) {
                     ico.tiles[i].intermittentUpdate();
                 }
                 this.lastUpdatedTile += tilesToUpdate;
+                */
 
                 //Move global vars closer to their destination
                 for (var i = 0; i < global.length; ++i) {
@@ -193,7 +195,7 @@ pc.script.create('globalInterface', function (context) {
                 //     this.stormEffect.darkness = 1;
                 // }
 
-                if (globalTime - lastSnapshotTime > 1 && !isPaused) {
+                if (globalTime - lastSnapshotTime > 5 && !isPaused) {
                         this.takeSnapshot();
                         lastSnapshotTime = globalTime;
                         //debug.obj(DEBUG.TESTING, snapshots, "Snapshot taken");
