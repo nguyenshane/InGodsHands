@@ -33,7 +33,6 @@ pc.script.create('tribe', function (context) {
         this.increasePopulationTimer = 0;
 
         this.idealTemperature = Math.floor((Math.random() * 10) + 60);
-        console.log(this.idealTemperature);
         this.currTileTemperature;
 
         this.belief = 4;
@@ -43,6 +42,7 @@ pc.script.create('tribe', function (context) {
         this.destinationTile;
         this.startPosition;
         this.influencedTiles = [];
+        this.influenceCalculationFlag = false;
         
         this.icons = [];
         this.sunIcon;
@@ -262,7 +262,11 @@ pc.script.create('tribe', function (context) {
                 }
                 
                 this.influencedAnimalAI(dt);
-                console.log(this.tile.temperature);
+                
+                if (this.influenceCalculationFlag) {
+                    this.influenceCalculationFlag = false;
+                    this.calculateInfluence();
+                }
 			}
         },
         
@@ -373,7 +377,7 @@ pc.script.create('tribe', function (context) {
                 }
 
             } else {
-                this.calculateInfluence();
+                this.influenceCalculationFlag = true;
                 
                 this.isBusy = false;
                 this.isSpiteful = false;
@@ -889,7 +893,7 @@ pc.script.create('tribe', function (context) {
                 this.setPopulation(2);
             }
 			
-			this.calculateInfluence();
+			this.influenceCalculationFlag = true;
         },
 
         decreasePopulation: function() {
@@ -907,7 +911,7 @@ pc.script.create('tribe', function (context) {
         decrementPopulation: function() {
             --this.population;
             
-			this.calculateInfluence();
+			this.influenceCalculationFlag = true;
 			
             if (this.population < this.MINPOPULATION){
                 this.killSelf();
