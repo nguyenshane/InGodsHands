@@ -29,6 +29,7 @@ pc.script.create('Camera', function (context) {
             //this.aura1Mat = this.aura1.model.model.getMaterials()[0];
             //this.aura2Mat = this.aura2.model.model.getMaterials()[0];
             //this.aura3Mat = this.aura3.model.model.getMaterials()[0];
+            this.HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
 
             this.counter = 0;
 			
@@ -64,9 +65,11 @@ pc.script.create('Camera', function (context) {
                 shaderSun.rotateLocal(0, -2*this.rotationSpeed, 0);
                 sun.rotate(0, .01*this.rotationSpeed, 0);
             }
-            if (this.isSwipping===true) {
+            if (this.isSwipping===true || this.HIDInterface.stringW.isMiddle ===true) {
                 this.rotationSpeed = 0;
                 this.isSwipping = false;
+                console.log('ismiddle');
+                this.HIDInterface.stringW.isMiddle = false;
             }
 
             /*

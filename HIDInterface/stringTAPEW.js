@@ -77,7 +77,7 @@ pc.extend(pc, function(){
                 //console.log("isMiddle reset to false");
             }
             clearTimeout(this.middlecountdownClear);
-            this.middlecountdownClear = setTimeout(this.middleResetfn, 2000, this);
+            this.middlecountdownClear = setTimeout(this.middleResetfn, 15000, this);
         },
         
         doCount: function() {
