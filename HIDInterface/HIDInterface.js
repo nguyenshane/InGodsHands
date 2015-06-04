@@ -419,6 +419,9 @@ pc.script.create('HIDInterface', function (context) {
 				}
 
 				stormTimer = 50;
+				this.audio.sound_MakeThunder();
+
+				
 			}
 		},
 		
