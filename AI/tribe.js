@@ -1,3 +1,5 @@
+firstTribeOnly = true;
+
 function addTribe() {
     for (var i = 0; i < tribes.length; i++) {
         if (!tribes[i].enabled && !tribes[i].script.tribe.died) {
@@ -6,6 +8,10 @@ function addTribe() {
             var app = pc.fw.Application.getApplication('application-canvas').context;
             var tribeInfo = app.root.findByName('Rv1-stable').script.developer;
             tribeInfo.addTribeDiv = true;
+            
+            if (firstTribeOnly) {
+                firstTribeOnly = false;
+            }
 
             break;
         }
@@ -94,18 +100,18 @@ pc.script.create('tribe', function (context) {
         //this.foodPopTimer = 0;
         this.travelTime = 6000;
         this.travelStartTime;
-
     };
 
     Tribe.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+            var t1 = new Date();
+            
+            this.index = tribes.indexOf(this.entity);
 
-            this.humanParent = context.root.findByName("Humans" + tribes.indexOf(this.entity));
+            this.humanParent = context.root.findByName("Humans" + this.index);
             this.humans = this.humanParent.getChildren();
 
-			var t1 = new Date();
-			
 			//var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             //this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
             
@@ -127,8 +133,15 @@ pc.script.create('tribe', function (context) {
                     }
                     
                     if (!tribeTooClose) {
-                        this.tile = tile;
-                        break;
+                        if (this.index === 0) { //First tribe, restrict its spawning location to the initial camera-facing band of longitudes
+                            if (Math.abs(tile.longitude) < 30) {
+                                this.tile = tile;
+                                break;
+                            }
+                        } else {
+                            this.tile = tile;
+                            break;
+                        }
                     }
                 }
 			}
@@ -176,7 +189,7 @@ pc.script.create('tribe', function (context) {
             this.hqGrayColor = this.hq.model.model.meshInstances[0].material.emissive;
             this.hqBrightnessInterval = 1.8;
             //console.log(this.hqBaseColor);
-            this.paganStatue = context.root.findByName("PaganParent").findByName("PaganStatue" + tribes.indexOf(this.entity));
+            this.paganStatue = context.root.findByName("PaganParent").findByName("PaganStatue" + this.index);
             this.paganStatue.setPosition(this.origin);
 
             this.paganStatue.enabled = true;
@@ -232,9 +245,16 @@ pc.script.create('tribe', function (context) {
                 this.increasePopulationTimer += dt;
 
                 // use 1 for testing 
-                if (this.increasePopulationTimer >= 60 && !this.isBusy) {
-                    this.increasePopulation();
-                    this.increasePopulationTimer = 0;
+                if (firstTribeOnly) { //Population growth rate for the first tribe before any more have spawned
+                    if (this.increasePopulationTimer >= 30 && !this.isBusy) {
+                        this.increasePopulation();
+                        this.increasePopulationTimer = 0;
+                    }
+                } else { //Growth rate for all tribes after a new tribe has spawned
+                    if (this.increasePopulationTimer >= 60 && !this.isBusy) {
+                        this.increasePopulation();
+                        this.increasePopulationTimer = 0;
+                    }
                 }
 
                 //Check influenced tiles for predators or prey

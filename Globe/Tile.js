@@ -1112,13 +1112,8 @@ function Tile(index, vertexa, vertexb, vertexc){
             object.tile = this;
 
             object.altitude = this.center.length();
-
-            object.longitude;
-
-            object.lattitude;
-
-            
-
+            object.longitude = this.longitude;
+            object.latitude = this.latitude;
         }
     }
 
