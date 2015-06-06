@@ -68,7 +68,6 @@ pc.script.create('Camera', function (context) {
             if (this.isSwipping===true || this.HIDInterface.stringW.isMiddle ===true) {
                 this.rotationSpeed = 0;
                 this.isSwipping = false;
-                console.log('ismiddle');
                 this.HIDInterface.stringW.isMiddle = false;
             }
 
