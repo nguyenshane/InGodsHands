@@ -62,7 +62,7 @@ pc.script.create('Atmosphere', function (context) {
 			rain.particlesystem.enabled = true;
 			//rain.particlesystem.play();
 
-			this.audio.sound_MakeRain();
+			//this.audio.sound_MakeRain();
 			
 			return e;
         },

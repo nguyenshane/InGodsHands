@@ -268,14 +268,25 @@ pc.script.create('AudioController', function (context) {
 			this.audio.audiosource.play("IGH Thunder");
 		},
 
-		sound_MakeRain: function(){
-			//console.log("Play sound: Rain");
+		// sound_MakeRain: function(){
+		// 	//console.log("Play sound: Rain");
+
+		// 	this.audio = context.root.findByName("Rv1-stable");
+		// 	this.playing = false;
+		// 	this.paused = false;
+			
+		// 	//this.audio.audiosource.play("IGH Rain Loop");
+		// },
+
+		sound_MakeBlizzard: function(){
+			//console.log("Play sound: Thunder");
 
 			this.audio = context.root.findByName("Rv1-stable");
 			this.playing = false;
 			this.paused = false;
 			
-			//this.audio.audiosource.play("IGH Rain Loop");
+			this.audio.audiosource.play("IGH Blizzard");
+			console.log("Making cold sound.");
 		},
 
 

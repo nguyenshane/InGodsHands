@@ -183,6 +183,10 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + global[GLOBAL.TEMPERATURE]);
 			
 			if (position < 0) {
+				heatEffectL.particlesystem.stop();
+				heatEffectL.particlesystem.isPlaying = false;
+				heatEffectR.particlesystem.stop();
+				heatEffectR.particlesystem.isPlaying = false;
 				coldEffect.particlesystem.play();
 				coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
@@ -190,6 +194,8 @@ pc.script.create('HIDInterface', function (context) {
 				heatEffectL.particlesystem.isPlaying = true;
 				heatEffectR.particlesystem.play();
 				heatEffectR.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.stop();
+				coldEffect.particlesystem.isPlaying = false;
 			}
             ///*/
 		},
@@ -310,6 +316,10 @@ pc.script.create('HIDInterface', function (context) {
         	}
             
 			if (position < 0) {
+				heatEffectL.particlesystem.stop();
+				heatEffectL.particlesystem.isPlaying = false;
+				heatEffectR.particlesystem.stop();
+				heatEffectR.particlesystem.isPlaying = false;
 				coldEffect.particlesystem.play();
 				coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
@@ -317,6 +327,8 @@ pc.script.create('HIDInterface', function (context) {
 				heatEffectL.particlesystem.isPlaying = true;
 				heatEffectR.particlesystem.play();
 				heatEffectR.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.stop();
+				coldEffect.particlesystem.isPlaying = false;
 			}
             
             temperatureEffectTimer = 1.0;
