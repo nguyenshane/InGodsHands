@@ -62,10 +62,8 @@ pc.extend(pc, function(){
                 this.doCount();
                 //console.log(this.direction);
             }
-            console.log(event.key);
 
             if (event.key == 81) {
-                console.log("Pressed Q");
                 globalInterface.endGame();
             }
             
@@ -79,7 +77,7 @@ pc.extend(pc, function(){
                 //console.log("isMiddle reset to false");
             }
             clearTimeout(this.middlecountdownClear);
-            this.middlecountdownClear = setTimeout(this.middleResetfn, 2000, this);
+            this.middlecountdownClear = setTimeout(this.middleResetfn, 15000, this);
         },
         
         doCount: function() {

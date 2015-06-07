@@ -17,26 +17,26 @@
 // usually the rotary encoders three pins have the ground pin in the middle
 enum PinAssignments {
 
-  encoderPinA_T = 8,
-  encoderPinB_T = 14, //A0
+  encoderPinA_W = 8,
+  encoderPinB_W = 14, //A0
   
-  encoderPinA_A = 12,
-  encoderPinB_A = 11,
+  encoderPinA_E = 12,
+  encoderPinB_E = 11,
   
   encoderPinA_P = 9,
   encoderPinB_P = 10,
   
-  encoderPinA_E = 5,
-  encoderPinB_E = 6,
+  encoderPinA_A = 5,
+  encoderPinB_A = 6,
   
-  encoderPinA_W = 4,
-  encoderPinB_W = 3,
+  encoderPinA_T = 4,
+  encoderPinB_T = 3,
   
-  buttonT = 19, //A1
-  buttonA = 18, //A2
+  buttonW = 19, //A1
+  buttonE = 18, //A2
   buttonP = 17, //A3
-  buttonE = 16, //A4
-  buttonW = 15, //A5
+  buttonA = 16, //A4
+  buttonT = 15, //A5
   
   //clearButton = 14
 };

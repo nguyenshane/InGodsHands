@@ -60,6 +60,8 @@ pc.script.create('SwipeInterface', function (context) {
                   width: 100%;
                   height: 100%;
                   opacity: 0.65;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .left{
                   height:20%;
@@ -68,6 +70,8 @@ pc.script.create('SwipeInterface', function (context) {
                   float:left;
                   box-shadow: none;
                   position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .left img {
                   height: 50%;
@@ -94,6 +98,8 @@ pc.script.create('SwipeInterface', function (context) {
                   background: none;
                   float:left;
                   position: relative;
+                  -webki-totuch-callout: none;
+                  -webkit-user-select: none; 
               }
               .right img {
                   height: 50%;
@@ -171,6 +177,8 @@ pc.script.create('SwipeInterface', function (context) {
             var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
+            var audio = context.root.findByName("Rv1-stable").script.AudioController;
+            this.audio = audio;
 
             this.T_L.swipe({
                 hold:function(event, target) {
@@ -179,17 +187,20 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_L_active');
                   self.holding_T_L = true;
+                  audio.sound_MakeBlizzard();
 
                   jtarget.on('touchend', function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
+                    audio.isPlaying = false;
                   });
 
                   jtarget.mouseup(function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
+                    audio.isPlaying = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -201,6 +212,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_L_active');
                   self.holding_T_L = false;
+                  audio.isPlaying = false;
                 },
                 //threshold:75
                 longTapThreshold:0
@@ -213,17 +225,20 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_R_active');
                   self.holding_T_R = true;
+                  audio.sound_MakeHot();
 
                   jtarget.on('touchend', function(){
                     self.holding_T_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
+                    audio.isPlaying = false;
                   });
 
                   jtarget.mouseup(function(){
                     self.holding_T_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
+                    audio.isPlaying = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -234,6 +249,7 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_R_active');
+                  audio.isPlaying = false;
                 },
                 //threshold:0
                 longTapThreshold:0
@@ -448,7 +464,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moving_W(-1,-distance/50,(distance/50)/duration,false);
+                  HIDInterface.moving_W(-1,-distance,distance/duration,false);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_L_active');
@@ -479,7 +495,7 @@ pc.script.create('SwipeInterface', function (context) {
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
                   console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moving_W(1,distance/50,(distance/50)/duration,false);
+                  HIDInterface.moving_W(1,distance,distance/duration,false);
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('W_R_active');
@@ -498,13 +514,13 @@ pc.script.create('SwipeInterface', function (context) {
           if (this.holding_A_L) this.HIDInterface.moving_A(-1,-1/8,10);
           if (this.holding_P_L) this.HIDInterface.moving_P(-1,-1/8,10);
           if (this.holding_E_L) this.HIDInterface.moving_E(-1,-1/8,10);
-          if (this.holding_W_L) this.HIDInterface.moving_W(-1,-10,10,true);
+          if (this.holding_W_L) this.HIDInterface.moving_W(-1,-1,1,true);
           
           if (this.holding_T_R) this.HIDInterface.moving_T(1,1/8,10);
           if (this.holding_A_R) this.HIDInterface.moving_A(1,1/8,10);
           if (this.holding_P_R) this.HIDInterface.moving_P(1,1/8,10);
           if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
-          if (this.holding_W_R) this.HIDInterface.moving_W(1,10,10,true);
+          if (this.holding_W_R) this.HIDInterface.moving_W(1,1,1,true);
         },
     };
     return SwipeInterface;

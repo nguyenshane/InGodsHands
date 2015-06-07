@@ -1112,13 +1112,8 @@ function Tile(index, vertexa, vertexb, vertexc){
             object.tile = this;
 
             object.altitude = this.center.length();
-
-            object.longitude;
-
-            object.lattitude;
-
-            
-
+            object.longitude = this.longitude;
+            object.latitude = this.latitude;
         }
     }
 
@@ -1230,6 +1225,6 @@ function Tile(index, vertexa, vertexb, vertexc){
             this.type = TILETYPES.WATER;
         }
         
-        ico.updateFlag = true;
+        //ico.updateFlag = true;
     };
 }

@@ -478,7 +478,7 @@ pc.script.create('developer', function (context) {
 			}
         },
 
-        checkNewTribeDiv(i){
+        checkNewTribeDiv: function(i){
                     var tribePopDiv = document.body.appendChild(document.createElement('div'));
                     tribePopDiv.style.position = 'absolute';
                     tribePopDiv.style.width = '32x';
