@@ -180,7 +180,7 @@ pc.script.create('SwipeInterface', function (context) {
             var audio = context.root._children[0].script.AudioController;
             this.audio = audio;
 
-            this.swipeWrapper({
+            this.swipeWrapper.swipe({
                 hold:function(event, target) {
                   audio.audiocontext.noteOn(0);
                 },
