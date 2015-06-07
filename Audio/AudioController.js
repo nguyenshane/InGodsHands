@@ -48,7 +48,7 @@ pc.script.create('AudioController', function (context) {
 			}
 			//console.log("this.musicBuffer", this.musicBuffer);
 
-			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new AudioContext());
+			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new webkitAudioContext());
 
 			//console.log("this.backgroundmusic", this.backgroundmusic);
 
