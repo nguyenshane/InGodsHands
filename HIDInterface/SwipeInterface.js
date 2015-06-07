@@ -174,15 +174,18 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L = $("#E_L"); this.E_R = $("#E_R");
             this.W_L = $("#W_L"); this.W_R = $("#W_R");
 
-            var HIDInterface = context.root._children[0].script.HIDInterface;
+            var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
-            var audio = context.root._children[0].script.AudioController;
+            var audio = context.root.findByName("Rv1-stable").script.AudioController;
             this.audio = audio;
-
+            this.swipeWrapper = $(".swipeWrapper");
             this.swipeWrapper.swipe({
                 hold:function(event, target) {
-                  audio.audiocontext.noteOn(0);
+                  if(!globalInterface.enableBGM){
+                    audio.backgroundmusic.playPause.call(audio.backgroundmusic);
+                    globalInterface.enableBGM = true;
+                  }
                 },
                 //threshold:75
                 longTapThreshold:0
