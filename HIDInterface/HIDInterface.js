@@ -189,6 +189,7 @@ pc.script.create('HIDInterface', function (context) {
 				heatEffectR.particlesystem.isPlaying = false;
 				coldEffect.particlesystem.play();
 				coldEffect.particlesystem.isPlaying = true;
+				this.audio.isPlaying = false;
 			} else if (position > 0) {
 				heatEffectL.particlesystem.play();
 				heatEffectL.particlesystem.isPlaying = true;
@@ -196,8 +197,8 @@ pc.script.create('HIDInterface', function (context) {
 				heatEffectR.particlesystem.isPlaying = true;
 				coldEffect.particlesystem.stop();
 				coldEffect.particlesystem.isPlaying = false;
+				this.audio.isPlaying = false;
 			}
-            ///*/
 		},
 		
 		moved_A: function(position, distance, speed) {
@@ -431,6 +432,7 @@ pc.script.create('HIDInterface', function (context) {
 				}
 
 				stormTimer = 50;
+				this.audio = context.root.findByName("Rv1-stable").script.AudioController; // why do I need to do this?
 				this.audio.sound_MakeThunder();
 
 				
