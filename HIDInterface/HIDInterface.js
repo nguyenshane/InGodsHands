@@ -263,7 +263,11 @@ pc.script.create('HIDInterface', function (context) {
 
 			//scripts.Atmosphere.makeStorm((distance * position), speed);
 			
-			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
+			//if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
+
+			for(var i = 0; i < tribes.length; i++){
+				if(tribes[i].enabled) tribes[i].startCowering();
+			}
 
 			for (var i = 0; i < this.lightsArray.length; i++){
 				this.lightsArray[i].enabled = true;
