@@ -1,10 +1,17 @@
-function IcoSphere(device, radius, subdivisions) {
+function IcoSphere(device, radius, subdivisions, seedStart) {
     'use strict;'
 
 
 	var time1 = new Date();
 	//debug.on(DEBUG.WORLDGEN);
     debug.log(DEBUG.WORLDGEN, "Icosphere Init Starting");
+
+    if (seedStart === undefined) {
+    	seed = new seed(Math.floor(pc.math.random(0, 32768)));
+    } else {
+    	seed = new seed(seedStart);
+    }
+    debug.log(DEBUG.INIT, "Seed: " + seed.seed);
 
     this.device = device;
 
