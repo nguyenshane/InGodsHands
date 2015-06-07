@@ -48,12 +48,15 @@ pc.script.create('AudioController', function (context) {
 				this.musicBuffer.push(context.assets.getAssetById(this.musicAsset[id]).resource.buffer);
 			}
 			//console.log("this.musicBuffer", this.musicBuffer);
-
-			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, new webkitAudioContext());
+			// Fix up prefixing
+  			window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  			this.audiocontext = new AudioContext();
+			this.backgroundmusic = new BackgroundIntensity(this.musicBuffer, this.audiocontext);
 
 			//console.log("this.backgroundmusic", this.backgroundmusic);
 
 			this.backgroundmusic.playPause.call(this.backgroundmusic);
+
 
         },
 

@@ -180,6 +180,15 @@ pc.script.create('SwipeInterface', function (context) {
             var audio = context.root.findByName("Rv1-stable").script.AudioController;
             this.audio = audio;
 
+            this.swipeWrapper({
+              hold:function(event, target) {
+                  audio.audiocontext.noteOn(0);
+                  });
+                },
+                //threshold:75
+                longTapThreshold:0
+            }),
+
             this.T_L.swipe({
                 hold:function(event, target) {
                   //console.log("tap event ", event, " target ", target);
