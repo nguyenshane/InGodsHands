@@ -25,6 +25,8 @@ pc.script.create('LightController', function (context) {
             this.origColor = this.entity.light.color;
             this.lightningTimer = 40;
             this.lightningOn = false;
+            var indexOfSelf = this.entity.getParent().getChildren().indexOf(this.entity);
+                if (!tribes[indexOfSelf].enabled) this.entity.light.intensity = 0;
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -83,7 +85,7 @@ pc.script.create('LightController', function (context) {
         startLightning: function(){
             this.lightningOn = true;
             this.entity.light.color = new pc.Color(1, 1, 1, 1);
-            this.enabled = true;
+            //this.enabled = true;
             this.shineLightning();
         },
 
@@ -94,7 +96,7 @@ pc.script.create('LightController', function (context) {
                 this.lightningTimer = 40;
                 this.entity.light.color = this.origColor;
                 var indexOfSelf = this.entity.getParent().getChildren().indexOf(this.entity);
-                if (!tribes[indexOfSelf].enabled) this.entity.enabled = false;
+                if (!tribes[indexOfSelf].enabled) this.entity.light.intensity = 0;
                 return;
             } else if (this.lightningTimer < 40 && this.lightningTimer > 30){
                 this.entity.light.intensity = 15;

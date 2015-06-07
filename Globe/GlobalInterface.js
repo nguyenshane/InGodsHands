@@ -461,13 +461,14 @@ pc.script.create('globalInterface', function (context) {
         assignTribeBeliefLights: function() {
             for (var i = 0; i < tribes.length; i++){
                 tribes[i].script.tribe.beliefLight = tribeLights[i];
+                //tribes[i].script.tribe.beliefLight.enabled = true;
             }
         },
 
         setBeliefLightsOff: function() {
             for (var i = 0; i < tribes.length; i++){
-                if (!tribes[i].enabled) tribeLights[i].enabled = false;
-                console.log(tribeLights[i].enabled);
+                if (!tribes[i].enabled) tribeLights[i].intensity = 0;
+                //console.log(tribeLights[i].enabled);
             }
         },
 

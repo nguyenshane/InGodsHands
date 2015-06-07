@@ -183,15 +183,22 @@ pc.script.create('HIDInterface', function (context) {
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + global[GLOBAL.TEMPERATURE]);
 			
 			if (position < 0) {
+				heatEffectL.particlesystem.stop();
+				heatEffectL.particlesystem.isPlaying = false;
+				heatEffectR.particlesystem.stop();
+				heatEffectR.particlesystem.isPlaying = false;
 				coldEffect.particlesystem.play();
 				coldEffect.particlesystem.isPlaying = true;
+				this.audio.isPlaying = false;
 			} else if (position > 0) {
 				heatEffectL.particlesystem.play();
 				heatEffectL.particlesystem.isPlaying = true;
 				heatEffectR.particlesystem.play();
 				heatEffectR.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.stop();
+				coldEffect.particlesystem.isPlaying = false;
+				this.audio.isPlaying = false;
 			}
-            ///*/
 		},
 		
 		moved_A: function(position, distance, speed) {
@@ -310,6 +317,10 @@ pc.script.create('HIDInterface', function (context) {
         	}
             
 			if (position < 0) {
+				heatEffectL.particlesystem.stop();
+				heatEffectL.particlesystem.isPlaying = false;
+				heatEffectR.particlesystem.stop();
+				heatEffectR.particlesystem.isPlaying = false;
 				coldEffect.particlesystem.play();
 				coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
@@ -317,6 +328,8 @@ pc.script.create('HIDInterface', function (context) {
 				heatEffectL.particlesystem.isPlaying = true;
 				heatEffectR.particlesystem.play();
 				heatEffectR.particlesystem.isPlaying = true;
+				coldEffect.particlesystem.stop();
+				coldEffect.particlesystem.isPlaying = false;
 			}
             
             temperatureEffectTimer = 1.0;
@@ -419,6 +432,7 @@ pc.script.create('HIDInterface', function (context) {
 				}
 
 				stormTimer = 50;
+				this.audio = context.root.findByName("Rv1-stable").script.AudioController; // why do I need to do this?
 				this.audio.sound_MakeThunder();
 
 				

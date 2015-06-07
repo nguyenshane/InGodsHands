@@ -177,6 +177,8 @@ pc.script.create('SwipeInterface', function (context) {
             var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
+            var audio = context.root.findByName("Rv1-stable").script.AudioController;
+            this.audio = audio;
 
             this.T_L.swipe({
                 hold:function(event, target) {
@@ -185,17 +187,20 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_L_active');
                   self.holding_T_L = true;
+                  audio.sound_MakeBlizzard();
 
                   jtarget.on('touchend', function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
+                    audio.isPlaying = false;
                   });
 
                   jtarget.mouseup(function(){
                     self.holding_T_L = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_L_active');
+                    audio.isPlaying = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -207,6 +212,7 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_L_active');
                   self.holding_T_L = false;
+                  audio.isPlaying = false;
                 },
                 //threshold:75
                 longTapThreshold:0
@@ -219,17 +225,20 @@ pc.script.create('SwipeInterface', function (context) {
                   jtarget.children(".active").css('opacity', 0.8);
                   jtarget.addClass('T_R_active');
                   self.holding_T_R = true;
+                  audio.sound_MakeHot();
 
                   jtarget.on('touchend', function(){
                     self.holding_T_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
+                    audio.isPlaying = false;
                   });
 
                   jtarget.mouseup(function(){
                     self.holding_T_R = false;
                     $(this).children(".active").css('opacity', 0);
                     $(this).removeClass('T_R_active');
+                    audio.isPlaying = false;
                   });
                 },
                 //Generic swipe handler for all directions
@@ -240,6 +249,7 @@ pc.script.create('SwipeInterface', function (context) {
                   var jtarget = $(event.srcElement);
                   jtarget.children(".active").css('opacity', 0);
                   jtarget.removeClass('T_R_active');
+                  audio.isPlaying = false;
                 },
                 //threshold:0
                 longTapThreshold:0

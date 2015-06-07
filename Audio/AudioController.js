@@ -15,6 +15,7 @@ pc.script.create('AudioController', function (context) {
 		this.targetMusicLayer = 0.5;
 		this.direction, this.distance, this.speed = 0;
 		this.recentlyPaused = false;
+		this.isPlaying = false;
     };
 
   		var lerpStartTime = 0.0;
@@ -157,7 +158,7 @@ pc.script.create('AudioController', function (context) {
             this.playing = false;
             this.paused = false;
             
-			this.audio.audiosource.play("string_pull");
+			//this.audio.audiosource.play("string_pull");
 		},
 		
 		sound_A: function(position, distance, speed) {
@@ -167,7 +168,7 @@ pc.script.create('AudioController', function (context) {
             this.playing = false;
             this.paused = false;
             
-			this.audio.audiosource.play("string_pull");
+			//this.audio.audiosource.play("string_pull");
 		},
 		
 		sound_P: function(position, distance, speed) {
@@ -177,7 +178,7 @@ pc.script.create('AudioController', function (context) {
             this.playing = false;
             this.paused = false;
             
-			this.audio.audiosource.play("string_pull");
+			//this.audio.audiosource.play("string_pull");
 		},
 		
 		sound_E: function(position, distance, speed) {
@@ -187,7 +188,7 @@ pc.script.create('AudioController', function (context) {
             this.playing = false;
             this.paused = false;
             
-			this.audio.audiosource.play("string_pull");
+			//this.audio.audiosource.play("string_pull");
 		},
 		
 		sound_W: function(position, distance, speed) {
@@ -197,16 +198,16 @@ pc.script.create('AudioController', function (context) {
             this.playing = false;
             this.paused = false;
             
-			this.audio.audiosource.play("string_pull");
+			//this.audio.audiosource.play("string_pull");
 		},
 
-		sound_TribeMov: function(){
-			this.audio = context.root.findByName("Rv1-stable");
-            this.playing = false;
-            this.paused = false;
-            //console.log("Tribe has moved");
-            this.audio.audiosource.play("tribeMovement");
-		},
+		// sound_TribeMov: function(){
+		// 	this.audio = context.root.findByName("Rv1-stable");
+  //           this.playing = false;
+  //           this.paused = false;
+  //           //console.log("Tribe has moved");
+  //           this.audio.audiosource.play("tribeMovement");
+		// },
 
 		sound_TribePray: function(){
 			//console.log("Play sound: Tribe Pray");
@@ -259,7 +260,6 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		sound_MakeThunder: function(){
-			//console.log("Play sound: Thunder");
 
 			this.audio = context.root.findByName("Rv1-stable");
 			this.playing = false;
@@ -268,14 +268,28 @@ pc.script.create('AudioController', function (context) {
 			this.audio.audiosource.play("IGH Thunder");
 		},
 
-		sound_MakeRain: function(){
-			//console.log("Play sound: Rain");
+		sound_MakeBlizzard: function(){
+
+			this.audio = context.root.findByName("Rv1-stable");
+			this.playing = false;
+			this.paused = false;
+
+			if (!this.isPlaying) {
+				this.audio.audiosource.play("IGH Blizzard");
+				this.isPlaying = true;
+			}
+		},
+
+		sound_MakeHot: function(){
 
 			this.audio = context.root.findByName("Rv1-stable");
 			this.playing = false;
 			this.paused = false;
 			
-			this.audio.audiosource.play("IGH Rain Loop");
+			if (!this.isPlaying) {
+				this.audio.audiosource.play("IGH Hot");
+				this.isPlaying = true;
+			}
 		},
 
 
