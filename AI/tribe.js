@@ -180,7 +180,7 @@ pc.script.create('tribe', function (context) {
 
             //this.iconSmoke.particlesystem.colorMap = this.praiseIcon;
 
-            this.beliefLight.enabled = true;
+            //this.beliefLight.enabled = true;
             this.beliefLight.script.LightController.startShineBeliefLight();
 
             this.hq = this.entity.findByName("HQ");
