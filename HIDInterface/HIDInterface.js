@@ -47,10 +47,9 @@ pc.script.create('HIDInterface', function (context) {
 			//storm = context.root.findByName("Storm");
 			camera = context.root.findByName("Camera");
 			//this.stormEffect = camera.script.vignette.effect;
-			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
             
-			this.audio = context.root.findByName("Rv1-stable").script.AudioController;
+			this.audio = context.root._children[0].script.AudioController;
 
             temperatureEffectTimer = 1.0;
 
@@ -63,7 +62,7 @@ pc.script.create('HIDInterface', function (context) {
             ///*/
 
 			app = pc.fw.Application.getApplication('application-canvas').context;
-			UI = context.root.findByName("Rv1-stable").script.developer;
+			UI = context.root._children[0].script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -113,33 +112,7 @@ pc.script.create('HIDInterface', function (context) {
 
         	--stormTimer;
             
-            /*
-        	if (temperatureChange == true  && !hasStopped) {
-        		timer = new Date();
-        		var timeSinceStartedLerp = timer.getTime() - lerpStartTime;
-        		var percentLerped = timeSinceStartedLerp / velocity;
-        		global[GLOBAL.TEMPERATURE] = pc.math.lerp(temperatureStart, temperatureDest, percentLerped);
 
-				if ((global[GLOBAL.TEMPERATURE] - temperatureDest) == 0.0) {
-					temperatureChange = false;
-					debug.log(DEBUG.HARDWARE, "Done temp change");
-				}
-        	}
-            
-        	if ((global[GLOBAL.TEMPERATURE] - temperatureDest <= 0.0) && this.coldEffect.particlesystem.isPlaying) {
-        		this.coldEffect.particlesystem.stop();
-        		this.coldEffect.particlesystem.isPlaying = false;
-        	}
-
-        	if ((global[GLOBAL.TEMPERATURE] - temperatureDest >= 0.0) && this.heatEffectL.particlesystem.isPlaying) {
-        		this.heatEffectL.particlesystem.stop();
-        		this.heatEffectL.particlesystem.isPlaying = false;
-        		this.heatEffectR.particlesystem.stop();
-        		this.heatEffectR.particlesystem.isPlaying = false;
-        	}
-            */
-            
-            ///*
             temperatureEffectTimer -= dt;
             if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
                 this.coldEffect.particlesystem.stop();
@@ -263,7 +236,11 @@ pc.script.create('HIDInterface', function (context) {
 
 			//scripts.Atmosphere.makeStorm((distance * position), speed);
 			
-			if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
+			//if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
+
+			for(var i = 0; i < tribes.length; i++){
+				if(tribes[i].enabled) tribes[i].startCowering();
+			}
 
 			for (var i = 0; i < this.lightsArray.length; i++){
 				this.lightsArray[i].enabled = true;
@@ -432,7 +409,7 @@ pc.script.create('HIDInterface', function (context) {
 				}
 
 				stormTimer = 50;
-				this.audio = context.root.findByName("Rv1-stable").script.AudioController; // why do I need to do this?
+				this.audio = context.root._children[0].script.AudioController; // why do I need to do this?
 				this.audio.sound_MakeThunder();
 
 				

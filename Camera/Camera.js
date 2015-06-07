@@ -17,7 +17,7 @@ pc.script.create('Camera', function (context) {
     Camera.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            //this.stringW = context.root.findByName("Rv1-stable").script.HIDInterface.stringW;
+            //this.stringW = context.root._children[0].script.HIDInterface.stringW;
             //this.stringW.on("moving", this.move_W, this.direction, this.distance, this.speed, this.orbitAngle);
             
 			//this.bgplane = this.entity.findByName("Plane");
@@ -29,7 +29,7 @@ pc.script.create('Camera', function (context) {
             //this.aura1Mat = this.aura1.model.model.getMaterials()[0];
             //this.aura2Mat = this.aura2.model.model.getMaterials()[0];
             //this.aura3Mat = this.aura3.model.model.getMaterials()[0];
-            this.HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
+            this.HIDInterface = context.root._children[0].script.HIDInterface;
 
             this.counter = 0;
 			

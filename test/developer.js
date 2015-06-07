@@ -75,8 +75,8 @@ pc.script.create('developer', function (context) {
             buttonPause.style.top = '3%';
             buttonPause.style.left = '93%';
             buttonPause.style.visibility = 'hidden';
-            //console.log("gi ",  this.context.root.findByName("Rv1-stable").script.globalInterface);
-            buttonPause.addEventListener('click', this.context.root.findByName("Rv1-stable").script.globalInterface.pauseGame);
+            //console.log("gi ",  this.context.root._children[0].script.globalInterface);
+            buttonPause.addEventListener('click', this.context.root._children[0].script.globalInterface.pauseGame);
 
 
             // Create a button to toggle UI
@@ -414,7 +414,7 @@ pc.script.create('developer', function (context) {
             this.musicText = musicText;
 
 
-            audio = this.context.root.findByName("Rv1-stable").script.AudioController;
+            audio = this.context.root._children[0].script.AudioController;
             //prevMusicLayer = audio.musicLayer;
 
             //timer = 2.0;
@@ -655,7 +655,7 @@ pc.script.create('developer', function (context) {
 
               if(this.StringsliderT.value != sliderTLastPos){
                this.sliderTDistance = this.StringsliderT.value - sliderTLastPos;
-               var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+               var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_T', this.sliderTDistance/5, 0, 0);
                hasMovedT = true;
                 }
@@ -754,7 +754,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeT;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionT;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moved_T', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeT);
@@ -773,7 +773,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeA;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionA;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moved_A', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeA);
@@ -792,7 +792,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeP;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionP;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moved_P', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeP);
@@ -811,7 +811,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeE;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionE;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moved_E', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeE);
@@ -830,7 +830,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeT;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionT;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_T', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeT);
@@ -849,7 +849,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeA;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionA;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_A', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeA);
@@ -868,7 +868,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeP;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionP;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_P', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeP);
@@ -887,7 +887,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeE;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionE;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_E', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeE);
@@ -906,7 +906,7 @@ pc.script.create('developer', function (context) {
                 var timeSinceStartedPull =  this.time - pullStartTimeW;
                 var speed = Math.abs(distance)/timeSinceStartedPull;
                 var position = this.positionW;
-                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
+                var stringPullLerp = pc.fw.Application.getApplication('application-canvas').context.root._children[0];
                 stringPullLerp.script.send('HIDInterface', 'moving_W', position, distance, speed);
 
                 //console.log("pullStartTime " + pullStartTimeW);

@@ -37,14 +37,12 @@ pc.script.create('globalInterface', function (context) {
         	globalTime = 0;
             lastSnapshotTime = 0;
 
-            seed = new seed(Math.floor(pc.math.random(0, 32768)));
-            debug.log(DEBUG.INIT, "Seed: " + seed.seed);
 			
 			//Global references to PlayCanvas components
-			scripts = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").script;
-			camera = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera");
+			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
+			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 			
-			animalDensity = 0.0225; // 0.07 too high
+			animalDensity = 0.0125; // 0.07 too high
             animalMigrationOffset = 0;
 			
 			treeDensity = 0.1; //this and scripts are also defined in Trees.js since it is sometimes called before this one...
@@ -68,7 +66,7 @@ pc.script.create('globalInterface', function (context) {
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
 
-            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera").script.vignette.effect;
+            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 
             maxTotalBelief = 250;
             totalBelief = 0;

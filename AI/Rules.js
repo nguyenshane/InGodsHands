@@ -36,10 +36,6 @@ wantToMigrate.prototype = {
     consequence: function(tribe){
         tribe.ruleCooldownTimer = 8;
         tribe.migrate();
-
-        //var moveS = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable");
-            //moveS.script.AudioController.sound_TribeMov();
-            //moveS.script.send('AudioController', 'sound_TribeMov', 'initialized');
     }    
 };
 

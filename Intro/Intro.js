@@ -39,11 +39,11 @@ pc.script.create('Intro', function (context) {
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
 			/*
-			this.stringT = context.root.findByName("Rv1-stable").script.HIDInterface.stringT;
-			this.stringA = context.root.findByName("Rv1-stable").script.HIDInterface.stringA;
-			this.stringP = context.root.findByName("Rv1-stable").script.HIDInterface.stringP;
-			this.stringE = context.root.findByName("Rv1-stable").script.HIDInterface.stringE;
-			this.stringW = context.root.findByName("Rv1-stable").script.HIDInterface.stringW;
+			this.stringT = context.root._children[0].script.HIDInterface.stringT;
+			this.stringA = context.root._children[0].script.HIDInterface.stringA;
+			this.stringP = context.root._children[0].script.HIDInterface.stringP;
+			this.stringE = context.root._children[0].script.HIDInterface.stringE;
+			this.stringW = context.root._children[0].script.HIDInterface.stringW;
 			*/
 
         	this.T_L = context.root.findByName("T_L");
