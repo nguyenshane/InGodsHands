@@ -9,7 +9,7 @@ pc.script.create('LightController', function (context) {
         this.lightningOn;
         this.origColor;
         this.lightningTimer;
-        var tribes = context.root.findByName("TribeParent");
+        //var tribes = context.root.findByName("TribeParent");
     };
 
   	
