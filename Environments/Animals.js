@@ -17,7 +17,7 @@ pc.script.create('Animals', function (context) {
         initialize: function () {
 			var t1 = new Date();
 			
-			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").script;
+			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
             this.animals = context.root.findByName("Animals");
             this.animal_stack = [];

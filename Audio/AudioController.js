@@ -27,11 +27,11 @@ pc.script.create('AudioController', function (context) {
     AudioController.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-            this.stringT = context.root.findByName("Rv1-stable").script.HIDInterface.stringT;
-			this.stringA = context.root.findByName("Rv1-stable").script.HIDInterface.stringA;
-			this.stringP = context.root.findByName("Rv1-stable").script.HIDInterface.stringP;
-			this.stringE = context.root.findByName("Rv1-stable").script.HIDInterface.stringE;
-			this.stringW = context.root.findByName("Rv1-stable").script.HIDInterface.stringW;
+            this.stringT = context.root._children[0].script.HIDInterface.stringT;
+			this.stringA = context.root._children[0].script.HIDInterface.stringA;
+			this.stringP = context.root._children[0].script.HIDInterface.stringP;
+			this.stringE = context.root._children[0].script.HIDInterface.stringE;
+			this.stringW = context.root._children[0].script.HIDInterface.stringW;
 			
 			this.stringT.on("moved", this.sound_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.sound_A, this.direction, this.distance, this.speed);
@@ -154,7 +154,7 @@ pc.script.create('AudioController', function (context) {
 		sound_T: function(position, distance, speed) {
 			//console.log("Play sound string T");
 			
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             
@@ -164,7 +164,7 @@ pc.script.create('AudioController', function (context) {
 		sound_A: function(position, distance, speed) {
 			//console.log("Play sound string A");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             
@@ -174,7 +174,7 @@ pc.script.create('AudioController', function (context) {
 		sound_P: function(position, distance, speed) {
 			//console.log("Play sound string P");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             
@@ -184,7 +184,7 @@ pc.script.create('AudioController', function (context) {
 		sound_E: function(position, distance, speed) {
 			//console.log("Play sound string E");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             
@@ -194,7 +194,7 @@ pc.script.create('AudioController', function (context) {
 		sound_W: function(position, distance, speed) {
 			//console.log("Play sound string W");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
             this.playing = false;
             this.paused = false;
             
@@ -202,7 +202,7 @@ pc.script.create('AudioController', function (context) {
 		},
 
 		// sound_TribeMov: function(){
-		// 	this.audio = context.root.findByName("Rv1-stable");
+		// 	this.audio = context.root._children[0];
   //           this.playing = false;
   //           this.paused = false;
   //           //console.log("Tribe has moved");
@@ -212,7 +212,7 @@ pc.script.create('AudioController', function (context) {
 		sound_TribePray: function(){
 			//console.log("Play sound: Tribe Pray");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -222,7 +222,7 @@ pc.script.create('AudioController', function (context) {
 		sound_TribePraise: function(){
 			//console.log("Play sound: Tribe Praise");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -232,7 +232,7 @@ pc.script.create('AudioController', function (context) {
 		sound_TribeDenounce: function(){
 			//console.log("Play sound: Tribe Denounce");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -242,7 +242,7 @@ pc.script.create('AudioController', function (context) {
 		sound_TribeWorshipFalseIdol: function(){
 			//console.log("Play sound: Tribe Denounce");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -252,7 +252,7 @@ pc.script.create('AudioController', function (context) {
 		sound_TribeSacrifice: function(){
 			//console.log("Play sound: Tribe Denounce");
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -261,7 +261,7 @@ pc.script.create('AudioController', function (context) {
 
 		sound_MakeThunder: function(){
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			
@@ -270,7 +270,7 @@ pc.script.create('AudioController', function (context) {
 
 		sound_MakeBlizzard: function(){
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 
@@ -282,7 +282,7 @@ pc.script.create('AudioController', function (context) {
 
 		sound_MakeHot: function(){
 
-			this.audio = context.root.findByName("Rv1-stable");
+			this.audio = context.root._children[0];
 			this.playing = false;
 			this.paused = false;
 			

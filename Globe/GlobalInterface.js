@@ -41,8 +41,8 @@ pc.script.create('globalInterface', function (context) {
             debug.log(DEBUG.INIT, "Seed: " + seed.seed);
 			
 			//Global references to PlayCanvas components
-			scripts = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").script;
-			camera = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera");
+			scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
+			camera = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
 			
 			animalDensity = 0.0125; // 0.07 too high
             animalMigrationOffset = 0;
@@ -68,7 +68,7 @@ pc.script.create('globalInterface', function (context) {
             sun = context.root.findByName("Sun");
             shaderSun = context.root.findByName("ShaderSun");
 
-            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera").script.vignette.effect;
+            //this.stormEffect = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera").script.vignette.effect;
 
             maxTotalBelief = 250;
             totalBelief = 0;

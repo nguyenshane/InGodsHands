@@ -174,10 +174,10 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L = $("#E_L"); this.E_R = $("#E_R");
             this.W_L = $("#W_L"); this.W_R = $("#W_R");
 
-            var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
+            var HIDInterface = context.root._children[0].script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
-            var audio = context.root.findByName("Rv1-stable").script.AudioController;
+            var audio = context.root._children[0].script.AudioController;
             this.audio = audio;
 
             this.T_L.swipe({

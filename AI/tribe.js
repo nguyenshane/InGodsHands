@@ -6,7 +6,7 @@ function addTribe() {
             tribes[i].enabled = true;
 
             var app = pc.fw.Application.getApplication('application-canvas').context;
-            var tribeInfo = app.root.findByName('Rv1-stable').script.developer;
+            var tribeInfo = app.root._children[0].script.developer;
             tribeInfo.addTribeDiv = true;
             
             if (firstTribeOnly) {
@@ -195,7 +195,7 @@ pc.script.create('tribe', function (context) {
             this.paganStatue.enabled = true;
             this.idolAngleChange = 0; // 3 seconds to rotate at 60fps
 	
-            this.audio = context.root.findByName("Rv1-stable").script.AudioController;
+            this.audio = context.root._children[0].script.AudioController;
 			
             this.tribeColor = colors[colors.length-1];
             colors.pop(); // pop, but the first element
@@ -964,7 +964,7 @@ pc.script.create('tribe', function (context) {
             this.paganStatue.enabled = false;
             this.entity.enabled = false;
             
-            context.root.findByName("Rv1-stable").script.globalInterface.doTribesExist();
+            context.root._children[0].script.globalInterface.doTribesExist();
         },
 
         calculateInfluence: function() {

@@ -50,7 +50,7 @@ pc.script.create('HIDInterface', function (context) {
 			this.stormTriggerBox = context.root.findByName("Camera").findByName("Sun").findByName("Light").script.trigger;
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
             
-			this.audio = context.root.findByName("Rv1-stable").script.AudioController;
+			this.audio = context.root._children[0].script.AudioController;
 
             temperatureEffectTimer = 1.0;
 
@@ -63,7 +63,7 @@ pc.script.create('HIDInterface', function (context) {
             ///*/
 
 			app = pc.fw.Application.getApplication('application-canvas').context;
-			UI = context.root.findByName("Rv1-stable").script.developer;
+			UI = context.root._children[0].script.developer;
 
 			this.stringT.on("moved", this.moved_T, this.direction, this.distance, this.speed);
 			this.stringA.on("moved", this.moved_A, this.direction, this.distance, this.speed);
@@ -432,7 +432,7 @@ pc.script.create('HIDInterface', function (context) {
 				}
 
 				stormTimer = 50;
-				this.audio = context.root.findByName("Rv1-stable").script.AudioController; // why do I need to do this?
+				this.audio = context.root._children[0].script.AudioController; // why do I need to do this?
 				this.audio.sound_MakeThunder();
 
 				

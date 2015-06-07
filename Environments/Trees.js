@@ -17,7 +17,7 @@ pc.script.create('Trees', function (context) {
         initialize: function () {
 			var t1 = new Date();
 			
-			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").script;
+			if (scripts === undefined) scripts = pc.fw.Application.getApplication('application-canvas').context.root._children[0].script;
 			
             this.trees = context.root.findByName("Trees");
             this.trees_stack = [];
