@@ -181,9 +181,8 @@ pc.script.create('SwipeInterface', function (context) {
             this.audio = audio;
 
             this.swipeWrapper({
-              hold:function(event, target) {
+                hold:function(event, target) {
                   audio.audiocontext.noteOn(0);
-                  });
                 },
                 //threshold:75
                 longTapThreshold:0
