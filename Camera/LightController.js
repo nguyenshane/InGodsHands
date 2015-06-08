@@ -47,7 +47,7 @@ pc.script.create('LightController', function (context) {
 
         shineBeliefLight: function (deltaTime){
         	if (this.beliefTimer === 0){ 
-        		this.intensity = 1;
+        		this.entity.light.intensity = 1;
         		this.lightUp = false;
         		this.beliefTimer = 180;
         		return;
@@ -68,7 +68,7 @@ pc.script.create('LightController', function (context) {
 
         shineDenounceLight: function (deltaTime){
             if (this.denounceTimer === 0){ 
-                this.intensity = 1;
+                this.entity.light.intensity = 1;
                 this.denounceOn = false;
                 this.denounceTimer = 180;
                 this.entity.light.color = this.origColor;
@@ -85,12 +85,11 @@ pc.script.create('LightController', function (context) {
         startLightning: function(){
             this.lightningOn = true;
             this.entity.light.color = new pc.Color(1, 1, 1, 1);
-            //this.enabled = true;
             this.shineLightning();
         },
 
         shineLightning: function(){
-            if (this.lightningTimer <= 0){ 
+            if (this.lightningTimer === 0){ 
                 this.entity.light.intensity = 1;
                 this.lightningOn = false;
                 this.lightningTimer = 40;
