@@ -16,12 +16,12 @@ pc.script.create('Atmosphere', function (context) {
 			var t1 = new Date();
 
             this.atm = context.root.findByName("Atmosphere");
-			this.cam = pc.fw.Application.getApplication('application-canvas').context.root._children[0].findByName("Camera");
+			this.cam = pc.fw.Application.getApplication('application-canvas').context.root.findByName("Rv1-stable").findByName("Camera");
 			
 			this.fogstack = [];
 			this.rainstack = [];
 
-			this.audio = context.root._children[0].script.AudioController;
+			this.audio = context.root.findByName("Rv1-stable").script.AudioController;
 
 			var t2 = new Date();
 			debug.log(DEBUG.INIT, "atmosphere initialization: " + (t2-t1));

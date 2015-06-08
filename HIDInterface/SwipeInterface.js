@@ -29,6 +29,8 @@ pc.script.create('SwipeInterface', function (context) {
         initialize: function () {
             var t1 = new Date();
 
+            swipeInterface = this;
+
             var TLactive = context.assets.find("TLactive", "texture").getFileUrl();
             var TRactive = context.assets.find("TRactive", "texture").getFileUrl();
             var ALactive = context.assets.find("ALactive", "texture").getFileUrl();
@@ -174,11 +176,22 @@ pc.script.create('SwipeInterface', function (context) {
             this.E_L = $("#E_L"); this.E_R = $("#E_R");
             this.W_L = $("#W_L"); this.W_R = $("#W_R");
 
-            var HIDInterface = context.root._children[0].script.HIDInterface;
+            var HIDInterface = context.root.findByName("Rv1-stable").script.HIDInterface;
             this.HIDInterface = HIDInterface;
             var self = this;
-            var audio = context.root._children[0].script.AudioController;
+            var audio = context.root.findByName("Rv1-stable").script.AudioController;
             this.audio = audio;
+            this.swipeWrapper = $(".swipeWrapper");
+            this.swipeWrapper.swipe({
+                hold:function(event, target) {
+                  if(!globalInterface.enableBGM){
+                    audio.backgroundmusic.playPause.call(audio.backgroundmusic);
+                    globalInterface.enableBGM = true;
+                  }
+                },
+                //threshold:75
+                longTapThreshold:0
+            }),
 
             this.T_L.swipe({
                 hold:function(event, target) {
@@ -522,6 +535,98 @@ pc.script.create('SwipeInterface', function (context) {
           if (this.holding_E_R) this.HIDInterface.moving_E(1,1/8,10);
           if (this.holding_W_R) this.HIDInterface.moving_W(1,1,1,true);
         },
+
+        highlightTL: function() {
+          var jtarget = $("#T_L");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('T_L_active');
+        },
+        lowlightTL: function() {
+          $("#T_L").children(".active").css('opacity', 0);
+          //$("#T_L").removeClass('T_L_active');
+        },
+        highlightTR: function() {
+          var jtarget = $("#T_R");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('T_R_active');
+        },
+        lowlightTR: function() {
+          $("#T_R").children(".active").css('opacity', 0);
+          //$("#T_R").removeClass('T_R_active');
+        },
+        highlightAL: function() {
+          var jtarget = $("#A_L");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('A_L_active');
+        },
+        lowlightAL: function() {
+          $("#A_L").children(".active").css('opacity', 0);
+          //$("#A_L").removeClass('A_L_active');
+        },
+        highlightAR: function() {
+          var jtarget = $("#A_R");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('A_R_active');
+        },
+        lowlightAR: function() {
+          $("#A_R").children(".active").css('opacity', 0);
+          //$("#A_R").removeClass('A_R_active');
+        },
+        highlighPL: function() {
+          var jtarget = $("#P_L");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('P_L_active');
+        },
+        lowlightPL: function() {
+          $("#P_L").children(".active").css('opacity', 0);
+          //$("#P_L").removeClass('P_L_active');
+        },
+        highlightPR: function() {
+          var jtarget = $("#P_R");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('P_R_active');
+        },
+        lowlightPR: function() {
+          $("#P_R").children(".active").css('opacity', 0);
+          //$("#P_R").removeClass('P_R_active');
+        },
+        highlightEL: function() {
+          var jtarget = $("#E_L");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('E_L_active');
+        },
+        lowlightEL: function() {
+          $("#E_L").children(".active").css('opacity', 0);
+          //$("#E_L").removeClass('E_L_active');
+        },
+        highlightER: function() {
+          var jtarget = $("#E_R");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('E_R_active');
+        },
+        lowlightER: function() {
+          $("#E_R").children(".active").css('opacity', 0);
+          //$("#E_R").removeClass('E_R_active');
+        },
+        highlightWL: function() {
+          var jtarget = $("#W_L");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('W_L_active');
+        },
+        lowlightWL: function() {
+          $("#W_L").children(".active").css('opacity', 0);
+          //$("#W_L").removeClass('W_L_active');
+        },
+        highlightWR: function() {
+          var jtarget = $("#W_R");
+          jtarget.children(".active").css('opacity', 0.8);
+          //jtarget.addClass('W_R_active');
+        },
+        lowlightWR: function() {
+          $("#W_R").children(".active").css('opacity', 0);
+          //$("#W_R").removeClass('W_R_active');
+        },
+
     };
     return SwipeInterface;
 });

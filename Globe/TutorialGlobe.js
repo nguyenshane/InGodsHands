@@ -9,7 +9,7 @@ pc.script.create('Globe', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
             // create mesh
-            ico = new IcoSphere(context.graphicsDevice, 1.5, 4);
+            ico = new IcoSphere(context.graphicsDevice, 1.5, 4, 4);
             var mesh = ico.toReturn.mesh;
 
             // test verts
@@ -20,6 +20,12 @@ pc.script.create('Globe', function (context) {
             // create entity
             var entity = new pc.Entity();
             entity.name = "Globe";
+
+            tutStage = 0;
+
+            camera = context.root.findByName("Camera");
+            camera.script.Camera.isSwipping = true;
+            camera.script.Camera.rotationSpeed = 180;
             
             // create material
             // A shader definition used to create a new shader.
@@ -168,6 +174,28 @@ pc.script.create('Globe', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if (!isPaused) {
+
+                switch(tutStage) {
+                    case 0:
+                        if (Math.floor(globalTime)%2 == 0) {
+                            swipeInterface.highlightWL();
+                            swipeInterface.highlightWR();
+                        } else {
+                            swipeInterface.lowlightWL();
+                            swipeInterface.lowlightWR();
+                        }
+                        this.checkCamera();
+                        break;
+                    case 1:
+                        if (Math.floor(globalTime)%2 == 0) {
+                            swipeInterface.highlightEL();
+                            swipeInterface.highlightER();
+                        } else {
+                            swipeInterface.lowlightEL();
+                            swipeInterface.lowlightER();
+                        }
+                        break;
+                }
                 if (ico.updateFlag == true) {
                     this.updateMesh();
                 }
@@ -203,6 +231,14 @@ pc.script.create('Globe', function (context) {
             ico.updateReturnMesh();
             this.meshInstance.mesh = ico.toReturn.mesh;
             //console.log("Updating Globe Mesh");
+        },
+
+        checkCamera: function() {
+            if (camera.rotation.y > 0 && camera.rotation.y < 0.5) {
+                tutStage = 1;
+                swipeInterface.lowlightWL();
+                swipeInterface.lowlightWR();
+            }
         }
 		/*
 		move: function(position, distance, speed) {
