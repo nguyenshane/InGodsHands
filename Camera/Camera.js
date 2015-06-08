@@ -44,14 +44,14 @@ pc.script.create('Camera', function (context) {
                     //this.orbitAngle++;
                     //shaderSun.rotateLocal(0, -2, 0);
                     //sun.rotate(0, .01, 0);
-                    this.rotationSpeed+=0.15;
+                    this.rotationSpeed+=1;
                     this.lastRotationSpeed = this.rotationSpeed;
     			} else {
                     //context.root.findByName("Camera").script.camera.orbitAngle-=15;
                     //this.orbitAngle--;
                     //shaderSun.rotateLocal(0, 2, 0);
                     //sun.rotate(0, -.01, 0);
-                    this.rotationSpeed-=0.15;
+                    this.rotationSpeed-=1;
                     this.lastRotationSpeed = this.rotationSpeed;
                 }
             }
