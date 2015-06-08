@@ -1040,7 +1040,7 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToMigrate());
             this.rules.push(new needTemperatureChange());
             this.rules.push(new wantToDenounceInactive());
-            this.rules.push(new wantToDenounceNoSun());
+            //this.rules.push(new wantToDenounceNoSun());
             this.rules.push(new needToAdapt());
             this.rules.push(new wantToWorshipFalseIdol());
             this.rules.push(new wantToSacrifice());
