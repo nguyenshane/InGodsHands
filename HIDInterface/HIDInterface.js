@@ -260,7 +260,7 @@ pc.script.create('HIDInterface', function (context) {
 			//if (stormTriggerBox != undefined) stormTriggerBox.scareTribes();
 
 			for(var i = 0; i < tribes.length; i++){
-				if(tribes[i].enabled) tribes[i].startCowering();
+				if(tribes[i].enabled) tribes[i].script.tribe.startCowering();
 			}
 
 			for (var i = 0; i < this.lightsArray.length; i++){
@@ -441,7 +441,7 @@ pc.script.create('HIDInterface', function (context) {
 				//if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
 
 				for(var i = 0; i < tribes.length; i++){
-					if(tribes[i].enabled) tribes[i].startCowering();
+					if(tribes[i].enabled) tribes[i].script.tribe.startCowering();
 				}
 
 				for (var i = 0; i < hidInterface.lightsArray.length; i++){
