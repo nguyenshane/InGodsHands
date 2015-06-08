@@ -572,7 +572,7 @@ pc.script.create('SwipeInterface', function (context) {
           $("#A_R").children(".active").css('opacity', 0);
           //$("#A_R").removeClass('A_R_active');
         },
-        highlighPL: function() {
+        highlightPL: function() {
           var jtarget = $("#P_L");
           jtarget.children(".active").css('opacity', 0.8);
           //jtarget.addClass('P_L_active');
