@@ -43,11 +43,19 @@ pc.script.create('HIDInterface', function (context) {
 			this.middleE = false;
 			this.middleW = false;
 			
-			//tribe = context.root.findByName("BaseTribe").script.tribe;
-			//storm = context.root.findByName("Storm");
+
 			camera = context.root.findByName("Camera");
-			//this.stormEffect = camera.script.vignette.effect;
+
 			this.lightsArray = this.entity.findByName("Camera").findByName("TribeLights").getChildren();
+
+			this.overlayBlue = new pc.Color(0.35, 0.6, 1);
+			this.overlayRed = new pc.Color(1, 0.6, 0.35);
+
+			this.overlay = camera.findByName("Overlay").model.material;
+			// this.overlay.opacity = 0.45;
+			// this.overlay.diffuse = this.overlayRed;
+			// this.overlay.update();
+
             
 			this.audio = context.root._children[0].script.AudioController;
 
@@ -114,6 +122,13 @@ pc.script.create('HIDInterface', function (context) {
             
 
             temperatureEffectTimer -= dt;
+            
+            if(temperatureEffectTimer < .45){
+            	if(this.overlay.opacity > 0){
+	            	this.overlay.opacity -= dt;	
+            		this.overlay.update();
+            	}
+            }
             if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
                 this.coldEffect.particlesystem.stop();
         		this.coldEffect.particlesystem.isPlaying = false;
@@ -125,7 +140,6 @@ pc.script.create('HIDInterface', function (context) {
         		this.heatEffectR.particlesystem.stop();
         		this.heatEffectR.particlesystem.isPlaying = false;
             }
-            ///*/
         },
 
     //---------------------------------------------------------------------------------------------
@@ -155,23 +169,30 @@ pc.script.create('HIDInterface', function (context) {
 
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + global[GLOBAL.TEMPERATURE]);
 			
-			if (position < 0) {
-				heatEffectL.particlesystem.stop();
-				heatEffectL.particlesystem.isPlaying = false;
-				heatEffectR.particlesystem.stop();
-				heatEffectR.particlesystem.isPlaying = false;
-				coldEffect.particlesystem.play();
-				coldEffect.particlesystem.isPlaying = true;
-				this.audio.isPlaying = false;
-			} else if (position > 0) {
-				heatEffectL.particlesystem.play();
-				heatEffectL.particlesystem.isPlaying = true;
-				heatEffectR.particlesystem.play();
-				heatEffectR.particlesystem.isPlaying = true;
-				coldEffect.particlesystem.stop();
-				coldEffect.particlesystem.isPlaying = false;
-				this.audio.isPlaying = false;
+			console.log("opacity" + this.overlay.opacity);
+			while(this.overlay.opacity > 0){
+				console.log("opacity" + this.overlay.opacity);
+				this.overlay.opacity -= .01;
+				this.overlay.update();
 			}
+
+			// if (position < 0) {
+			// 	heatEffectL.particlesystem.stop();
+			// 	heatEffectL.particlesystem.isPlaying = false;
+			// 	heatEffectR.particlesystem.stop();
+			// 	heatEffectR.particlesystem.isPlaying = false;
+			// 	coldEffect.particlesystem.play();
+			// 	coldEffect.particlesystem.isPlaying = true;
+			// 	this.audio.isPlaying = false;
+			// } else if (position > 0) {
+			// 	heatEffectL.particlesystem.play();
+			// 	heatEffectL.particlesystem.isPlaying = true;
+			// 	heatEffectR.particlesystem.play();
+			// 	heatEffectR.particlesystem.isPlaying = true;
+			// 	coldEffect.particlesystem.stop();
+			// 	coldEffect.particlesystem.isPlaying = false;
+			// 	this.audio.isPlaying = false;
+			// }
 		},
 		
 		moved_A: function(position, distance, speed) {
@@ -293,20 +314,36 @@ pc.script.create('HIDInterface', function (context) {
             	globalDest[elem] = globalMin[elem];
         	}
             
+        	console.log("position: " + position);
+
 			if (position < 0) {
-				heatEffectL.particlesystem.stop();
-				heatEffectL.particlesystem.isPlaying = false;
-				heatEffectR.particlesystem.stop();
-				heatEffectR.particlesystem.isPlaying = false;
-				coldEffect.particlesystem.play();
-				coldEffect.particlesystem.isPlaying = true;
+				this.overlay.diffuse = this.overlayBlue;
+				this.overlay.update();
+
+				if(this.overlay.opacity <= 0.45){
+					this.overlay.opacity += .01;
+					this.overlay.update();
+				}
+				// heatEffectL.particlesystem.stop();
+				// heatEffectL.particlesystem.isPlaying = false;
+				// heatEffectR.particlesystem.stop();
+				// heatEffectR.particlesystem.isPlaying = false;
+				// coldEffect.particlesystem.play();
+				// coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				heatEffectL.particlesystem.play();
-				heatEffectL.particlesystem.isPlaying = true;
-				heatEffectR.particlesystem.play();
-				heatEffectR.particlesystem.isPlaying = true;
-				coldEffect.particlesystem.stop();
-				coldEffect.particlesystem.isPlaying = false;
+				this.overlay.diffuse = this.overlayRed;
+				this.overlay.update();
+
+				if(this.overlay.opacity <= 0.45){
+					this.overlay.opacity += .01;
+					this.overlay.update();
+				}
+				// heatEffectL.particlesystem.play();
+				// heatEffectL.particlesystem.isPlaying = true;
+				// heatEffectR.particlesystem.play();
+				// heatEffectR.particlesystem.isPlaying = true;
+				// coldEffect.particlesystem.stop();
+				// coldEffect.particlesystem.isPlaying = false;
 			}
             
             temperatureEffectTimer = 1.0;
@@ -401,7 +438,11 @@ pc.script.create('HIDInterface', function (context) {
 
 				//scripts.Atmosphere.makeStorm((distance * position), speed);
 				
-				if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
+				//if (this.stormTriggerBox != undefined) this.stormTriggerBox.scareTribes();
+
+				for(var i = 0; i < tribes.length; i++){
+					if(tribes[i].enabled) tribes[i].startCowering();
+				}
 
 				for (var i = 0; i < hidInterface.lightsArray.length; i++){
 					hidInterface.lightsArray[i].enabled = true;
