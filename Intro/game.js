@@ -5,7 +5,8 @@ pc.script.create('game', function (context) {
         
         this.ROOTS = [
             '365042.json', // intro
-            '350057.json' // Rv1-stable
+            //'371102.json', // Tutorial
+            '350057.json'  // Rv1-stable
         ];
 
         this.currentRoot = null;

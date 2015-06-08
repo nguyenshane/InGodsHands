@@ -3,6 +3,8 @@ pc.script.create('Globe', function (context) {
     var Globe = function (entity) {
         this.entity = entity;
 		this.globe;
+
+        this.game = context.root.findByName("Shell");
     };
 
     Globe.prototype = {
@@ -26,6 +28,8 @@ pc.script.create('Globe', function (context) {
             camera = context.root.findByName("Camera");
             camera.script.Camera.isSwipping = true;
             camera.script.Camera.rotationSpeed = 180;
+
+            tutorialTribe = context.root.findByName("Tribe0").script.tribe;
             
             // create material
             // A shader definition used to create a new shader.
@@ -173,10 +177,12 @@ pc.script.create('Globe', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+            tutorialTribe.increasePopulationTimer = 0;
+            tutorialTribe.belief = 4;
             if (!isPaused) {
 
                 switch(tutStage) {
-                    case 0:
+                    case 0: //Camera
                         if (Math.floor(globalTime)%2 == 0) {
                             swipeInterface.highlightWL();
                             swipeInterface.highlightWR();
@@ -186,13 +192,79 @@ pc.script.create('Globe', function (context) {
                         }
                         this.checkCamera();
                         break;
-                    case 1:
+                    case 1: //Lighning
                         if (Math.floor(globalTime)%2 == 0) {
                             swipeInterface.highlightEL();
                             swipeInterface.highlightER();
                         } else {
                             swipeInterface.lowlightEL();
                             swipeInterface.lowlightER();
+                        }
+                        this.checkFear();
+                        break;
+                    case 2: //Faults down
+                        if (Math.floor(globalTime)%2 == 0) {
+                            swipeInterface.highlightPL();
+                            //swipeInterface.highlightPR();
+                        } else {
+                            swipeInterface.lowlightPL();
+                            //swipeInterface.lowlightPR();
+                        }
+                        this.checkFaultDown();
+                        break;
+                    case 3: // Animals down
+                        if (Math.floor(globalTime)%2 == 0) {
+                            swipeInterface.highlightAL();
+                            //swipeInterface.highlightAR();
+                        } else {
+                            swipeInterface.lowlightAL();
+                            //swipeInterface.lowlightAR();
+                        }
+                        this.checkAnimalDown();
+                        break;
+                    case 4: //Faults up
+                        if (Math.floor(globalTime)%2 == 0) {
+                            //swipeInterface.highlightPL();
+                            swipeInterface.highlightPR();
+                        } else {
+                            //swipeInterface.lowlightPL();
+                            swipeInterface.lowlightPR();
+                        }
+                        this.checkFaultUp();
+                        break;
+                    case 5: // Animals up
+                        if (Math.floor(globalTime)%2 == 0) {
+                            //swipeInterface.highlightAL();
+                            swipeInterface.highlightAR();
+                        } else {
+                            //swipeInterface.lowlightAL();
+                            swipeInterface.lowlightAR();
+                        }
+                        this.checkAnimalUp();
+                        break;
+                    case 6: // Temperature down
+                        if (Math.floor(globalTime)%2 == 0) {
+                            swipeInterface.highlightTL();
+                            //swipeInterface.highlightTR();
+                        } else {
+                            swipeInterface.lowlightTL();
+                            //swipeInterface.lowlightTR();
+                        }
+                        this.checkCold();
+                        break;
+                    case 7: // Temperature up
+                        if (Math.floor(globalTime)%2 == 0) {
+                            //swipeInterface.highlightTL();
+                            swipeInterface.highlightTR();
+                        } else {
+                            //swipeInterface.lowlightTL();
+                            swipeInterface.lowlightTR();
+                        }
+                        this.checkHot();
+                        break;
+                    case 8:
+                        if (globalTime > finishTime + 3) {
+                            //this.game.script.game.loadNextRoot();
                         }
                         break;
                 }
@@ -238,8 +310,69 @@ pc.script.create('Globe', function (context) {
                 tutStage = 1;
                 swipeInterface.lowlightWL();
                 swipeInterface.lowlightWR();
+
+                tutorialTribe.startFalseIdol();
             }
-        }
+        },
+
+        checkFear: function() {
+            if (tutorialTribe.currentAction == tutorialTribe.cower) {
+                tutStage = 2;
+                swipeInterface.lowlightEL();
+                swipeInterface.lowlightER();
+            }
+        },
+
+        checkFaultDown: function() {
+            if (ico.currFaultIndex < 2) {
+                tutStage = 3;
+                swipeInterface.lowlightPL();
+                //swipeInterface.lowlightPR();
+
+                tutorialTribe.startPrayForAnimals();
+            }
+        },
+
+        checkAnimalDown: function() {
+            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+                tutStage = 4;
+                swipeInterface.lowlightAL();
+                //swipeInterface.lowlightAR();
+            }
+        },
+
+        checkFaultUp: function() {
+            if (ico.currFaultIndex > 8) {
+                tutStage = 5;
+                //swipeInterface.lowlightPL();
+                swipeInterface.lowlightPR();
+            }
+        },
+
+        checkAnimalUp: function() {
+            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+                tutStage = 6;
+                //swipeInterface.lowlightAL();
+                swipeInterface.lowlightAR();
+            }
+        },
+
+        checkCold: function() {
+            if (global[GLOBAL.TEMPERATURE] < 10) {
+                tutStage = 7;
+                swipeInterface.lowlightTL();
+                //swipeInterface.lowlightTR();
+            }
+        },
+
+        checkHot: function() {
+            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+                tutStage = 8;
+                //swipeInterface.lowlightTL();
+                swipeInterface.lowlightTR();
+            }
+            finishTime = globalTime;
+        },
 		/*
 		move: function(position, distance, speed) {
 			console.log("FIRED string W in Globe: ", position, distance, speed);

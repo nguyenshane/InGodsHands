@@ -28,7 +28,8 @@ pc.script.create('Intro', function (context) {
         initialize: function () {
         	this.worlds = [
                 365042, // intro
-                350057 // Rv1-stable
+                //371102, // Tutorial
+                350057  // Rv1-stable
             ];
 
             console.log('context', context);
