@@ -185,7 +185,7 @@ pc.script.create('SwipeInterface', function (context) {
             this.swipeWrapper.swipe({
                 hold:function(event, target) {
                   if(!globalInterface.enableBGM){
-                    audio.backgroundmusic.playPause.call(audio.backgroundmusic);
+                    audio.backgroundmusic.playPause();
                     globalInterface.enableBGM = true;
                   }
                 },

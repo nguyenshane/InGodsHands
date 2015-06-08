@@ -55,8 +55,11 @@ pc.script.create('AudioController', function (context) {
 
 			//console.log("this.backgroundmusic", this.backgroundmusic);
 
-			this.backgroundmusic.playPause.call(this.backgroundmusic);
-			this.backgroundmusic.playPause.call(this.backgroundmusic);
+			this.backgroundmusic.playPause();
+			this.backgroundmusic.playPause();
+
+			//this.backgroundmusic.playPause.call(this.backgroundmusic);
+			//this.backgroundmusic.playPause.call(this.backgroundmusic);
 
         },
 

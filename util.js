@@ -1133,6 +1133,7 @@ BufferLoader.prototype.load = function() {
 // BackgroundIntensify
 
 function BackgroundIntensity(buffers, context) {
+    //console.log("NEW BackgroundIntensity");
   var ctx = this;
   this.context = context;
   this.buffers = buffers;
