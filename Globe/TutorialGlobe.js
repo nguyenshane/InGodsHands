@@ -29,6 +29,15 @@ pc.script.create('Globe', function (context) {
             camera.script.Camera.isSwipping = true;
             camera.script.Camera.rotationSpeed = 180;
 
+            swipeInterface.disableTL();
+            swipeInterface.disableTR();
+            swipeInterface.disableAL();
+            swipeInterface.disableAR();
+            swipeInterface.disablePL();
+            swipeInterface.disablePR();
+            swipeInterface.disableEL();
+            swipeInterface.disableER();
+
             tutorialTribe = context.root.findByName("Tribe0").script.tribe;
             
             // create material
@@ -311,6 +320,11 @@ pc.script.create('Globe', function (context) {
                 swipeInterface.lowlightWL();
                 swipeInterface.lowlightWR();
 
+                swipeInterface.enableEL();
+                swipeInterface.enableER();
+                swipeInterface.disableWL();
+                swipeInterface.disableWR();
+
                 tutorialTribe.startFalseIdol();
             }
         },
@@ -320,6 +334,10 @@ pc.script.create('Globe', function (context) {
                 tutStage = 2;
                 swipeInterface.lowlightEL();
                 swipeInterface.lowlightER();
+
+                swipeInterface.enablePL();
+                swipeInterface.disableEL();
+                swipeInterface.disableER();
             }
         },
 
@@ -328,6 +346,9 @@ pc.script.create('Globe', function (context) {
                 tutStage = 3;
                 swipeInterface.lowlightPL();
                 //swipeInterface.lowlightPR();
+
+                swipeInterface.enableAL();
+                swipeInterface.disablePL();
 
                 tutorialTribe.startPrayForAnimals();
             }
@@ -338,6 +359,9 @@ pc.script.create('Globe', function (context) {
                 tutStage = 4;
                 swipeInterface.lowlightAL();
                 //swipeInterface.lowlightAR();
+
+                swipeInterface.enablePR();
+                swipeInterface.disableAL();
             }
         },
 
@@ -346,6 +370,10 @@ pc.script.create('Globe', function (context) {
                 tutStage = 5;
                 //swipeInterface.lowlightPL();
                 swipeInterface.lowlightPR();
+
+                swipeInterface.enableAR();
+                swipeInterface.disablePR();
+
             }
         },
 
@@ -354,6 +382,9 @@ pc.script.create('Globe', function (context) {
                 tutStage = 6;
                 //swipeInterface.lowlightAL();
                 swipeInterface.lowlightAR();
+
+                swipeInterface.enableTL();
+                swipeInterface.disableAR();
             }
         },
 
@@ -362,6 +393,9 @@ pc.script.create('Globe', function (context) {
                 tutStage = 7;
                 swipeInterface.lowlightTL();
                 //swipeInterface.lowlightTR();
+
+                swipeInterface.enableTR();
+                swipeInterface.disableTL();
             }
         },
 
@@ -370,8 +404,20 @@ pc.script.create('Globe', function (context) {
                 tutStage = 8;
                 //swipeInterface.lowlightTL();
                 swipeInterface.lowlightTR();
+
+                swipeInterface.enableTL();
+                swipeInterface.enableTR();
+                swipeInterface.enableAL();
+                swipeInterface.enableAR();
+                swipeInterface.enablePL();
+                swipeInterface.enablePR();
+                swipeInterface.enableEL();
+                swipeInterface.enableER();
+                swipeInterface.enableWL();
+                swipeInterface.enableWR();
+
+                finishTime = globalTime;
             }
-            finishTime = globalTime;
         },
 		/*
 		move: function(position, distance, speed) {

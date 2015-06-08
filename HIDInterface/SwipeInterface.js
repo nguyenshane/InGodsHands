@@ -21,6 +21,12 @@ pc.script.create('SwipeInterface', function (context) {
             holding_E_L = holding_E_R =
             holding_W_L = holding_W_R = false;
 
+        var disabled_T_L = disabled_T_R =
+            disabled_A_L = disabled_A_R =
+            disabled_P_L = disabled_P_R =
+            disabled_E_L = disabled_E_R =
+            disabled_W_L = disabled_W_R = false;
+
         var HIDInterface;
     };
 
@@ -195,37 +201,41 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_L.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('T_L_active');
-                  self.holding_T_L = true;
-                  audio.sound_MakeBlizzard();
+                  if (!disabled_T_L) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('T_L_active');
+                    self.holding_T_L = true;
+                    audio.sound_MakeBlizzard();
 
-                  jtarget.on('touchend', function(){
-                    self.holding_T_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('T_L_active');
-                    audio.isPlaying = false;
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_T_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('T_L_active');
+                      audio.isPlaying = false;
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_T_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('T_L_active');
-                    audio.isPlaying = false;
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_T_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('T_L_active');
+                      audio.isPlaying = false;
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("event", event);
                   //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('T_L_active');
-                  self.holding_T_L = false;
-                  audio.isPlaying = false;
+                  if (!disabled_T_L) {
+                    HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('T_L_active');
+                    self.holding_T_L = false;
+                    audio.isPlaying = false;
+                  }
                 },
                 //threshold:75
                 longTapThreshold:0
@@ -233,36 +243,40 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_R.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('T_R_active');
-                  self.holding_T_R = true;
-                  audio.sound_MakeHot();
+                  if (!disabled_T_R) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('T_R_active');
+                    self.holding_T_R = true;
+                    audio.sound_MakeHot();
 
-                  jtarget.on('touchend', function(){
-                    self.holding_T_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('T_R_active');
-                    audio.isPlaying = false;
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_T_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('T_R_active');
+                      audio.isPlaying = false;
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_T_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('T_R_active');
-                    audio.isPlaying = false;
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_T_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('T_R_active');
+                      audio.isPlaying = false;
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("event", event);
-                  //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('T_R_active');
-                  audio.isPlaying = false;
+                  if (!disabled_T_R) {
+                    //console.log("event", event);
+                    //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
+                    HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('T_R_active');
+                    audio.isPlaying = false;
+                  }
                 },
                 //threshold:0
                 longTapThreshold:0
@@ -270,248 +284,280 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.A_L.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('A_L_active');
-                  self.holding_A_L = true;
+                  if (!disabled_A_L) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('A_L_active');
+                    self.holding_A_L = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_A_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('A_L_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_A_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('A_L_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_A_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('A_L_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_A_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('A_L_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moved_A(-1,-distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('A_L_active');
+                  if (!disabled_A_L) {
+                    //console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
+                    HIDInterface.moved_A(-1,-distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('A_L_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.A_R.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('A_R_active');
-                  self.holding_A_R = true;
+                  if (!disabled_A_R) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('A_R_active');
+                    self.holding_A_R = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_A_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('A_R_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_A_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('A_R_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_A_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('A_R_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_A_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('A_R_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped A_R" + " distance " + distance, " duration " + duration); 
-                  HIDInterface.moved_A(1,distance/50,(distance/50)/duration); 
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('A_R_active');
+                  if (!disabled_A_R) {
+                    //console.log("You swiped A_R" + " distance " + distance, " duration " + duration); 
+                    HIDInterface.moved_A(1,distance/50,(distance/50)/duration); 
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('A_R_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.P_L.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('P_L_active');
-                  self.holding_P_L = true;
+                  if (!disabled_P_L) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('P_L_active');
+                    self.holding_P_L = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_P_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('P_L_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_P_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('P_L_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_P_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('P_L_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_P_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('P_L_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moved_P(-1,-distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('P_L_active');
+                  if (!disabled_P_L) {
+                    //console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
+                    HIDInterface.moved_P(-1,-distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('P_L_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.P_R.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('P_R_active');
-                  self.holding_P_R = true;
+                  if (!disabled_P_R) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('P_R_active');
+                    self.holding_P_R = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_P_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('P_R_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_P_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('P_R_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_P_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('P_R_active');
-                  });
-                },
-                //Generic swipe handler for all directions
-                swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped P_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_P(1,distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('P_R_active');
+                    jtarget.mouseup(function(){
+                      self.holding_P_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('P_R_active');
+                    });
+                  }
+                  },
+                  //Generic swipe handler for all directions
+                  swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
+                    if (!disabled_P_R) {
+                    //console.log("You swiped P_R" + " distance " + distance, " duration " + duration);  
+                    HIDInterface.moved_P(1,distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('P_R_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.E_L.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('E_L_active');
-                  self.holding_E_L = true;
+                  if (!disabled_E_L) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('E_L_active');
+                    self.holding_E_L = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_E_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_L_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_E_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('E_L_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_E_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_L_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_E_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('E_L_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
-                  HIDInterface.moved_E(-1,-distance/50,(distance/50)/duration); 
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('E_L_active');
+                  if (!disabled_E_L) {
+                    //console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
+                    HIDInterface.moved_E(-1,-distance/50,(distance/50)/duration); 
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('E_L_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.E_R.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('E_R_active');
-                  self.holding_E_R = true;
+                  if (!disabled_E_R) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('E_R_active');
+                    self.holding_E_R = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_E_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_R_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_E_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('E_R_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_E_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('E_R_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_E_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('E_R_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped E_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moved_E(1,distance/50,(distance/50)/duration);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('E_R_active');
+                  if (!disabled_E_R) {
+                    //console.log("You swiped E_R" + " distance " + distance, " duration " + duration);  
+                    HIDInterface.moved_E(1,distance/50,(distance/50)/duration);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('E_R_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.W_L.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('W_L_active');
-                  self.holding_W_L = true;
+                  if (!disabled_W_L) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('W_L_active');
+                    self.holding_W_L = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_W_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_L_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_W_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('W_L_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_W_L = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_L_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_W_L = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('W_L_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
-                  HIDInterface.moving_W(-1,-distance,distance/duration,false);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('W_L_active');
+                  if (!disabled_W_L) {
+                    //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
+                    HIDInterface.moving_W(-1,-distance,distance/duration,false);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('W_L_active');
+                  }
                 },
                 longTapThreshold:0
             });
 
             this.W_R.swipe({
                 hold:function(event, target) {
-                  //console.log("tap event ", event, " target ", target);
-                  var jtarget = $(target);
-                  jtarget.children(".active").css('opacity', 0.8);
-                  jtarget.addClass('W_R_active');
-                  self.holding_W_R = true;
+                  if (!disabled_W_R) {
+                    //console.log("tap event ", event, " target ", target);
+                    var jtarget = $(target);
+                    jtarget.children(".active").css('opacity', 0.8);
+                    jtarget.addClass('W_R_active');
+                    self.holding_W_R = true;
 
-                  jtarget.on('touchend', function(){
-                    self.holding_W_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_R_active');
-                  });
+                    jtarget.on('touchend', function(){
+                      self.holding_W_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('W_R_active');
+                    });
 
-                  jtarget.mouseup(function(){
-                    self.holding_W_R = false;
-                    $(this).children(".active").css('opacity', 0);
-                    $(this).removeClass('W_R_active');
-                  });
+                    jtarget.mouseup(function(){
+                      self.holding_W_R = false;
+                      $(this).children(".active").css('opacity', 0);
+                      $(this).removeClass('W_R_active');
+                    });
+                  }
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
-                  HIDInterface.moving_W(1,distance,distance/duration,false);
-                  var jtarget = $(event.srcElement);
-                  jtarget.children(".active").css('opacity', 0);
-                  jtarget.removeClass('W_R_active');
+                  if (!disabled_W_R) {
+                    //console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
+                    HIDInterface.moving_W(1,distance,distance/duration,false);
+                    var jtarget = $(event.srcElement);
+                    jtarget.children(".active").css('opacity', 0);
+                    jtarget.removeClass('W_R_active');
+                  }
                 },
                 longTapThreshold:0
             });
@@ -625,6 +671,67 @@ pc.script.create('SwipeInterface', function (context) {
         lowlightWR: function() {
           $("#W_R").children(".active").css('opacity', 0);
           //$("#W_R").removeClass('W_R_active');
+        },
+
+        disableTL: function() {
+          disabled_T_L = true;
+        },
+        enableTL: function() {
+          disabled_T_L = false;
+        },
+        disableTR: function() {
+          disabled_T_R = true;
+        },
+        enableTR: function() {
+          disabled_T_R = false;
+        },
+        disableAL: function() {
+          disabled_A_L = true;
+        },
+        enableAL: function() {
+          disabled_A_L = false;
+        },
+        disableAR: function() {
+          disabled_A_R = true;
+        },
+        enableAR: function() {
+          disabled_A_R = false;
+        },
+        disablePL: function() {
+          disabled_P_L = true;
+        },
+        enablePL: function() {
+          disabled_P_L = false;
+        },
+        disablePR: function() {
+          disabled_P_R = true;
+        },
+        enablePR: function() {
+          disabled_P_R = false;
+        },
+        disableEL: function() {
+          disabled_E_L = true;
+        },
+        enableEL: function() {
+          disabled_E_L = false;
+        },
+        disableER: function() {
+          disabled_E_R = true;
+        },
+        enableER: function() {
+          disabled_E_R = false;
+        },
+        disableWL: function() {
+          disabled_W_L = true;
+        },
+        enableWL: function() {
+          disabled_W_L = false;
+        },
+        disableWR: function() {
+          disabled_W_R = true;
+        },
+        enableWR: function() {
+          disabled_W_R = false;
         },
 
     };
