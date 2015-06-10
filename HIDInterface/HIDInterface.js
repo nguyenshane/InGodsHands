@@ -150,11 +150,11 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (isNaN(speed)) speed = 1;
             
-            var newStringTvalue = parseInt(UI.StringsliderT.value) + (0);
+            // var newStringTvalue = parseInt(UI.StringsliderT.value) + (0);
 
-			if (!UI.StringsliderT.mouseIsOver) {
-                UI.StringsliderT.value = newStringTvalue;
-            }
+			// if (!UI.StringsliderT.mouseIsOver) {
+   //              UI.StringsliderT.value = newStringTvalue;
+   //          }
             
             inactiveTimer = 0;
             
@@ -201,11 +201,11 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
             
-            var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
+            // var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
             
-			if (!UI.StringsliderA.mouseIsOver) {
-                UI.StringsliderA.value = newStringAvalue;
-            }
+			// if (!UI.StringsliderA.mouseIsOver) {
+   //              UI.StringsliderA.value = newStringAvalue;
+   //          }
             
 			inactiveTimer = 0;
             
@@ -225,11 +225,11 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
+			// var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
 			
-			if (!UI.StringsliderP.mouseIsOver) {
-                UI.StringsliderP.value = newStringPvalue;
-            }
+			// if (!UI.StringsliderP.mouseIsOver) {
+   //              UI.StringsliderP.value = newStringPvalue;
+   //          }
             
 			inactiveTimer = 0;
             
@@ -247,11 +247,11 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
             
-            var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
+            // var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
 			
-			if (!UI.StringsliderE.mouseIsOver) {
-                UI.StringsliderE.value = newStringEvalue;
-            }
+			// if (!UI.StringsliderE.mouseIsOver) {
+   //              UI.StringsliderE.value = newStringEvalue;
+   //          }
 			
 			inactiveTimer = 0;
 
@@ -280,11 +280,11 @@ pc.script.create('HIDInterface', function (context) {
 			//NaN
 			if (speed != speed) speed = 1;
 
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
+			// var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
 			
-			if (!UI.StringsliderW.mouseIsOver) {
-                UI.StringsliderW.value = newStringWvalue;
-            }
+			// if (!UI.StringsliderW.mouseIsOver) {
+   //              UI.StringsliderW.value = newStringWvalue;
+   //          }
             
 			inactiveTimer = 0;
 		},
@@ -297,11 +297,11 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringTvalue = parseInt(UI.StringsliderT.value) + 0;
+            // var newStringTvalue = parseInt(UI.StringsliderT.value) + 0;
             
-			if (!UI.StringsliderT.mouseIsOver){
-                UI.StringsliderT.value = newStringTvalue;
-            }
+			// if (!UI.StringsliderT.mouseIsOver){
+   //              UI.StringsliderT.value = newStringTvalue;
+   //          }
 			
 			inactiveTimer = 0;
 
@@ -355,11 +355,11 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
+            // var newStringAvalue = parseInt(UI.StringsliderA.value) + 0;
             
-			if (!UI.StringsliderA.mouseIsOver){
-                UI.StringsliderA.value = newStringAvalue;
-            }
+			// if (!UI.StringsliderA.mouseIsOver){
+   //              UI.StringsliderA.value = newStringAvalue;
+   //          }
             
 			inactiveTimer = 0;
             
@@ -386,11 +386,11 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
 
-			var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
+			// var newStringPvalue = parseInt(UI.StringsliderP.value) + 0;
 			
-			if (!UI.StringsliderP.mouseIsOver) {
-                UI.StringsliderP.value = newStringPvalue;
-            }
+			// if (!UI.StringsliderP.mouseIsOver) {
+   //              UI.StringsliderP.value = newStringPvalue;
+   //          }
             
 			inactiveTimer = 0;
 
@@ -418,11 +418,11 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
             
-            var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
+            // var newStringEvalue = parseInt(UI.StringsliderE.value) + 0;
 			
-			if (!UI.StringsliderE.mouseIsOver) {
-                UI.StringsliderE.value = newStringEvalue;
-            }
+			// if (!UI.StringsliderE.mouseIsOver) {
+   //              UI.StringsliderE.value = newStringEvalue;
+   //          }
             
 			inactiveTimer = 0;
 
@@ -463,11 +463,11 @@ pc.script.create('HIDInterface', function (context) {
             //NaN
 			if (speed != speed) speed = 1;
 
-			var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
+			// var newStringWvalue = parseInt(UI.StringsliderW.value) + 0;
 			
-			if (!UI.StringsliderW.mouseIsOver) {
-                UI.StringsliderW.value = newStringWvalue;
-            }
+			// if (!UI.StringsliderW.mouseIsOver) {
+   //              UI.StringsliderW.value = newStringWvalue;
+   //          }
             
 			inactiveTimer = 0;
 
