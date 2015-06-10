@@ -191,10 +191,11 @@ pc.script.create('SwipeInterface', function (context) {
             this.swipeWrapper = $(".swipeWrapper");
             this.swipeWrapper.swipe({
                 hold:function(event, target) {
-                  if(shell.script.game.enableBGM === false){
-                    audio.backgroundmusic.playPause();
-                    shell.script.game.enableBGM = true;
-                  }
+                  if(shell!=undefined)
+                    if(shell.script.game.enableBGM === false){
+                      audio.backgroundmusic.playPause();
+                      shell.script.game.enableBGM = true;
+                    }
                 },
                 //threshold:75
                 longTapThreshold:0
