@@ -45,7 +45,7 @@ pc.script.create('AudioController', function (context) {
 				//console.log('id', id);
 				//console.log("this.musicAsset[id]", this.musicAsset[id]);
 				//console.log("getAssetById", context.assets.getAssetById(this.musicAsset[id]));
-				this.musicBuffer.push(context.assets.getAssetById(this.musicAsset[id]).resource.buffer);
+				this.musicBuffer.push(context.assets.get(this.musicAsset[id]).resource.buffer);
 			}
 			//console.log("this.musicBuffer", this.musicBuffer);
 			// Fix up prefixing
@@ -56,7 +56,9 @@ pc.script.create('AudioController', function (context) {
 			//console.log("this.backgroundmusic", this.backgroundmusic);
 
 			this.backgroundmusic.playPause();
-			this.backgroundmusic.playPause();
+
+			var shell = context.root.findByName("Shell");
+			if(shell != undefined) this.backgroundmusic.playPause();
 
 			//this.backgroundmusic.playPause.call(this.backgroundmusic);
 			//this.backgroundmusic.playPause.call(this.backgroundmusic);

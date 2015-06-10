@@ -186,13 +186,14 @@ pc.script.create('SwipeInterface', function (context) {
             this.HIDInterface = HIDInterface;
             var self = this;
             var audio = context.root.findByName("Rv1-stable").script.AudioController;
+            var shell = context.root.findByName("Shell");
             this.audio = audio;
             this.swipeWrapper = $(".swipeWrapper");
             this.swipeWrapper.swipe({
                 hold:function(event, target) {
-                  if(!globalInterface.enableBGM){
+                  if(shell.script.game.enableBGM === false){
                     audio.backgroundmusic.playPause();
-                    globalInterface.enableBGM = true;
+                    shell.script.game.enableBGM = true;
                   }
                 },
                 //threshold:75

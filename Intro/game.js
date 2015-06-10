@@ -1,3 +1,7 @@
+///
+// Description: This is the control the shell
+///
+
 pc.script.create('game', function (context) {
     // Creates a new Game instance
     var Game = function (entity) {
@@ -5,12 +9,13 @@ pc.script.create('game', function (context) {
         
         this.ROOTS = [
             '365042.json', // intro
-            //'371102.json', // Tutorial
+            '371102.json', // Tutorial
             '350057.json'  // Rv1-stable
         ];
 
         this.currentRoot = null;
         this.currentRootIndex = 0;
+        this.enableBGM = false;
     };
 
     Game.prototype = {
@@ -40,7 +45,7 @@ pc.script.create('game', function (context) {
         
         unloadRoot: function () {
             // Destroy all Entities and components created from the previous Pack.
-            console.log('currentRoot to destroy', context.root._children[1]);
+            //console.log('currentRoot to destroy', context.root._children[1]);
             context.root._children[1].destroy();
         },
         
