@@ -73,16 +73,7 @@ pc.script.create('menu', function (context) {
             var shell = context.root.findByName("Shell");
             this.audio = audio;
             this.menuWrapper = $(".menuWrapper");
-            this.menuWrapper.swipe({
-                hold:function(event, target) {
-                  if(shell.script.game.enableBGM === false){
-                    audio.backgroundmusic.playPause();
-                    shell.script.game.enableBGM = true;
-                  }
-                },
-                //threshold:75
-                longTapThreshold:0
-            }),
+
 
         },
 
