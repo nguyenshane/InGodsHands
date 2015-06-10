@@ -90,16 +90,16 @@ pc.script.create('HIDInterface', function (context) {
         	this.middleE = this.stringE.isMiddle;
         	this.middleW = this.stringW.isMiddle;
 
-        	this.coldEffect = context.root.findByName("ColdEffectPS");
-        	this.coldEffect.particlesystem.stop();
-        	this.heatEffectL = context.root.findByName("HeatEffectPSL");
-        	this.heatEffectL.particlesystem.stop();      
-        	this.heatEffectR = context.root.findByName("HeatEffectPSR");
-        	this.heatEffectR.particlesystem.stop();   
+        	// this.coldEffect = context.root.findByName("ColdEffectPS");
+        	// this.coldEffect.particlesystem.stop();
+        	// this.heatEffectL = context.root.findByName("HeatEffectPSL");
+        	// this.heatEffectL.particlesystem.stop();      
+        	// this.heatEffectR = context.root.findByName("HeatEffectPSR");
+        	// this.heatEffectR.particlesystem.stop();   
 
-            coldEffect = this.coldEffect;
-            heatEffectL = this.heatEffectL;
-            heatEffectR = this.heatEffectR;
+         //    coldEffect = this.coldEffect;
+         //    heatEffectL = this.heatEffectL;
+         //    heatEffectR = this.heatEffectR;
             
             //stormEffect = this.stormEffect;
             stormTriggerBox = this.stormTriggerBox;
@@ -129,17 +129,17 @@ pc.script.create('HIDInterface', function (context) {
             		this.overlay.update();
             	}
             }
-            if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
-                this.coldEffect.particlesystem.stop();
-        		this.coldEffect.particlesystem.isPlaying = false;
-            }
+          //   if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
+          //       this.coldEffect.particlesystem.stop();
+        		// this.coldEffect.particlesystem.isPlaying = false;
+          //   }
             
-            if (temperatureEffectTimer < 0 && this.heatEffectL.particlesystem.isPlaying) {
-                this.heatEffectL.particlesystem.stop();
-        		this.heatEffectL.particlesystem.isPlaying = false;
-        		this.heatEffectR.particlesystem.stop();
-        		this.heatEffectR.particlesystem.isPlaying = false;
-            }
+          //   if (temperatureEffectTimer < 0 && this.heatEffectL.particlesystem.isPlaying) {
+          //       this.heatEffectL.particlesystem.stop();
+        		// this.heatEffectL.particlesystem.isPlaying = false;
+        		// this.heatEffectR.particlesystem.stop();
+        		// this.heatEffectR.particlesystem.isPlaying = false;
+          //   }
         },
 
     //---------------------------------------------------------------------------------------------
