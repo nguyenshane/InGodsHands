@@ -26,13 +26,6 @@ pc.script.create('Intro', function (context) {
     Intro.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
-        	this.worlds = [
-                365042, // intro
-                //371102, // Tutorial
-                350057  // Rv1-stable
-            ];
-
-            console.log('context', context);
 
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');

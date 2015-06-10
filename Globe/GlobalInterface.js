@@ -26,8 +26,6 @@ pc.script.create('globalInterface', function (context) {
         isPaused = this.isPaused;
 
         globalInterface = this;
-
-        this.enableBGM = false;
     };
 	
     var camera;
