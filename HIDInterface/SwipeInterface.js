@@ -201,7 +201,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_L.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_T_L) {
+                  if (!self.disabled_T_L) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -228,7 +228,7 @@ pc.script.create('SwipeInterface', function (context) {
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
                   //console.log("event", event);
                   //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
-                  if (!this.disabled_T_L) {
+                  if (!self.disabled_T_L) {
                     HIDInterface.moved_T(-1,-distance/50,(distance/50)/duration);
                     var jtarget = $(event.srcElement);
                     jtarget.children(".active").css('opacity', 0);
@@ -243,7 +243,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.T_R.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_T_R) {
+                  if (!self.disabled_T_R) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -268,7 +268,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_T_R) {
+                  if (!self.disabled_T_R) {
                     //console.log("event", event);
                     //console.log("You swiped T_L" + " distance " + -distance, " duration " + duration);  
                     HIDInterface.moved_T(1,distance/50,(distance/50)/duration);
@@ -284,7 +284,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.A_L.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_A_L) {
+                  if (!self.disabled_A_L) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -306,7 +306,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_A_L) {
+                  if (!self.disabled_A_L) {
                     //console.log("You swiped A_L" + " distance " + -distance, " duration " + duration);  
                     HIDInterface.moved_A(-1,-distance/50,(distance/50)/duration);
                     var jtarget = $(event.srcElement);
@@ -319,7 +319,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.A_R.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_A_R) {
+                  if (!self.disabled_A_R) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -341,7 +341,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_A_R) {
+                  if (!self.disabled_A_R) {
                     //console.log("You swiped A_R" + " distance " + distance, " duration " + duration); 
                     HIDInterface.moved_A(1,distance/50,(distance/50)/duration); 
                     var jtarget = $(event.srcElement);
@@ -354,7 +354,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.P_L.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_P_L) {
+                  if (!self.disabled_P_L) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -376,7 +376,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_P_L) {
+                  if (!self.disabled_P_L) {
                     //console.log("You swiped P_L" + " distance " + -distance, " duration " + duration);  
                     HIDInterface.moved_P(-1,-distance/50,(distance/50)/duration);
                     var jtarget = $(event.srcElement);
@@ -389,7 +389,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.P_R.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_P_R) {
+                  if (!self.disabled_P_R) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -411,7 +411,7 @@ pc.script.create('SwipeInterface', function (context) {
                   },
                   //Generic swipe handler for all directions
                   swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                    if (!this.disabled_P_R) {
+                    if (!self.disabled_P_R) {
                     //console.log("You swiped P_R" + " distance " + distance, " duration " + duration);  
                     HIDInterface.moved_P(1,distance/50,(distance/50)/duration);
                     var jtarget = $(event.srcElement);
@@ -424,7 +424,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.E_L.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_E_L) {
+                  if (!self.disabled_E_L) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -446,7 +446,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_E_L) {
+                  if (!self.disabled_E_L) {
                     //console.log("You swiped E_L" + " distance " + -distance, " duration " + duration); 
                     HIDInterface.moved_E(-1,-distance/50,(distance/50)/duration); 
                     var jtarget = $(event.srcElement);
@@ -459,7 +459,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.E_R.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_E_R) {
+                  if (!self.disabled_E_R) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -481,7 +481,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_E_R) {
+                  if (!self.disabled_E_R) {
                     //console.log("You swiped E_R" + " distance " + distance, " duration " + duration);  
                     HIDInterface.moved_E(1,distance/50,(distance/50)/duration);
                     var jtarget = $(event.srcElement);
@@ -494,7 +494,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.W_L.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_W_L) {
+                  if (!self.disabled_W_L) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -516,7 +516,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeLeft:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_W_L) {
+                  if (!self.disabled_W_L) {
                     //console.log("You swiped W_L" + " distance " + -distance, " duration " + duration);  
                     HIDInterface.moving_W(-1,-distance,distance/duration,false);
                     var jtarget = $(event.srcElement);
@@ -529,7 +529,7 @@ pc.script.create('SwipeInterface', function (context) {
 
             this.W_R.swipe({
                 hold:function(event, target) {
-                  if (!this.disabled_W_R) {
+                  if (!self.disabled_W_R) {
                     //console.log("tap event ", event, " target ", target);
                     var jtarget = $(target);
                     jtarget.children(".active").css('opacity', 0.8);
@@ -551,7 +551,7 @@ pc.script.create('SwipeInterface', function (context) {
                 },
                 //Generic swipe handler for all directions
                 swipeRight:function(event, direction, distance, duration, fingerCount, fingerData) {
-                  if (!this.disabled_W_R) {
+                  if (!self.disabled_W_R) {
                     //console.log("You swiped W_R" + " distance " + distance, " duration " + duration);  
                     HIDInterface.moving_W(1,distance,distance/duration,false);
                     var jtarget = $(event.srcElement);
