@@ -44,7 +44,7 @@ pc.script.create('Human', function (context) {
 		
 		// Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
-		this.travelTime = 4500.0 / this.moveSpeed;
+		this.travelTime = 4000.0 / this.moveSpeed;
         this.travelStartTime;
         
         this.currentAction = null;
