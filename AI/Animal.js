@@ -19,6 +19,8 @@ pc.script.create('Animal', function (context) {
 		// Variables for lerp, in milliseconds
         this.travelTime = 2000.0 / this.moveSpeed;
         this.travelStartTime;
+
+        this.migrateCounter = 0;
         
         this.currentAction = null;
         this.previousAction = null;
@@ -116,8 +118,11 @@ pc.script.create('Animal', function (context) {
                 this.entity.setPosition(this.destinationTile.center);
                 this.tile.hasAnimal = true;
                 this.tile.animal = this.entity;
-                this.setCurrentAction(null);
-                this.chooseState();
+                if(this.migrateCounter > 0) this.migrateCounter--;
+                else this.migrateCounter++;
+                this.checkMigrate();
+                //this.setCurrentAction(null);
+                //this.chooseState();
             }
         },
 		
@@ -202,6 +207,33 @@ pc.script.create('Animal', function (context) {
                     }
                 }
                 
+                this.setCurrentAction(null);
+                this.chooseState();
+            }
+        },
+
+        // Keeps calling set dest to the north/south tile 
+        // for however much the player pulled the string
+        // stupid fucking check for pathable tiles 
+        // probably could be done way better
+        checkMigrate: function() {
+            console.log("In checkMigrate " + this.migrateCounter);
+            var neighborTiles = this.tile.getNeighbors();
+            if(this.migrateCounter >= 1){
+                if(this.tile.getNorthNeighbor().isPathable){
+                    this.setDestination(this.tile.getNorthNeighbor());
+                } else {
+                    this.setDestination(this.tile.getRandomNeighbor());
+                }
+            } else if(this.migrateCounter <= -1){
+                if(this.tile.getSouthNeighbor().isPathable){
+                    this.setDestination(this.tile.getSouthNeighbor());
+                } else {
+                    this.setDestination(this.tile.getRandomNeighbor());
+                }
+            }
+
+            if( this.migrateCounter < 1 && this.migrateCounter > -1) {
                 this.setCurrentAction(null);
                 this.chooseState();
             }
@@ -373,7 +405,8 @@ pc.script.create('Animal', function (context) {
                 
                 if (this.entity.migrationFlag) {
                     this.entity.migrationFlag = false;
-                    this.beginMigration();
+                    //this.beginMigration();
+                    this.checkMigrate();
                 }
                 
                 return;

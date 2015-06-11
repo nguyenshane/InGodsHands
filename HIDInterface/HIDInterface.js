@@ -377,6 +377,11 @@ pc.script.create('HIDInterface', function (context) {
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
                 animals[i].migrationFlag = true;
+                console.log("migrate before counter = " + animals[i].script.Animal.migrateCounter);
+                // Migrate north or south depending on direction
+                // position/2 because we don't want them to go too far too quick
+                animals[i].script.Animal.migrateCounter += (position/2);
+                console.log("migrate after counter = " + animals[i].script.Animal.migrateCounter);
             }
 		},
 		
