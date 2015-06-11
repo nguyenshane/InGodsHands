@@ -169,9 +169,9 @@ pc.script.create('HIDInterface', function (context) {
 
 			debug.log(DEBUG.HARDWARE, "Global Temp: " + global[GLOBAL.TEMPERATURE]);
 			
-			console.log("opacity" + this.overlay.opacity);
+			//console.log("opacity" + this.overlay.opacity);
 			while(this.overlay.opacity > 0){
-				console.log("opacity" + this.overlay.opacity);
+				//console.log("opacity" + this.overlay.opacity);
 				this.overlay.opacity -= .01;
 				this.overlay.update();
 			}
