@@ -28,11 +28,6 @@ pc.script.create('calibrate', function (context) {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
         	this.game = context.root.findByName("Shell");
-        	
-        	if(!this.has_hardware) {
-        		console.log("Go to next Root");
-        		this.game.script.game.loadNextRoot();
-        	}
 
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
@@ -65,6 +60,11 @@ pc.script.create('calibrate', function (context) {
 
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
+        	if(!this.has_hardware) {
+        		console.log("Go to next Root");
+        		this.game.script.game.loadNextRoot();
+        	}
+        	
         	TWEEN.update();
 
         	this.middleT = this.stringT.isMiddle;
