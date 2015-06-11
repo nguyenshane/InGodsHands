@@ -1,6 +1,7 @@
 ///
 // Description: This is the control the shell
 ///
+pc.script.attribute('has_hardware', 'boolean', false);
 
 pc.script.create('game', function (context) {
     // Creates a new Game instance
@@ -9,7 +10,7 @@ pc.script.create('game', function (context) {
         
         this.ROOTS = [
             '371485.json', // Menu
-            '365042.json', // Calibration
+            '365042.json', // Calibration, is taken out if has_hardware = false
             //'371102.json', // Tutorial
             '350057.json'  // Rv1-stable
         ];
@@ -22,6 +23,10 @@ pc.script.create('game', function (context) {
     Game.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+            if(!this.has_hardware) {
+                this.ROOTS.splice(1,1);
+                console.log("Doesn't have hardware, ROOTS are", this.ROOTS);
+            }
             this.loadRoot(0);
         },
 
