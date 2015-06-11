@@ -36,6 +36,7 @@ pc.script.create('globalInterface', function (context) {
 
         	globalTime = 0;
             lastSnapshotTime = 0;
+            startingPosition = 185;
 
 			
 			//Global references to PlayCanvas components

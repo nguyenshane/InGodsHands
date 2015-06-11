@@ -111,6 +111,39 @@ needTemperatureChange.prototype = {
 };
 
 /* 
+ *  needWaterChange means the tribe will pray to the player to raise or lower faults
+ *  If not fulfilled, they will migrate instead
+ *    
+ */
+
+var needWaterChange = function() {
+    // All conditions to choose from for making rules
+    var allConditions = pc.fw.Application.getApplication('application-canvas').context.root.findByName('AI').script.Conditions;
+    
+    this.weight = 6;
+    this.conditions = [ allConditions.isWaterNotIdeal,
+                        allConditions.isNotSpiteful];
+
+};
+
+needWaterChange.prototype = {
+    testConditions: function(tribe){
+        for(var i = 0; i < this.conditions.length; i++){
+            if(!this.conditions[i](tribe)){
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    consequence: function(tribe){
+        debug.log(DEBUG.AI, "Need water change fired");
+        tribe.ruleCooldownTimer = 8;
+        tribe.startPrayForWater();
+    }    
+};
+
+/* 
  *  wantToDenounceInactive means the tribe will denounce God the player's existence 
  *  If not punished, they will lose belief
  *    

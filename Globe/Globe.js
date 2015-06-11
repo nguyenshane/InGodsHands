@@ -1,3 +1,15 @@
+var TUTORIAL = {
+    CAMERA : 0,
+    LIGHTNING : 1,
+    FAULTSDOWN : 2,
+    FAULTSUP : 3,
+    ANIMALSDOWN : 4,
+    ANIMALSUP : 5,
+    TEMPDOWN : 6,
+    TEMPUP : 7,
+    DONE : 8
+}
+
 pc.script.create('Globe', function (context) {
     // Creates a new TestSphere instance
     var Globe = function (entity) {
@@ -20,6 +32,24 @@ pc.script.create('Globe', function (context) {
             // create entity
             var entity = new pc.Entity();
             entity.name = "Globe";
+
+            tutStage = 0;
+
+            camera = context.root.findByName("Camera");
+            camera.script.Camera.isSwipping = true;
+            camera.script.Camera.rotationSpeed = 180;
+
+            inTutorial = true;
+            swipeInterface.disableTL();
+            swipeInterface.disableTR();
+            swipeInterface.disableAL();
+            swipeInterface.disableAR();
+            swipeInterface.disablePL();
+            swipeInterface.disablePR();
+            swipeInterface.disableEL();
+            swipeInterface.disableER();
+
+            tutorialTribe = context.root.findByName("Tribe0").script.tribe;
             
             // create material
             // A shader definition used to create a new shader.
@@ -168,6 +198,140 @@ pc.script.create('Globe', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if (!isPaused) {
+
+                if (inTutorial) {
+                    tutorialTribe.increasePopulationTimer = 0;
+                    tutorialTribe.belief = 4;
+                    switch(tutStage) {
+                        case 0: //Camera
+                            if (Math.floor(globalTime)%2 == 0) {
+                                swipeInterface.highlightWL();
+                                swipeInterface.highlightWR();
+                            } else {
+                                swipeInterface.lowlightWL();
+                                swipeInterface.lowlightWR();
+                            }
+                            this.checkCamera();
+                            break;
+                        case 1: //Lighning
+                            if (Math.floor(globalTime)%2 == 0) {
+                                swipeInterface.highlightEL();
+                                swipeInterface.highlightER();
+                            } else {
+                                swipeInterface.lowlightEL();
+                                swipeInterface.lowlightER();
+                            }
+                            this.checkFear();
+                            break;
+                        case 2: //Faults down
+                            if (Math.floor(globalTime)%2 == 0) {
+                                swipeInterface.highlightPL();
+                                //swipeInterface.highlightPR();
+                            } else {
+                                swipeInterface.lowlightPL();
+                                //swipeInterface.lowlightPR();
+                            }
+                            this.checkFaultDown();
+                            break;
+                        case 3: // Animals down
+                            if (Math.floor(globalTime)%2 == 0) {
+                                swipeInterface.highlightAL();
+                                //swipeInterface.highlightAR();
+                            } else {
+                                swipeInterface.lowlightAL();
+                                //swipeInterface.lowlightAR();
+                            }
+                            this.checkAnimalDown();
+                            break;
+                        case 4: //Faults up
+                            if (Math.floor(globalTime)%2 == 0) {
+                                //swipeInterface.highlightPL();
+                                swipeInterface.highlightPR();
+                            } else {
+                                //swipeInterface.lowlightPL();
+                                swipeInterface.lowlightPR();
+                            }
+                            this.checkFaultUp();
+                            break;
+                        case 5: // Animals up
+                            if (Math.floor(globalTime)%2 == 0) {
+                                //swipeInterface.highlightAL();
+                                swipeInterface.highlightAR();
+                            } else {
+                                //swipeInterface.lowlightAL();
+                                swipeInterface.lowlightAR();
+                            }
+                            this.checkAnimalUp();
+                            break;
+                        case 6: // Temperature down
+                            if (Math.floor(globalTime)%2 == 0) {
+                                swipeInterface.highlightTL();
+                                //swipeInterface.highlightTR();
+                            } else {
+                                swipeInterface.lowlightTL();
+                                //swipeInterface.lowlightTR();
+                            }
+                            this.checkCold();
+                            break;
+                        case 7: // Temperature up
+                            if (Math.floor(globalTime)%2 == 0) {
+                                //swipeInterface.highlightTL();
+                                swipeInterface.highlightTR();
+                            } else {
+                                //swipeInterface.lowlightTL();
+                                swipeInterface.lowlightTR();
+                            }
+                            this.checkHot();
+                            break;
+                        case 8:
+                            break;
+                        case 9:
+                            if (globalTime > tutTime + tutTimer) {
+                                tutStage = nextStage;//this.game.script.game.loadNextRoot();
+                                switch(tutStage) {
+                                    case 0: //Camera
+                                        break;
+                                    case 1: //Lighning
+                                        swipeInterface.enableEL();
+                                        swipeInterface.enableER();
+                                        break;
+                                    case 2: //Faults down
+                                        swipeInterface.enablePL();
+                                        break;
+                                    case 3: // Animals down
+                                        swipeInterface.enableAL();
+                                        break;
+                                    case 4: //Faults up
+                                        swipeInterface.enablePR();
+                                        break;
+                                    case 5: // Animals up
+                                        swipeInterface.enableAR();
+                                        break;
+                                    case 6: // Temperature down
+                                        swipeInterface.enableTL();
+                                        break;
+                                    case 7: // Temperature up
+                                        swipeInterface.enableTR();
+                                        break;
+                                    case 8: 
+                                        inTutorial = false;
+                                        swipeInterface.enableTL();
+                                        swipeInterface.enableTR();
+                                        swipeInterface.enableAL();
+                                        swipeInterface.enableAR();
+                                        swipeInterface.enablePL();
+                                        swipeInterface.enablePR();
+                                        swipeInterface.enableEL();
+                                        swipeInterface.enableER();
+                                        swipeInterface.enableWL();
+                                        swipeInterface.enableWR();
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+                }
+
                 if (ico.updateFlag == true) {
                     this.updateMesh();
                 }
@@ -180,7 +344,7 @@ pc.script.create('Globe', function (context) {
                 ico.updateNextTiles(10);
 
                 // Set temperature variables in shader
-            	this.material.setParameter('temperature', global[GLOBAL.TEMPERATURE]);
+                this.material.setParameter('temperature', global[GLOBAL.TEMPERATURE]);
                 this.material.setParameter('maxTemp', globalMax[GLOBAL.TEMPERATURE]);
                 
                 this.material.setParameter('time', globalTime);
@@ -203,7 +367,115 @@ pc.script.create('Globe', function (context) {
             ico.updateReturnMesh();
             this.meshInstance.mesh = ico.toReturn.mesh;
             //console.log("Updating Globe Mesh");
-        }
+        },
+
+        tutWait: function(time, stage) {
+            tutTime = globalTime;
+            tutTimer = time;
+            nextStage = stage;
+        },
+
+        checkCamera: function() {
+            if (camera.rotation.y > 0 && camera.rotation.y < 0.5) {
+                tutStage = 9;
+                swipeInterface.lowlightWL();
+                swipeInterface.lowlightWR();
+
+                //swipeInterface.disableWL();
+                //swipeInterface.disableWR();
+
+                tutorialTribe.startFalseIdol();
+                this.tutWait(6, 1);
+            }
+        },
+
+        checkFear: function() {
+            if (tutorialTribe.currentAction == tutorialTribe.cower) {
+                tutStage = 9;
+                swipeInterface.lowlightEL();
+                swipeInterface.lowlightER();
+
+                swipeInterface.disableEL();
+                swipeInterface.disableER();
+
+                tutorialTribe.startFalseIdol();
+                this.tutWait(6, 2);
+            }
+        },
+
+        checkFaultDown: function() {
+            if (ico.currFaultIndex < 2) {
+                tutStage = 9;
+                swipeInterface.lowlightPL();
+                //swipeInterface.lowlightPR();
+
+                swipeInterface.disablePL();
+
+                tutorialTribe.startPrayForWater();
+
+                this.tutWait(0, 3);
+            }
+        },
+
+        checkAnimalDown: function() {
+            if (global[GLOBAL.ANIMALS] < 20) {
+                tutStage = 9;
+                swipeInterface.lowlightAL();
+                //swipeInterface.lowlightAR();
+
+                swipeInterface.disableAL();
+
+                tutorialTribe.startPrayForAnimals();
+                this.tutWait(0, 4);
+            }
+        },
+
+        checkFaultUp: function() {
+            if (ico.currFaultIndex > 7) {
+                tutStage = 9;
+                //swipeInterface.lowlightPL();
+                swipeInterface.lowlightPR();
+
+                swipeInterface.disablePR();
+
+                this.tutWait(0, 5);
+
+            }
+        },
+
+        checkAnimalUp: function() {
+            if (global[GLOBAL.ANIMALS] > 80) {
+                tutStage = 9;
+                //swipeInterface.lowlightAL();
+                swipeInterface.lowlightAR();
+
+                swipeInterface.disableAR();
+
+                this.tutWait(3, 6);
+            }
+        },
+
+        checkCold: function() {
+            if (global[GLOBAL.TEMPERATURE] < 20) {
+                tutStage = 9;
+                swipeInterface.lowlightTL();
+                //swipeInterface.lowlightTR();
+
+                swipeInterface.disableTL();
+
+                this.tutWait(3, 7);
+            }
+        },
+
+        checkHot: function() {
+            if (global[GLOBAL.TEMPERATURE] > 80) {
+                tutStage = 9;
+                //swipeInterface.lowlightTL();
+                swipeInterface.lowlightTR();
+
+                this.tutWait(3, 8);
+            }
+        },
 		/*
 		move: function(position, distance, speed) {
 			console.log("FIRED string W in Globe: ", position, distance, speed);

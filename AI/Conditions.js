@@ -114,6 +114,21 @@ pc.script.create('Conditions', function (context) {
             return true;
         },
 
+        isWaterNotIdeal: function(tribe){
+            tribe.currWater = 0;
+            for(var i = 0; i < tribe.influencedTiles.length; i++){
+                if (tribe.influencedTiles[i].hasWater()) {
+                    ++tribe.currWater;
+                }
+            }
+            console.log(tribe.idealWater + " " + tribe.currWater);
+            if ((tribe.idealWater + 8 < tribe.currWater) ||
+                (tribe.idealWater - 8 > tribe.currWater)) {
+                return true;
+            }
+            return false;
+        },
+
     };
 
     return Conditions;
