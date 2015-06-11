@@ -611,7 +611,6 @@ pc.script.create('tribe', function (context) {
                     ++this.currWater;
                 }
             }
-            console.log(this.idealWater + " " + this.currWater);
 
             if(this.prayerTimer <= 0){
                 // console.log("Animal Prayer timer up");

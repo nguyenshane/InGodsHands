@@ -398,6 +398,7 @@ pc.script.create('Globe', function (context) {
                 swipeInterface.disableEL();
                 swipeInterface.disableER();
 
+                tutorialTribe.startFalseIdol();
                 this.tutWait(6, 2);
             }
         },
@@ -410,26 +411,27 @@ pc.script.create('Globe', function (context) {
 
                 swipeInterface.disablePL();
 
-                tutorialTribe.startPrayForAnimals();
+                tutorialTribe.startPrayForWater();
 
                 this.tutWait(0, 3);
             }
         },
 
         checkAnimalDown: function() {
-            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+            if (global[GLOBAL.ANIMAL] < 20) {
                 tutStage = 9;
                 swipeInterface.lowlightAL();
                 //swipeInterface.lowlightAR();
 
                 swipeInterface.disableAL();
 
+                tutorialTribe.startPrayForWater();
                 this.tutWait(0, 4);
             }
         },
 
         checkFaultUp: function() {
-            if (ico.currFaultIndex > 8) {
+            if (ico.currFaultIndex > 7) {
                 tutStage = 9;
                 //swipeInterface.lowlightPL();
                 swipeInterface.lowlightPR();
@@ -442,7 +444,7 @@ pc.script.create('Globe', function (context) {
         },
 
         checkAnimalUp: function() {
-            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+            if (global[GLOBAL.ANIMAL] > 80) {
                 tutStage = 9;
                 //swipeInterface.lowlightAL();
                 swipeInterface.lowlightAR();
@@ -454,7 +456,7 @@ pc.script.create('Globe', function (context) {
         },
 
         checkCold: function() {
-            if (global[GLOBAL.TEMPERATURE] < 10) {
+            if (global[GLOBAL.TEMPERATURE] < 20) {
                 tutStage = 9;
                 swipeInterface.lowlightTL();
                 //swipeInterface.lowlightTR();
@@ -466,7 +468,7 @@ pc.script.create('Globe', function (context) {
         },
 
         checkHot: function() {
-            if (tutorialTribe.currentAction == tutorialTribe.praise) {
+            if (global[GLOBAL.TEMPERATURE] > 80) {
                 tutStage = 9;
                 //swipeInterface.lowlightTL();
                 swipeInterface.lowlightTR();
