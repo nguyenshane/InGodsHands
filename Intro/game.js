@@ -8,7 +8,8 @@ pc.script.create('game', function (context) {
         this.entity = entity;
         
         this.ROOTS = [
-            '365042.json', // intro
+            '371485.json', // menu
+            '365042.json', // intro-calibration
             '371102.json', // Tutorial
             '350057.json'  // Rv1-stable
         ];

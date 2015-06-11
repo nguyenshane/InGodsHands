@@ -1,6 +1,7 @@
 ///
 // Description: This is the Intro screen script that controls the string calibration
 ///
+pc.script.attribute('is_', 'number', 1);
 
 pc.script.attribute('from_L', 'number', -0.4);
 pc.script.attribute('to_L', 'number', -0.13);
@@ -12,8 +13,8 @@ pc.script.attribute('easeOut', 'string', 'None');
 pc.script.attribute('reverseAfter', 'number', 1);
 
 
-pc.script.create('Intro', function (context) {
-    var Intro = function (entity) {
+pc.script.create('calibrate', function (context) {
+    var Calibrate = function (entity) {
         this.entity = entity;
 		pc.events.attach(this);
 		
@@ -23,7 +24,7 @@ pc.script.create('Intro', function (context) {
         this.game = context.root.findByName("Shell");
     };
 
-    Intro.prototype = {
+    Calibrate.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
 
@@ -129,5 +130,5 @@ pc.script.create('Intro', function (context) {
 
     };
 
-    return Intro;
+    return Calibrate;
 });
