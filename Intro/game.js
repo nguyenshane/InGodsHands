@@ -26,7 +26,7 @@ pc.script.create('game', function (context) {
                 console.log("Doesn't have hardware, ROOTS are", this.ROOTS);
             }
             // always load the menu first
-            this.loadRoot(1);
+            this.loadRoot(0);
         },
 
         // Called every frame, dt is time in seconds since last update

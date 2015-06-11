@@ -111,10 +111,10 @@ pc.script.create('globalInterface', function (context) {
             this.setupGlobalVariables();
 
             tribes = context.root.findByName("TribeParent").getChildren();
-            console.log("tribes",tribes[0].script);
+            console.log("tribes",tribes[1].script);
 
             tribeLights = context.root.findByName("Camera").findByName("TribeLights").getChildren();
-            this.assignTribeBeliefLights();
+            //this.assignTribeBeliefLights();
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -462,7 +462,7 @@ pc.script.create('globalInterface', function (context) {
 
         assignTribeBeliefLights: function() {
             for (var i = 0; i < tribes.length; i++){
-                console.log("tribe",i,tribes[i]);
+                console.log("tribe",i,tribes[i].script);
                 tribes[i].script.tribe.beliefLight = tribeLights[i];
                 //tribes[i].script.tribe.beliefLight.enabled = true;
             }

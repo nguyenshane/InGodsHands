@@ -82,7 +82,7 @@ pc.script.create('tribe', function (context) {
         this.eventTimer = 200;
 
         this.iconSmokeIsPlaying;
-        this.beliefLight;
+        this.beliefLight = null;
         
         this.predatorsInInfluence = []; //tile references that have aggressive animals on it within this tribe's influence area
 		this.preyInInfluence = [];
