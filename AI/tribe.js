@@ -94,6 +94,9 @@ pc.script.create('tribe', function (context) {
         
         this.animalDecisionTime = 1.5;
         this.animalDecisionTimer = this.animalDecisionTime;
+
+        this.currWater = 0;
+        this.idealWater = 14;
     
         // Variables for lerp, in milliseconds
 
@@ -114,37 +117,44 @@ pc.script.create('tribe', function (context) {
 
 			//var availStartingTiles = getConnectedTilesInArea(ico, initialContinentLocation, 5);
             //this.tile = ico.tiles[availStartingTiles[Math.floor(pc.math.random(0, availStartingTiles.length))]]; //initial tribe location
-            
-            var randomTiles = [];
-            for (var s = ico.tiles.length-1; s >= 0; s--) randomTiles[s] = s;
-			shuffleArray(randomTiles);
-            
-            this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
-            for (var i = 0; i < randomTiles.length; i++) {
-				var tile = ico.tiles[randomTiles[i]];
-                if (tile.isPathable && Math.abs(tile.latitude) < 45) {
-                    var tribeTooClose = false;
-                    
-                    for (var j = 0; j < tribes.length; j++) {
-                        if (tribes[j].enabled && distSq(tribes[j].position, tile.center) < 0.8*0.8) {
-                            tribeTooClose = true;
-                            break;
+
+            if (this.index === 0) {
+                this.tile = ico.tiles[startingPosition];
+            } else {
+                this.tile = ico.tiles[Math.floor(seed.step(8191, 0, ico.tiles.length-1))];
+                var randomTiles = [];
+                for (var s = ico.tiles.length-1; s >= 0; s--) randomTiles[s] = s;
+    			shuffleArray(randomTiles);
+                
+                for (var i = 0; i < randomTiles.length; i++) {
+    				var tile = ico.tiles[randomTiles[i]];
+                    if (tile.isPathable && Math.abs(tile.latitude) < 45  && 
+                                                    (!(this.index == 0) || 
+                                                        (tile.latitude < 30 && tile.latitude > 20 
+                                                            && tile.longitude < 30 && tile.longitude > 0))) {
+                        var tribeTooClose = false;
+                        
+                        for (var j = 0; j < tribes.length; j++) {
+                            if (tribes[j].enabled && distSq(tribes[j].position, tile.center) < 0.8*0.8) {
+                                tribeTooClose = true;
+                                break;
+                            }
                         }
-                    }
-                    
-                    if (!tribeTooClose) {
-                        if (this.index === 0) { //First tribe, restrict its spawning location to the initial camera-facing band of longitudes
-                            if (Math.abs(tile.longitude) < 30) {
+                        
+                        if (!tribeTooClose) {
+                            if (this.index === 0) { //First tribe, restrict its spawning location to the initial camera-facing band of longitudes
+                                if (Math.abs(tile.longitude) < 30) {
+                                    this.tile = tile;
+                                    break;
+                                }
+                            } else {
                                 this.tile = tile;
                                 break;
                             }
-                        } else {
-                            this.tile = tile;
-                            break;
                         }
                     }
-                }
-			}
+    			}
+            }
             
             this.entity.setPosition(this.tile.center);
             this.rotation = this.tile.getRotationAlignedWithNormal();
@@ -168,6 +178,9 @@ pc.script.create('tribe', function (context) {
             this.praiseIcon = this.entity.findByName("PraiseHands").model.model.meshInstances[0].material.opacityMap;
             this.animalIcon = this.entity.findByName("PrayAnimal").model.model.meshInstances[0].material.opacityMap;
             this.denounceIcon = this.entity.findByName("DenounceGod").model.model.meshInstances[0].material.opacityMap;
+
+            this.prayMoreWaterIcon = this.entity.findByName("PrayMoreWater").model.model.meshInstances[0].material.opacityMap;
+            this.prayLessWaterIcon = this.entity.findByName("PrayLessWater").model.model.meshInstances[0].material.opacityMap;
 
 
             this.iconSmoke = this.entity.findByName("TestFogTribe");
@@ -558,6 +571,72 @@ pc.script.create('tribe', function (context) {
                         this.deactivatePraySmoke();
                     }
                 }
+            }
+            
+            this.prayerTimer -= deltaTime;
+        },
+
+        startPrayForWater: function () {
+            // console.log("TIME TO PRAY FOR ANIMALS");
+            this.tribeMessage = ("Praying for faults");
+            this.prayerTimer = 35;
+            this.setCurrentAction(this.prayForWater);
+
+            // this.iconSmoke.particlesystem.colorMap = this.animalIcon;
+            // this.prayForSomething();
+            if(this.currWater > this.idealWater){
+                // this.iconSmoke.particlesystem.colorMap = this.rainIcon;
+                this.activatePraySmoke(this.prayLessWaterIcon);
+            } else {
+                // this.iconSmoke.particlesystem.colorMap = this.sunIcon;
+                this.activatePraySmoke(this.prayMoreWaterIcon);
+            }
+            this.isBusy = true;
+
+            this.audio.sound_TribePray();
+            // Play action animation for all humans
+            for (var i = 0; i < this.humans.length; i++) {
+                if (this.humans[i].enabled) this.humans[i].script.Human.setAnimState("pray");
+            }
+        },
+
+        prayForWater: function (deltaTime) {
+            // Put symbol here when we have art for it
+            ///////////////////////////////////////
+
+            // Recalc water
+            this.currWater = 0;
+            for(var i = 0; i < this.influencedTiles.length; i++){
+                if (this.influencedTiles[i].hasWater()) {
+                    ++this.currWater;
+                }
+            }
+            console.log(this.idealWater + " " + this.currWater);
+
+            if(this.prayerTimer <= 0){
+                // console.log("Animal Prayer timer up");
+                this.tribeMessage = ("Water Prayer failed!");
+                this.prayerTimer = 0;
+                this.decreaseBelief();
+                this.decreasePopulation();
+                this.isSpiteful = true;
+
+                this.isBusy = false;
+                // Turn off symbols here
+                /////////////////////////
+                this.deactivatePraySmoke();
+                this.startDenouncing();
+                //this.prayForSomething();
+            }
+
+            if (this.prayerTimer > 0 && this.currWater > (this.idealWater - 8) && this.currWater < (this.idealWater + 8)){
+                //console.log("Prayer fulfilled!");
+                this.tribeMessage = ("Water Prayer fulfilled!");
+                this.prayerTimer = 0;
+                
+                this.isBusy = false;
+                this.startPraise();
+                this.deactivatePraySmoke();
             }
             
             this.prayerTimer -= deltaTime;
@@ -1045,6 +1124,7 @@ pc.script.create('tribe', function (context) {
             this.rules.push(new wantToWorshipFalseIdol());
             this.rules.push(new wantToSacrifice());
             this.rules.push(new needAnimals());
+            this.rules.push(new needWaterChange());
         },
 
         runRuleList: function() { 

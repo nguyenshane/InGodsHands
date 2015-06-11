@@ -164,7 +164,7 @@ pc.script.create('Animal', function (context) {
 		},
         
         beginMigration: function() {
-            this.migrationDelay = Math.random() * 1.5;
+            this.migrationDelay = 0;//Math.random() * 2.5;
             this.setCurrentAction(this.migrate);
         },
         

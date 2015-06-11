@@ -276,16 +276,16 @@ function IcoSphere(device, radius, subdivisions, seedStart) {
 	this.vertexHeights = [];
 	for (var size = this.vertexGraph.length-1; size >= 0; size--) this.vertexHeights[size] = 0;
 	
-	var continentBufferDistance = 1.4,
+	var continentBufferDistance = 0,
         stringiness = 16,
         fixedRepellerCount = true,
         repellerCountMultiplier = 0.05,
         repellerCountMin = 24, repellerCountMax = 24,
 		repellerSizeMin = 1, repellerSizeMax = 4,
-		repellerHeightMin = 0.05, repellerHeightMax = 0.15,
+		repellerHeightMin = 0.02, repellerHeightMax = 0.15,
 		continentCountMin = 1, continentCountMax = 1,
 		continentSizeMin = 20, continentSizeMax = 20,
-		mountainCountMin = 5, mountainCountMax = 8,
+		mountainCountMin = 2, mountainCountMax = 8,
 		mountainHeightMin = 0.13, mountainHeightMax = 0.25;
 	
 	var initialLocationTiles = [];
@@ -299,13 +299,18 @@ function IcoSphere(device, radius, subdivisions, seedStart) {
 	}
 	
 	//var initialContinentLocation = 650;
-	initialContinentLocation = initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001))].index;
+	initialContinentLocation = startingPosition; //initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001))].index;
 	
 	generateTerrain(this, fixedRepellerCount, initialContinentLocation, continentBufferDistance, stringiness, repellerCountMultiplier, repellerCountMin, repellerCountMax, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
 	
 
+	continentSizeMin = 2, continentSizeMax = 3,
+	initialContinentLocation = initialLocationTiles[Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001))].index;
+	generateTerrain(this, fixedRepellerCount, initialContinentLocation, continentBufferDistance, stringiness, repellerCountMultiplier, repellerCountMin, repellerCountMax, repellerSizeMin, repellerSizeMax, repellerHeightMin, repellerHeightMax, continentCountMin, continentCountMax, continentSizeMin, continentSizeMax, mountainCountMin, mountainCountMax, mountainHeightMin, mountainHeightMax);
+	
+
 	for (var i = 0; i < 10; ++i) {
-		this.generateFault(Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001)), Math.floor(seed.step(8191,1, 5)), Math.floor(seed.step(8191, 5, 20)));
+		this.generateFault(i + 1, Math.floor(seed.step(8191,1, 4)), Math.floor(seed.step(8191, 7, 20))); //Math.floor(seed.step(8191, 0, initialLocationTiles.length-0.001)), Math.floor(seed.step(8191,1, 5)), Math.floor(seed.step(8191, 5, 20)));
 	}
 	//this.generateFault(219, 1, 10);
 	//this.generateFault(100, 2, 15);

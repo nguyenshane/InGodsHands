@@ -468,7 +468,7 @@ function Tile(index, vertexa, vertexb, vertexc){
             return true;
         }
         return false;
-    }
+    };
 
     this.pathable = function() {
         var volitileCount = 0;
@@ -487,6 +487,25 @@ function Tile(index, vertexa, vertexb, vertexc){
         }
 
         return this.isPathable;
+    };
+
+
+    this.hasWater = function() {
+        
+        var water = 0;
+
+        var vert;
+        for (var i = 0; i < this.vertexIndices.length; ++i) {
+            vert = ico.vertexGraph[this.vertexIndices[i]];
+            if (vert.isOcean) {
+                ++water;
+            }
+        }
+
+        if (water > 1) {
+            return true;
+        }
+        return false;
     }
 
     this.getLatitude = function() {
