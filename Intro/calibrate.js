@@ -1,7 +1,7 @@
 ///
 // Description: This is the Intro screen script that controls the string calibration
 ///
-pc.script.attribute('is_', 'number', 1);
+pc.script.attribute('has_hardware', 'boolean', true);
 
 pc.script.attribute('from_L', 'number', -0.4);
 pc.script.attribute('to_L', 'number', -0.13);
@@ -21,25 +21,24 @@ pc.script.create('calibrate', function (context) {
 		this.currentPos = {L:0, R:0};
 
 		this.T_L,this.T_R,this.A_L,this.A_R,this.P_L,this.P_R,this.E_L,this.E_R,this.W_L,this.W_R;
-        this.game = context.root.findByName("Shell");
+        
     };
 
     Calibrate.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+        	this.game = context.root.findByName("Shell");
+        	
+        	if(!this.has_hardware) {
+        		console.log("Go to next Root");
+        		this.game.script.game.loadNextRoot();
+        	}
 
             this.stringT = new pc.StringTAPEW('T');
 			this.stringA = new pc.StringTAPEW('A');
 			this.stringP = new pc.StringTAPEW('P');
 			this.stringE = new pc.StringTAPEW('E');
 			this.stringW = new pc.StringTAPEW('W');
-			/*
-			this.stringT = context.root.findByName("Rv1-stable").script.HIDInterface.stringT;
-			this.stringA = context.root.findByName("Rv1-stable").script.HIDInterface.stringA;
-			this.stringP = context.root.findByName("Rv1-stable").script.HIDInterface.stringP;
-			this.stringE = context.root.findByName("Rv1-stable").script.HIDInterface.stringE;
-			this.stringW = context.root.findByName("Rv1-stable").script.HIDInterface.stringW;
-			*/
 
         	this.T_L = context.root.findByName("T_L");
         	this.T_R = context.root.findByName("T_R");
@@ -53,7 +52,6 @@ pc.script.create('calibrate', function (context) {
         	this.W_R = context.root.findByName("W_R");
 
         	startTween(this.from_L, this.to_L, this.duration, this.currentPos, this.reverseAfter);
-        	//startTween(this.from_R, this.to_R, this.duration, this.currentPos, this.reverseAfter);
         },
 
         onActivate: function() {
@@ -76,9 +74,8 @@ pc.script.create('calibrate', function (context) {
 			this.middleW = this.stringW.isMiddle;
 
         	if(this.middleT && this.middleA	&& this.middleP	&& this.middleE	&& this.middleW) {
-        		console.log("This will send to new scene");
+        		console.log("Go to next Root");
         		this.game.script.game.loadNextRoot();
-        		//this.onDeactivate();
         	}
 
         	var T_currentPos = this.T_L.getLocalPosition();
@@ -125,10 +122,7 @@ pc.script.create('calibrate', function (context) {
 				this.W_L.setLocalPosition(this.to_L,W_currentPos.y,W_currentPos.z);
 				this.W_R.setLocalPosition(-this.to_L,W_currentPos.y,W_currentPos.z);
 			}
-
         },
-
     };
-
     return Calibrate;
 });

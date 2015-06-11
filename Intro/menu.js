@@ -103,7 +103,7 @@ pc.script.create('menu', function (context) {
         // Called every frame, dt is time in seconds since last update
         update: function (dt) {
             if(this.lightIntesity == 0){
-              console.log("go to tutorial");
+              console.log("Go to next Root");
               this.activateStart = false;
               this.shell.script.game.loadNextRoot();
             }
