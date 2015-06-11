@@ -114,7 +114,7 @@ pc.script.create('globalInterface', function (context) {
             console.log("tribes",tribes[1].script);
 
             tribeLights = context.root.findByName("Camera").findByName("TribeLights").getChildren();
-            //this.assignTribeBeliefLights();
+            this.assignTribeBeliefLights();
         },
 
         // Called every frame, dt is time in seconds since last update
