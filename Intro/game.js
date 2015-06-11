@@ -11,11 +11,9 @@ pc.script.create('game', function (context) {
         this.ROOTS = [
             '371485.json', // Menu
             '365042.json', // Calibration, is taken out if has_hardware = false
-            //'371102.json', // Tutorial
             '350057.json'  // Rv1-stable
         ];
 
-        this.currentRoot = null;
         this.currentRootIndex = 0;
         this.enableBGM = false;
     };
@@ -27,7 +25,8 @@ pc.script.create('game', function (context) {
                 this.ROOTS.splice(1,1);
                 console.log("Doesn't have hardware, ROOTS are", this.ROOTS);
             }
-            this.loadRoot(0);
+            // always load the menu first
+            this.loadRoot(1);
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -51,14 +50,13 @@ pc.script.create('game', function (context) {
         
         unloadRoot: function () {
             // Destroy all Entities and components created from the previous Pack.
-            //console.log('currentRoot to destroy', context.root._children[1]);
+            console.log('currentRoot to destroy', context.root._children[1]);
             context.root._children[1].destroy();
         },
         
         loadRoot: function (index) {
             context.loadSceneHierarchy(this.ROOTS[index]);
             this.currentRootIndex = index;
-            //this.currentRoot = context.root._children[index+1]; //jump over the Shell
             console.log("currentRoot loading", index, context.root);
         }
     };

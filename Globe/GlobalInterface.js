@@ -74,10 +74,7 @@ pc.script.create('globalInterface', function (context) {
             prevTotalBelief = totalBelief;
             minTotalBelief = 150;
 			
-			tribes = context.root.findByName("TribeParent").getChildren();
 
-            tribeLights = context.root.findByName("Camera").findByName("TribeLights").getChildren();
-            this.assignTribeBeliefLights();
 
             // Queue of tribe actions, only want two running at once.
             tribeActionQ = [];
@@ -98,7 +95,7 @@ pc.script.create('globalInterface', function (context) {
             	this.testVerts[i] = Math.floor(pc.math.random(0, 600));
             }
 			
-            this.eroder = new Eroder(0, 150);
+            //this.eroder = new Eroder(0, 150);
 			
 			this.init = false;
 
@@ -112,6 +109,12 @@ pc.script.create('globalInterface', function (context) {
 
             this.setupSnapshots();
             this.setupGlobalVariables();
+
+            tribes = context.root.findByName("TribeParent").getChildren();
+            console.log("tribes",tribes[0].script);
+
+            tribeLights = context.root.findByName("Camera").findByName("TribeLights").getChildren();
+            this.assignTribeBeliefLights();
         },
 
         // Called every frame, dt is time in seconds since last update
@@ -459,6 +462,7 @@ pc.script.create('globalInterface', function (context) {
 
         assignTribeBeliefLights: function() {
             for (var i = 0; i < tribes.length; i++){
+                console.log("tribe",i,tribes[i]);
                 tribes[i].script.tribe.beliefLight = tribeLights[i];
                 //tribes[i].script.tribe.beliefLight.enabled = true;
             }
