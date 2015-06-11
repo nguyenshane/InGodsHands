@@ -6,8 +6,8 @@ function addTribe() {
             tribes[i].enabled = true;
 
             var app = pc.fw.Application.getApplication('application-canvas').context;
-            var tribeInfo = app.root.findByName("Rv1-stable").script.developer;
-            tribeInfo.addTribeDiv = true;
+            //var tribeInfo = app.root.findByName("Rv1-stable").script.developer;
+            //tribeInfo.addTribeDiv = true;
             
             if (firstTribeOnly) {
                 firstTribeOnly = false;
