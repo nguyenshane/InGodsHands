@@ -299,10 +299,10 @@ pc.script.create('Globe', function (context) {
                                         swipeInterface.enablePL();
                                         break;
                                     case 3: // Animals down
-                                        swipeInterface.enablePR();
+                                        swipeInterface.enableAL();
                                         break;
                                     case 4: //Faults up
-                                        swipeInterface.enableAL();
+                                        swipeInterface.enablePR();
                                         break;
                                     case 5: // Animals up
                                         swipeInterface.enableAR();
@@ -418,14 +418,14 @@ pc.script.create('Globe', function (context) {
         },
 
         checkAnimalDown: function() {
-            if (global[GLOBAL.ANIMAL] < 20) {
+            if (global[GLOBAL.ANIMALS] < 20) {
                 tutStage = 9;
                 swipeInterface.lowlightAL();
                 //swipeInterface.lowlightAR();
 
                 swipeInterface.disableAL();
 
-                tutorialTribe.startPrayForWater();
+                tutorialTribe.startPrayForAnimals();
                 this.tutWait(0, 4);
             }
         },
@@ -444,7 +444,7 @@ pc.script.create('Globe', function (context) {
         },
 
         checkAnimalUp: function() {
-            if (global[GLOBAL.ANIMAL] > 80) {
+            if (global[GLOBAL.ANIMALS] > 80) {
                 tutStage = 9;
                 //swipeInterface.lowlightAL();
                 swipeInterface.lowlightAR();
