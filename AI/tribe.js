@@ -103,6 +103,8 @@ pc.script.create('tribe', function (context) {
         //this.foodPopTimer = 0;
         this.travelTime = 6000;
         this.travelStartTime;
+
+        this.suppressActions = false;
     };
 
     Tribe.prototype = {
@@ -230,77 +232,81 @@ pc.script.create('tribe', function (context) {
             //////////////////////////////////////////////////////////////////////////////////////
 
             if (!isPaused) {
-                this.eventTimer -= dt;
-
-                if (!this.isBusy) {                
-                    if(this.ruleCooldownTimer < 0){
-                        this.runRuleList();
-                    } else this.ruleCooldownTimer -= dt;
-                } else {
+                if (this.suppressActions) {
                     this.currentAction(dt);
-                }
-
-                // Set temperature of tile
-                this.currTileTemperature = this.tile.getTemperature();
-
-                // rotating statues properly
-                this.rotation = this.tile.getRotationAlignedWithSphere();
-                this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
-                this.paganStatue.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
-               
-                // Increase no sun timer whenever tribe doesn't have sun
-                if(!this.inSun){
-                    this.noSunTimer += dt;
                 } else {
-                    this.noSunTimer = 0;
-                }
+                    this.eventTimer -= dt;
 
-                this.increasePopulationTimer += dt;
+                    if (!this.isBusy) {                
+                        if(this.ruleCooldownTimer < 0){
+                            this.runRuleList();
+                        } else this.ruleCooldownTimer -= dt;
+                    } else {
+                        this.currentAction(dt);
+                    }
 
-                // use 1 for testing 
-                if (firstTribeOnly) { //Population growth rate for the first tribe before any more have spawned
-                    if (this.increasePopulationTimer >= 30 && !this.isBusy) {
-                        this.increasePopulation();
-                        this.increasePopulationTimer = 0;
-                    }
-                } else { //Growth rate for all tribes after a new tribe has spawned
-                    if (this.increasePopulationTimer >= 60 && !this.isBusy) {
-                        this.increasePopulation();
-                        this.increasePopulationTimer = 0;
-                    }
-                }
+                    // Set temperature of tile
+                    this.currTileTemperature = this.tile.getTemperature();
 
-                //Check influenced tiles for predators or prey
-                this.predatorsInInfluence = [[], [], []];
-                this.preyInInfluence = [];
-                for (var i = this.influencedTiles.length-1; i >= 0; i--) {
-                    var tile = this.influencedTiles[i];
-                    if (tile.hasAnimal) {
-                        if (tile.animal.stats.aggressiveness > 0) {
-                            switch (tile.animal.stats.type) {
-                                case "fox":
-                                    this.predatorsInInfluence[0].push(tile.animal);
-                                    break;
-                                    
-                                case "pig":
-                                    this.predatorsInInfluence[1].push(tile.animal);
-                                    break;
-                                    
-                                case "cow":
-                                    this.predatorsInInfluence[2].push(tile.animal);
-                                    break;
-                            }
-                        } else this.preyInInfluence.push(tile.animal);
+                    // rotating statues properly
+                    this.rotation = this.tile.getRotationAlignedWithSphere();
+                    this.entity.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                    this.paganStatue.setLocalEulerAngles(this.rotation.x - 90, this.rotation.y, this.rotation.z);
+                   
+                    // Increase no sun timer whenever tribe doesn't have sun
+                    if(!this.inSun){
+                        this.noSunTimer += dt;
+                    } else {
+                        this.noSunTimer = 0;
                     }
-                }
-                
-                this.influencedAnimalAI(dt);
-                
-                if (this.influenceCalculationFlag) {
-                    this.influenceCalculationFlag = false;
-                    this.calculateInfluence();
-                }
-			}
+
+                    this.increasePopulationTimer += dt;
+
+                    // use 1 for testing 
+                    if (firstTribeOnly) { //Population growth rate for the first tribe before any more have spawned
+                        if (this.increasePopulationTimer >= 30 && !this.isBusy) {
+                            this.increasePopulation();
+                            this.increasePopulationTimer = 0;
+                        }
+                    } else { //Growth rate for all tribes after a new tribe has spawned
+                        if (this.increasePopulationTimer >= 60 && !this.isBusy) {
+                            this.increasePopulation();
+                            this.increasePopulationTimer = 0;
+                        }
+                    }
+
+                    //Check influenced tiles for predators or prey
+                    this.predatorsInInfluence = [[], [], []];
+                    this.preyInInfluence = [];
+                    for (var i = this.influencedTiles.length-1; i >= 0; i--) {
+                        var tile = this.influencedTiles[i];
+                        if (tile.hasAnimal) {
+                            if (tile.animal.stats.aggressiveness > 0) {
+                                switch (tile.animal.stats.type) {
+                                    case "fox":
+                                        this.predatorsInInfluence[0].push(tile.animal);
+                                        break;
+                                        
+                                    case "pig":
+                                        this.predatorsInInfluence[1].push(tile.animal);
+                                        break;
+                                        
+                                    case "cow":
+                                        this.predatorsInInfluence[2].push(tile.animal);
+                                        break;
+                                }
+                            } else this.preyInInfluence.push(tile.animal);
+                        }
+                    }
+                    
+                    this.influencedAnimalAI(dt);
+                    
+                    if (this.influenceCalculationFlag) {
+                        this.influenceCalculationFlag = false;
+                        this.calculateInfluence();
+                    }
+    			}
+            }
         },
         
         influencedAnimalAI: function(dt) {
@@ -427,6 +433,8 @@ pc.script.create('tribe', function (context) {
         activatePraySmoke: function (icon) {
             this.iconSmoke.particlesystem.colorMap = icon;
 
+            this.icon = icon;
+
             if (icon == this.denounceIcon) {
                 this.iconSmoke.particlesystem.colorGraph = context.root.findByName("RedColorGraph").particlesystem.colorGraph;
                 this.iconSmoke.particlesystem.intensity = 10;
@@ -489,36 +497,38 @@ pc.script.create('tribe', function (context) {
         },
 
         prayForTemperature: function (deltaTime) {
-            if(this.prayerTimer <= 0){
-                //console.log("Prayer timer up");
-                this.prayerTimer = 0;
-                this.decreasePopulation();
-                this.isSpiteful = true;
+            if (!this.suppressActions) {
+                if(this.prayerTimer <= 0){
+                    //console.log("Prayer timer up");
+                    this.prayerTimer = 0;
+                    this.decreasePopulation();
+                    this.isSpiteful = true;
 
-                this.isBusy = false;
-                //this.prayForSomething();
-                this.deactivatePraySmoke();
-                this.startDenouncing();
+                    this.isBusy = false;
+                    //this.prayForSomething();
+                    this.deactivatePraySmoke();
+                    this.startDenouncing();
+                }
+
+                if ((this.currTileTemperature > (this.idealTemperature - 8) &&
+                     this.currTileTemperature < (this.idealTemperature + 8)) &&
+                     this.prayerTimer > 0){
+
+                    //console.log("Prayer fulfilled!");
+                    this.tribeMessage = ("Temperature prayer fulfilled!");
+                    this.prayerTimer = 0;
+                    
+                    this.isBusy = false;
+
+                    this.startPraise();
+                    //this.prayForSomething();
+                    this.deactivatePraySmoke();
+                }
+
+                //console.log(this.currTileTemperature);
+
+                this.prayerTimer -= deltaTime;
             }
-
-            if ((this.currTileTemperature > (this.idealTemperature - 8) &&
-                 this.currTileTemperature < (this.idealTemperature + 8)) &&
-                 this.prayerTimer > 0){
-
-                //console.log("Prayer fulfilled!");
-                this.tribeMessage = ("Temperature prayer fulfilled!");
-                this.prayerTimer = 0;
-                
-                this.isBusy = false;
-
-                this.startPraise();
-                //this.prayForSomething();
-                this.deactivatePraySmoke();
-            }
-
-            //console.log(this.currTileTemperature);
-
-            this.prayerTimer -= deltaTime;
         },
 		
         startPrayForAnimals: function () {
@@ -542,38 +552,40 @@ pc.script.create('tribe', function (context) {
         prayForAnimals: function (deltaTime) {
             // Put symbol here when we have art for it
             ///////////////////////////////////////
+            if (!this.suppressActions) {
 
-            if(this.prayerTimer <= 0){
-                // console.log("Animal Prayer timer up");
-				this.tribeMessage = ("Animal Prayer failed!");
-                this.prayerTimer = 0;
-                this.decreaseBelief();
-                this.decreasePopulation();
-                this.isSpiteful = true;
+                if(this.prayerTimer <= 0){
+                    // console.log("Animal Prayer timer up");
+    				this.tribeMessage = ("Animal Prayer failed!");
+                    this.prayerTimer = 0;
+                    this.decreaseBelief();
+                    this.decreasePopulation();
+                    this.isSpiteful = true;
 
-                this.isBusy = false;
-                // Turn off symbols here
-                /////////////////////////
-                this.deactivatePraySmoke();
-                this.startDenouncing();
-                //this.prayForSomething();
-            }
+                    this.isBusy = false;
+                    // Turn off symbols here
+                    /////////////////////////
+                    this.deactivatePraySmoke();
+                    this.startDenouncing();
+                    //this.prayForSomething();
+                }
 
-            if (this.prayerTimer > 0){
-                for (var i = 0; i < this.influencedTiles.length; i++) {
-                    if (this.influencedTiles[i].hasAnimal){
-                        //console.log("Prayer fulfilled!");
-                        this.tribeMessage = ("Animal Prayer fulfilled!");
-                        this.prayerTimer = 0;
-                        
-                        this.isBusy = false;
-                        this.startPraise();
-                        this.deactivatePraySmoke();
+                if (this.prayerTimer > 0){
+                    for (var i = 0; i < this.influencedTiles.length; i++) {
+                        if (this.influencedTiles[i].hasAnimal){
+                            //console.log("Prayer fulfilled!");
+                            this.tribeMessage = ("Animal Prayer fulfilled!");
+                            this.prayerTimer = 0;
+                            
+                            this.isBusy = false;
+                            this.startPraise();
+                            this.deactivatePraySmoke();
+                        }
                     }
                 }
+                
+                this.prayerTimer -= deltaTime;
             }
-            
-            this.prayerTimer -= deltaTime;
         },
 
         startPrayForWater: function () {
@@ -603,42 +615,44 @@ pc.script.create('tribe', function (context) {
         prayForWater: function (deltaTime) {
             // Put symbol here when we have art for it
             ///////////////////////////////////////
+            if (!this.suppressActions) {
 
-            // Recalc water
-            this.currWater = 0;
-            for(var i = 0; i < this.influencedTiles.length; i++){
-                if (this.influencedTiles[i].hasWater()) {
-                    ++this.currWater;
+                // Recalc water
+                this.currWater = 0;
+                for(var i = 0; i < this.influencedTiles.length; i++){
+                    if (this.influencedTiles[i].hasWater()) {
+                        ++this.currWater;
+                    }
                 }
-            }
 
-            if(this.prayerTimer <= 0){
-                // console.log("Animal Prayer timer up");
-                this.tribeMessage = ("Water Prayer failed!");
-                this.prayerTimer = 0;
-                this.decreaseBelief();
-                this.decreasePopulation();
-                this.isSpiteful = true;
+                if(this.prayerTimer <= 0){
+                    // console.log("Animal Prayer timer up");
+                    this.tribeMessage = ("Water Prayer failed!");
+                    this.prayerTimer = 0;
+                    this.decreaseBelief();
+                    this.decreasePopulation();
+                    this.isSpiteful = true;
 
-                this.isBusy = false;
-                // Turn off symbols here
-                /////////////////////////
-                this.deactivatePraySmoke();
-                this.startDenouncing();
-                //this.prayForSomething();
-            }
+                    this.isBusy = false;
+                    // Turn off symbols here
+                    /////////////////////////
+                    this.deactivatePraySmoke();
+                    this.startDenouncing();
+                    //this.prayForSomething();
+                }
 
-            if (this.prayerTimer > 0 && this.currWater > (this.idealWater - 8) && this.currWater < (this.idealWater + 8)){
-                //console.log("Prayer fulfilled!");
-                this.tribeMessage = ("Water Prayer fulfilled!");
-                this.prayerTimer = 0;
+                if (this.prayerTimer > 0 && this.currWater > (this.idealWater - 8) && this.currWater < (this.idealWater + 8)){
+                    //console.log("Prayer fulfilled!");
+                    this.tribeMessage = ("Water Prayer fulfilled!");
+                    this.prayerTimer = 0;
+                    
+                    this.isBusy = false;
+                    this.startPraise();
+                    this.deactivatePraySmoke();
+                }
                 
-                this.isBusy = false;
-                this.startPraise();
-                this.deactivatePraySmoke();
+                this.prayerTimer -= deltaTime;
             }
-            
-            this.prayerTimer -= deltaTime;
         },
 
 

@@ -50,6 +50,7 @@ pc.script.create('Globe', function (context) {
             swipeInterface.disableER();
 
             tutorialTribe = context.root.findByName("Tribe0").script.tribe;
+            tutorialTribe.suppressActions = true;
             
             // create material
             // A shader definition used to create a new shader.
@@ -226,12 +227,12 @@ pc.script.create('Globe', function (context) {
                         case 2: //Faults down
                             if (Math.floor(globalTime)%2 == 0) {
                                 swipeInterface.highlightPL();
-                                //swipeInterface.highlightPR();
+                                swipeInterface.highlightPR();
                             } else {
                                 swipeInterface.lowlightPL();
-                                //swipeInterface.lowlightPR();
+                                swipeInterface.lowlightPR();
                             }
-                            this.checkFaultDown();
+                            this.checkFaults();
                             break;
                         case 3: // Animals down
                             if (Math.floor(globalTime)%2 == 0) {
@@ -251,7 +252,6 @@ pc.script.create('Globe', function (context) {
                                 //swipeInterface.lowlightPL();
                                 swipeInterface.lowlightPR();
                             }
-                            this.checkFaultUp();
                             break;
                         case 5: // Animals up
                             if (Math.floor(globalTime)%2 == 0) {
@@ -297,21 +297,28 @@ pc.script.create('Globe', function (context) {
                                         break;
                                     case 2: //Faults down
                                         swipeInterface.enablePL();
+                                        swipeInterface.enablePR();
+                                        tutorialTribe.startPrayForWater();
                                         break;
                                     case 3: // Animals down
                                         swipeInterface.enableAL();
+                                        tutorialTribe.startPrayForAnimals(-1);
                                         break;
                                     case 4: //Faults up
                                         swipeInterface.enablePR();
+                                        tutorialTribe.startPrayForWater(1);
                                         break;
                                     case 5: // Animals up
                                         swipeInterface.enableAR();
+                                        tutorialTribe.startPrayForAnimals(1);
                                         break;
                                     case 6: // Temperature down
                                         swipeInterface.enableTL();
+                                        tutorialTribe.startPrayForTemperature(-1);
                                         break;
                                     case 7: // Temperature up
                                         swipeInterface.enableTR();
+                                        tutorialTribe.startPrayForTemperature(1);
                                         break;
                                     case 8: 
                                         inTutorial = false;
@@ -325,6 +332,7 @@ pc.script.create('Globe', function (context) {
                                         swipeInterface.enableER();
                                         swipeInterface.enableWL();
                                         swipeInterface.enableWR();
+                                        tutorialTribe.suppressActions = false;
                                         break;
                                 }
                             }
@@ -383,8 +391,8 @@ pc.script.create('Globe', function (context) {
 
                 //swipeInterface.disableWL();
                 //swipeInterface.disableWR();
-
                 tutorialTribe.startFalseIdol();
+
                 this.tutWait(6, 1);
             }
         },
@@ -398,48 +406,94 @@ pc.script.create('Globe', function (context) {
                 swipeInterface.disableEL();
                 swipeInterface.disableER();
 
-                tutorialTribe.startFalseIdol();
+                //tutorialTribe.startCowering();
+
                 this.tutWait(6, 2);
             }
         },
 
-        checkFaultDown: function() {
+        checkFaults: function() {
             if (ico.currFaultIndex < 2) {
-                tutStage = 9;
-                swipeInterface.lowlightPL();
-                //swipeInterface.lowlightPR();
+                if (tutorialTribe.icon == tutorialTribe.prayMoreWaterIcon) {
+                    tutStage = 9;
+                    swipeInterface.lowlightPL();
+                    swipeInterface.lowlightPR();
 
-                swipeInterface.disablePL();
+                    swipeInterface.disablePL();
+                    swipeInterface.disablePR();
 
-                tutorialTribe.startPrayForWater();
+                    tutorialTribe.startPraise();
 
-                this.tutWait(0, 3);
+                    this.tutWait(3, 3);
+                } else {
+                    tutStage = 9;
+                    swipeInterface.lowlightPL();
+                    //swipeInterface.lowlightPR();
+
+                    swipeInterface.disablePL();
+
+                    tutorialTribe.startDenouncing();
+
+                    this.tutWait(3, 2);
+                }
+            }
+            if (ico.currFaultIndex > 7) {
+                if (tutorialTribe.icon == tutorialTribe.prayLessWaterIcon) {
+                    tutStage = 9;
+                    swipeInterface.lowlightPL();
+                    swipeInterface.lowlightPR();
+
+                    swipeInterface.disablePL();
+                    swipeInterface.disablePR();
+
+                    tutorialTribe.startPraise();
+
+                    this.tutWait(3, 3);
+                } else {
+                    tutStage = 9;
+
+                    tutorialTribe.startDenouncing();
+
+                    this.tutWait(3, 2);
+                }
             }
         },
 
         checkAnimalDown: function() {
             if (global[GLOBAL.ANIMALS] < 20) {
+                //if (tutorialTribe.icon == tutorialTribe.prayMoreWaterIcon) {
                 tutStage = 9;
                 swipeInterface.lowlightAL();
                 //swipeInterface.lowlightAR();
 
                 swipeInterface.disableAL();
 
-                tutorialTribe.startPrayForAnimals();
-                this.tutWait(0, 4);
+                tutorialTribe.startPraise();
+
+                this.tutWait(3, 5);
             }
         },
 
         checkFaultUp: function() {
             if (ico.currFaultIndex > 7) {
-                tutStage = 9;
-                //swipeInterface.lowlightPL();
-                swipeInterface.lowlightPR();
+                if (tutorialTribe.icon == tutorialTribe.prayLessWaterIcon) {
+                    tutStage = 9;
+                    swipeInterface.lowlightPL();
+                    swipeInterface.lowlightPR();
 
-                swipeInterface.disablePR();
+                    swipeInterface.disablePL();
+                    swipeInterface.lowlightPR();
 
-                this.tutWait(0, 5);
+                    tutorialTribe.startPraise();
 
+                    this.tutWait(3, 3);
+                } else {
+                    tutStage = 9;
+
+                    tutorialTribe.startDenouncing();
+
+                    this.tutWait(3, 2);
+                }
             }
         },
 
@@ -450,6 +504,8 @@ pc.script.create('Globe', function (context) {
                 swipeInterface.lowlightAR();
 
                 swipeInterface.disableAR();
+
+                tutorialTribe.startPraise();
 
                 this.tutWait(3, 6);
             }
@@ -463,6 +519,8 @@ pc.script.create('Globe', function (context) {
 
                 swipeInterface.disableTL();
 
+                tutorialTribe.startPraise();
+
                 this.tutWait(3, 7);
             }
         },
@@ -472,6 +530,8 @@ pc.script.create('Globe', function (context) {
                 tutStage = 9;
                 //swipeInterface.lowlightTL();
                 swipeInterface.lowlightTR();
+
+                tutorialTribe.startPraise();
 
                 this.tutWait(3, 8);
             }
