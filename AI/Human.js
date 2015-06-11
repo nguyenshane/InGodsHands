@@ -44,7 +44,7 @@ pc.script.create('Human', function (context) {
 		
 		// Variables for lerp, in milliseconds
         this.foodPopTimer = 0;
-		this.travelTime = 2000.0 / this.moveSpeed;
+		this.travelTime = 4500.0 / this.moveSpeed;
         this.travelStartTime;
         
         this.currentAction = null;
@@ -166,12 +166,12 @@ pc.script.create('Human', function (context) {
             var randomInfluencedTile = getRandom(this.tribeParent.influencedTiles);
             var randomNeighbor = this.tile.getRandomNeighbor();
 
-            if (this.tile.type.movementCost >= 0) {
-                this.goToTile(randomInfluencedTile);
-                //this.goToTile(getRandom(ico.tiles));
-            } else {
+            // if (this.tile.type.movementCost >= 0) {
+            //     this.goToTile(randomInfluencedTile);
+            //     //this.goToTile(getRandom(ico.tiles));
+            // } else {
                 this.setDestination(randomNeighbor);
-            }
+            // }
 
             this.setAnimState('walk');
         },
