@@ -23,11 +23,11 @@ enum PinAssignments {
   encoderPinA_E = 12,
   encoderPinB_E = 11,
   
-  encoderPinA_P = 9,
-  encoderPinB_P = 10,
+  encoderPinA_P = 10,
+  encoderPinB_P = 9,
   
-  encoderPinA_A = 5,
-  encoderPinB_A = 6,
+  encoderPinA_A = 6,
+  encoderPinB_A = 5,
   
   encoderPinA_T = 4,
   encoderPinB_T = 3,
