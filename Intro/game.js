@@ -57,7 +57,7 @@ pc.script.create('game', function (context) {
             context.loadSceneHierarchy(this.ROOTS[index]);
             this.currentRootIndex = index;
             console.log("currentRoot loading", index, context.root);
-        }.
+        },
 
         loadMainGame: function () {
             // hacky, no reference back to Shell
