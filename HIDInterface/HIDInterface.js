@@ -122,9 +122,9 @@ pc.script.create('HIDInterface', function (context) {
             temperatureEffectTimer -= dt;
             
             if(temperatureEffectTimer < .45){
-            	if(overlay.opacity > 0){
-	            	overlay.opacity -= dt;	
-            		overlay.update();
+            	if(this.overlay.opacity > 0){
+	            	this.overlay.opacity -= dt;	
+            		this.overlay.update();
             	}
             }
           //   if (temperatureEffectTimer < 0 && this.coldEffect.particlesystem.isPlaying) {
@@ -171,7 +171,7 @@ pc.script.create('HIDInterface', function (context) {
 			while(overlay.opacity > 0){
 				//console.log("opacity" + overlay.opacity);
 				overlay.opacity -= .01;
-				overlay.update();
+				//overlay.update();
 			}
 
 			// if (position < 0) {
@@ -315,7 +315,7 @@ pc.script.create('HIDInterface', function (context) {
         	console.log("position: " + position);
 
 			if (position < 0) {
-				overlay.diffuse = this.overlayBlue;
+				overlay.diffuse = new pc.Color(0.35, 0.6, 1);
 				overlay.update();
 
 				if(overlay.opacity <= 0.45){
@@ -329,7 +329,7 @@ pc.script.create('HIDInterface', function (context) {
 				// coldEffect.particlesystem.play();
 				// coldEffect.particlesystem.isPlaying = true;
 			} else if (position > 0) {
-				overlay.diffuse = this.overlayRed;
+				overlay.diffuse = new pc.Color(1, 0.6, 0.35);
 				overlay.update();
 
 				if(overlay.opacity <= 0.45){
