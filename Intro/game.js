@@ -10,7 +10,7 @@ pc.script.create('game', function (context) {
         
         this.ROOTS = [
             '371485.json', // Menu
-            '365042.json', // Calibration
+            '365042.json', // Calibration, is taken out if has_hardware = false
             //'371102.json', // Tutorial
             '350057.json'  // Rv1-stable
         ];
@@ -22,6 +22,10 @@ pc.script.create('game', function (context) {
     Game.prototype = {
         // Called once after all resources are loaded and before the first update
         initialize: function () {
+            if(!this.has_hardware) {
+                this.ROOTS.splice(1,1);
+                console.log("Doesn't have hardware, ROOTS are", this.ROOTS);
+            }
             this.loadRoot(0);
         },
 
@@ -30,16 +34,13 @@ pc.script.create('game', function (context) {
         },
         
         loadNextRoot: function () {
-            if(this.has_hardware) {
-                this.unloadRoot();
-                
-                if (this.currentRootIndex === this.ROOTS.length) {
-                    this.currentRootIndex = 0;
-                }
-                this.currentRootIndex++;
-                this.loadRoot(this.currentRootIndex);
+            this.unloadRoot();
+            
+            if (this.currentRootIndex === this.ROOTS.length) {
+                this.currentRootIndex = 0;
             }
-            else this.loadMainGame();
+            this.currentRootIndex++;
+            this.loadRoot(this.currentRootIndex);
         },
 
         reset: function () {
@@ -58,38 +59,6 @@ pc.script.create('game', function (context) {
             this.currentRootIndex = index;
             console.log("currentRoot loading", index, context.root);
         },
-
-        loadMainGame: function () {
-            // hacky, no reference back to Shell
-            context.destroy();
-
-            canvas = createCanvas();
-            devices = createInputDevices(canvas);
-            app = new pc.Application(canvas, {
-                keyboard: devices.keyboard,
-                mouse: devices.mouse,
-                gamepads: devices.gamepads,
-                touch: devices.touch
-            });
-
-            app.configure(CONFIG_FILENAME, function (err) {
-                if (err) {
-                    console.error(err);
-                }
-
-                configureCss(app._fillMode, app._width, app._height);
-                reflow();
-
-
-                app.loadScene(this.ROOTS[this.ROOTS.length-1], function (err, scene) {
-                    if (err) {
-                        console.error(err);
-                    }
-                    app.start();
-                });
-            
-            });
-        }
     };
 
     return Game;

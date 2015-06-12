@@ -69,7 +69,7 @@ pc.script.create('calibrate', function (context) {
 
         	if(this.middleT && this.middleA	&& this.middleP	&& this.middleE	&& this.middleW) {
         		console.log("Go to main Game");
-        		this.game.script.game.loadMainGame();
+        		this.game.script.game.loadNextRoot();
         	}
 
         	var T_currentPos = this.T_L.getLocalPosition();
