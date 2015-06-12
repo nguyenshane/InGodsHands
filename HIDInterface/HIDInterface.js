@@ -319,7 +319,7 @@ pc.script.create('HIDInterface', function (context) {
 				overlay.update();
 
 				if(overlay.opacity <= 0.45){
-					overlay.opacity += .01;
+					overlay.opacity += .04;
 					overlay.update();
 				}
 				// heatEffectL.particlesystem.stop();
@@ -333,7 +333,7 @@ pc.script.create('HIDInterface', function (context) {
 				overlay.update();
 
 				if(overlay.opacity <= 0.45){
-					overlay.opacity += .01;
+					overlay.opacity += .04;
 					overlay.update();
 				}
 				// heatEffectL.particlesystem.play();
