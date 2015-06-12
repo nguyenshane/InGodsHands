@@ -186,20 +186,23 @@ pc.script.create('SwipeInterface', function (context) {
             this.HIDInterface = HIDInterface;
             var self = this;
             var audio = context.root.findByName("Rv1-stable").script.AudioController;
-            var shell = context.root.findByName("Shell");
             this.audio = audio;
             this.swipeWrapper = $(".swipeWrapper");
-            this.swipeWrapper.swipe({
+
+            var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+            if(iOS) {
+              this.swipeWrapper.swipe({
                 hold:function(event, target) {
-                  if(shell!=undefined)
-                    if(shell.script.game.enableBGM === false){
-                      audio.backgroundmusic.playPause();
-                      shell.script.game.enableBGM = true;
-                    }
+                  if(globalInterface.enableBGM === false){
+                    audio.backgroundmusic.playPause();
+                    globalInterface.enableBGM = true;
+                    self.swipeWrapper.swipe("destroy");
+                  }
                 },
                 //threshold:75
                 longTapThreshold:0
-            }),
+              });
+            }
 
             this.T_L.swipe({
                 hold:function(event, target) {
