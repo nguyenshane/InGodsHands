@@ -57,8 +57,8 @@ pc.script.create('AudioController', function (context) {
 
 			this.backgroundmusic.playPause();
 
-			var shell = context.root.findByName("Shell");
-			if(shell != undefined) this.backgroundmusic.playPause();
+			var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+			if(iOS) this.backgroundmusic.playPause();
 
 			//this.backgroundmusic.playPause.call(this.backgroundmusic);
 			//this.backgroundmusic.playPause.call(this.backgroundmusic);

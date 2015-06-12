@@ -16,7 +16,6 @@ pc.script.create('game', function (context) {
         ];
 
         this.currentRootIndex = 0;
-        this.enableBGM = false;
     };
 
     Game.prototype = {
