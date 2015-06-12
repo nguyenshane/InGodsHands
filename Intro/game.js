@@ -1,6 +1,7 @@
 ///
 // Description: This is the control the shell
 ///
+pc.script.attribute('has_hardware', 'boolean', false);
 
 pc.script.create('game', function (context) {
     // Creates a new Game instance
@@ -29,13 +30,16 @@ pc.script.create('game', function (context) {
         },
         
         loadNextRoot: function () {
-            this.unloadRoot();
-            
-            if (this.currentRootIndex === this.ROOTS.length) {
-                this.currentRootIndex = 0;
+            if(this.has_hardware) {
+                this.unloadRoot();
+                
+                if (this.currentRootIndex === this.ROOTS.length) {
+                    this.currentRootIndex = 0;
+                }
+                this.currentRootIndex++;
+                this.loadRoot(this.currentRootIndex);
             }
-            this.currentRootIndex++;
-            this.loadRoot(this.currentRootIndex);
+            else this.loadMainGame();
         },
 
         reset: function () {
@@ -53,6 +57,38 @@ pc.script.create('game', function (context) {
             context.loadSceneHierarchy(this.ROOTS[index]);
             this.currentRootIndex = index;
             console.log("currentRoot loading", index, context.root);
+        }.
+
+        loadMainGame: function () {
+            // hacky, no reference back to Shell
+            context.destroy();
+
+            canvas = createCanvas();
+            devices = createInputDevices(canvas);
+            app = new pc.Application(canvas, {
+                keyboard: devices.keyboard,
+                mouse: devices.mouse,
+                gamepads: devices.gamepads,
+                touch: devices.touch
+            });
+
+            app.configure(CONFIG_FILENAME, function (err) {
+                if (err) {
+                    console.error(err);
+                }
+
+                configureCss(app._fillMode, app._width, app._height);
+                reflow();
+
+
+                app.loadScene(this.ROOTS[this.ROOTS.length-1], function (err, scene) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    app.start();
+                });
+            
+            });
         }
     };
 

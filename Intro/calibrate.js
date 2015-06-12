@@ -1,7 +1,6 @@
 ///
 // Description: This is the Intro screen script that controls the string calibration
 ///
-pc.script.attribute('has_hardware', 'boolean', true);
 
 pc.script.attribute('from_L', 'number', -0.4);
 pc.script.attribute('to_L', 'number', -0.13);
@@ -59,12 +58,7 @@ pc.script.create('calibrate', function (context) {
         },
 
         // Called every frame, dt is time in seconds since last update
-        update: function (dt) {
-        	if(!this.has_hardware) {
-        		console.log("Go to next Root");
-        		this.game.script.game.loadNextRoot();
-        	}
-        	
+        update: function (dt) {        	
         	TWEEN.update();
 
         	this.middleT = this.stringT.isMiddle;
@@ -74,8 +68,8 @@ pc.script.create('calibrate', function (context) {
 			this.middleW = this.stringW.isMiddle;
 
         	if(this.middleT && this.middleA	&& this.middleP	&& this.middleE	&& this.middleW) {
-        		console.log("Go to next Root");
-        		this.game.script.game.loadNextRoot();
+        		console.log("Go to main Game");
+        		this.game.script.game.loadMainGame();
         	}
 
         	var T_currentPos = this.T_L.getLocalPosition();
