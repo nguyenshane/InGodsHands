@@ -307,7 +307,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			var elem = GLOBAL.TEMPERATURE;
             
-            globalDest[elem] += position;
+            globalDest[elem] += position * 2;
             if (globalDest[elem] > globalMax[elem]) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
@@ -367,7 +367,7 @@ pc.script.create('HIDInterface', function (context) {
 
             var elem = GLOBAL.ANIMALS;
             
-            globalDest[elem] += position;
+            globalDest[elem] += position * 2;
             if (globalDest[elem] > globalMax[elem]) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
@@ -399,7 +399,7 @@ pc.script.create('HIDInterface', function (context) {
 
 			var elem = GLOBAL.FAULTS;
             
-            globalDest[elem] += position;
+            globalDest[elem] += position * 2;
             if (globalDest[elem] > globalMax[elem]) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
@@ -430,7 +430,7 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
 
 			var elem = GLOBAL.PUNISH;
-			globalDest[elem] += position;
+			globalDest[elem] += position * 2;
             if (globalDest[elem] > globalMax[elem]) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
@@ -475,7 +475,7 @@ pc.script.create('HIDInterface', function (context) {
 			inactiveTimer = 0;
 
 			var elem = GLOBAL.ROTATION;
-			globalDest[elem] += position;
+			globalDest[elem] += position * 2;
             if (globalDest[elem] > globalMax[elem]) {
             	globalDest[elem] = globalMax[elem];
         	} else if (globalDest[elem] < globalMin[elem]) {
