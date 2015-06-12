@@ -217,7 +217,6 @@ pc.script.create('Animal', function (context) {
         // stupid fucking check for pathable tiles 
         // probably could be done way better
         checkMigrate: function() {
-            console.log("In checkMigrate " + this.migrateCounter);
             var neighborTiles = this.tile.getNeighbors();
             if(this.migrateCounter >= 1){
                 if(this.tile.getNorthNeighbor().isPathable){
