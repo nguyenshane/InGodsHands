@@ -237,10 +237,10 @@ pc.script.create('Globe', function (context) {
                         case 3: // Animals down
                             if (Math.floor(globalTime)%2 == 0) {
                                 swipeInterface.highlightAL();
-                                //swipeInterface.highlightAR();
+                                swipeInterface.highlightAR();
                             } else {
                                 swipeInterface.lowlightAL();
-                                //swipeInterface.lowlightAR();
+                                swipeInterface.lowlightAR();
                             }
                             this.checkAnimalDown();
                             break;
@@ -266,10 +266,10 @@ pc.script.create('Globe', function (context) {
                         case 6: // Temperature down
                             if (Math.floor(globalTime)%2 == 0) {
                                 swipeInterface.highlightTL();
-                                //swipeInterface.highlightTR();
+                                swipeInterface.highlightTR();
                             } else {
                                 swipeInterface.lowlightTL();
-                                //swipeInterface.lowlightTR();
+                                swipeInterface.lowlightTR();
                             }
                             this.checkCold();
                             break;
@@ -302,23 +302,25 @@ pc.script.create('Globe', function (context) {
                                         break;
                                     case 3: // Animals down
                                         swipeInterface.enableAL();
-                                        tutorialTribe.startPrayForAnimals(-1);
+                                        swipeInterface.enableAR();
+                                        tutorialTribe.startPrayForAnimals();
                                         break;
                                     case 4: //Faults up
                                         swipeInterface.enablePR();
-                                        tutorialTribe.startPrayForWater(1);
+                                        tutorialTribe.startPrayForWater();
                                         break;
                                     case 5: // Animals up
                                         swipeInterface.enableAR();
-                                        tutorialTribe.startPrayForAnimals(1);
+                                        tutorialTribe.startPrayForAnimals();
                                         break;
                                     case 6: // Temperature down
                                         swipeInterface.enableTL();
-                                        tutorialTribe.startPrayForTemperature(-1);
+                                        swipeInterface.enableTR();
+                                        tutorialTribe.startPrayForTemperature();
                                         break;
                                     case 7: // Temperature up
                                         swipeInterface.enableTR();
-                                        tutorialTribe.startPrayForTemperature(1);
+                                        tutorialTribe.startPrayForTemperature();
                                         break;
                                     case 8: 
                                         inTutorial = false;
@@ -460,17 +462,18 @@ pc.script.create('Globe', function (context) {
         },
 
         checkAnimalDown: function() {
-            if (global[GLOBAL.ANIMALS] < 20) {
+            if (global[GLOBAL.ANIMALS] < 20 || global[GLOBAL.ANIMALS] > 80) {
                 //if (tutorialTribe.icon == tutorialTribe.prayMoreWaterIcon) {
                 tutStage = 9;
                 swipeInterface.lowlightAL();
-                //swipeInterface.lowlightAR();
+                swipeInterface.lowlightAR();
 
                 swipeInterface.disableAL();
+                swipeInterface.disableAR();
 
                 tutorialTribe.startPraise();
 
-                this.tutWait(3, 5);
+                this.tutWait(3, 6);
             }
         },
 
@@ -482,7 +485,7 @@ pc.script.create('Globe', function (context) {
                     swipeInterface.lowlightPR();
 
                     swipeInterface.disablePL();
-                    swipeInterface.lowlightPR();
+                    swipeInterface.disablePR();
 
                     tutorialTribe.startPraise();
 
@@ -513,15 +516,42 @@ pc.script.create('Globe', function (context) {
 
         checkCold: function() {
             if (global[GLOBAL.TEMPERATURE] < 20) {
-                tutStage = 9;
-                swipeInterface.lowlightTL();
-                //swipeInterface.lowlightTR();
+                if (tutorialTribe.icon == tutorialTribe.rainIcon) {
+                    tutStage = 9;
+                    swipeInterface.lowlightTL();
+                    swipeInterface.lowlightTR();
 
-                swipeInterface.disableTL();
+                    //swipeInterface.disableTL();
 
-                tutorialTribe.startPraise();
+                    tutorialTribe.startPraise();
 
-                this.tutWait(3, 7);
+                    this.tutWait(3, 8);
+                } else {
+                    tutStage = 9;
+
+                    tutorialTribe.startDenouncing();
+
+                    this.tutWait(3, 6);
+                }
+            }
+            if (global[GLOBAL.TEMPERATURE] > 80) {
+                if (tutorialTribe.icon == tutorialTribe.sunIcon) {
+                    tutStage = 9;
+                    swipeInterface.lowlightTL();
+                    swipeInterface.lowlightTR();
+
+                    //swipeInterface.disableTL();
+
+                    tutorialTribe.startPraise();
+
+                    this.tutWait(3, 8);
+                } else {
+                    tutStage = 9;
+
+                    tutorialTribe.startDenouncing();
+
+                    this.tutWait(3, 6);
+                }
             }
         },
 

@@ -371,6 +371,8 @@ pc.script.create('HIDInterface', function (context) {
         	} else if (globalDest[elem] < globalMin[elem]) {
             	globalDest[elem] = globalMin[elem];
         	}
+        	//console.log("animals: " + global[elem]);
+
             
             var animals = scripts.Animals.animal_stack;
             for (var i = 0; i < animals.length; i++) {
@@ -406,7 +408,7 @@ pc.script.create('HIDInterface', function (context) {
         		ico.faultNumMove += 2; //Math.abs((distance * position));
 				ico.faultIncrement = Math.abs(ico.faultIncrement) * position;
         	}
-        	console.log("faults: " + global[elem] + " " + ico.currFaultIndex);
+        	//console.log("faults: " + global[elem] + " " + ico.currFaultIndex);
             
 			// Convert distance relative to 0-100
 			// Get increment and distance based on speed
